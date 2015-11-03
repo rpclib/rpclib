@@ -7,25 +7,20 @@
 
 namespace boost {
 namespace asio {
-class io_service;
+    class io_service;
 }
 }
 
-namespace callme
-{
+namespace callme {
 
 //!
-class server
-{
+class server {
 public:
     server();
 
 private:
     std::shared_ptr<boost::asio::io_service> service_;
 };
-
 }
-
-
 
 #endif /* end of include guard: CALLME_H_NBGBTUFL */

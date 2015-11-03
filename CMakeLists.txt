@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-option(test "Build unit tests." OFF) # Makes boolean 'test' available.
+include(cmake/compiler_specific.cmake)
+
+option(test "Build unit tests." ON) # Makes boolean 'test' available.
 option(compdb "Generate compilation database. Useful for YCM." ON)
 
 ########################################

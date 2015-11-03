@@ -1,4 +1,9 @@
+set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
+
 add_library(callme callme.cc)
+
+set_property(TARGET ${OUTPUT_LIBRARY_NAME} PROPERTY CXX_STANDARD 14)
+set_property(TARGET ${OUTPUT_LIBRARY_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
 
 find_package(Boost REQUIRED COMPONENTS system regex)
 
