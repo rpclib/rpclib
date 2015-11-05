@@ -4,7 +4,7 @@ find_package(GTest)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 set(TEST_SOURCES
-    callme_test.cc)
+    callme/server_test.cc)
 
 set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
 

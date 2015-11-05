@@ -15,6 +15,7 @@ endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 find_package(MsgPack REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system regex)
 
 include_directories(include)
 add_subdirectory(src)
