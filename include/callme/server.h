@@ -11,6 +11,7 @@
 namespace boost {
 namespace asio {
     class io_service;
+    class tcp_server;
 }
 }
 
@@ -19,6 +20,12 @@ namespace callme {
 //! \brief Implements a MsgPack-RPC server.
 class server {
 public:
+    //! \brief Constructs a MsgPack-RPC server.
+    //! \param address The address to listen on. Could be "localhost", a IPv4 or
+    //!        IPv6 address.
+    //! \param port The port to listen on.
+    server(boost::string_ref address, int16_t port);
+
     //! \brief Binds a functor to a name so becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
@@ -28,7 +35,7 @@ public:
     void bind(boost::string_ref name, std::function<R (Args...)> func);
 
 private:
-    std::shared_ptr<boost::asio::io_service> service_;
+    std::shared_ptr<boost::asio::io_service> io_;
 };
 }
 

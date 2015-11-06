@@ -1,7 +1,8 @@
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
 add_library(${OUTPUT_LIBRARY_NAME}
-    callme/server.cc)
+    callme/server.cc
+    callme/tcp_server.cc)
 
 if(compdb)
     add_custom_command(TARGET ${OUTPUT_LIBRARY_NAME} POST_BUILD

@@ -4,5 +4,4 @@
 
 TEST(Dummy, dummy)
 {
-    callme::server s;
 }
