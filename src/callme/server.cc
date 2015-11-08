@@ -14,8 +14,6 @@ using boost::asio::io_service;
 namespace callme {
 
 server::server(boost::string_ref address, int16_t port)
-    : io_(std::make_shared<io_service>())
-{
-}
+    : io_(std::make_shared<io_service>()) {}
 
 } /* callme */
