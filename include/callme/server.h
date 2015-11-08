@@ -3,6 +3,7 @@
 #ifndef CALLME_H_NBGBTUFL
 #define CALLME_H_NBGBTUFL
 
+#include <iostream>
 #include <functional>
 #include <memory>
 #include <unordered_map>
@@ -34,6 +35,9 @@ template <typename R, template <typename...> class Params, typename... Args>
 R invoke(std::function<R(Args...)> const &func, Params<Args...> const &params) {
     return invoke_helper(func, params, std::index_sequence_for<Args...>{});
 }
+
+template <int N, typename... Ts>
+using nth_type = typename std::tuple_element<N, std::tuple<Ts...>>::type;
 }
 
 //! \brief Implements a MsgPack-RPC server.
@@ -55,7 +59,7 @@ public:
         bind(name, std::function<R(Args...)>(func));
     }
 
-    //! \brief Binds a functor to a name so becomes callable via RPC.
+    //! \brief Binds a non-void functor to a name so becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam R The return type of the functor.
@@ -65,20 +69,55 @@ public:
         funcs_.insert(std::make_pair(
             name.to_string(),
             [func](msgpack::object const &args) -> msgpack::object {
-                msgpack::type::tuple<Args...> args_real;
+                std::tuple<Args...> args_real;
                 args.convert(&args_real);
-                callme::detail::invoke(func, args_real);
+                return msgpack::object(callme::detail::invoke(func, args_real));
             }));
     }
 
+    //! \brief Binds a void functor to a name so becomes callable via RPC.
+    //! \param name The name of the functor.
+    //! \param func The functor to bind.
+    //! \tparam Args The types of the arguments.
     template <typename... Args>
     void bind(boost::string_ref name, std::function<void(Args...)> func) {
+        adaptor_type functor;
+
+        if (sizeof...(Args) > 1) {
+            functor = [func](msgpack::object const &args) -> msgpack::object {
+                std::cout << args << std::endl;
+                std::tuple<Args...> args_real;
+                args.convert(&args_real);
+                detail::invoke(func, args_real);
+                return msgpack::object();
+            };
+        } else {
+            using first = detail::nth_type<0, Args...>;
+            functor = [func](msgpack::object const &args) -> msgpack::object {
+                first arg_real;
+                args.convert(&arg_real);
+                func(arg_real);
+                return msgpack::object();
+            };
+        }
+        funcs_.insert(std::make_pair(name.to_string(), functor));
     }
+
+    //! \brief Processes a message that contains a call according to
+    //! the Msgpack-RPC spec.
+    //! \param msg The buffer that contains the messagepack.
+    //! \throws std::runtime_error If the messagepack does not contain a
+    //! a call or the types of the parameters are not convertible to the called
+    //! functions' parameters.
+    void process_call(msgpack::sbuffer const &msg);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
-    typedef std::function<msgpack::object(msgpack::object const &)>
-        adaptor_type;
+    using adaptor_type =
+        std::function<msgpack::object(msgpack::object const &)>;
+
+    //! \brief This is the type of messages as per the msgpack-rpc spec.
+    using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
 
 private:
     std::shared_ptr<boost::asio::io_service> io_;
