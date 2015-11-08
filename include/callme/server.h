@@ -18,7 +18,6 @@ class io_service;
 }
 
 namespace callme {
-
 namespace detail {
 
 // invoke a function with parameters from a tuple
@@ -31,6 +30,11 @@ R invoke_helper(std::function<R(Args...)> const &func,
 }
 
 // "return func(params...)"
+template <typename R, typename Arg>
+R invoke(std::function<R(Arg)> const &func, Arg &arg) {
+    return func(arg);
+}
+
 template <typename R, template <typename...> class Params, typename... Args>
 R invoke(std::function<R(Args...)> const &func, Params<Args...> const &params) {
     return invoke_helper(func, params, std::index_sequence_for<Args...>{});
@@ -82,25 +86,20 @@ public:
     template <typename... Args>
     void bind(boost::string_ref name, std::function<void(Args...)> func) {
         adaptor_type functor;
+        using tuple_type = std::tuple<Args...>;
+        using single_arg_type = detail::nth_type<0, Args...>;
+        using args_type =
+            typename std::conditional<(sizeof...(Args) > 1), tuple_type,
+                                      single_arg_type>::type;
 
-        if (sizeof...(Args) > 1) {
-            functor = [func](msgpack::object const &args) -> msgpack::object {
-                std::cout << args << std::endl;
-                std::tuple<Args...> args_real;
+        funcs_.insert(std::make_pair(
+            name.to_string(),
+            [func](msgpack::object const &args) -> msgpack::object {
+                args_type args_real;
                 args.convert(&args_real);
                 detail::invoke(func, args_real);
                 return msgpack::object();
-            };
-        } else {
-            using first = detail::nth_type<0, Args...>;
-            functor = [func](msgpack::object const &args) -> msgpack::object {
-                first arg_real;
-                args.convert(&arg_real);
-                func(arg_real);
-                return msgpack::object();
-            };
-        }
-        funcs_.insert(std::make_pair(name.to_string(), functor));
+            }));
     }
 
     //! \brief Processes a message that contains a call according to
