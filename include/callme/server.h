@@ -11,6 +11,8 @@
 #include <boost/utility/string_ref.hpp>
 #include <msgpack.hpp>
 
+#include "detail/func_tools.h"
+
 namespace boost {
 namespace asio {
 class io_service;
@@ -18,31 +20,6 @@ class io_service;
 }
 
 namespace callme {
-namespace detail {
-
-// invoke a function with parameters from a tuple
-// taken from http://stackoverflow.com/a/20441189/140367
-template <typename R, template <typename...> class Params, typename... Args,
-          std::size_t... I>
-R invoke_helper(std::function<R(Args...)> const &func,
-                Params<Args...> const &params, std::index_sequence<I...>) {
-    return func(std::get<I>(params)...);
-}
-
-// "return func(params...)"
-template <typename R, typename Arg>
-R invoke(std::function<R(Arg)> const &func, Arg &arg) {
-    return func(arg);
-}
-
-template <typename R, template <typename...> class Params, typename... Args>
-R invoke(std::function<R(Args...)> const &func, Params<Args...> const &params) {
-    return invoke_helper(func, params, std::index_sequence_for<Args...>{});
-}
-
-template <int N, typename... Ts>
-using nth_type = typename std::tuple_element<N, std::tuple<Ts...>>::type;
-}
 
 //! \brief Implements a MsgPack-RPC server.
 class server {
@@ -58,47 +35,50 @@ public:
     //! \param func The functor to bind.
     //! \tparam R The return type of the functor.
     //! \tparam Args The types of the arguments.
-    template <typename R, typename... Args>
-    void bind(boost::string_ref name, R (*func)(Args...)) {
-        bind(name, std::function<R(Args...)>(func));
+    template <typename Functor,
+              typename = detail::enable_if<std::is_void<
+                  typename detail::func_traits<Functor>::result_type>>,
+              typename = void>
+    void bind(boost::string_ref name, Functor func) {
+        using detail::func_traits;
+        using tuple_type = typename func_traits<Functor>::args_type;
+        using single_arg_type =
+            typename func_traits<Functor>::template arg<0>::type;
+        using args_type =
+            typename std::conditional<(func_traits<Functor>::arg_count > 1),
+                                      tuple_type, single_arg_type>::type;
+
+        funcs_.insert(std::make_pair(
+            name.to_string(), [func](msgpack::object const &args) {
+                args_type args_real;
+                args.convert(&args_real);
+                detail::invoke2(func, tuple_type(args_real));
+                return msgpack::object();
+            }));
     }
 
-    //! \brief Binds a non-void functor to a name so becomes callable via RPC.
+    //! \brief Binds a function pointer to a name so becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam R The return type of the functor.
     //! \tparam Args The types of the arguments.
-    template <typename R, typename... Args>
-    void bind(boost::string_ref name, std::function<R(Args...)> func) {
-        funcs_.insert(std::make_pair(
-            name.to_string(),
-            [func](msgpack::object const &args) -> msgpack::object {
-                std::tuple<Args...> args_real;
-                args.convert(&args_real);
-                return msgpack::object(callme::detail::invoke(func, args_real));
-            }));
-    }
-
-    //! \brief Binds a void functor to a name so becomes callable via RPC.
-    //! \param name The name of the functor.
-    //! \param func The functor to bind.
-    //! \tparam Args The types of the arguments.
-    template <typename... Args>
-    void bind(boost::string_ref name, std::function<void(Args...)> func) {
-        adaptor_type functor;
-        using tuple_type = std::tuple<Args...>;
-        using single_arg_type = detail::nth_type<0, Args...>;
+    template <typename Functor,
+              typename = detail::disable_if<std::is_void<
+                  typename detail::func_traits<Functor>::result_type>>>
+    void bind(boost::string_ref name, Functor func) {
+        using detail::func_traits;
+        using tuple_type = typename func_traits<Functor>::args_type;
+        using single_arg_type =
+            typename func_traits<Functor>::template arg<0>::type;
         using args_type =
-            typename std::conditional<(sizeof...(Args) > 1), tuple_type,
-                                      single_arg_type>::type;
+            typename std::conditional<(func_traits<Functor>::arg_count > 1),
+                                      tuple_type, single_arg_type>::type;
 
         funcs_.insert(std::make_pair(
-            name.to_string(),
-            [func](msgpack::object const &args) -> msgpack::object {
+            name.to_string(), [func](msgpack::object const &args) {
                 args_type args_real;
                 args.convert(&args_real);
-                detail::invoke(func, args_real);
-                return msgpack::object();
+                return msgpack::object(detail::invoke2(func, tuple_type(args_real)));
             }));
     }
 
