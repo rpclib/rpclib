@@ -3,6 +3,11 @@
 #ifndef CALL_H_ZXFACADH
 #define CALL_H_ZXFACADH
 
+#include <tuple>
+#include "callme/detail/func_tools.h"
+#include "callme/detail/invoke.h"
+#include "callme/detail/is_specialization_of.h"
+
 namespace callme {
 namespace detail {
 
