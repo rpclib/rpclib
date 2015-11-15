@@ -45,9 +45,7 @@ struct func_traits<R (C::*)(Args...) const> : func_traits<R (*)(Args...)> {};
 template <typename R, typename... Args> struct func_traits<R (*)(Args...)> {
     using result_type = R;
     using arg_count = std::integral_constant<std::size_t, sizeof...(Args)>;
-    using args_type =
-        invoke<std::conditional<arg_count::value == 1, nth_type<0, Args...>,
-                                std::tuple<Args...>>>;
+    using args_type = std::tuple<Args...>;
 };
 
 template <typename T>
