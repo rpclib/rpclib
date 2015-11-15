@@ -1,7 +1,7 @@
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
 add_library(${OUTPUT_LIBRARY_NAME}
-    callme/server.cc
+    callme/dispatcher.cc
     callme/tcp_server.cc)
 
 if(compdb)

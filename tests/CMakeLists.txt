@@ -6,7 +6,7 @@ find_package(gmock)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 set(TEST_SOURCES
-    callme/server_test.cc)
+    callme/dispatcher_test.cc)
 
 set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
 
