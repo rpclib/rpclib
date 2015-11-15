@@ -18,7 +18,7 @@ find_package(MsgPack REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system regex)
 
 include_directories(include)
-add_subdirectory(src)
+add_subdirectory(lib)
 
 if(test)
     add_subdirectory(tests)
