@@ -36,19 +36,34 @@ template <> struct result_trait<void> { typedef void_result type; };
 template <typename T>
 struct func_traits : func_traits<decltype(&T::operator())> {};
 
+template <typename C, typename R, typename... Args>
+struct func_traits<R (C::*)(Args...)> : func_traits<R (*)(Args...)> {};
+
+template <typename C, typename R, typename... Args>
+struct func_traits<R (C::*)(Args...) const> : func_traits<R (*)(Args...)> {};
+
 template <typename R, typename... Args> struct func_traits<R (*)(Args...)> {
     using result_type = R;
     using arg_count = std::integral_constant<std::size_t, sizeof...(Args)>;
     using args_type =
-        invoke<std::conditional<sizeof...(Args) == 1, nth_type<0, Args...>,
+        invoke<std::conditional<arg_count::value == 1, nth_type<0, Args...>,
                                 std::tuple<Args...>>>;
+};
 
+template <typename T>
+struct func_kind_info : func_kind_info<decltype(&T::operator())> {};
+
+template <typename C, typename R, typename... Args>
+struct func_kind_info<R (C::*)(Args...)> : func_kind_info<R (*)(Args...)> {};
+
+template <typename C, typename R, typename... Args>
+struct func_kind_info<R (C::*)(Args...) const>
+    : func_kind_info<R (*)(Args...)> {};
+
+template <typename R, typename... Args> struct func_kind_info<R (*)(Args...)> {
     typedef typename tags::arg_count_trait<sizeof...(Args)>::type args_kind;
     typedef typename tags::result_trait<R>::type result_kind;
 };
-
-template <typename C, typename R, typename... Args>
-struct func_traits<R (C::*)(Args...) const> : func_traits<R (*)(Args...)> {};
 
 template <typename F> using is_zero_arg = is_zero<func_traits<F>::arg_count>;
 

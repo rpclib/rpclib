@@ -40,8 +40,8 @@ public:
     //! \tparam Args The types of the arguments.
     template <typename F> void bind(boost::string_ref name, F func) {
         bind_dispatch(name, func,
-                      typename detail::func_traits<F>::result_kind(),
-                      typename detail::func_traits<F>::args_kind());
+                      typename detail::func_kind_info<F>::result_kind(),
+                      typename detail::func_kind_info<F>::args_kind());
     }
 
     template <typename F>
