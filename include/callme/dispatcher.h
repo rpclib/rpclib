@@ -64,7 +64,7 @@ public:
     //! \throws std::runtime_error If the messagepack does not contain a
     //! a call or the types of the parameters are not convertible to the called
     //! functions' parameters.
-    void process_call(msgpack::sbuffer const &msg);
+    void dispatch(msgpack::sbuffer const &msg);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely

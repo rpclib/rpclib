@@ -29,7 +29,7 @@ public:
     template <typename A> void raw_call(A &&msg_array) {
         msgpack::sbuffer msg;
         msg.write(reinterpret_cast<const char *>(msg_array), sizeof(msg_array));
-        dispatcher.process_call(msg);
+        dispatcher.dispatch(msg);
     }
 
 protected:
@@ -111,5 +111,45 @@ TEST_F(binding_test, memfunc_void_multiarg) {
                                      0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
     dispatcher.bind("dummy_void_multiarg",
                     [&md](int x, int y) { md.dummy_void_multiarg(x, y); });
+    raw_call(raw_msg);
+}
+
+TEST_F(binding_test, stdfunc_void_zeroarg) {
+    MockDummy md;
+    EXPECT_CALL(md, dummy_void_zeroarg());
+    const unsigned char raw_msg[] = {
+        0x94, 0x1,  0x0,  0xb2, 0x64, 0x75, 0x6d, 0x6d, 0x79, 0x5f, 0x76, 0x6f,
+        0x69, 0x64, 0x5f, 0x7a, 0x65, 0x72, 0x6f, 0x61, 0x72, 0x67, 0x90};
+    dispatcher.bind(
+        "dummy_void_zeroarg",
+        std::function<void()>(std::bind(&IDummy::dummy_void_zeroarg, &md)));
+    raw_call(raw_msg);
+}
+
+TEST_F(binding_test, stdfunc_void_singlearg) {
+    using namespace std::placeholders;
+    MockDummy md;
+    EXPECT_CALL(md, dummy_void_singlearg(42));
+    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
+                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
+                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
+                                     0x61, 0x72, 0x67, 0x91, 0x2a};
+    dispatcher.bind("dummy_void_singlearg",
+                    std::function<void(int)>(
+                        std::bind(&IDummy::dummy_void_singlearg, &md, _1)));
+    raw_call(raw_msg);
+}
+
+TEST_F(binding_test, stdfunc_void_multiarg) {
+    using namespace std::placeholders;
+    MockDummy md;
+    EXPECT_CALL(md, dummy_void_multiarg(363, 12));
+    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb3, 0x64, 0x75, 0x6d,
+                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
+                                     0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61,
+                                     0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
+    dispatcher.bind("dummy_void_multiarg",
+                    std::function<void(int,int)>(
+                        std::bind(&IDummy::dummy_void_multiarg, &md, _1, _2)));
     raw_call(raw_msg);
 }
