@@ -10,10 +10,11 @@
 #include <boost/utility/string_ref.hpp>
 #include <msgpack.hpp>
 
-#include "detail/func_tools.h"
-#include "detail/func_traits.h"
-#include "detail/call.h"
-#include "detail/not.h"
+#include "callme/detail/func_tools.h"
+#include "callme/detail/func_traits.h"
+#include "callme/detail/call.h"
+#include "callme/detail/not.h"
+#include "callme/detail/stringref_hash.h"
 
 namespace callme {
 
@@ -75,7 +76,7 @@ public:
     using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
 
 private:
-    std::unordered_map<std::string, adaptor_type> funcs_;
+    std::unordered_map<boost::string_ref, adaptor_type> funcs_;
 };
 }
 

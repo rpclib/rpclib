@@ -6,7 +6,7 @@ void dispatcher::bind(boost::string_ref name, F func,
                       detail::tags::void_result const &,
                       detail::tags::zero_arg const &) {
     funcs_.insert(
-        std::make_pair(name.to_string(), [func](msgpack::object const &args) {
+        std::make_pair(name, [func](msgpack::object const &args) {
             func();
             return msgpack::object();
         }));
@@ -20,7 +20,7 @@ void dispatcher::bind(boost::string_ref name, F func,
     using args_type = typename func_traits<F>::args_type;
 
     funcs_.insert(
-        std::make_pair(name.to_string(), [func](msgpack::object const &args) {
+        std::make_pair(name, [func](msgpack::object const &args) {
             args_type args_real;
             args.convert(&args_real);
             detail::call(func, args_real);
@@ -35,7 +35,7 @@ void dispatcher::bind(boost::string_ref name, F func,
     using detail::func_traits;
 
     funcs_.insert(
-        std::make_pair(name.to_string(), [func](msgpack::object const &args) {
+        std::make_pair(name, [func](msgpack::object const &args) {
             return msgpack::object(func());
         }));
 }
@@ -48,7 +48,7 @@ void dispatcher::bind(boost::string_ref name, F func,
     using args_type = typename func_traits<F>::args_type;
 
     funcs_.insert(
-        std::make_pair(name.to_string(), [func](msgpack::object const &args) {
+        std::make_pair(name, [func](msgpack::object const &args) {
             args_type args_real;
             args.convert(&args_real);
             return msgpack::object(detail::call(func, args_real));
