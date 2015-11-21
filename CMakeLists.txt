@@ -5,6 +5,7 @@ include(cmake/compiler_specific.cmake)
 
 option(test "Build unit tests." ON) # Makes boolean 'test' available.
 option(compdb "Generate compilation database. Useful for YCM." ON)
+option(examples "Build examples." ON)
 
 if(compdb)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -23,4 +24,8 @@ add_subdirectory(lib)
 
 if(test)
     add_subdirectory(tests)
+endif()
+
+if(examples)
+    add_subdirectory(examples)
 endif()

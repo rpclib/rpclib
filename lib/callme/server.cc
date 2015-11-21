@@ -1,6 +1,6 @@
 #include "callme/server.h"
 #include <stdexcept>
-#include "loguru.hpp"
+#include "easyloggingpp.h"
 
 inline bool is_success(int result) { return result == 0; }
 inline bool is_error(int result) { return result < 0; }
@@ -35,11 +35,11 @@ void server::fw_alloc_buffer(uv_handle_t *handle, size_t size,
 }
 
 void server::on_new_connection(uv_stream_t *stream, int status) {
-    LOG_SCOPE_FUNCTION(INFO);
-    DLOG_F(INFO, "New connection. Status: %d", status);
+    auto log = el::Loggers::getLogger("callme");
+    log->info("New connection. Status: %V", status);
     if (is_error(status)) {
-        DLOG_F(ERROR, "Error while listening. libuv says: %s",
-               uv_strerror(status));
+        log->error("Error while listening. libuv says: %s",
+                   uv_strerror(status));
         throw std::runtime_error("Error while listening.");
         // TODO: more info in exception [sztomi, 2015-11-21]
     }
@@ -48,11 +48,13 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
     uv_tcp_init(loop_, client);
 
     if (uv_accept(stream, reinterpret_cast<uv_stream_t *>(client)) == 0) {
-        int result = uv_read_start(reinterpret_cast<uv_stream_t *>(client),
-                                   &server::fw_alloc_buffer, &server::fw_on_read);
+        log->info("Accepted connection.");
+        int result =
+            uv_read_start(reinterpret_cast<uv_stream_t *>(client),
+                          &server::fw_alloc_buffer, &server::fw_on_read);
         if (!is_success(result)) {
-            DLOG_F(ERROR, "Error while accepting. libuv says: %s",
-                   uv_strerror(result));
+            log->error("Error while accepting. libuv says: %s",
+                       uv_strerror(result));
             throw std::runtime_error("Error while accepting client.");
             // TODO: more info in exception [sztomi, 2015-11-21]
         }
@@ -62,14 +64,15 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
 }
 
 void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
-    LOG_SCOPE_FUNCTION(INFO);
-    DLOG_F(8, "Reading from tcp.");
-    DLOG_F(8, "nread = %ld", nread);
+    auto log = el::Loggers::getLogger("callme");
+    log->info("Reading from tcp. nread = %V", nread);
+    std::cout << "nread = " << nread << std::endl;
+    std::cout << "uv_strerror = " << uv_strerror(nread) << std::endl;
 
     if (is_error(nread)) {
         if (nread != UV_EOF) {
-            DLOG_F(ERROR, "Reading error. libuv says: %s", uv_strerror(nread));
-            throw std::runtime_error("Error while reading");
+            log->error("Reading error. libuv says: %s", uv_strerror(nread));
+            //throw std::runtime_error("Error while reading");
         }
         uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
     }
@@ -80,11 +83,14 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     msgpack::unpacked result;
     while (pac_.next(&result)) {
         auto msg = result.get();
+        log->debug("Dispatching call");
         disp_.dispatch(msg);
     }
 }
 
 void server::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
+    auto log = el::Loggers::getLogger("callme");
+    log->info("Allocating %V bytes", size);
     pac_.reserve_buffer(size);
     buffer->base = pac_.buffer();
     buffer->len = size;
@@ -94,6 +100,7 @@ void server::run() {
     const int default_backlog = 128;
     uv_listen(reinterpret_cast<uv_stream_t *>(&tcp_), default_backlog,
               &server::fw_on_new_connection);
+    uv_run(loop_, UV_RUN_DEFAULT);
 }
 
 } /* callme */
