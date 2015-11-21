@@ -5,10 +5,12 @@ namespace callme {
 void dispatcher::dispatch(msgpack::sbuffer const &msg) {
     msgpack::unpacked unpacked;
     msgpack::unpack(&unpacked, msg.data(), msg.size());
-    auto o = unpacked.get();
+    dispatch(unpacked.get());
+}
 
+void dispatcher::dispatch(msgpack::object const &msg) {
     msg_type the_call;
-    o.convert(&the_call);
+    msg.convert(&the_call);
 
     auto it_func = funcs_.find(std::get<2>(the_call));
     if (it_func != end(funcs_)) {

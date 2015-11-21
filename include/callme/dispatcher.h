@@ -67,6 +67,13 @@ public:
     //! functions' parameters.
     void dispatch(msgpack::sbuffer const &msg);
 
+    //! \brief Processes a message that contains a call according to
+    //! the Msgpack-RPC spec.
+    //! \param msg_obj The messagepack object that contains the call.
+    //! \throws std::runtime_error If the types of the parameters are not
+    //! convertible to the called functions' parameters.
+    void dispatch(msgpack::object const &msg);
+
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
     using adaptor_type =
