@@ -8,12 +8,12 @@ inline bool is_error(int result) { return result < 0; }
 namespace callme {
 
 server::server(boost::string_ref address, uint16_t port)
-    : loop_(uv_default_loop()) {
+    : loop_(uv_default_loop()), pac_() {
     const unsigned no_flag = 0;
-    sockaddr_in addr;
-    uv_ip4_addr(&address.front(), port, &addr);
+    sockaddr_in *addr = new sockaddr_in;
+    uv_ip4_addr(&address.front(), port, addr);
     uv_tcp_init(loop_, &tcp_);
-    uv_tcp_bind(&tcp_, (sockaddr * const) & addr, no_flag);
+    uv_tcp_bind(&tcp_, (sockaddr * const)addr, no_flag);
     tcp_.data = this;
 }
 
@@ -36,9 +36,9 @@ void server::fw_alloc_buffer(uv_handle_t *handle, size_t size,
 
 void server::on_new_connection(uv_stream_t *stream, int status) {
     auto log = el::Loggers::getLogger("callme");
-    log->info("New connection. Status: %V", status);
+    log->info("New connection. Status: %v", status);
     if (is_error(status)) {
-        log->error("Error while listening. libuv says: %s",
+        log->error("Error while listening. libuv says: %v",
                    uv_strerror(status));
         throw std::runtime_error("Error while listening.");
         // TODO: more info in exception [sztomi, 2015-11-21]
@@ -46,6 +46,7 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
 
     uv_tcp_t *client = static_cast<uv_tcp_t *>(malloc(sizeof(uv_tcp_t)));
     uv_tcp_init(loop_, client);
+    client->data = this;
 
     if (uv_accept(stream, reinterpret_cast<uv_stream_t *>(client)) == 0) {
         log->info("Accepted connection.");
@@ -53,7 +54,7 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
             uv_read_start(reinterpret_cast<uv_stream_t *>(client),
                           &server::fw_alloc_buffer, &server::fw_on_read);
         if (!is_success(result)) {
-            log->error("Error while accepting. libuv says: %s",
+            log->error("Error while accepting. libuv says: %v",
                        uv_strerror(result));
             throw std::runtime_error("Error while accepting client.");
             // TODO: more info in exception [sztomi, 2015-11-21]
@@ -65,35 +66,35 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
 
 void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     auto log = el::Loggers::getLogger("callme");
-    log->info("Reading from tcp. nread = %V", nread);
-    std::cout << "nread = " << nread << std::endl;
-    std::cout << "uv_strerror = " << uv_strerror(nread) << std::endl;
+    log->info("Reading from tcp. nread = %v", nread);
+    log->flush();
 
     if (is_error(nread)) {
         if (nread != UV_EOF) {
-            log->error("Reading error. libuv says: %s", uv_strerror(nread));
-            //throw std::runtime_error("Error while reading");
+            log->error("Reading error. libuv says: %v", uv_strerror(nread));
+            throw std::runtime_error("Error while reading");
         }
         uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
     }
 
     pac_.buffer_consumed(nread); // alloc_buffer has set buf->base to the
                                  // internal buffer of pac_ so it is already
-                                 // consumed at this point. No need to copy.
+                                 // consumed at this point. No need to copy...
     msgpack::unpacked result;
     while (pac_.next(&result)) {
         auto msg = result.get();
         log->debug("Dispatching call");
         disp_.dispatch(msg);
     }
+
+    // and no need to deallocate buf->base here
 }
 
 void server::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
     auto log = el::Loggers::getLogger("callme");
-    log->info("Allocating %V bytes", size);
+    log->info("Allocating %v bytes", size);
     pac_.reserve_buffer(size);
-    buffer->base = pac_.buffer();
-    buffer->len = size;
+    *buffer = uv_buf_init(pac_.buffer(), size);
 }
 
 void server::run() {
