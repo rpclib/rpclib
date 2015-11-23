@@ -20,6 +20,7 @@ find_package(libuv REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system regex)
 
 include_directories(include)
+file(GLOB CALLME_HEADERS include/callme/*.h)
 add_subdirectory(lib)
 
 if(test)
