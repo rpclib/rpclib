@@ -84,7 +84,7 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     while (pac_.next(&result)) {
         auto msg = result.get();
         log->debug("Dispatching call");
-        disp_.dispatch(msg);
+        disp_.dispatch(msg).write(stream);
     }
 
     // and no need to deallocate buf->base here

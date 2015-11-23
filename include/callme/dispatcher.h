@@ -10,6 +10,7 @@
 #include <boost/utility/string_ref.hpp>
 #include <msgpack.hpp>
 
+#include "callme/response.h"
 #include "callme/detail/func_tools.h"
 #include "callme/detail/func_traits.h"
 #include "callme/detail/call.h"
@@ -72,12 +73,12 @@ public:
     //! \param msg_obj The messagepack object that contains the call.
     //! \throws std::runtime_error If the types of the parameters are not
     //! convertible to the called functions' parameters.
-    void dispatch(msgpack::object const &msg);
+    response dispatch(msgpack::object const &msg);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
     using adaptor_type =
-        std::function<msgpack::object(msgpack::object const &)>;
+        std::function<std::unique_ptr<msgpack::object>(msgpack::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
     using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;

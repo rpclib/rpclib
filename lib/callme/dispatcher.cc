@@ -8,7 +8,7 @@ void dispatcher::dispatch(msgpack::sbuffer const &msg) {
     dispatch(unpacked.get());
 }
 
-void dispatcher::dispatch(msgpack::object const &msg) {
+response dispatcher::dispatch(msgpack::object const &msg) {
     msg_type the_call;
     msg.convert(&the_call);
 
@@ -17,6 +17,11 @@ void dispatcher::dispatch(msgpack::object const &msg) {
     auto it_func = funcs_.find(std::get<2>(the_call));
     if (it_func != end(funcs_)) {
         auto result = (it_func->second)(std::get<3>(the_call));
+        return response(id, boost::string_ref(), std::move(result));
+    }
+    else {
+        // TODO: add error response [sztomi, 2015-11-23]
+        throw std::runtime_error("Could not find function");
     }
 }
 

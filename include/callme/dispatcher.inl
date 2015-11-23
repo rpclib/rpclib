@@ -8,7 +8,7 @@ void dispatcher::bind(boost::string_ref name, F func,
     funcs_.insert(
         std::make_pair(name, [func](msgpack::object const &args) {
             func();
-            return msgpack::object();
+            return std::make_unique<msgpack::object>();
         }));
 }
 
@@ -24,7 +24,7 @@ void dispatcher::bind(boost::string_ref name, F func,
             args_type args_real;
             args.convert(&args_real);
             detail::call(func, args_real);
-            return msgpack::object();
+            return std::make_unique<msgpack::object>();
         }));
 }
 
@@ -36,7 +36,7 @@ void dispatcher::bind(boost::string_ref name, F func,
 
     funcs_.insert(
         std::make_pair(name, [func](msgpack::object const &args) {
-            return msgpack::object(func());
+            return std::make_unique<msgpack::object>(func());
         }));
 }
 
@@ -51,7 +51,7 @@ void dispatcher::bind(boost::string_ref name, F func,
         std::make_pair(name, [func](msgpack::object const &args) {
             args_type args_real;
             args.convert(&args_real);
-            return msgpack::object(detail::call(func, args_real));
+            return std::make_unique<msgpack::object>(detail::call(func, args_real));
         }));
 }
 }
