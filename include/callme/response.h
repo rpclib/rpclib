@@ -21,7 +21,7 @@ public:
 
     //! \brief The type of a response, according to the msgpack-rpc spec
     using response_type =
-        std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
+        std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object&>;
 
 private:
     uint32_t id_;

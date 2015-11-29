@@ -1,6 +1,9 @@
 #include "callme/server.h"
 #include <stdexcept>
+
+#ifdef CALLME_LOGGING
 #include "easyloggingpp.h"
+#endif
 
 inline bool is_success(int result) { return result == 0; }
 inline bool is_error(int result) { return result < 0; }

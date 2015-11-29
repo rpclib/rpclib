@@ -1,9 +1,16 @@
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
+set(DEP_SOURCES
+    ../dependencies/src/format.cc
+    ../dependencies/src/posix.cc)
+
+
 add_library(${OUTPUT_LIBRARY_NAME}
     callme/dispatcher.cc
     callme/server.cc
     callme/response.cc
+    ${DEP_SOURCES}
+    ${DEP_HEADERS}
     ${CALLME_HEADERS})
 
 if(compdb)

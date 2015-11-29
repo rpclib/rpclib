@@ -10,13 +10,58 @@ not things it already has.
 
 # callme
 
-`callme` may be the fastest MsgPack-RPC library for C++. At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
+`callme` may be the fastest and easiest RPC library for C++. At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
 
 The library uses a recent (continually updated) version of the msgpack headers. I decided
 to not require it as a dependency but rather keep it in the repo, because it is quite small
 and header-only.
 
-## Why another implementation?
+# Example
+
+## Server
+
+Creating a server is quite simple in callme.
+
+```cpp
+#include "callme/server.h"
+#include <iostream>
+
+INITIALIZE_EASYLOGGINGPP
+
+void foo() {
+    std::cout << "foo was called!" << std::endl;
+}
+
+int main(int argc, char *argv[]) {
+    // Create a server that listens on port 8080
+    callme::server srv("0.0.0.0", 8080);
+
+    // Binding the name "foo" to free function foo.
+    // note: the signature is automatically captured
+    srv.bind("foo", &foo);
+
+    // Binding a lambda function to the name "add".
+    srv.bind("add", [](int a, int b) {
+        return a + b;
+    });
+
+    // Run the server loop.
+    srv.run();
+
+    return 0;
+}
+```
+
+When `srv.run()` is called, `callme` starts the server loop which listens to incoming connections
+and tries to dispatch calls to the bound functions. The functions are called from the thread where
+`run` was called from.
+
+## Client
+
+TBD
+
+
+# Why another implementation?
 
 The [original implementation for C++](https://github.com/msgpack-rpc/msgpack-rpc-cpp) was
 discontinued. It lives on as [jubatus-msgpack-rpc](https://github.com/jubatus/jubatus-msgpack-rpc/tree/master/cpp), but this implemenation has a couple of undesirable requirements (which make perfect sense in the context of the library as part of Jubatus).

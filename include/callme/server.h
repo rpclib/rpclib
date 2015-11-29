@@ -20,6 +20,10 @@ public:
 
     void run();
 
+    template <typename F> void bind(boost::string_ref name, F func) {
+        disp_.bind(name, func);
+    }
+
 private:
     //! \defgroup Static callbacks that forward calls to members using
     //! the passed data pointer.
