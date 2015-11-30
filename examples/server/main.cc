@@ -2,7 +2,9 @@
 
 #include "easyloggingpp.h"
 
+#ifndef CALLME_LOGGING
 INITIALIZE_EASYLOGGINGPP
+#endif
 
 void foo() {
     auto log = el::Loggers::getLogger("callme");

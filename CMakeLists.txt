@@ -24,7 +24,7 @@ find_package(libuv REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system regex)
 
 include_directories(include dependencies/include)
-file(GLOB CALLME_HEADERS include/callme/*.h)
+file(GLOB_RECURSE CALLME_HEADERS include/callme/*.h)
 file(GLOB_RECURSE DEP_HEADERS dependencies/include/*.h dependencies/include/*.hpp)
 add_subdirectory(lib)
 
