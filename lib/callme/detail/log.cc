@@ -2,8 +2,10 @@
 
 #ifdef CALLME_LOGGING
 
+#ifndef CALLME_NO_EASYLOGGING_INIT
+
 INITIALIZE_EASYLOGGINGPP
 
-
+#endif
 
 #endif
