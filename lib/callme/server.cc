@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "callme/detail/log.h"
+#include "format.h"
 
 static inline bool is_success(int result) { return result == 0; }
 static inline bool is_error(int result) { return result < 0; }
@@ -9,7 +10,8 @@ static inline bool is_error(int result) { return result < 0; }
 namespace callme {
 
 server::server(boost::string_ref address, uint16_t port)
-    : loop_(uv_default_loop()), pac_() {
+    : loop_(uv_default_loop()), pac_(),
+      exc_strat_(exception_strategy::response_rethrow) {
     LOG_INFO("Created server on address %v:%v", address.to_string(), port);
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
@@ -39,10 +41,11 @@ void server::fw_alloc_buffer(uv_handle_t *handle, size_t size,
 void server::on_new_connection(uv_stream_t *stream, int status) {
     LOG_INFO("New connection. Status: %v", status);
     if (is_error(status)) {
-        LOG_ERROR("Error while listening. libuv says: %v",
-                   uv_strerror(status));
-        throw std::runtime_error("Error while listening.");
-        // TODO: more info in exception [sztomi, 2015-11-21]
+        auto err =
+            fmt::format("Error while opening new connection. libuv says: {}",
+                        uv_strerror(status));
+        LOG_ERROR(err);
+        throw std::runtime_error(err.c_str());
     }
 
     uv_tcp_t *client = static_cast<uv_tcp_t *>(malloc(sizeof(uv_tcp_t)));
@@ -55,10 +58,10 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
             uv_read_start(reinterpret_cast<uv_stream_t *>(client),
                           &server::fw_alloc_buffer, &server::fw_on_read);
         if (!is_success(result)) {
-            LOG_ERROR("Error while accepting. libuv says: %v",
-                       uv_strerror(result));
-            throw std::runtime_error("Error while accepting client.");
-            // TODO: more info in exception [sztomi, 2015-11-21]
+            auto err = fmt::format("Error while accepting. libuv says: {}",
+                                   uv_strerror(result));
+            LOG_ERROR(err);
+            throw std::runtime_error(err.c_str());
         }
     } else {
         uv_close(reinterpret_cast<uv_handle_t *>(client), nullptr);
@@ -70,8 +73,10 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
 
     if (is_error(nread)) {
         if (nread != UV_EOF) {
-            LOG_ERROR("Reading error. libuv says: %v", uv_strerror(nread));
-            throw std::runtime_error("Error while reading");
+            auto err = fmt::format("Error while reading. libuv says: {}",
+                                   uv_strerror(nread));
+            LOG_ERROR(err);
+            throw std::runtime_error(err);
         }
         uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
     }
@@ -100,6 +105,14 @@ void server::run() {
     uv_listen(reinterpret_cast<uv_stream_t *>(&tcp_), default_backlog,
               &server::fw_on_new_connection);
     uv_run(loop_, UV_RUN_DEFAULT);
+}
+
+server::exception_strategy server::get_exception_strategy() const {
+    return exc_strat_;
+}
+
+void server::set_exception_strategy(server::exception_strategy s) {
+    exc_strat_ = s;
 }
 
 } /* callme */

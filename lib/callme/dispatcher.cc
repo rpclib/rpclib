@@ -20,7 +20,7 @@ response dispatcher::dispatch(msgpack::object const &msg) {
 
     auto it_func = funcs_.find(name);
     if (it_func != end(funcs_)) {
-        auto result = (it_func->second)(std::get<3>(the_call));
+        auto result = (it_func->second)(args);
         return response(id, boost::string_ref(), std::move(result));
     } else {
         return response(id, fmt::format("callme: server could not find "
