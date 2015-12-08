@@ -20,8 +20,16 @@ response dispatcher::dispatch(msgpack::object const &msg) {
 
     auto it_func = funcs_.find(name);
     if (it_func != end(funcs_)) {
-        auto result = (it_func->second)(args);
-        return response(id, boost::string_ref(), std::move(result));
+        try {
+            auto result = (it_func->second)(args);
+            return response(id, boost::string_ref(), std::move(result));
+        } catch (std::bad_cast &) {
+            return response(
+                id, fmt::format("callme: server found function '{0}' but the "
+                                "argument count ({1}) was incorrect.",
+                                name, args.via.array.size),
+                std::make_unique<msgpack::object>());
+        }
     } else {
         return response(id,
                         fmt::format("callme: server could not find "

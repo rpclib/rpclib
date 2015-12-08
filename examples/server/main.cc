@@ -19,9 +19,12 @@ int main(int argc, char *argv[]) {
     // Binding a lambda function to the name "add".
     srv.bind("add", [](int a, int b) { return a + b; });
 
-    srv.suppress_exceptions(true);
     // Throwing an exception will cause the server to write
-    // an error response.
+    // an error response. This call will make it also
+    // suppress the exception (note that this is not default
+    // because this behavior might hide errors in the
+    // code).
+    srv.suppress_exceptions(true);
     srv.bind("bad", &bad);
 
     // Run the server loop.
