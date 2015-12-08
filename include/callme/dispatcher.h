@@ -3,6 +3,7 @@
 #ifndef DISPATCHER_H_CXIVZD5L
 #define DISPATCHER_H_CXIVZD5L
 
+#include <atomic>
 #include <functional>
 #include <memory>
 #include <unordered_map>
@@ -28,10 +29,7 @@ public:
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
     //! \tparam Args The types of the arguments.
-    template <typename F> void bind(boost::string_ref name, F func) {
-        bind(name, func, typename detail::func_kind_info<F>::result_kind(),
-             typename detail::func_kind_info<F>::args_kind());
-    }
+    template <typename F> void bind(boost::string_ref name, F func);
 
     //! \defgroup Tag-dispatched bind implementations for various functor cases.
     //! @{
@@ -71,6 +69,7 @@ public:
     //! \brief Processes a message that contains a call according to
     //! the Msgpack-RPC spec.
     //! \param msg_obj The messagepack object that contains the call.
+    //! \param exc_strat The exception strategy to use.
     //! \throws std::runtime_error If the types of the parameters are not
     //! convertible to the called functions' parameters.
     response dispatch(msgpack::object const &msg);

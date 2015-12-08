@@ -9,7 +9,7 @@ response::response(uint32_t id, boost::string_ref error,
 void response::write(uv_stream_t *stream) {
     msgpack::sbuffer buf;
     response_type r(1, id_,
-                    error_.size() > 0 ? msgpack::object(error_.to_string())
+                    error_.size() > 0 ? msgpack::object(error_)
                                       : msgpack::object(msgpack::type::nil()),
                     *result_); // TODO: avoid copy [sztomi, 2015-11-23]
     msgpack::pack(buf, r);

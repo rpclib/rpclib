@@ -25,7 +25,7 @@ public:
 
 private:
     uint32_t id_;
-    boost::string_ref error_;
+    std::string error_;
     std::unique_ptr<msgpack::object> result_;
 };
 

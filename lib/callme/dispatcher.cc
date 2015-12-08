@@ -23,9 +23,10 @@ response dispatcher::dispatch(msgpack::object const &msg) {
         auto result = (it_func->second)(args);
         return response(id, boost::string_ref(), std::move(result));
     } else {
-        return response(id, fmt::format("callme: server could not find "
-                                        "function '{0}' with argument count {1}.",
-                                        name, args.via.array.size),
+        return response(id,
+                        fmt::format("callme: server could not find "
+                                    "function '{0}' with argument count {1}.",
+                                    name, args.via.array.size),
                         std::make_unique<msgpack::object>());
     }
 }
