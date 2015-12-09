@@ -23,8 +23,15 @@ void dispatcher::bind(boost::string_ref name, F func,
     using detail::func_traits;
     using args_type = typename func_traits<F>::args_type;
 
-    funcs_.insert(std::make_pair(name, [func](msgpack::object const &args) {
+    funcs_.insert(std::make_pair(name, [func, name](msgpack::object const &args) {
         args_type args_real;
+        constexpr int args_count = std::tuple_size<args_type>::value;
+        if (args.via.array.size != args_count) {
+            throw std::runtime_error(
+                fmt::format("Function '{0}' was called with an invalid number of "
+                            "arguments. Expected: {1}, got: {2}",
+                            name.to_string(), args_count, args.via.array.size));
+        }
         args.convert(&args_real);
         detail::call(func, args_real);
         return std::make_unique<msgpack::object>();
@@ -49,7 +56,14 @@ void dispatcher::bind(boost::string_ref name, F func,
     using detail::func_traits;
     using args_type = typename func_traits<F>::args_type;
 
-    funcs_.insert(std::make_pair(name, [func](msgpack::object const &args) {
+    funcs_.insert(std::make_pair(name, [func, name](msgpack::object const &args) {
+        constexpr int args_count = std::tuple_size<args_type>::value;
+        if (args.via.array.size != args_count) {
+            throw std::runtime_error(
+                fmt::format("Function '{0}' was called with an invalid number of "
+                            "arguments. Expected: {1}, got: {2}",
+                            name.to_string(), args_count, args.via.array.size));
+        }
         args_type args_real;
         args.convert(&args_real);
         return std::make_unique<msgpack::object>(detail::call(func, args_real));

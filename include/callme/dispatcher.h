@@ -10,6 +10,7 @@
 
 #include <boost/utility/string_ref.hpp>
 #include <msgpack.hpp>
+#include "format.h"
 
 #include "callme/response.h"
 #include "callme/detail/func_tools.h"

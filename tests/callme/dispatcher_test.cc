@@ -36,6 +36,8 @@ protected:
     callme::dispatcher dispatcher;
 };
 
+class dispatch_test : public binding_test {};
+
 // The following raw messages were created with the python msgpack
 // library from hand-crafted tuples of msgpack-rpc calls.
 
@@ -149,7 +151,29 @@ TEST_F(binding_test, stdfunc_void_multiarg) {
                                      0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61,
                                      0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
     dispatcher.bind("dummy_void_multiarg",
-                    std::function<void(int,int)>(
+                    std::function<void(int, int)>(
                         std::bind(&IDummy::dummy_void_multiarg, &md, _1, _2)));
     raw_call(raw_msg);
+}
+
+TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_few) {
+    // raw_msg contains a call to dummy_void_singlearg but zero arguments
+    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
+                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
+                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
+                                     0x61, 0x72, 0x67, 0x90};
+    dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
+    EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
+    EXPECT_FALSE(g_dummy_void_singlearg_called);
+}
+
+TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
+    // raw_msg contains a call to dummy_void_singlearg but with two
+    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
+                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
+                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
+                                     0x61, 0x72, 0x67, 0x92, 0x1,  0x2};
+    dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
+    EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
+    EXPECT_FALSE(g_dummy_void_singlearg_called);
 }

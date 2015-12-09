@@ -8,6 +8,7 @@ void bad(int x) {
         throw std::runtime_error("x == 5. I really don't like 5.");
     }
 }
+
 int main(int argc, char *argv[]) {
     // Create a server that listens on port 8080
     callme::server srv("0.0.0.0", 8080);

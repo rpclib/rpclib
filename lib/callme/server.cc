@@ -94,20 +94,20 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
         try {
             auto resp = disp_.dispatch(msg);
             resp.write(stream);
-        }
-        catch (std::exception &e) {
+        } catch (std::exception &e) {
             dispatcher::msg_type the_call;
             msg.convert(&the_call);
             // TODO: This is a bit redundant because the dispatcher does this,
-            // too
+            // too. There is a chance that we have to fuse the
+            // dispatcher and server classes [t.szelei 2015-12-09]
             auto &&id = std::get<1>(the_call);
             auto &&name = std::get<2>(the_call);
             auto &&args = std::get<3>(the_call);
 
             response error_resp(
-                id, fmt::format("callme: function '{0}' with argument count "
-                                "{1} threw an exception. The exception "
-                                "contained this information: '{2}'.",
+                id, fmt::format("callme: function '{0}' (taking {1} arg(s)) "
+                                "threw an exception. The exception "
+                                "contained this information: {2}.",
                                 name, args.via.array.size, e.what()),
                 std::make_unique<msgpack::object>());
             error_resp.write(stream);
