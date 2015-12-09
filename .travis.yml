@@ -1,0 +1,13 @@
+
+install:
+    - apt-get install libuv-dev libboost-dev
+
+script:
+    - mkdir build && cd build
+    - cmake ..
+    - make
+    - ./tests/callme_test
+
+install: true # skipped
+
+
