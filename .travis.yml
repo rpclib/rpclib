@@ -1,6 +1,9 @@
 
-install:
-    - apt-get install libuv-dev libboost-dev
+addons:
+  apt:
+    packages:
+    - libuv-dev
+    - libboost-dev
 
 script:
     - mkdir build && cd build
