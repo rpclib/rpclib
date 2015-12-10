@@ -37,13 +37,12 @@ install:
     - cd $CI_HOME
     - cd googletest
     - mkdir build && cd build
-    - cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
+    - cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_GMOCK=ON ..
     - make -j2 && sudo make install
-    - cd ../googlemock
-    - mkdir build && cd build
-    - cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
-    - make -j2 && sudo make install
+    # workaround for currently missing install targets
     - sudo cp -r ../include /usr
+    - sudo cp ./googlemock/libgmock.a
+    - sudo cp ./googlemock/libgmock_main.a
 
     - sudo apt-get -y install g++-4.8 clang-3.7 libboost-dev
 
