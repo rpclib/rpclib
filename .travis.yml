@@ -1,9 +1,10 @@
 sudo: required
 dist: trusty
+language: cpp
 
 before_install:
     - sudo apt-get update
-    - sudo apt-get install libgtest-dev libuv-dev libboost-dev
+    - sudo apt-get -y install libgtest-dev libuv-dev libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 
