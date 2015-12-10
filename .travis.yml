@@ -40,7 +40,7 @@ install:
     - cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_GMOCK=ON ..
     - make -j2 && sudo make install
     # workaround for currently missing install targets
-    - sudo cp -r ../include /usr
+    - sudo cp -r ../googlemock/include /usr
     - sudo cp ./googlemock/libgmock.a
     - sudo cp ./googlemock/libgmock_main.a
 
