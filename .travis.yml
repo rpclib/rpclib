@@ -43,6 +43,7 @@ install:
     - mkdir build && cd build
     - cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
     - make -j2 && sudo make install
+    - sudo cp -r include /usr
 
     - sudo apt-get -y install g++-4.8 clang-3.7 libboost-dev
 
