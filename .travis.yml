@@ -4,8 +4,7 @@ language: cpp
 
 env:
   global:
-    - REPO="user/repo"
-    - CI_HOME=`pwd`/$REPO
+    - CI_HOME=`pwd`
 
 before_install:
     - sudo apt-get update
