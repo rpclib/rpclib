@@ -8,7 +8,7 @@ the library has a functioning version.
 But, for the time being, many statements in the following readme are just things I want it to have,
 not things it already has.
 
-# callme
+# callme [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme)
 
 `callme` may be the fastest and easiest RPC library for C++. At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
 
