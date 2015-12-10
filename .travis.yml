@@ -26,7 +26,7 @@ before_install:
 
 
 install:
-    - sudo apt-get -y install g++-4.8 clang++-3.7 libgtest-dev google-mock libuv-dev libboost-dev
+    - sudo apt-get -y install g++-4.8 clang-3.7 libgtest-dev google-mock libuv-dev libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 script:
