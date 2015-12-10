@@ -41,8 +41,8 @@ install:
     - make -j2 && sudo make install
     # workaround for currently missing install targets
     - sudo cp -r ../googlemock/include /usr
-    - sudo cp ./googlemock/libgmock.a
-    - sudo cp ./googlemock/libgmock_main.a
+    - sudo cp ./googlemock/libgmock.a /usr/lib
+    - sudo cp ./googlemock/libgmock_main.a /usr/lib
 
     - sudo apt-get -y install g++-4.8 clang-3.7 libboost-dev
 
