@@ -26,15 +26,7 @@ before_install:
 
 
 install:
-    -
-      if [[ "${CXX}" == "g++" ]]; then
-          sudo apt-get install -y g++-4.8; export CXX="g++-4.8";
-      fi
-    -
-      if [[ "${CXX}" == "clang++" ]]; then
-          sudo apt-get install -y clang++-3.7; export CXX="clang++-3.7"
-      fi
-    - sudo apt-get -y install libgtest-dev google-mock libuv-dev libboost-dev
+    - sudo apt-get -y install g++-4.8 clang++-3.7 libgtest-dev google-mock libuv-dev libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 script:
