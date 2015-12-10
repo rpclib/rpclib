@@ -27,19 +27,27 @@ before_install:
     - sudo apt-get update
     
     - git clone https://github.com/libuv/libuv.git
+    - git clone https://github.com/google/googletest.git
 
 
 install:
     - cd libuv
-    - ./autogen.sh && ./configure && make && sudo make install
-    - sudo apt-get -y install g++-4.8 clang-3.7 libgtest-dev google-mock libboost-dev
+    - ./autogen.sh && ./configure && make -j2 && sudo make install
+    
+    - cd $CI_HOME
+    - cd googletest
+    - mkdir build && cd build
+    - cmake ..
+    - make -j2 && sudo make install
+    
+    - sudo apt-get -y install g++-4.8 clang-3.7 libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 script:
     - cd $CI_HOME
     - mkdir build && cd build
     - cmake ..
-    - make
+    - make -j2
     - ./tests/callme_test
 
 
