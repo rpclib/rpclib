@@ -20,7 +20,7 @@ before_install:
     - sudo sh -c "echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list"
 
     - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-    
+    - sudo apt-key update
     - sudo apt-get update
 
       # g++4.8.1
