@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
 language: cpp
+compiler:
+    - clang
 
 env:
   global:
