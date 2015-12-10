@@ -21,7 +21,7 @@ endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 find_package(libuv REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system regex)
+find_package(Boost REQUIRED)
 
 include_directories(include dependencies/include)
 file(GLOB_RECURSE CALLME_HEADERS include/callme/*.h)
