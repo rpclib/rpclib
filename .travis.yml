@@ -2,10 +2,16 @@ sudo: required
 dist: trusty
 language: cpp
 
+env:
+  global:
+    - REPO="user/repo"
+    - CI_HOME=`pwd`/$REPO
+
 before_install:
     - sudo apt-get update
-    - sudo apt-get -y install google-mock libuv-dev libboost-dev
+    - sudo apt-get -y install libgtest-dev google-mock libuv-dev libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+    - cd $CI_HOME
 
 
 script:
