@@ -25,10 +25,14 @@ before_install:
     
     - sudo apt-key update
     - sudo apt-get update
+    
+    - git clone https://github.com/libuv/libuv.git
 
 
 install:
-    - sudo apt-get -y install g++-4.8 clang-3.7 libgtest-dev google-mock libuv-dev libboost-dev
+    - cd libuv
+    - ./configure && make && sudo make install
+    - sudo apt-get -y install g++-4.8 clang-3.7 libgtest-dev google-mock libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 script:
