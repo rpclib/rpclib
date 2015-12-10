@@ -18,15 +18,13 @@ before_install:
     - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' >> /etc/apt/sources.list"
     - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.7 main' >> /etc/apt/sources.list"
     - sudo sh -c "echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list"
-
     - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+
+    - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+    - sudo add-apt-repository --yes ppa:h-rayflood/llvm
+    
     - sudo apt-key update
     - sudo apt-get update
-
-      # g++4.8.1
-    - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-
-    - sudo add-apt-repository --yes ppa:h-rayflood/llvm
 
 
 install:
