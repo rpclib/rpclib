@@ -31,7 +31,7 @@ before_install:
 
 install:
     - cd libuv
-    - ./configure && make && sudo make install
+    - ./autogen.sh && ./configure && make && sudo make install
     - sudo apt-get -y install g++-4.8 clang-3.7 libgtest-dev google-mock libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
