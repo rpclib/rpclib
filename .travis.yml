@@ -5,22 +5,44 @@ compiler:
     - clang
 
 env:
-  global:
-    - CI_HOME=`pwd`
+    global:
+        - CI_HOME=`pwd`
 
 before_install:
     - sudo apt-get update
+
+      # Ensure add-apt-repository is installed.
+    - sudo apt-get install python-software-properties
+
+      # LLVM
+    - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.7 main' >> /etc/apt/sources.list"
+    - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' >> /etc/apt/sources.list"
+    - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+
+      # g++4.8.1
+    - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+
+    - sudo add-apt-repository --yes ppa:h-rayflood/llvm
+
+
+install:
+    -
+      if [[ "${CXX}" == "g++" ]]; then
+          sudo apt-get install -y g++-4.8; export CXX="g++-4.8";
+      fi
+    -
+      if [[ "${CXX}" == "clang++" ]]; then
+          sudo apt-get install -y clang++-3.7; export CXX="clang++-3.7"
+      fi
     - sudo apt-get -y install libgtest-dev google-mock libuv-dev libboost-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
-    - cd $CI_HOME
-
 
 script:
+    - cd $CI_HOME
     - mkdir build && cd build
     - cmake ..
     - make
     - ./tests/callme_test
 
-install: true # skipped
 
 
