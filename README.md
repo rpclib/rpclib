@@ -1,20 +1,15 @@
-# Work in progress
-
-This library is a work in progress. At this time, the functionality is far from complete and I'm
-not even sure if it's possible to build on machines other than my own. However, I decided to move
-it to github so I can track my tasks in the issue tracker. I will write a status and roadmap when
-the library has a functioning version.
-
-But, for the time being, many statements in the following readme are just things I want it to have,
-not things it already has.
 
 # callme [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme)
 
-`callme` may be the fastest and easiest RPC library for C++. At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
+`callme` may be the easiest RPC library for C++! At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
 
 The library uses a recent (continually updated) version of the msgpack headers. I decided
 to not require it as a dependency but rather keep it in the repo, because it is quite small
 and header-only.
+
+# Work in progress
+
+This library is a work in progress. Some things might not work, periodically break or change.
 
 # Example
 
@@ -59,7 +54,7 @@ and tries to dispatch calls to the bound functions. The functions are called fro
 TBD
 
 
-# Why another implementation?
+# Why another msgpack-RPC implementation?
 
 The [original implementation for C++](https://github.com/msgpack-rpc/msgpack-rpc-cpp) was
 discontinued. It lives on as [jubatus-msgpack-rpc](https://github.com/jubatus/jubatus-msgpack-rpc/tree/master/cpp), but this implemenation has a couple of undesirable requirements (which make perfect sense in the context of the library as part of Jubatus).
@@ -74,7 +69,7 @@ discontinued. It lives on as [jubatus-msgpack-rpc](https://github.com/jubatus/ju
   * At this moment (November 2015) it [doesn't compile](https://github.com/jubatus/jubatus-msgpack-rpc/issues/21) with the latest msgpack library.
   * Somewhat lacking documentation.
 
-`callme` tackles these issues the following way:
+`callme` tackles/plans to tackle these issues the following way:
 
   * CMake build. Even though [not the most pleasant build system](http://szelei.me/cmake-is-not-great/) to work with, it provides a reliably reproducible build for the end-user. `callme` has a priority on ease of build for the target platforms/compilers.
   * Modern interface which provides minimalistic binding for many kinds of functors, allowing the
@@ -83,4 +78,12 @@ discontinued. It lives on as [jubatus-msgpack-rpc](https://github.com/jubatus/ju
 
 On top of that, it also provides a code generator utility which can generate strongly typed,
 "batteries included" clients and servers from a class header file.
+
+# Thanks
+
+`callme` builds on the shoulders of great projects. These are:
+
+  * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) ([website](http://msgpack.org/))
+  * [libuv](https://github.com/libuv/libuv) ([website](http://libuv.org/))
+  * [wheels](https://github.com/rmartinho/wheels) by Martinho Fernandes
 
