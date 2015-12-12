@@ -22,8 +22,9 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 find_package(Boost REQUIRED)
 
-include_directories(include dependencies/include)
-include_directories(include dependencies/include/libuv/libuv/include)
+include_directories(include
+    dependencies/include
+    dependencies/libuv/libuv/include)
 file(GLOB_RECURSE CALLME_HEADERS include/callme/*.h)
 file(GLOB_RECURSE DEP_HEADERS dependencies/include/*.h dependencies/include/*.hpp)
 
