@@ -1,9 +1,11 @@
+add_subdirectory(../dependencies/libuv ${CMAKE_CURRENT_BINARY_DIR}/../libuv)
+
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
 set(DEP_SOURCES
     ../dependencies/src/format.cc
-    ../dependencies/src/posix.cc)
-
+    ../dependencies/src/posix.cc
+    )
 
 add_library(${OUTPUT_LIBRARY_NAME}
     callme/dispatcher.cc
@@ -23,4 +25,4 @@ endif()
 set_property(TARGET ${OUTPUT_LIBRARY_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${OUTPUT_LIBRARY_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
 
-target_link_libraries(${OUTPUT_LIBRARY_NAME} ${LIBUV_LIBRARIES})
+target_link_libraries(${OUTPUT_LIBRARY_NAME})

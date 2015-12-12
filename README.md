@@ -26,8 +26,6 @@ Creating a server is quite simple in callme.
 #include "callme/server.h"
 #include <iostream>
 
-INITIALIZE_EASYLOGGINGPP
-
 void foo() {
     std::cout << "foo was called!" << std::endl;
 }
