@@ -1,8 +1,9 @@
 #include "callme/response.h"
+#include "callme/string_ref.h"
 
 namespace callme {
 
-response::response(uint32_t id, boost::string_ref error,
+response::response(uint32_t id, string_ref error,
                    std::unique_ptr<msgpack::object> result)
     : id_(id), error_(error), result_(std::move(result)) {}
 

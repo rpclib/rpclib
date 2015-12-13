@@ -3,9 +3,10 @@
 #ifndef RESPONSE_H_MVRZEKPX
 #define RESPONSE_H_MVRZEKPX
 
-#include <boost/utility/string_ref.hpp>
 #include "msgpack.hpp"
 #include "uv.h"
+
+#include "callme/string_ref.h"
 
 namespace callme {
 
@@ -13,7 +14,7 @@ namespace callme {
 //! as per the msgpack-rpc spec.
 class response {
 public:
-    response(uint32_t id, boost::string_ref error,
+    response(uint32_t id, string_ref error,
              std::unique_ptr<msgpack::object> result);
 
     //! \brief Writes response to the stream

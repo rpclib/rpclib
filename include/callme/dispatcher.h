@@ -8,10 +8,10 @@
 #include <memory>
 #include <unordered_map>
 
-#include <boost/utility/string_ref.hpp>
 #include <msgpack.hpp>
 #include "format.h"
 
+#include "callme/string_ref.h"
 #include "callme/response.h"
 #include "callme/detail/func_tools.h"
 #include "callme/detail/func_traits.h"
@@ -30,30 +30,30 @@ public:
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
     //! \tparam Args The types of the arguments.
-    template <typename F> void bind(boost::string_ref name, F func);
+    template <typename F> void bind(string_ref name, F func);
 
     //! \defgroup Tag-dispatched bind implementations for various functor cases.
     //! @{
 
     //! \brief Stores a void, zero-arg functor with a name.
     template <typename F>
-    void bind(boost::string_ref name, F func, detail::tags::void_result const &,
+    void bind(string_ref name, F func, detail::tags::void_result const &,
               detail::tags::zero_arg const &);
 
     //! \brief Stores a void, non-zero-arg functor with a name.
     template <typename F>
-    void bind(boost::string_ref name, F func, detail::tags::void_result const &,
+    void bind(string_ref name, F func, detail::tags::void_result const &,
               detail::tags::nonzero_arg const &);
 
     //! \brief Stores a non-void, zero-arg functor with a name.
     template <typename F>
-    void bind(boost::string_ref name, F func,
+    void bind(string_ref name, F func,
               detail::tags::nonvoid_result const &,
               detail::tags::zero_arg const &);
 
     //! \brief Stores a non-void, non-zero-arg functor with a name.
     template <typename F>
-    void bind(boost::string_ref name, F func,
+    void bind(string_ref name, F func,
               detail::tags::nonvoid_result const &,
               detail::tags::nonzero_arg const &);
 
@@ -84,7 +84,7 @@ public:
     using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
 
 private:
-    std::unordered_map<boost::string_ref, adaptor_type> funcs_;
+    std::unordered_map<string_ref, adaptor_type> funcs_;
 };
 }
 

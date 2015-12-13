@@ -1,13 +1,13 @@
 
 namespace callme {
 
-template <typename F> void dispatcher::bind(boost::string_ref name, F func) {
+template <typename F> void dispatcher::bind(string_ref name, F func) {
     bind(name, func, typename detail::func_kind_info<F>::result_kind(),
          typename detail::func_kind_info<F>::args_kind());
 }
 
 template <typename F>
-void dispatcher::bind(boost::string_ref name, F func,
+void dispatcher::bind(string_ref name, F func,
                       detail::tags::void_result const &,
                       detail::tags::zero_arg const &) {
     funcs_.insert(std::make_pair(name, [func](msgpack::object const &args) {
@@ -17,7 +17,7 @@ void dispatcher::bind(boost::string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(boost::string_ref name, F func,
+void dispatcher::bind(string_ref name, F func,
                       detail::tags::void_result const &,
                       detail::tags::nonzero_arg const &) {
     using detail::func_traits;
@@ -39,7 +39,7 @@ void dispatcher::bind(boost::string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(boost::string_ref name, F func,
+void dispatcher::bind(string_ref name, F func,
                       detail::tags::nonvoid_result const &,
                       detail::tags::zero_arg const &) {
     using detail::func_traits;
@@ -50,7 +50,7 @@ void dispatcher::bind(boost::string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(boost::string_ref name, F func,
+void dispatcher::bind(string_ref name, F func,
                       detail::tags::nonvoid_result const &,
                       detail::tags::nonzero_arg const &) {
     using detail::func_traits;

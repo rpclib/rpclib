@@ -6,17 +6,17 @@
 #include <stdint.h>
 #include <memory>
 
-#include <boost/utility/string_ref.hpp>
-
 #include "msgpack.hpp"
 #include "uv.h"
+
+#include "callme/string_ref.h"
 #include "callme/dispatcher.h"
 
 namespace callme {
 
 class server {
 public:
-    explicit server(boost::string_ref address, uint16_t port);
+    explicit server(string_ref address, uint16_t port);
 
     //! \brief Starts the server loop. This is a blocking call.
     void run();
@@ -25,7 +25,7 @@ public:
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    template <typename F> void bind(boost::string_ref name, F func) {
+    template <typename F> void bind(string_ref name, F func) {
         disp_.bind(name, func);
     }
 
