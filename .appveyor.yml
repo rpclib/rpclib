@@ -1,0 +1,26 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+clone_folder: C:\projects\callme
+test: off
+
+configuration:
+    - Release
+    - Debug
+
+branches:
+    only:
+        - master
+
+environment:
+    matrix:
+        - CMAKE_PLATFORM: "Visual Studio 14 2015"
+
+install: true
+
+build_script:
+    - cd c:\projects\callme
+    - cmake -G "%CMAKE_PLATFORM%"
+    - dir
+    - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
+    - msbuild %MSBuildOptions% callme.sln
