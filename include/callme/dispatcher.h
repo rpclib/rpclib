@@ -17,7 +17,6 @@
 #include "callme/detail/func_traits.h"
 #include "callme/detail/call.h"
 #include "callme/detail/not.h"
-#include "callme/detail/stringref_hash.h"
 
 namespace callme {
 
