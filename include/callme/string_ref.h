@@ -3,7 +3,7 @@
 #ifndef STRING_REF_H_RTGYQKPI
 #define STRING_REF_H_RTGYQKPI
 
-#include "mnmlstc/core/string_view.hpp"
+#include "string.hpp"
 
 namespace callme {
 
