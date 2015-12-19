@@ -3,11 +3,11 @@
 #ifndef STRING_REF_H_RTGYQKPI
 #define STRING_REF_H_RTGYQKPI
 
-#include "string.hpp"
+#include <experimental/string_view>
 
 namespace callme {
 
-using string_ref = core::string_view;
+using string_ref = std::experimental::string_view;
 
 }
 
