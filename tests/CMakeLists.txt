@@ -12,5 +12,10 @@ add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
 set_property(TARGET ${TEST_PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${TEST_PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
 
-target_link_libraries(${TEST_PROJECT_NAME}
-    ${CMAKE_PROJECT_NAME} uv pthread)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    target_link_libraries(${TEST_PROJECT_NAME}
+        ${CMAKE_PROJECT_NAME} uv)
+else()
+    target_link_libraries(${TEST_PROJECT_NAME}
+        ${CMAKE_PROJECT_NAME} uv pthread)
+endif()
