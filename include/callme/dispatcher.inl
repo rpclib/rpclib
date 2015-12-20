@@ -30,7 +30,11 @@ void dispatcher::bind(string_ref name, F func,
             throw std::runtime_error(
                 fmt::format("Function '{0}' was called with an invalid number of "
                             "arguments. Expected: {1}, got: {2}",
+#ifndef _MSC_VER
                             name.to_string(), args_count, args.via.array.size));
+#else
+                            name, args_count, args.via.array.size));
+#endif
         }
         args.convert(&args_real);
         detail::call(func, args_real);
@@ -62,7 +66,11 @@ void dispatcher::bind(string_ref name, F func,
             throw std::runtime_error(
                 fmt::format("Function '{0}' was called with an invalid number of "
                             "arguments. Expected: {1}, got: {2}",
+#ifndef _MSC_VER
                             name.to_string(), args_count, args.via.array.size));
+#else
+                            name, args_count, args.via.array.size));
+#endif
         }
         args_type args_real;
         args.convert(&args_real);
