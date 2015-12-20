@@ -12,7 +12,11 @@ namespace callme {
 
 server::server(string_ref address, uint16_t port)
     : loop_(uv_default_loop()), pac_(), suppress_exceptions_(false) {
+    #ifndef _MSC_VER
     LOG_INFO("Created server on address %v:%v", address.to_string(), port);
+    #else
+    LOG_INFO("Created server on address %v:%v", address, port);
+    #endif
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);
