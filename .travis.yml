@@ -12,8 +12,10 @@ addons:
         sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
+            - kalakris-cmake
         packages:
             - clang-3.7
+            - cmake
 
 install:
 #Use the latest clang if we're compiling with clang
