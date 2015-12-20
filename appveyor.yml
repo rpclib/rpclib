@@ -23,7 +23,7 @@ build_script:
     - git submodule update --init --recursive
     - md build
     - cd build
-    - cmake -G "%CMAKE_PLATFORM%" ..
+    - cmake -Dcompdb=OFF -G "%CMAKE_PLATFORM%" ..
     - dir
     - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
     - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
