@@ -1,7 +1,7 @@
 dist: trusty
 language: cpp
 compiler:
-    - clang
+    - clang-3.7
 
 env:
     global:
