@@ -11,7 +11,7 @@ addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.7
         packages:
             - clang-3.7
 
