@@ -17,7 +17,7 @@ template <typename... C>
 using enable_if = invoke<std::enable_if<all<C...>::value, enabled>>;
 
 template <typename... C>
-using disable_if = invoke<std::enable_if<not any<C...>::value, enabled>>;
+using disable_if = invoke<std::enable_if<!any<C...>::value, enabled>>;
 
 
 }

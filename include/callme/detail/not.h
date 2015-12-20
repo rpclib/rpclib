@@ -9,7 +9,7 @@ namespace callme {
 namespace detail {
 
 template<typename B>
-using not_ = bool_<not B::value>;
+using not_ = bool_<!B::value>;
 
 }
 }
