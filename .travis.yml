@@ -15,6 +15,10 @@ addons:
         packages:
             - clang-3.7
 
+install:
+#Use the latest clang if we're compiling with clang
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+
 script:
     - cd $CI_HOME
     - git submodule init
