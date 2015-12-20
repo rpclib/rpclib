@@ -19,6 +19,8 @@ install: true
 
 build_script:
     - cd c:\projects\callme
+    - git submodule init
+    - git submodule update --init --recursive
     - md build
     - cd build
     - cmake -G "%CMAKE_PLATFORM%" ..
