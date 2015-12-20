@@ -16,6 +16,7 @@ addons:
         packages:
             - clang-3.7
             - cmake
+            - cmake-data
 
 install:
 #Use the latest clang if we're compiling with clang
