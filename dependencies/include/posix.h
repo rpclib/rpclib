@@ -28,6 +28,11 @@
 #ifndef FMT_POSIX_H_
 #define FMT_POSIX_H_
 
+#ifdef __MINGW32__
+// Workaround MinGW bug https://sourceforge.net/p/mingw/bugs/2024/.
+# undef __STRICT_ANSI__
+#endif
+
 #include <errno.h>
 #include <fcntl.h>  // for O_RDONLY
 #include <stdio.h>
@@ -36,12 +41,8 @@
 
 #include "format.h"
 
-#ifdef FMT_INCLUDE_POSIX_TEST
-# include "test/posix-test.h"
-#endif
-
 #ifndef FMT_POSIX
-# ifdef _WIN32
+# if defined(_WIN32) && !defined(__MINGW32__)
 // Fix warnings about deprecated symbols.
 #  define FMT_POSIX(call) _##call
 # else
@@ -68,7 +69,11 @@
 # define FMT_UNUSED
 #endif
 
-#if FMT_USE_STATIC_ASSERT || FMT_HAS_CPP_ATTRIBUTE(cxx_static_assert) || \
+#ifndef FMT_USE_STATIC_ASSERT
+# define FMT_USE_STATIC_ASSERT 0
+#endif
+
+#if FMT_USE_STATIC_ASSERT || FMT_HAS_FEATURE(cxx_static_assert) || \
   (FMT_GCC_VERSION >= 403 && FMT_HAS_GXX_CXX11) || _MSC_VER >= 1600
 # define FMT_STATIC_ASSERT(cond, message) static_assert(cond, message)
 #else
@@ -180,7 +185,7 @@ public:
 #endif
 
   // Opens a file.
-  BufferedFile(fmt::StringRef filename, fmt::StringRef mode);
+  BufferedFile(CStringRef filename, CStringRef mode);
 
   // Closes the file.
   void close();
@@ -188,12 +193,14 @@ public:
   // Returns the pointer to a FILE object representing this file.
   FILE *get() const FMT_NOEXCEPT { return file_; }
 
-  int fileno() const;
+  // We place parentheses around fileno to workaround a bug in some versions
+  // of MinGW that define fileno as a macro.
+  int (fileno)() const;
 
-  void print(fmt::StringRef format_str, const ArgList &args) {
+  void print(CStringRef format_str, const ArgList &args) {
     fmt::print(file_, format_str, args);
   }
-  FMT_VARIADIC(void, print, fmt::StringRef)
+  FMT_VARIADIC(void, print, CStringRef)
 };
 
 // A file. Closed file is represented by a File object with descriptor -1.
@@ -221,7 +228,7 @@ class File {
   File() FMT_NOEXCEPT : fd_(-1) {}
 
   // Opens a file and constructs a File object representing this file.
-  File(fmt::StringRef path, int oflag);
+  File(CStringRef path, int oflag);
 
 #if !FMT_USE_RVALUE_REFERENCES
   // Emulate a move constructor and a move assignment operator if rvalue
@@ -293,7 +300,7 @@ class File {
   void close();
 
   // Returns the file size.
-  fmt::LongLong size() const;
+  LongLong size() const;
 
   // Attempts to read count bytes from the file into the specified buffer.
   std::size_t read(void *buffer, std::size_t count);
