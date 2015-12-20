@@ -9,6 +9,9 @@ env:
 
 addons:
     apt:
+        sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
         packages:
             - clang-3.7
 
