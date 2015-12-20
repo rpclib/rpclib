@@ -1,5 +1,5 @@
 
-# callme [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme)
+# callme [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme)
 
 `callme` may be the easiest RPC library for C++! At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
 

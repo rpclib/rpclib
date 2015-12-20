@@ -24,7 +24,7 @@ build_script:
     - md build
     - cd build
     - cmake -Dcompdb=OFF -G "%CMAKE_PLATFORM%" ..
-    - dir
     - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
     - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
     - msbuild %MSBuildOptions% callme.sln
+    - tests\Release\callme_test.exe
