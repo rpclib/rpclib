@@ -38,5 +38,5 @@ script:
 
 after_success:
     - ./tests/callme_test
-    - if [ "$CXX" = "g++-4.9" ]; then codecov; fi
+    - codecov
 
