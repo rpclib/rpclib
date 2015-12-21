@@ -3,7 +3,7 @@
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
     if(coverage)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage -O0")
     endif()
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
   # using GCC

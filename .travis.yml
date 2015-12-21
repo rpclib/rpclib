@@ -32,5 +32,6 @@ script:
 
 after_success:
     - ./tests/callme_test
+    - find /home/travis/build/sztomi/callme -type f -name '*.gcno'
     - codecov
 
