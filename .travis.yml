@@ -2,6 +2,7 @@ dist: trusty
 language: cpp
 compiler:
     - clang
+    - g++
 
 env:
     global:
@@ -14,6 +15,7 @@ addons:
             - llvm-toolchain-precise-3.7
             - george-edison55-precise-backports
         packages:
+            - gcc-5
             - clang-3.7
             - cmake
             - cmake-data
@@ -21,6 +23,7 @@ addons:
 install:
     - pip install --user codecov
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
     - cd $CI_HOME
@@ -32,6 +35,5 @@ script:
 
 after_success:
     - ./tests/callme_test
-    - find /home/travis/build/sztomi/callme -type f -name '*.gcno'
-    - codecov
+    - if [ "$CXX" = "g++5" ]; then codecov; fi
 
