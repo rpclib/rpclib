@@ -27,7 +27,7 @@ script:
     - git submodule init
     - git submodule update --init --recursive
     - mkdir build && cd build
-    - cmake ..
+    - cmake -Dcoverage=ON ..
     - make -j2
 
 after_success:
