@@ -7,6 +7,7 @@ option(test "Build unit tests." ON) # Makes boolean 'test' available.
 option(compdb "Generate compilation database. Useful for YCM." ON)
 option(examples "Build examples." ON)
 option(logging "ALlow logging in the library for debug purposes. Also usable in a release build." ON)
+option(coverage "Generate coverage information" OFF)
 
 if(compdb)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
