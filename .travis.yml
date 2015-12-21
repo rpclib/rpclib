@@ -22,7 +22,7 @@ addons:
 
 install:
     - pip install --user codecov
-    - g++-5 --version
+    - find /usr/bin -iname g++*
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
     #- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
