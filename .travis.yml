@@ -23,7 +23,7 @@ addons:
 install:
     - pip install --user codecov
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    #- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
     - cd $CI_HOME
@@ -35,5 +35,5 @@ script:
 
 after_success:
     - ./tests/callme_test
-    - if [ "$CXX" = "g++5" ]; then codecov; fi
+    - if [ "$CXX" = "g++" ]; then codecov; fi
 
