@@ -15,18 +15,18 @@ addons:
             - llvm-toolchain-precise-3.7
             - george-edison55-precise-backports
         packages:
-            - gcc-4.9
-            - g++-4.9
+            - gcc-5
+            - g++-5
             #- clang-3.7
             - cmake
             - cmake-data
 
 install:
     - pip install --user codecov
-    - find /usr/bin -iname g++*
-    - g++-4.9 --version
     #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    - gcov-5 --version
+    - find /usr/bin -iname gcov*
 
 script:
     - cd $CI_HOME
