@@ -37,7 +37,7 @@ script:
 
 after_success:
     - ./tests/callme_test
-    - coveralls --exclude test --gcov `where gcov-5`
+    - coveralls --exclude test --gcov /usr/bin/gcov-5
     #- codecov
     
 
