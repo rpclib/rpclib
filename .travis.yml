@@ -22,10 +22,10 @@ addons:
             - cmake-data
 
 install:
-    - pip install --user codecov
+    #- pip install --user codecov
+    - pip install --user cpp-coveralls
     #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
     - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-    - alias gcov=gcov-5
 
 script:
     - cd $CI_HOME
@@ -37,6 +37,7 @@ script:
 
 after_success:
     - ./tests/callme_test
-    - gcov --version
-    - codecov
+    - coveralls --exclude test --gcov `where gcov-5`
+    #- codecov
+    
 
