@@ -38,7 +38,7 @@ script:
 after_success:
     - ./tests/callme_test
     - cd ..
-    - coveralls --exclude dependencies --exclude build --gcov /usr/bin/gcov-5
+    - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
     #- codecov
     
 
