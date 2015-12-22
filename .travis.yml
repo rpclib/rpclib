@@ -17,7 +17,6 @@ addons:
         packages:
             - gcc-4.9
             - g++-4.9
-            - gcov
             #- clang-3.7
             - cmake
             - cmake-data
@@ -39,5 +38,6 @@ script:
 
 after_success:
     - ./tests/callme_test
+    - gcov --version
     - codecov
 
