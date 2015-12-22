@@ -17,6 +17,7 @@ addons:
         packages:
             - gcc-4.9
             - g++-4.9
+            - ggcov
             #- clang-3.7
             - cmake
             - cmake-data
