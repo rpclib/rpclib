@@ -13,7 +13,7 @@ This library is a work in progress. Some things might not work, periodically bre
 
 # Building
 
-To build `callme` you can to the following:
+To build `callme` you can do the following:
 
 ```
 git clone git@github.com:sztomi/callme.git
