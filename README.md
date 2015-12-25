@@ -11,6 +11,27 @@ and header-only.
 
 This library is a work in progress. Some things might not work, periodically break or change.
 
+# Building
+
+To build `callme` you can to the following:
+
+```
+git clone git@github.com:sztomi/callme.git
+cd callme
+git submodule init
+git submodule update --init --recursive
+mkdir build
+cd build
+cmake ..
+make
+```
+
+There are of course many other ways to build the library, depending on your target compiler,
+platform and individual needs. Alternatively, you can also take the source files from the lib
+directory and the include files from include and integrate them in your project.
+
+TBD: cmake options, preprocessor definitions, handling builtin dependencies.
+
 # Example
 
 ## Server
