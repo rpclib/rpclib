@@ -1,7 +1,11 @@
 #pragma once
 
-#include "callme/maybe.h"
 #include "msgpack.hpp"
+#include <atomic>
+#include <future>
+#include <unordered_map>
+
+#include "callme/maybe.h"
 #include "callme/detail/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
 
@@ -34,9 +38,6 @@ public:
     maybe call_async(string_ref func_name, Args... args);
 
 private:
-    template<typename... Args>
-    msgpack::object pack_call(string_ref name, std::tuple<Args...> const& args);
-
     //! \brief Handles a new connection
     void on_new_connection(uv_stream_t *stream, int status);
 
@@ -46,11 +47,15 @@ private:
     //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
     void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
 
+    enum class call_type { sync = 0, async = 2 };
+
     friend class detail::uv_adaptor<client>;
 
 private:
     uint16_t port_;
     std::string addr_;
+    std::atomic<int> call_idx_; //< The index of the last call made
+    std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
 };
 
 }
