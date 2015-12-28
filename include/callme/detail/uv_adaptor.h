@@ -35,6 +35,11 @@ protected:
         auto obj = reinterpret_cast<Adapted *>(handle->data);
         obj->alloc_buffer(handle, size, buffer);
     }
+
+    static void fw_on_connect(uv_connect_t *handle, int status) {
+        auto obj = reinterpret_cast<Adapted *>(handle->data);
+        obj->on_connect(handle, status);
+    }
     //! @}
 };
 

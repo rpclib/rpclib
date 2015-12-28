@@ -1,16 +1,17 @@
 #pragma once
 
 #include "msgpack.hpp"
+#include "uv.h"
+
 #include <atomic>
 #include <future>
 #include <unordered_map>
 
 #include "callme/maybe.h"
-#include "callme/detail/string_ref.h"
+#include "callme/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
 
-namespace callme
-{
+namespace callme {
 
 //! \brief Implements a client that connects to a msgpack-rpc server and is
 //! able to call functions synchronously or asynchronously.
@@ -43,6 +44,8 @@ private:
 
     //! \brief Handles reading from a stream.
     void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
+    
+    void on_connect(uv_connect_t *request, int status);
 
     //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
     void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
@@ -56,6 +59,10 @@ private:
     std::string addr_;
     std::atomic<int> call_idx_; //< The index of the last call made
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
+    msgpack::packer<std::vector<char>> pac_;
+    std::vector<char> buf_;
+    uv_loop_t *loop_;
+    uv_tcp_t tcp_;
 };
 
 }
