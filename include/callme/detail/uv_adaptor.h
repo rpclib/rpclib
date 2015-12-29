@@ -29,6 +29,12 @@ protected:
         obj->on_read(stream, nread, buf);
     }
 
+    //! \brief Forwards the on_write callback to a member function.
+    static void fw_on_write(uv_write_t *handle, int status) {
+        auto obj = reinterpret_cast<Adapted *>(handle->data);
+        obj->on_write(handle, status);
+    }
+
     //! \brief Forwards the alloc_buffer callback to a member function.
     static void fw_alloc_buffer(uv_handle_t *handle, size_t size,
                                 uv_buf_t *buffer) {
@@ -36,6 +42,7 @@ protected:
         obj->alloc_buffer(handle, size, buffer);
     }
 
+    //! \brief Forwards the on_connect callback to a member function.
     static void fw_on_connect(uv_connect_t *handle, int status) {
         auto obj = reinterpret_cast<Adapted *>(handle->data);
         obj->on_connect(handle, status);

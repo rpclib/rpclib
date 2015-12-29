@@ -5,11 +5,15 @@
 
 #ifdef CALLME_LOGGING
 
+#ifdef __clang__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedef"
 #pragma GCC diagnostic ignored "-Wpessimizing-move"
+#endif
 #include "easyloggingpp.h"
+#ifdef __clang__
 #pragma GCC diagnostic pop
+#endif
 
 #define LOG_INFO(...) el::Loggers::getLogger("callme")->info(__VA_ARGS__)
 #define LOG_WARN(...) el::Loggers::getLogger("callme")->warn(__VA_ARGS__)

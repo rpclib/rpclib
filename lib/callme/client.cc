@@ -7,10 +7,11 @@ namespace callme
 {
 
 client::client(string_ref addr, uint16_t port)
-    : addr_(addr), port_(port), loop_(uv_default_loop()), pac_(buf_) {
+    : addr_(addr), port_(port), loop_(uv_default_loop()) {
     uv_tcp_init(loop_, &tcp_);
+    uv_tcp_keepalive(&tcp_, 1, 60);
 
-    uv_connect_t *connect = (uv_connect_t *)malloc(sizeof(uv_connect_t));
+    uv_connect_t *connect = new uv_connect_t;
 
     struct sockaddr_in dest;
     uv_ip4_addr(&addr_.front(), port_, &dest);
@@ -22,6 +23,7 @@ client::client(string_ref addr, uint16_t port)
 
 void client::on_connect(uv_connect_t *request, int status) {
     LOG_INFO("Client connected with status %d", status);
+    delete request;
 }
 
 void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
@@ -29,8 +31,15 @@ void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
 
 void client::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
     LOG_TRACE("Allocating %v bytes", size);
-    buf_.reserve(size);
-    *buffer = uv_buf_init(buf_.data(), size);
+    pac_.reserve_buffer(size);
+    *buffer = uv_buf_init(pac_.buffer(), size);
+}
+
+void client::on_write(uv_write_t *req, int status) {
+}
+
+void client::run() {
+    uv_run(loop_, UV_RUN_DEFAULT);
 }
 
 }

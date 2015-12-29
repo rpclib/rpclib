@@ -38,12 +38,17 @@ public:
     template<typename... Args>
     maybe call_async(string_ref func_name, Args... args);
 
+    void run();
+
 private:
     //! \brief Handles a new connection
     void on_new_connection(uv_stream_t *stream, int status);
 
     //! \brief Handles reading from a stream.
     void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
+
+    //! \brief Called when a write request finishes.
+    void on_write(uv_write_t *req, int status);
     
     void on_connect(uv_connect_t *request, int status);
 
@@ -59,8 +64,8 @@ private:
     std::string addr_;
     std::atomic<int> call_idx_; //< The index of the last call made
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
-    msgpack::packer<std::vector<char>> pac_;
-    std::vector<char> buf_;
+    msgpack::unpacker pac_;
+    msgpack::sbuffer buf_;
     uv_loop_t *loop_;
     uv_tcp_t tcp_;
 };
