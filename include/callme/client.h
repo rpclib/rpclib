@@ -4,7 +4,9 @@
 #include "uv.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <future>
+#include <mutex>
 #include <unordered_map>
 
 #include "callme/maybe.h"
@@ -19,6 +21,10 @@ class client : public detail::uv_adaptor<client>
 {
 public:
     client(string_ref addr, uint16_t port);
+
+    client(client const&) = delete;
+
+    ~client();
 
     //! \brief Calls a function with the given name and arguments (if any).
     //! \param func_name The name of the function to call.
@@ -52,6 +58,8 @@ private:
     
     void on_connect(uv_connect_t *request, int status);
 
+    void on_close(uv_handle_t *handle);
+
     //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
     void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
 
@@ -60,14 +68,16 @@ private:
     friend class detail::uv_adaptor<client>;
 
 private:
-    uint16_t port_;
     std::string addr_;
+    uint16_t port_;
     std::atomic<int> call_idx_; //< The index of the last call made
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
     msgpack::unpacker pac_;
     msgpack::sbuffer buf_;
     uv_loop_t *loop_;
     uv_tcp_t tcp_;
+    std::mutex close_finish_mut_;
+    std::condition_variable close_finish_;
 };
 
 }

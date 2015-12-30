@@ -1,5 +1,7 @@
 #pragma once
 
+#include "callme/detail/log.h"
+
 namespace callme {
 namespace detail {
 
@@ -46,6 +48,12 @@ protected:
     static void fw_on_connect(uv_connect_t *handle, int status) {
         auto obj = reinterpret_cast<Adapted *>(handle->data);
         obj->on_connect(handle, status);
+    }
+
+    static void fw_on_close(uv_handle_t *handle) {
+        LOG_DEBUG("fw_on_close");
+        auto obj = reinterpret_cast<Adapted *>(handle->data);
+        obj->on_close(handle);
     }
     //! @}
 };

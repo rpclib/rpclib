@@ -5,6 +5,9 @@
 
 #ifdef CALLME_LOGGING
 
+#define ELPP_THREAD_SAFE
+#define ELPP_STACKTRACE_ON_CRASH
+
 #ifdef __clang__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedef"
