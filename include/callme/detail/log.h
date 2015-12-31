@@ -24,6 +24,8 @@
 #define LOG_DEBUG(...) el::Loggers::getLogger("callme")->debug(__VA_ARGS__)
 #define LOG_TRACE(...) el::Loggers::getLogger("callme")->trace(__VA_ARGS__)
 
+#define LOG_EXPR(Level, Expr) LOG_##Level("`"#Expr"` = %v", Expr)
+
 #else
 
 #define LOG_INFO(...)
@@ -31,6 +33,7 @@
 #define LOG_ERROR(...)
 #define LOG_DEBUG(...)
 #define LOG_TRACE(...)
+#define LOG_EXPR(...)
 
 #endif
 

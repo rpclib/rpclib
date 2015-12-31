@@ -63,7 +63,7 @@ def IsHeaderFile(filename):
 # should be good enough.
 def GetCompilationInfoForFile(filename):
     if IsHeaderFile(filename):
-        basename = os.path.splitext(filename)[0].replace('include', 'src')
+        basename = os.path.splitext(filename)[0].replace('include', 'lib')
         replacement_file = basename + '.cc'
         if os.path.exists(replacement_file):
             compilation_info = database.GetCompilationInfoForFile(

@@ -28,14 +28,15 @@ client::client(string_ref addr, uint16_t port)
 }
 
 client::~client() {
-    //std::unique_lock<std::mutex> lk(close_finish_mut_);
     LOG_INFO("Closing connection");
     uv_close(reinterpret_cast<uv_handle_t *>(&tcp_), &client::fw_on_close);
-    //close_finish_.wait(lk);
 }
 
 void client::on_connect(uv_connect_t *request, int status) {
     LOG_INFO("Client connected with status %v", status);
+
+    uv_read_start(request->handle, &client::fw_alloc_buffer,
+                  &client::fw_on_read);
 }
 
 void client::on_close(uv_handle_t *handle) {
@@ -47,14 +48,21 @@ void client::on_close(uv_handle_t *handle) {
 void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     LOG_INFO("Reading from tcp. nread = %v", nread);
 
+    if (nread == UV_EOF) {
+        LOG_INFO("End of file.");
+        return;
+    }
+
     if (is_error(nread)) {
         if (nread != UV_EOF) {
             auto err = fmt::format("Error while reading. libuv says: {}",
                                    uv_strerror(nread));
             LOG_ERROR(err);
             throw std::runtime_error(err);
+        } else {
+            uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
+            return;
         }
-        uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
     }
 
     pac_.buffer_consumed(nread); // alloc_buffer has set buf->base to the
@@ -63,7 +71,7 @@ void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     msgpack::unpacked result;
     while (pac_.next(&result)) {
         auto r = response(result.get());
-        auto &&promise = ongoing_calls_[r.get_id()];
+        auto &promise = ongoing_calls_[r.get_id()];
         try {
             if (r.get_error().size() > 0) {
                 throw std::runtime_error(
@@ -85,9 +93,9 @@ void client::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
     *buffer = uv_buf_init(pac_.buffer(), size);
 }
 
-void client::on_write(uv_write_t *req, int status) {}
-
-void client::run() {
-    std::thread t([this]() { uv_run(loop_, UV_RUN_DEFAULT); });
+void client::on_write(uv_write_t *req, int status) {
+    LOG_DEBUG("Writing to tcp. Status: %v", status);
 }
+
+void client::run() { uv_run(loop_, UV_RUN_DEFAULT); }
 }

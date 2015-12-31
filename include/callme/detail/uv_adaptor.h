@@ -1,6 +1,7 @@
 #pragma once
 
-#include "callme/detail/log.h"
+#ifndef UV_ADAPTOR_H_4N1PSMQL
+#define UV_ADAPTOR_H_4N1PSMQL
 
 namespace callme {
 namespace detail {
@@ -51,7 +52,6 @@ protected:
     }
 
     static void fw_on_close(uv_handle_t *handle) {
-        LOG_DEBUG("fw_on_close");
         auto obj = reinterpret_cast<Adapted *>(handle->data);
         obj->on_close(handle);
     }
@@ -60,3 +60,5 @@ protected:
 
 }
 }
+
+#endif /* end of include guard: UV_ADAPTOR_H_4N1PSMQL */

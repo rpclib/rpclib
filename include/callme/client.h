@@ -12,6 +12,7 @@
 #include "callme/maybe.h"
 #include "callme/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
+#include "callme/detail/log.h"
 
 namespace callme {
 
