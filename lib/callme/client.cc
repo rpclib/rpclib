@@ -17,8 +17,7 @@ client::client(string_ref addr, uint16_t port)
     uv_tcp_init(loop_, &tcp_);
     uv_tcp_keepalive(&tcp_, 1, 60);
 
-    uv_connect_t *connect = new uv_connect_t;
-
+    uv_connect_t *connect = new uv_connect_t; 
     struct sockaddr_in dest;
     uv_ip4_addr(&addr_.front(), port_, &dest);
 
@@ -97,5 +96,9 @@ void client::on_write(uv_write_t *req, int status) {
     LOG_DEBUG("Writing to tcp. Status: %v", status);
 }
 
-void client::run() { uv_run(loop_, UV_RUN_DEFAULT); }
+void client::run() {
+    std::thread loop_thread([this]() { uv_run(loop_, UV_RUN_DEFAULT); });
+    loop_thread.detach();
+}
+
 }
