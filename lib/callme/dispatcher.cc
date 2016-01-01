@@ -1,5 +1,6 @@
 #include "callme/dispatcher.h"
 #include "callme/string_ref.h"
+#include "callme/detail/log.h"
 #include "format.h"
 
 namespace callme {
@@ -21,6 +22,7 @@ response dispatcher::dispatch(msgpack::object const &msg) {
 
     auto it_func = funcs_.find(name);
     if (it_func != end(funcs_)) {
+        LOG_DEBUG("Dispatching call to '%v'", name);
         auto result = (it_func->second)(args);
         return response(id, string_ref(), std::move(result));
     } else {

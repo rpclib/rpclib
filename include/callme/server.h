@@ -11,10 +11,11 @@
 
 #include "callme/string_ref.h"
 #include "callme/dispatcher.h"
+#include "callme/detail/uv_adaptor.h"
 
 namespace callme {
 
-class server {
+class server : public detail::uv_adaptor<server> {
 public:
     explicit server(string_ref address, uint16_t port);
 
@@ -32,21 +33,6 @@ public:
     void suppress_exceptions(bool suppress);
 
 private:
-    //! \defgroup Static callbacks that forward calls to members using
-    //! the passed data pointer.
-    //! @{
-    //! \brief Forwards the on_new_connection callback to a member function.
-    static void fw_on_new_connection(uv_stream_t *srv, int status);
-
-    //! \brief Forwards the on_read callback to a member function.
-    static void fw_on_read(uv_stream_t *stream, ssize_t nread,
-                           const uv_buf_t *buf);
-
-    //! \brief Forwards the alloc_buffer callback to a member function.
-    static void fw_alloc_buffer(uv_handle_t *handle, size_t size,
-                                uv_buf_t *buffer);
-    //! @}
-
     //! \brief Handles a new connection
     void on_new_connection(uv_stream_t *stream, int status);
 
@@ -55,6 +41,8 @@ private:
 
     //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
     void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
+
+    friend class uv_adaptor<server>;
 
 
 private:

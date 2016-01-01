@@ -12,11 +12,11 @@ namespace callme {
 
 server::server(string_ref address, uint16_t port)
     : loop_(uv_default_loop()), pac_(), suppress_exceptions_(false) {
-    #ifndef _MSC_VER
+#ifndef _MSC_VER
     LOG_INFO("Created server on address %v:%v", address.to_string(), port);
-    #else
+#else
     LOG_INFO("Created server on address %v:%v", address, port);
-    #endif
+#endif
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);
@@ -27,23 +27,6 @@ server::server(string_ref address, uint16_t port)
 
 void server::suppress_exceptions(bool suppress) {
     suppress_exceptions_ = suppress;
-}
-
-void server::fw_on_new_connection(uv_stream_t *stream, int status) {
-    server *obj = reinterpret_cast<server *>(stream->data);
-    obj->on_new_connection(stream, status);
-}
-
-void server::fw_on_read(uv_stream_t *stream, ssize_t nread,
-                        const uv_buf_t *buf) {
-    server *obj = reinterpret_cast<server *>(stream->data);
-    obj->on_read(stream, nread, buf);
-}
-
-void server::fw_alloc_buffer(uv_handle_t *handle, size_t size,
-                             uv_buf_t *buffer) {
-    server *obj = reinterpret_cast<server *>(handle->data);
-    obj->alloc_buffer(handle, size, buffer);
 }
 
 void server::on_new_connection(uv_stream_t *stream, int status) {
@@ -85,8 +68,10 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
                                    uv_strerror(nread));
             LOG_ERROR(err);
             throw std::runtime_error(err);
+        } else {
+            uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
+            return;
         }
-        uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
     }
 
     pac_.buffer_consumed(nread); // alloc_buffer has set buf->base to the
@@ -95,7 +80,7 @@ void server::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     msgpack::unpacked result;
     while (pac_.next(&result)) {
         auto msg = result.get();
-        LOG_DEBUG("Dispatching call");
+        LOG_DEBUG("msgpack read from tcp.");
         try {
             auto resp = disp_.dispatch(msg);
             resp.write(stream);
