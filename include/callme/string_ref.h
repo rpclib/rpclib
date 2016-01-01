@@ -13,7 +13,14 @@ namespace callme {
 
 // TODO: find a string_ref class that works with MSVC [sztomi, 2015-12-20]
 #ifdef _MSC_VER 
-using string_ref = std::string;
+
+// \brief This is a temporary helper class for MSVC compatibility
+class string_ref : public std::string
+{
+public:
+    std::string to_string() { return *this; }
+};
+
 #else
 using string_ref = std::experimental::string_view;
 #endif
