@@ -4,6 +4,9 @@
 #include "gmock/gmock.h"
 
 #include "callme/dispatcher.h"
+#include "testutils.h"
+
+using namespace callme::testutils;
 
 // Unit tests for binding functions to names.
 // A couple of these tests exist to check if the code compiles correctly,
@@ -180,11 +183,7 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
-    auto call = std::make_tuple(1, 0, "bar", msgpack::type::nil());
-    msgpack::sbuffer buf;
-    msgpack::pack(buf, call);
-    msgpack::unpacked msg;
-    msgpack::unpack(&msg, buf.data(), buf.size());
-    auto response = dispatcher.dispatch(msg.get());
+    auto msg = make_obj(1, 0, "bar", msgpack::type::nil());
+    auto response = dispatcher.dispatch(msg);
     EXPECT_TRUE(response.get_error().size() > 0);
 }

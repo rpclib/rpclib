@@ -5,8 +5,13 @@ set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
 set(TEST_SOURCES
     ../dependencies/src/gmock-gtest-all.cc
     testmain.cc
+    testutils.h
     callme/dispatcher_test.cc
-    callme/client_test.cc)
+    callme/client_test.cc
+    callme/response_test.cc
+    )
+
+include_directories("${PROJECT_SOURCE_DIR}/tests")
 
 add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
 
