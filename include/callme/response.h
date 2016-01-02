@@ -6,7 +6,6 @@
 #include "msgpack.hpp"
 #include "uv.h"
 
-#include "callme/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
 
 namespace callme {
@@ -16,7 +15,7 @@ namespace callme {
 class response : public detail::uv_adaptor<response> {
 public:
     //! \brief Constructs a msgpack::response with the given values.
-    response(uint32_t id, string_ref error,
+    response(uint32_t id, std::string const& error,
              std::unique_ptr<msgpack::object> result);
 
     //! \brief Constructs a response from msgpack::object (useful when
@@ -32,7 +31,7 @@ public:
 
     //! \brief Returns the error message stored in the response. Can
     //! be empty.
-    string_ref get_error() const;
+    std::string const& get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
     msgpack::object get_result() const;

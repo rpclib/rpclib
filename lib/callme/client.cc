@@ -1,7 +1,6 @@
 #include "callme/client.h"
 #include "callme/response.h"
 #include "uv.h"
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 #include <thread>
 
@@ -12,7 +11,7 @@ static inline bool is_error(int result) { return result < 0; }
 
 namespace callme {
 
-client::client(string_ref addr, uint16_t port)
+client::client(std::string const& addr, uint16_t port)
     : addr_(addr), port_(port), loop_(uv_default_loop()) {
     uv_tcp_init(loop_, &tcp_);
     uv_tcp_keepalive(&tcp_, 1, 60);
@@ -75,7 +74,7 @@ void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
             if (r.get_error().size() > 0) {
                 throw std::runtime_error(
                     fmt::format("callme: error during RPC call: %v",
-                                r.get_error().to_string()));
+                                r.get_error()));
             }
             promise.set_value(r.get_result());
         } catch (...) {

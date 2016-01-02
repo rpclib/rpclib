@@ -1,7 +1,7 @@
 namespace callme {
 
 template <typename... Args>
-msgpack::object client::call(string_ref func_name, Args... args) {
+msgpack::object client::call(std::string const& func_name, Args... args) {
     using msgpack::object;
 
     LOG_DEBUG("Calling %v", func_name);
@@ -10,7 +10,7 @@ msgpack::object client::call(string_ref func_name, Args... args) {
     const int idx = call_idx_++;
     auto call_obj =
         std::make_tuple(static_cast<uint8_t>(client::call_type::sync), idx,
-                        func_name.to_string(), args_obj);
+                        func_name, args_obj);
     msgpack::pack(buf_, call_obj);
 
     uv_write_t request;
@@ -29,7 +29,7 @@ msgpack::object client::call(string_ref func_name, Args... args) {
 }
 
 template <typename... Args>
-maybe client::call_async(string_ref func_name, Args... args) {
+maybe client::call_async(std::string const& func_name, Args... args) {
     using msgpack::object;
     auto args_tuple = std::make_tuple(args...);
     return maybe();

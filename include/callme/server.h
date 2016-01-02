@@ -9,7 +9,6 @@
 #include "msgpack.hpp"
 #include "uv.h"
 
-#include "callme/string_ref.h"
 #include "callme/dispatcher.h"
 #include "callme/detail/uv_adaptor.h"
 
@@ -17,7 +16,7 @@ namespace callme {
 
 class server : public detail::uv_adaptor<server> {
 public:
-    explicit server(string_ref address, uint16_t port);
+    explicit server(std::string const& address, uint16_t port);
 
     //! \brief Starts the server loop. This is a blocking call.
     void run();
@@ -26,7 +25,7 @@ public:
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    template <typename F> void bind(string_ref name, F func) {
+    template <typename F> void bind(std::string const& name, F func) {
         disp_.bind(name, func);
     }
 

@@ -1,7 +1,6 @@
 #include "callme/server.h"
 #include <stdexcept>
 
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 #include "format.h"
 
@@ -10,9 +9,9 @@ static inline bool is_error(int result) { return result < 0; }
 
 namespace callme {
 
-server::server(string_ref address, uint16_t port)
+server::server(std::string const& address, uint16_t port)
     : loop_(uv_default_loop()), pac_(), suppress_exceptions_(false) {
-    LOG_INFO("Created server on address %v:%v", address.to_string(), port);
+    LOG_INFO("Created server on address %v:%v", address, port);
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);

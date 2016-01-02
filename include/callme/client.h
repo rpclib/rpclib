@@ -10,7 +10,6 @@
 #include <unordered_map>
 
 #include "callme/maybe.h"
-#include "callme/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
 #include "callme/detail/log.h"
 
@@ -21,7 +20,7 @@ namespace callme {
 class client : public detail::uv_adaptor<client>
 {
 public:
-    client(string_ref addr, uint16_t port);
+    client(std::string const& addr, uint16_t port);
 
     client(client const&) = delete;
 
@@ -34,7 +33,7 @@ public:
     //! To obtain a typed value, use the msgpack API.
     //! \tparam Args THe types of the arguments.
     template<typename... Args>
-    msgpack::object call(string_ref func_name, Args... args);
+    msgpack::object call(std::string const& func_name, Args... args);
 
     //! \brief Calls a function asynchronously with the given name and arguments.
     //! \param func_name The name of the function to call.
@@ -43,7 +42,7 @@ public:
     //! (which is a msgpack::object). \see callme::maybe.
     //! \tparam Args THe types of the arguments.
     template<typename... Args>
-    maybe call_async(string_ref func_name, Args... args);
+    maybe call_async(std::string const& func_name, Args... args);
 
     void run();
 
