@@ -8,7 +8,8 @@
 using namespace callme::testutils;
 
 TEST(response, object_ctor) {
-    callme::response r(make_obj(3, 42, "foo", "bar"));
+	auto o = make_obj(3, 42, "foo", "bar");
+    callme::response r(o.get());
     EXPECT_EQ(r.get_id(), 42);
     EXPECT_TRUE(r.get_error() == "foo");
 

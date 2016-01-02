@@ -15,9 +15,14 @@ include_directories("${PROJECT_SOURCE_DIR}/tests")
 
 add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
 
+cmake_policy(SET CMP0054 NEW) # silence quoted variables warning
+
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_link_libraries(${TEST_PROJECT_NAME}
         ${CMAKE_PROJECT_NAME} uv)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Zi")
+    set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /DEBUG /OPT:REF /OPT:ICF")
+	STRING(REPLACE "/O2" "/Od" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 else()
     target_link_libraries(${TEST_PROJECT_NAME}
         ${CMAKE_PROJECT_NAME} uv pthread)

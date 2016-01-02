@@ -9,13 +9,13 @@
 namespace callme {
 namespace testutils {
 
-template <typename... Types> inline msgpack::object make_obj(Types... items) {
+template <typename... Types> inline msgpack::unpacked make_obj(Types... items) {
     auto obj = std::make_tuple(items...);
     msgpack::sbuffer buf;
     msgpack::pack(buf, obj);
     msgpack::unpacked msg;
     msgpack::unpack(&msg, buf.data(), buf.size());
-    return msg.get();
+	return msg;
 }
 }
 }

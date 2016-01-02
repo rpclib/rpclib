@@ -6,7 +6,10 @@
 #ifdef CALLME_LOGGING
 
 #define ELPP_THREAD_SAFE
+
+#ifndef _MSC_VER
 #define ELPP_STACKTRACE_ON_CRASH
+#endif
 
 #ifdef __clang__
 #pragma GCC diagnostic push

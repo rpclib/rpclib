@@ -184,6 +184,6 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
     auto msg = make_obj(1, 0, "bar", msgpack::type::nil());
-    auto response = dispatcher.dispatch(msg);
+    auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error().size() > 0);
 }
