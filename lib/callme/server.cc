@@ -3,24 +3,23 @@
 
 #include "callme/string_ref.h"
 #include "callme/detail/log.h"
+#include "callme/detail/uv_loop.h"
 #include "format.h"
 
 static inline bool is_success(int result) { return result == 0; }
 static inline bool is_error(int result) { return result < 0; }
 
+using namespace callme::detail;
+
 namespace callme {
 
-server::server(string_ref address, uint16_t port)
-    : loop_(uv_default_loop()), pac_(), suppress_exceptions_(false) {
-#ifndef _MSC_VER
-    LOG_INFO("Created server on address %v:%v", address.to_string(), port);
-#else
+server::server(std::string const &address, uint16_t port)
+    : detail::uv_adaptor<server>(), pac_(), suppress_exceptions_(false) {
     LOG_INFO("Created server on address %v:%v", address, port);
-#endif
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);
-    uv_tcp_init(loop_, &tcp_);
+    uv_tcp_init(uv_loop::instance().get_loop(), &tcp_);
     uv_tcp_bind(&tcp_, (sockaddr * const)addr, no_flag);
     tcp_.data = this;
 }
@@ -40,7 +39,7 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
     }
 
     uv_tcp_t *client = static_cast<uv_tcp_t *>(malloc(sizeof(uv_tcp_t)));
-    uv_tcp_init(loop_, client);
+    uv_tcp_init(uv_loop::instance().get_loop(), client);
     client->data = this;
 
     if (uv_accept(stream, reinterpret_cast<uv_stream_t *>(client)) == 0) {
@@ -121,7 +120,7 @@ void server::run() {
     const int default_backlog = 128;
     uv_listen(reinterpret_cast<uv_stream_t *>(&tcp_), default_backlog,
               &server::fw_on_new_connection);
-    uv_run(loop_, UV_RUN_DEFAULT);
+    uv_loop::instance().start();
 }
 
 } /* callme */

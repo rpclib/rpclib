@@ -3,6 +3,8 @@
 #include "uv.h"
 #include "callme/string_ref.h"
 #include "callme/detail/log.h"
+#include "callme/detail/uv_loop.h"
+#include "uv.h"
 #include <thread>
 
 #include "format.h"
@@ -10,39 +12,51 @@
 static inline bool is_success(int result) { return result == 0; }
 static inline bool is_error(int result) { return result < 0; }
 
+using namespace callme::detail;
+
 namespace callme {
 
-client::client(string_ref addr, uint16_t port)
-    : addr_(addr), port_(port), loop_(uv_default_loop()) {
-    uv_tcp_init(loop_, &tcp_);
+client::client(std::string const &addr, uint16_t port)
+    : detail::uv_adaptor<client>(), addr_(addr), port_(port),
+      is_connected_(false) {
+    uv_tcp_init(uv_loop::instance().get_loop(), &tcp_);
     uv_tcp_keepalive(&tcp_, 1, 60);
 
-    uv_connect_t *connect = new uv_connect_t; 
     struct sockaddr_in dest;
     uv_ip4_addr(&addr_.front(), port_, &dest);
 
+    conn_req_.data = this;
     tcp_.data = this;
-    uv_tcp_connect(connect, &tcp_, reinterpret_cast<const sockaddr *>(&dest),
+    LOG_INFO("client consturctred on thread %v", std::this_thread::get_id());
+    uv_tcp_connect(&conn_req_, &tcp_, reinterpret_cast<const sockaddr *>(&dest),
                    &client::fw_on_connect);
 }
 
 client::~client() {
-    LOG_INFO("Closing connection");
-    uv_close(reinterpret_cast<uv_handle_t *>(&tcp_), &client::fw_on_close);
+    LOG_INFO("client dtor");
+    is_running_ = false;
 }
 
 void client::on_connect(uv_connect_t *request, int status) {
     LOG_INFO("Client connected with status %v", status);
-
+    LOG_INFO("aquiring lock on thread %v", std::this_thread::get_id());
+    std::unique_lock<std::mutex> lock(mut_connection_finished_);
+    LOG_INFO("lock aquired");
     uv_read_start(request->handle, &client::fw_alloc_buffer,
                   &client::fw_on_read);
+    is_connected_ = true;
+    connect_finished_.notify_all();
 }
 
-void client::on_close(uv_handle_t *handle) {
-    std::unique_lock<std::mutex> lk(close_finish_mut_);
-    LOG_INFO("Connection closed.");
-    close_finish_.notify_one();
+void client::wait_conn() {
+    if (!is_connected_) {
+        LOG_INFO("wait_conn aquiring lock on thread %v", std::this_thread::get_id());
+        std::unique_lock<std::mutex> lock(mut_connection_finished_);
+        connect_finished_.wait(lock);
+    }
 }
+
+void client::on_close(uv_handle_t *handle) { LOG_INFO("Connection closed."); }
 
 void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
     LOG_INFO("Reading from tcp. nread = %v", nread);
@@ -73,9 +87,8 @@ void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
         auto &promise = ongoing_calls_[r.get_id()];
         try {
             if (r.get_error().size() > 0) {
-                throw std::runtime_error(
-                    fmt::format("callme: error during RPC call: %v",
-                                r.get_error().to_string()));
+                throw std::runtime_error(fmt::format(
+                    "callme: error during RPC call: %v", r.get_error()));
             }
             promise.set_value(r.get_result());
         } catch (...) {
@@ -97,8 +110,6 @@ void client::on_write(uv_write_t *req, int status) {
 }
 
 void client::run() {
-    std::thread loop_thread([this]() { uv_run(loop_, UV_RUN_DEFAULT); });
-    loop_thread.detach();
+    uv_loop::instance().start();
 }
-
 }

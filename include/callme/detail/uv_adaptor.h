@@ -3,18 +3,20 @@
 #ifndef UV_ADAPTOR_H_4N1PSMQL
 #define UV_ADAPTOR_H_4N1PSMQL
 
+#include "callme/detail/log.h"
+
 namespace callme {
 namespace detail {
 
-//! \brief Adapts static callback to object member functions.
+//! \brief Adapts static callback to object member functions. Also provides
+//! handle cleanup and
+//! a loop member.
 //! The object must may use the fw_on* functions as libuv callbacks,
 //! as long as the following is true:
 //! - The class has a function with the expected signature, without the fw_
 //! prefix.
 //! - The data members in the libuv callbacks are pointers to the object.
-template<typename Adapted>
-class uv_adaptor
-{
+template <typename Adapted> class uv_adaptor {
 protected:
     //! \defgroup Static callbacks that forward calls to members using
     //! the passed data pointer.
@@ -56,8 +58,10 @@ protected:
         obj->on_close(handle);
     }
     //! @}
-};
 
+protected:
+    uv_loop_t loop_;
+};
 }
 }
 

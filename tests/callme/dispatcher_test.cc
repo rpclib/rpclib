@@ -4,6 +4,9 @@
 #include "gmock/gmock.h"
 
 #include "callme/dispatcher.h"
+#include "testutils.h"
+
+using namespace callme::testutils;
 
 // Unit tests for binding functions to names.
 // A couple of these tests exist to check if the code compiles correctly,
@@ -14,9 +17,9 @@
 bool g_dummy_void_zeroarg_called;
 bool g_dummy_void_singlearg_called;
 bool g_dummy_void_multiarg_called;
-void dummy_void_zeroarg() { g_dummy_void_zeroarg_called = true; };
-void dummy_void_singlearg(int x) { g_dummy_void_singlearg_called = true; };
-void dummy_void_multiarg(int x, int y) { g_dummy_void_multiarg_called = true; };
+void dummy_void_zeroarg() { g_dummy_void_zeroarg_called = true; }
+void dummy_void_singlearg(int x) { g_dummy_void_singlearg_called = true; }
+void dummy_void_multiarg(int x, int y) { g_dummy_void_multiarg_called = true; }
 
 class binding_test : public testing::Test {
 public:
@@ -176,4 +179,11 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
     EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
     EXPECT_FALSE(g_dummy_void_singlearg_called);
+}
+
+TEST_F(dispatch_test, unbound_func_error_response) {
+    dispatcher.bind("foo", &dummy_void_singlearg);
+    auto msg = make_unpacked(1, 0, "bar", msgpack::type::nil());
+    auto response = dispatcher.dispatch(msg.get());
+    EXPECT_TRUE(response.get_error().size() > 0);
 }

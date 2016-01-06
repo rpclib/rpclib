@@ -1,8 +1,16 @@
 #include "gtest/gtest.h"
 
 #include "callme/client.h"
+#include "testutils.h"
 
-TEST(client_test, DISABLED_instantiation) {
-    callme::client client("127.0.0.1", 8080);
-    client.call("sum", 2, 3);
+using namespace callme::testutils;
+
+class client_test : public tcp_tester {};
+
+TEST_F(client_test, instantiation) {
+    start_server();
+    run_test_loop();
+    callme::client client("127.0.0.1", test_port);
+    client.run();
+    client.wait_conn();
 }
