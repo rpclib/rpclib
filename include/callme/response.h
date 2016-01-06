@@ -6,7 +6,6 @@
 #include "msgpack.hpp"
 #include "uv.h"
 
-#include "callme/string_ref.h"
 #include "callme/detail/uv_adaptor.h"
 
 namespace callme {
@@ -16,12 +15,12 @@ namespace callme {
 class response : public detail::uv_adaptor<response> {
 public:
     //! \brief Constructs a msgpack::response with the given values.
-    response(uint32_t id, string_ref error,
+    response(uint32_t id, std::string const &error,
              std::unique_ptr<msgpack::object> result);
 
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).
-    response(msgpack::object const& o);
+    response(msgpack::object const &o);
 
     //! \brief Writes response to the stream
     void write(uv_stream_t *stream);
@@ -32,7 +31,7 @@ public:
 
     //! \brief Returns the error message stored in the response. Can
     //! be empty.
-    string_ref get_error() const;
+    std::string const &get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
     msgpack::object get_result() const;
@@ -41,7 +40,7 @@ public:
     using response_type =
         std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
 
-    friend class uv_adaptor<response>;
+    friend class detail::uv_adaptor<response>;
 
 private:
     void on_write(uv_write_t *req, int status);

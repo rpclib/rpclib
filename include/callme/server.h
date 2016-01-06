@@ -9,7 +9,6 @@
 #include "msgpack.hpp"
 #include "uv.h"
 
-#include "callme/string_ref.h"
 #include "callme/dispatcher.h"
 #include "callme/detail/uv_adaptor.h"
 
@@ -42,8 +41,7 @@ private:
     //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
     void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
 
-    friend class uv_adaptor<server>;
-
+    friend class detail::uv_adaptor<server>;
 
 private:
     dispatcher disp_;

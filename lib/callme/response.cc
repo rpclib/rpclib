@@ -1,10 +1,9 @@
 #include "callme/response.h"
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 
 namespace callme {
 
-response::response(uint32_t id, string_ref error,
+response::response(uint32_t id, std::string const& error,
                    std::unique_ptr<msgpack::object> result)
     : id_(id), error_(error), result_(std::move(result)) {}
 
@@ -41,7 +40,7 @@ void response::write(uv_stream_t *stream) {
 
 int response::get_id() const { return id_; }
 
-string_ref response::get_error() const { return error_; }
+std::string const& response::get_error() const { return error_; }
 
 msgpack::object response::get_result() const { return *result_; }
 

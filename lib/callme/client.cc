@@ -1,7 +1,6 @@
 #include "callme/client.h"
 #include "callme/response.h"
 #include "uv.h"
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 #include "callme/detail/uv_loop.h"
 #include "uv.h"

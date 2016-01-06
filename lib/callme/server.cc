@@ -1,7 +1,6 @@
 #include "callme/server.h"
 #include <stdexcept>
 
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 #include "callme/detail/uv_loop.h"
 #include "format.h"

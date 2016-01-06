@@ -1,4 +1,4 @@
-add_subdirectory(../dependencies/libuv-cmake ${CMAKE_CURRENT_BINARY_DIR}/../libuv)
+add_subdirectory(../dependencies/libuv-cmake ${CMAKE_CURRENT_BINARY_DIR}/libuv)
 
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 

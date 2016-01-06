@@ -1,5 +1,4 @@
 #include "callme/dispatcher.h"
-#include "callme/string_ref.h"
 #include "callme/detail/log.h"
 #include "format.h"
 
@@ -24,7 +23,7 @@ response dispatcher::dispatch(msgpack::object const &msg) {
     if (it_func != end(funcs_)) {
         LOG_DEBUG("Dispatching call to '%v'", name);
         auto result = (it_func->second)(args);
-        return response(id, string_ref(), std::move(result));
+        return response(id, std::string(), std::move(result));
     } else {
         return response(id,
                         fmt::format("callme: server could not find "

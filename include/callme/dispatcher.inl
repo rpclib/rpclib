@@ -1,13 +1,13 @@
 
 namespace callme {
 
-template <typename F> void dispatcher::bind(string_ref name, F func) {
+template <typename F> void dispatcher::bind(std::string const& name, F func) {
     bind(name, func, typename detail::func_kind_info<F>::result_kind(),
          typename detail::func_kind_info<F>::args_kind());
 }
 
 template <typename F>
-void dispatcher::bind(string_ref name, F func,
+void dispatcher::bind(std::string const& name, F func,
                       detail::tags::void_result const &,
                       detail::tags::zero_arg const &) {
     funcs_.insert(std::make_pair(name, [func](msgpack::object const &args) {
@@ -17,7 +17,7 @@ void dispatcher::bind(string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(string_ref name, F func,
+void dispatcher::bind(std::string const& name, F func,
                       detail::tags::void_result const &,
                       detail::tags::nonzero_arg const &) {
     using detail::func_traits;
@@ -30,11 +30,7 @@ void dispatcher::bind(string_ref name, F func,
             throw std::runtime_error(
                 fmt::format("Function '{0}' was called with an invalid number of "
                             "arguments. Expected: {1}, got: {2}",
-#ifndef _MSC_VER
-                            name.to_string(), args_count, args.via.array.size));
-#else
                             name, args_count, args.via.array.size));
-#endif
         }
         args.convert(&args_real);
         detail::call(func, args_real);
@@ -43,7 +39,7 @@ void dispatcher::bind(string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(string_ref name, F func,
+void dispatcher::bind(std::string const& name, F func,
                       detail::tags::nonvoid_result const &,
                       detail::tags::zero_arg const &) {
     using detail::func_traits;
@@ -54,7 +50,7 @@ void dispatcher::bind(string_ref name, F func,
 }
 
 template <typename F>
-void dispatcher::bind(string_ref name, F func,
+void dispatcher::bind(std::string const& name, F func,
                       detail::tags::nonvoid_result const &,
                       detail::tags::nonzero_arg const &) {
     using detail::func_traits;
@@ -66,11 +62,7 @@ void dispatcher::bind(string_ref name, F func,
             throw std::runtime_error(
                 fmt::format("Function '{0}' was called with an invalid number of "
                             "arguments. Expected: {1}, got: {2}",
-#ifndef _MSC_VER
-                            name.to_string(), args_count, args.via.array.size));
-#else
                             name, args_count, args.via.array.size));
-#endif
         }
         args_type args_real;
         args.convert(&args_real);

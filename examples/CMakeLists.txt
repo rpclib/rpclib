@@ -1,3 +1,5 @@
+cmake_policy(SET CMP0054 OLD) # silence quoted variables warning
+
 set(SERVER_EXAMPLE_NAME server)
 set(CLIENT_EXAMPLE_NAME client)
 
