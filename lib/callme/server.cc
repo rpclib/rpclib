@@ -18,9 +18,9 @@ server::server(std::string const &address, uint16_t port)
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);
-    uv_tcp_init(uv_loop::instance().get_loop(), &tcp_);
-    uv_tcp_bind(&tcp_, (sockaddr * const)addr, no_flag);
-    tcp_.data = this;
+    tcp_ = uv_loop::make_handle<uv_tcp_t>();
+    uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
+    uv_tcp_bind(tcp_, (sockaddr * const)addr, no_flag);
 }
 
 void server::suppress_exceptions(bool suppress) {
@@ -37,7 +37,7 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
         throw std::runtime_error(err.c_str());
     }
 
-    uv_tcp_t *client = static_cast<uv_tcp_t *>(malloc(sizeof(uv_tcp_t)));
+    uv_tcp_t *client = uv_loop::make_handle<uv_tcp_t>(this);
     uv_tcp_init(uv_loop::instance().get_loop(), client);
     client->data = this;
 
@@ -117,7 +117,7 @@ void server::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
 
 void server::run() {
     const int default_backlog = 128;
-    uv_listen(reinterpret_cast<uv_stream_t *>(&tcp_), default_backlog,
+    uv_listen(reinterpret_cast<uv_stream_t *>(tcp_), default_backlog,
               &server::fw_on_new_connection);
     uv_loop::instance().start();
 }

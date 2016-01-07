@@ -39,21 +39,21 @@ class tcp_tester : public testing::Test,
                    public callme::detail::uv_adaptor<tcp_tester> {
 public:
     tcp_tester()
-        : callme::detail::uv_adaptor<tcp_tester>(), read_finished_(false),
-          is_running_(false) {
-        server_.data = this;
-        client_.data = this;
-        connect_.data = this;
-    }
+        : callme::detail::uv_adaptor<tcp_tester>(),
+          server_(uv_loop::make_handle<uv_tcp_t>(this)),
+          client_(uv_loop::make_handle<uv_tcp_t>(this)),
+          incoming_(uv_loop::make_handle<uv_tcp_t>(this)),
+          connect_(uv_loop::make_handle<uv_connect_t>(this)),
+          read_finished_(false), is_running_(false) {}
 
     ~tcp_tester() { LOG_INFO("tcp_tester dtor"); }
 
     void start_client() {
         struct sockaddr_in addr;
         uv_ip4_addr("127.0.0.1", test_port, &addr);
-        uv_tcp_init(uv_loop::instance().get_loop(), &client_);
+        uv_tcp_init(uv_loop::instance().get_loop(), client_);
 
-        uv_tcp_connect(&connect_, &client_,
+        uv_tcp_connect(connect_, client_,
                        reinterpret_cast<const sockaddr *>(&addr), nullptr);
     }
 
@@ -62,22 +62,19 @@ public:
 
         uv_ip4_addr("0.0.0.0", test_port, &addr);
 
-        uv_tcp_init(uv_loop::instance().get_loop(), &server_);
-        uv_tcp_bind(&server_, (struct sockaddr *)&addr, 0);
-        uv_listen((uv_stream_t *)&server_, 128,
+        uv_tcp_init(uv_loop::instance().get_loop(), server_);
+        uv_tcp_bind(server_, (struct sockaddr *)&addr, 0);
+        uv_listen((uv_stream_t *)server_, 128,
                   &tcp_tester::fw_on_new_connection);
     }
 
-    void run_test_loop() {
-        uv_loop::instance().start();
-    }
+    void run_test_loop() { uv_loop::instance().start(); }
 
 protected:
     void on_new_connection(uv_stream_t *tcp, int status) {
-        uv_tcp_init(uv_loop::instance().get_loop(), &incoming_);
-        uv_accept(tcp, (uv_stream_t *)&incoming_);
-        incoming_.data = this;
-        uv_read_start(reinterpret_cast<uv_stream_t *>(&incoming_),
+        uv_tcp_init(uv_loop::instance().get_loop(), incoming_);
+        uv_accept(tcp, (uv_stream_t *)incoming_);
+        uv_read_start(reinterpret_cast<uv_stream_t *>(incoming_),
                       &tcp_tester::fw_alloc_buffer, &tcp_tester::fw_on_read);
     }
 
@@ -98,10 +95,10 @@ protected:
     }
 
     static const uint16_t test_port = 8080;
-    uv_tcp_t server_;
-    uv_tcp_t client_;
-    uv_tcp_t incoming_;
-    uv_connect_t connect_;
+    uv_tcp_t *server_;
+    uv_tcp_t *client_;
+    uv_tcp_t *incoming_;
+    uv_connect_t *connect_;
     std::atomic<bool> read_finished_, is_running_;
     std::vector<char> recv_buf_, read_buf_;
     friend class callme::detail::uv_adaptor<tcp_tester>;

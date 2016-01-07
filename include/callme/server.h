@@ -45,7 +45,7 @@ private:
 
 private:
     dispatcher disp_;
-    uv_tcp_t tcp_;
+    uv_tcp_t* tcp_;
     msgpack::unpacker pac_;
     bool suppress_exceptions_;
 };

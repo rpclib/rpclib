@@ -77,8 +77,8 @@ private:
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
     msgpack::unpacker pac_;
     msgpack::sbuffer buf_;
-    uv_tcp_t tcp_;
-    uv_connect_t conn_req_;
+    uv_tcp_t* tcp_;
+    uv_connect_t* conn_req_;
     std::atomic<bool> is_running_;
 
     bool is_connected_;

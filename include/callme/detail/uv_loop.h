@@ -23,6 +23,16 @@ public:
         return inst;
     }
 
+    //! \brief Allocates a handle. The handle memory is freed by uv_loop upon
+    //! exit.
+    //! \note The handles are reachable because the libuv loop stores them and
+    //! allow uv_walk-ing through them.
+    template <typename T> static T *make_handle(void *owner = nullptr) {
+        T *handle = new T;
+        handle->data = owner;
+        return handle;
+    }
+
     void start() {
         std::lock_guard<std::mutex> lock(mut_is_running_);
         if (!is_running_) {
@@ -50,6 +60,7 @@ public:
         uv_walk(&loop_, [](uv_handle_t *handle, void *arg) {
             if (!uv_is_closing(handle)) {
                 uv_close(handle, nullptr);
+                delete handle;
             }
         }, nullptr);
         uv_run(&loop_, UV_RUN_DEFAULT);

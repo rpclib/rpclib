@@ -17,17 +17,16 @@ namespace callme {
 
 client::client(std::string const &addr, uint16_t port)
     : detail::uv_adaptor<client>(), addr_(addr), port_(port),
-      is_connected_(false) {
-    uv_tcp_init(uv_loop::instance().get_loop(), &tcp_);
-    uv_tcp_keepalive(&tcp_, 1, 60);
+      tcp_(uv_loop::make_handle<uv_tcp_t>(this)),
+      conn_req_(uv_loop::make_handle<uv_connect_t>(this)), is_connected_(false) {
+    uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
+    uv_tcp_keepalive(tcp_, 1, 60);
 
     struct sockaddr_in dest;
     uv_ip4_addr(&addr_.front(), port_, &dest);
 
-    conn_req_.data = this;
-    tcp_.data = this;
     LOG_INFO("client consturctred on thread %v", std::this_thread::get_id());
-    uv_tcp_connect(&conn_req_, &tcp_, reinterpret_cast<const sockaddr *>(&dest),
+    uv_tcp_connect(conn_req_, tcp_, reinterpret_cast<const sockaddr *>(&dest),
                    &client::fw_on_connect);
 }
 
@@ -49,7 +48,8 @@ void client::on_connect(uv_connect_t *request, int status) {
 
 void client::wait_conn() {
     if (!is_connected_) {
-        LOG_INFO("wait_conn aquiring lock on thread %v", std::this_thread::get_id());
+        LOG_INFO("wait_conn aquiring lock on thread %v",
+                 std::this_thread::get_id());
         std::unique_lock<std::mutex> lock(mut_connection_finished_);
         connect_finished_.wait(lock);
     }
@@ -108,7 +108,5 @@ void client::on_write(uv_write_t *req, int status) {
     LOG_DEBUG("Writing to tcp. Status: %v", status);
 }
 
-void client::run() {
-    uv_loop::instance().start();
-}
+void client::run() { uv_loop::instance().start(); }
 }
