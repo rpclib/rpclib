@@ -17,8 +17,8 @@ namespace callme {
 
 client::client(std::string const &addr, uint16_t port)
     : detail::uv_adaptor<client>(), addr_(addr), port_(port),
-      tcp_(uv_loop::make_handle<uv_tcp_t>(this)),
-      conn_req_(uv_loop::make_handle<uv_connect_t>(this)), is_connected_(false) {
+      tcp_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
+      conn_req_(uv_loop::instance().make_handle<uv_connect_t>(this)), is_connected_(false) {
     uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
     uv_tcp_keepalive(tcp_, 1, 60);
 

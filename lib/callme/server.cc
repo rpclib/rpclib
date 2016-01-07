@@ -18,7 +18,7 @@ server::server(std::string const &address, uint16_t port)
     const unsigned no_flag = 0;
     sockaddr_in *addr = new sockaddr_in;
     uv_ip4_addr(&address.front(), port, addr);
-    tcp_ = uv_loop::make_handle<uv_tcp_t>();
+    tcp_ = uv_loop::instance().make_handle<uv_tcp_t>();
     uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
     uv_tcp_bind(tcp_, (sockaddr * const)addr, no_flag);
 }
@@ -37,7 +37,7 @@ void server::on_new_connection(uv_stream_t *stream, int status) {
         throw std::runtime_error(err.c_str());
     }
 
-    uv_tcp_t *client = uv_loop::make_handle<uv_tcp_t>(this);
+    uv_tcp_t *client = uv_loop::instance().make_handle<uv_tcp_t>(this);
     uv_tcp_init(uv_loop::instance().get_loop(), client);
     client->data = this;
 

@@ -6,6 +6,7 @@
 #include "uv.h"
 #include <mutex>
 #include <thread>
+#include <vector>
 #include "callme/detail/log.h"
 
 namespace callme {
@@ -27,9 +28,11 @@ public:
     //! exit.
     //! \note The handles are reachable because the libuv loop stores them and
     //! allow uv_walk-ing through them.
-    template <typename T> static T *make_handle(void *owner = nullptr) {
+    template <typename T> T *make_handle(void *owner = nullptr) {
+        std::lock_guard<std::mutex> lock(mut_handles_);
         T *handle = new T;
         handle->data = owner;
+        handles_.push_back(reinterpret_cast<uv_handle_t*>(handle));
         return handle;
     }
 
@@ -60,13 +63,13 @@ public:
         uv_walk(&loop_, [](uv_handle_t *handle, void *arg) {
             if (!uv_is_closing(handle)) {
                 uv_close(handle, nullptr);
-                delete handle;
             }
         }, nullptr);
         uv_run(&loop_, UV_RUN_DEFAULT);
         while (loop_.active_handles)
             ;
         uv_loop_close(&loop_);
+        for (auto h : handles_) { delete h; }
     }
 
 private:
@@ -77,6 +80,8 @@ private:
 
     mutable uv_loop_t loop_;
     std::mutex mut_is_running_;
+    std::mutex mut_handles_;
+    std::vector<uv_handle_t*> handles_;
     bool is_running_;
 };
 } /* detail */

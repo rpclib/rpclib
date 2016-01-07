@@ -40,10 +40,10 @@ class tcp_tester : public testing::Test,
 public:
     tcp_tester()
         : callme::detail::uv_adaptor<tcp_tester>(),
-          server_(uv_loop::make_handle<uv_tcp_t>(this)),
-          client_(uv_loop::make_handle<uv_tcp_t>(this)),
-          incoming_(uv_loop::make_handle<uv_tcp_t>(this)),
-          connect_(uv_loop::make_handle<uv_connect_t>(this)),
+          server_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
+          client_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
+          incoming_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
+          connect_(uv_loop::instance().make_handle<uv_connect_t>(this)),
           read_finished_(false), is_running_(false) {}
 
     ~tcp_tester() { LOG_INFO("tcp_tester dtor"); }
@@ -105,5 +105,6 @@ protected:
 };
 }
 }
+
 
 #endif /* end of include guard: TESTUTILS_H_LHCAMVUX */
