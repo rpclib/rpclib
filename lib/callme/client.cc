@@ -25,21 +25,16 @@ client::client(std::string const &addr, uint16_t port)
     struct sockaddr_in dest;
     uv_ip4_addr(&addr_.front(), port_, &dest);
 
-    LOG_INFO("client consturctred on thread %v", std::this_thread::get_id());
     uv_tcp_connect(conn_req_, tcp_, reinterpret_cast<const sockaddr *>(&dest),
                    &client::fw_on_connect);
 }
 
 client::~client() {
-    LOG_INFO("client dtor");
     is_running_ = false;
 }
 
 void client::on_connect(uv_connect_t *request, int status) {
-    LOG_INFO("Client connected with status %v", status);
-    LOG_INFO("aquiring lock on thread %v", std::this_thread::get_id());
     std::unique_lock<std::mutex> lock(mut_connection_finished_);
-    LOG_INFO("lock aquired");
     uv_read_start(request->handle, &client::fw_alloc_buffer,
                   &client::fw_on_read);
     is_connected_ = true;
@@ -48,8 +43,6 @@ void client::on_connect(uv_connect_t *request, int status) {
 
 void client::wait_conn() {
     if (!is_connected_) {
-        LOG_INFO("wait_conn aquiring lock on thread %v",
-                 std::this_thread::get_id());
         std::unique_lock<std::mutex> lock(mut_connection_finished_);
         connect_finished_.wait(lock);
     }
@@ -58,7 +51,7 @@ void client::wait_conn() {
 void client::on_close(uv_handle_t *handle) { LOG_INFO("Connection closed."); }
 
 void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
-    LOG_INFO("Reading from tcp. nread = %v", nread);
+    LOG_TRACE("Reading from tcp. nread = %v", nread);
 
     if (nread == UV_EOF) {
         LOG_INFO("End of file.");
@@ -105,7 +98,7 @@ void client::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
 }
 
 void client::on_write(uv_write_t *req, int status) {
-    LOG_DEBUG("Writing to tcp. Status: %v", status);
+    LOG_TRACE("Writing to tcp. Status: %v", status);
 }
 
 void client::run() { uv_loop::instance().start(); }
