@@ -1,9 +1,11 @@
 #include "callme/response.h"
 #include "callme/detail/log.h"
 
+#include <assert.h>
+
 namespace callme {
 
-response::response(uint32_t id, std::string const& error,
+response::response(uint32_t id, std::string const &error,
                    std::unique_ptr<msgpack::object> result)
     : id_(id), error_(error), result_(std::move(result)) {}
 
@@ -38,9 +40,18 @@ void response::write(uv_stream_t *stream) {
     uv_write(req, stream, &out_buf, 1, &response::fw_on_write);
 }
 
+void response::write(msgpack::sbuffer* buf) const {
+    assert(buf && "Buffer passed to response::write should not be NULL!");
+    response_type r(1, id_,
+                    error_.size() > 0 ? msgpack::object(error_)
+                                      : msgpack::object(msgpack::type::nil()),
+                    *result_); // TODO: avoid copy [sztomi, 2015-11-23]
+    msgpack::pack(*buf, r);
+}
+
 int response::get_id() const { return id_; }
 
-std::string const& response::get_error() const { return error_; }
+std::string const &response::get_error() const { return error_; }
 
 msgpack::object response::get_result() const { return *result_; }
 

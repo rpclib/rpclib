@@ -49,6 +49,10 @@ public:
         }
     }
 
+    void start_sync() {
+        uv_run(&loop_, UV_RUN_DEFAULT);
+    }
+
     void stop() {
         LOG_INFO("Stopping event loop");
         uv_stop(&loop_);

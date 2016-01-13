@@ -82,7 +82,7 @@ private:
     std::atomic<bool> is_running_;
 
     bool is_connected_;
-    std::condition_variable connect_finished_;
+    std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;
 };
 

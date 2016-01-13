@@ -1,4 +1,5 @@
 add_subdirectory(../dependencies/libuv-cmake ${CMAKE_CURRENT_BINARY_DIR}/libuv)
+add_definitions(-DASIO_STANDALONE)
 
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
@@ -13,6 +14,7 @@ add_library(${OUTPUT_LIBRARY_NAME}
     callme/response.cc
     callme/client.cc
     callme/detail/log.cc
+    callme/detail/session.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
     ${CALLME_HEADERS})

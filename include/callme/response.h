@@ -25,6 +25,9 @@ public:
     //! \brief Writes response to the stream
     void write(uv_stream_t *stream);
 
+    //! \brief Writes the response pack to a buffer.
+    void write(msgpack::sbuffer *buf) const;
+
     //! \brief Returns the call id/index used to identify which call
     //! this response corresponds to.
     int get_id() const;

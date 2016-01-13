@@ -24,14 +24,14 @@ TEST(response, object_ctor) {
 
 class response_write_test : public tcp_tester {};
 
-TEST_F(response_write_test, DISABLED_writing) {
+TEST_F(response_write_test, writing) {
     start_server();
     start_client();
     run_test_loop();
 
     auto obj = make_unpacked(1, 42, "foo", "bar");
     callme::response r(obj.get());
-    r.write(reinterpret_cast<uv_stream_t *>(&client_));
+    r.write(reinterpret_cast<uv_stream_t *>(client_));
 
     callme::response::response_type same_obj(1, 42, msgpack::object("foo"),
                                              msgpack::object("bar"));

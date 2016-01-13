@@ -1,5 +1,6 @@
 #include <iostream>
 #include "callme/server.h"
+#include "callme/detail/uv_loop.h"
 
 void foo() { std::cout << "foo was called!" << std::endl; }
 
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]) {
 
     // Run the server loop.
     srv.run();
+    srv.start();
 
     return 0;
 }

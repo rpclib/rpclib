@@ -18,7 +18,8 @@ namespace callme {
 client::client(std::string const &addr, uint16_t port)
     : detail::uv_adaptor<client>(), addr_(addr), port_(port),
       tcp_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
-      conn_req_(uv_loop::instance().make_handle<uv_connect_t>(this)), is_connected_(false) {
+      conn_req_(uv_loop::instance().make_handle<uv_connect_t>(this)),
+      is_connected_(false) {
     uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
     uv_tcp_keepalive(tcp_, 1, 60);
 
@@ -29,22 +30,20 @@ client::client(std::string const &addr, uint16_t port)
                    &client::fw_on_connect);
 }
 
-client::~client() {
-    is_running_ = false;
-}
+client::~client() { is_running_ = false; }
 
 void client::on_connect(uv_connect_t *request, int status) {
     std::unique_lock<std::mutex> lock(mut_connection_finished_);
     uv_read_start(request->handle, &client::fw_alloc_buffer,
                   &client::fw_on_read);
     is_connected_ = true;
-    connect_finished_.notify_all();
+    conn_finished_.notify_all();
 }
 
 void client::wait_conn() {
     if (!is_connected_) {
         std::unique_lock<std::mutex> lock(mut_connection_finished_);
-        connect_finished_.wait(lock);
+        conn_finished_.wait(lock);
     }
 }
 
