@@ -1,17 +1,17 @@
-#include "callme/detail/session.h"
+#include "callme/detail/server_session.h"
 
 namespace callme {
 namespace detail {
 
-session::session(asio::ip::tcp::socket socket, std::shared_ptr<dispatcher> disp)
+server_session::server_session(asio::ip::tcp::socket socket, std::shared_ptr<dispatcher> disp)
     : socket_(std::move(socket)), disp_(disp), pac_() {
     pac_.reserve_buffer(default_buffer_size); // TODO: make this configurable
                                               // [sztomi 2016-01-13]
 }
 
-void session::start() { do_read(); }
+void server_session::start() { do_read(); }
 
-void session::do_read() {
+void server_session::do_read() {
     auto self(shared_from_this());
     socket_.async_read_some(
         asio::buffer(pac_.buffer(), default_buffer_size),

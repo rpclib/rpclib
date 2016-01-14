@@ -1,43 +1,71 @@
 #include "callme/client.h"
 #include "callme/response.h"
-#include "uv.h"
 #include "callme/detail/log.h"
-#include "callme/detail/uv_loop.h"
-#include "uv.h"
 #include <thread>
 
 #include "format.h"
 
-static inline bool is_success(int result) { return result == 0; }
-static inline bool is_error(int result) { return result < 0; }
-
 using namespace callme::detail;
+using asio::ip::tcp;
 
 namespace callme {
 
 client::client(std::string const &addr, uint16_t port)
-    : detail::uv_adaptor<client>(), addr_(addr), port_(port),
-      tcp_(uv_loop::instance().make_handle<uv_tcp_t>(this)),
-      conn_req_(uv_loop::instance().make_handle<uv_connect_t>(this)),
-      is_connected_(false) {
-    uv_tcp_init(uv_loop::instance().get_loop(), tcp_);
-    uv_tcp_keepalive(tcp_, 1, 60);
+    : io_(), socket_(io_), addr_(addr), port_(port), call_idx_(0) {
 
-    struct sockaddr_in dest;
-    uv_ip4_addr(&addr_.front(), port_, &dest);
-
-    uv_tcp_connect(conn_req_, tcp_, reinterpret_cast<const sockaddr *>(&dest),
-                   &client::fw_on_connect);
+    tcp::resolver resolver(io_);
+    auto endpoint_it = resolver.resolve({addr_, std::to_string(port_)});
+    do_connect(endpoint_it);
+    loop_thread_ = std::make_unique<std::thread>([this]() { io_.run(); });
 }
 
-client::~client() { is_running_ = false; }
+client::~client() {
+    io_.stop();
+    loop_thread_->join();
+}
 
-void client::on_connect(uv_connect_t *request, int status) {
-    std::unique_lock<std::mutex> lock(mut_connection_finished_);
-    uv_read_start(request->handle, &client::fw_alloc_buffer,
-                  &client::fw_on_read);
-    is_connected_ = true;
-    conn_finished_.notify_all();
+void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
+    asio::async_connect(
+        socket_, endpoint_iterator,
+        [this](std::error_code ec, tcp::resolver::iterator) {
+            if (!ec) {
+                std::unique_lock<std::mutex> lock(mut_connection_finished_);
+                LOG_INFO("Client connected to %v:%v", addr_, port_);
+                is_connected_ = true;
+                conn_finished_.notify_all();
+                do_read();
+            } else {
+              LOG_ERROR("Error during connect: %v", ec);
+            }
+        });
+}
+
+void client::do_read() {
+    socket_.async_read_some(
+        asio::buffer(pac_.buffer(), default_buffer_size),
+        [this](std::error_code ec, std::size_t length) {
+            LOG_TRACE("Reading from tcp. nread = %v", length);
+
+            if (!ec) {
+                pac_.buffer_consumed(length);
+                msgpack::unpacked result;
+                while (pac_.next(&result)) {
+                    auto r = response(result.get());
+                    auto &promise = ongoing_calls_[r.get_id()];
+                    try {
+                        if (r.get_error().size() > 0) {
+                            throw std::runtime_error(
+                                fmt::format("callme: error during RPC call: %v",
+                                            r.get_error()));
+                        }
+                        promise.set_value(r.get_result());
+                    } catch (...) {
+                        promise.set_exception(std::current_exception());
+                    }
+                }
+                do_read();
+            }
+        });
 }
 
 void client::wait_conn() {
@@ -46,59 +74,4 @@ void client::wait_conn() {
         conn_finished_.wait(lock);
     }
 }
-
-void client::on_close(uv_handle_t *handle) { LOG_INFO("Connection closed."); }
-
-void client::on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
-    LOG_TRACE("Reading from tcp. nread = %v", nread);
-
-    if (nread == UV_EOF) {
-        LOG_INFO("End of file.");
-        return;
-    }
-
-    if (is_error(nread)) {
-        if (nread != UV_EOF) {
-            auto err = fmt::format("Error while reading. libuv says: {}",
-                                   uv_strerror(nread));
-            LOG_ERROR(err);
-            throw std::runtime_error(err);
-        } else {
-            uv_close(reinterpret_cast<uv_handle_t *>(stream), nullptr);
-            return;
-        }
-    }
-
-    pac_.buffer_consumed(nread); // alloc_buffer has set buf->base to the
-                                 // internal buffer of pac_ so it is already
-                                 // consumed at this point. No need to copy...
-    msgpack::unpacked result;
-    while (pac_.next(&result)) {
-        auto r = response(result.get());
-        auto &promise = ongoing_calls_[r.get_id()];
-        try {
-            if (r.get_error().size() > 0) {
-                throw std::runtime_error(fmt::format(
-                    "callme: error during RPC call: %v", r.get_error()));
-            }
-            promise.set_value(r.get_result());
-        } catch (...) {
-            promise.set_exception(std::current_exception());
-        }
-    }
-
-    // and no need to deallocate buf->base here
-}
-
-void client::alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer) {
-    LOG_TRACE("Allocating %v bytes", size);
-    pac_.reserve_buffer(size);
-    *buffer = uv_buf_init(pac_.buffer(), size);
-}
-
-void client::on_write(uv_write_t *req, int status) {
-    LOG_TRACE("Writing to tcp. Status: %v", status);
-}
-
-void client::run() { uv_loop::instance().start(); }
 }

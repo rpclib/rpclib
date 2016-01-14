@@ -3,11 +3,9 @@
 #include <memory>
 #include <atomic>
 #include <thread>
+#include "testutils.h"
 
 #include "callme/response.h"
-#include "callme/detail/uv_adaptor.h"
-#include "uv.h"
-#include "testutils.h"
 
 using namespace callme::testutils;
 
@@ -22,26 +20,16 @@ TEST(response, object_ctor) {
     EXPECT_TRUE(result == "bar");
 }
 
-class response_write_test : public tcp_tester {};
-
-TEST_F(response_write_test, writing) {
-    start_server();
-    start_client();
-    run_test_loop();
-
+TEST(response, writing) {
     auto obj = make_unpacked(1, 42, "foo", "bar");
     callme::response r(obj.get());
-    r.write(reinterpret_cast<uv_stream_t *>(client_));
+    msgpack::sbuffer buf1, buf2;
+    r.write(&buf1);
 
     callme::response::response_type same_obj(1, 42, msgpack::object("foo"),
                                              msgpack::object("bar"));
-    msgpack::sbuffer buf;
-    msgpack::pack(buf, same_obj);
+    msgpack::pack(buf2, same_obj);
 
-    while (!read_finished_) {
-        // nop
-    }
-
-    EXPECT_EQ(buf.size(), read_buf_.size());
-    EXPECT_EQ(0, memcmp(buf.data(), read_buf_.data(), buf.size()));
+    EXPECT_EQ(buf1.size(), buf2.size());
+    EXPECT_EQ(0, memcmp(buf2.data(), buf2.data(), buf1.size()));
 }

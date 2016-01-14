@@ -12,9 +12,10 @@
 namespace callme {
 namespace detail {
 
-class session : public std::enable_shared_from_this<session> {
+class server_session : public std::enable_shared_from_this<server_session> {
 public:
-    session(asio::ip::tcp::socket socket, std::shared_ptr<dispatcher> disp);
+    server_session(asio::ip::tcp::socket socket,
+                   std::shared_ptr<dispatcher> disp);
     void start();
 
 private:

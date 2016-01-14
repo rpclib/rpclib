@@ -7,6 +7,7 @@
 #include <thread>
 #include "msgpack.hpp"
 #include "callme/detail/uv_loop.h"
+#include "callme/detail/uv_adaptor.h"
 
 using namespace callme::detail;
 

@@ -19,8 +19,6 @@ public:
     //! \brief Starts the server loop. This is a blocking call.
     void run();
 
-    void start();
-
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
@@ -30,6 +28,9 @@ public:
     }
 
     void suppress_exceptions(bool suppress);
+
+private:
+    void start_accept();
 
 private:
     asio::io_service io_;

@@ -11,10 +11,6 @@ branches:
 configuration:
   - Release
 
-branches:
-  only:
-    - master
-
 environment:
   matrix:
     - CMAKE_PLATFORM: "Visual Studio 14 2015"
