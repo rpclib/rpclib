@@ -1,23 +1,21 @@
 #pragma once
 
+#include "asio.hpp"
 #include "msgpack.hpp"
-#include "uv.h"
 
 #include <atomic>
 #include <condition_variable>
-#include <future>
 #include <mutex>
+#include <future>
 #include <unordered_map>
 
-#include "callme/maybe.h"
-#include "callme/detail/uv_adaptor.h"
 #include "callme/detail/log.h"
 
 namespace callme {
 
 //! \brief Implements a client that connects to a msgpack-rpc server and is
 //! able to call functions synchronously or asynchronously.
-class client : public detail::uv_adaptor<client>
+class client
 {
 public:
     client(std::string const& addr, uint16_t port);
@@ -42,42 +40,36 @@ public:
     //! (which is a msgpack::object). \see callme::maybe.
     //! \tparam Args THe types of the arguments.
     template<typename... Args>
-    maybe call_async(std::string const& func_name, Args... args);
-
-    void run();
+    std::future<msgpack::object> call_async(std::string const& func_name, Args... args);
 
 private:
-    //! \brief Handles a new connection
-    void on_new_connection(uv_stream_t *stream, int status);
-
-    //! \brief Handles reading from a stream.
-    void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
-
-    //! \brief Called when a write request finishes.
-    void on_write(uv_write_t *req, int status);
-    
-    void on_connect(uv_connect_t *request, int status);
-
-    void on_close(uv_handle_t *handle);
-
-    //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
-    void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
-
     enum class call_type { sync = 0, async = 2 };
 
-    friend class detail::uv_adaptor<client>;
+    void do_connect(asio::ip::tcp::resolver::iterator endpoint_iterator);
+
+    void do_read();
+    //
+    //! \brief Puts the current thread into waiting state until the client connects.
+    void wait_conn();
 
 private:
+    asio::io_service io_;
+    asio::ip::tcp::socket socket_;
     std::string addr_;
     uint16_t port_;
-    std::atomic<int> call_idx_; //< The index of the last call made
-    std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
     msgpack::unpacker pac_;
     msgpack::sbuffer buf_;
-    uv_loop_t *loop_;
-    uv_tcp_t tcp_;
-    std::mutex close_finish_mut_;
-    std::condition_variable close_finish_;
+
+    static const uint32_t default_buffer_size = 4096;
+
+    std::atomic<int> call_idx_; //< The index of the last call made
+    std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
+
+    std::unique_ptr<std::thread> loop_thread_;
+    bool is_connected_;
+    std::condition_variable conn_finished_;
+    std::mutex mut_connection_finished_;
+
 };
 
 }

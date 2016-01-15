@@ -1,7 +1,16 @@
 namespace callme {
 
 template <typename... Args>
-msgpack::object client::call(std::string const& func_name, Args... args) {
+msgpack::object client::call(std::string const &func_name, Args... args) {
+    auto future = call_async(func_name, std::forward<Args>(args)...);
+    future.wait();
+    return future.get();
+}
+
+template <typename... Args>
+std::future<msgpack::object> client::call_async(std::string const &func_name,
+                                                Args... args) {
+    wait_conn();
     using msgpack::object;
 
     LOG_DEBUG("Calling %v", func_name);
@@ -13,25 +22,16 @@ msgpack::object client::call(std::string const& func_name, Args... args) {
                         func_name, args_obj);
     msgpack::pack(buf_, call_obj);
 
-    uv_write_t request;
-    uv_buf_t uvbuf;
-    uvbuf.base = buf_.data();
-    uvbuf.len = buf_.size();
-
     ongoing_calls_.insert(std::make_pair(idx, std::promise<object>()));
 
-    uv_write(&request, reinterpret_cast<uv_stream_t *>(&tcp_), &uvbuf, 1,
-             &client::fw_on_write);
-
+    asio::async_write(socket_, asio::buffer(buf_.data(), buf_.size()),
+                      [this](std::error_code ec, std::size_t) {
+                          if (ec) {
+                              LOG_ERROR("Error during write: %v", ec);
+                              // TODO: Handle error [sztomi, 2016-01-14]
+                          }
+                      });
     auto future = ongoing_calls_[idx].get_future();
-    future.wait();
-    return future.get();
-}
-
-template <typename... Args>
-maybe client::call_async(std::string const& func_name, Args... args) {
-    using msgpack::object;
-    auto args_tuple = std::make_tuple(args...);
-    return maybe();
+    return future;
 }
 }

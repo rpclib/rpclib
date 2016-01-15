@@ -3,27 +3,28 @@ os: Visual Studio 2015
 clone_folder: C:\projects\callme
 test: off
 
-configuration:
-    - Release
-
 branches:
-    only:
-        - master
+  only:
+    - master
+    - dev
+
+configuration:
+  - Release
 
 environment:
-    matrix:
-        - CMAKE_PLATFORM: "Visual Studio 14 2015"
+  matrix:
+    - CMAKE_PLATFORM: "Visual Studio 14 2015"
 
 install: true
 
 build_script:
-    - cd c:\projects\callme
-    - git submodule init
-    - git submodule update --init --recursive
-    - md build
-    - cd build
-    - cmake -Dcompdb=OFF -G "%CMAKE_PLATFORM%" ..
-    - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-    - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
-    - msbuild %MSBuildOptions% callme.sln
-    - tests\Release\callme_test.exe
+  - cd c:\projects\callme
+  - git submodule init
+  - git submodule update --init --recursive
+  - md build
+  - cd build
+  - cmake -Dcompdb=OFF -G "%CMAKE_PLATFORM%" ..
+  - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
+  - msbuild %MSBuildOptions% callme.sln
+  - tests\Release\callme_test.exe

@@ -73,18 +73,6 @@ TEST_F(binding_test, freefunc_void_multiarg) {
     EXPECT_TRUE(g_dummy_void_multiarg_called);
 }
 
-struct IDummy {
-    virtual void dummy_void_zeroarg() = 0;
-    virtual void dummy_void_singlearg(int x) = 0;
-    virtual void dummy_void_multiarg(int x, int y) = 0;
-};
-
-struct MockDummy : IDummy {
-    MOCK_METHOD0(dummy_void_zeroarg, void());
-    MOCK_METHOD1(dummy_void_singlearg, void(int));
-    MOCK_METHOD2(dummy_void_multiarg, void(int, int));
-};
-
 TEST_F(binding_test, memfunc_void_zeroarg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_zeroarg());
@@ -183,7 +171,8 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
-    auto msg = make_obj(1, 0, "bar", msgpack::type::nil());
+    auto msg = make_unpacked(1, 0, "bar", msgpack::type::nil());
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error().size() > 0);
 }
+

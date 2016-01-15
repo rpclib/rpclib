@@ -19,11 +19,11 @@ cmake_policy(SET CMP0054 OLD) # silence quoted variables warning
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_link_libraries(${TEST_PROJECT_NAME}
-        ${CMAKE_PROJECT_NAME} uv)
+        ${CMAKE_PROJECT_NAME})
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Zi")
     set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /DEBUG")
 	STRING(REPLACE "/O2" "/Od" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 else()
     target_link_libraries(${TEST_PROJECT_NAME}
-        ${CMAKE_PROJECT_NAME} uv pthread)
+        ${CMAKE_PROJECT_NAME} pthread)
 endif()

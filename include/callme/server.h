@@ -5,49 +5,45 @@
 
 #include <stdint.h>
 #include <memory>
+#include <thread>
 
+#include "asio.hpp"
 #include "msgpack.hpp"
-#include "uv.h"
-
 #include "callme/dispatcher.h"
-#include "callme/detail/uv_adaptor.h"
 
 namespace callme {
 
-class server : public detail::uv_adaptor<server> {
+class server {
 public:
-    explicit server(std::string const& address, uint16_t port);
+    explicit server(std::string const &address, uint16_t port);
+    ~server();
 
     //! \brief Starts the server loop. This is a blocking call.
     void run();
+
+    //! \brief Starts the server loop on a separate thread. 
+    //! This is a non-blocking call.
+    void async_run();
 
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    template <typename F> void bind(std::string const& name, F func) {
-        disp_.bind(name, func);
+    template <typename F> void bind(std::string const &name, F func) {
+        disp_->bind(name, func);
     }
 
     void suppress_exceptions(bool suppress);
 
 private:
-    //! \brief Handles a new connection
-    void on_new_connection(uv_stream_t *stream, int status);
-
-    //! \brief Handles reading from a stream.
-    void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
-
-    //! \brief Allocates a buffer directly inside the unpacker, avoiding a copy.
-    void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t *buffer);
-
-    friend class detail::uv_adaptor<server>;
+    void start_accept();
 
 private:
-    dispatcher disp_;
-    uv_tcp_t tcp_;
-    uv_loop_t *loop_;
-    msgpack::unpacker pac_;
+    asio::io_service io_;
+    asio::ip::tcp::acceptor acceptor_;
+    asio::ip::tcp::socket socket_;
+    std::shared_ptr<dispatcher> disp_;
+    std::unique_ptr<std::thread> loop_thread_;
     bool suppress_exceptions_;
 };
 
