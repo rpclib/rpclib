@@ -3,7 +3,6 @@
 
 #include "callme/detail/server_session.h"
 #include "callme/detail/log.h"
-#include "callme/detail/uv_loop.h"
 #include "format.h"
 
 using namespace callme::detail;
@@ -21,12 +20,23 @@ server::server(std::string const &address, uint16_t port)
     start_accept();
 }
 
+server::~server() {
+    if (loop_thread_) {
+        io_.stop();
+        loop_thread_->join();
+    }
+}
+
 void server::suppress_exceptions(bool suppress) {
     suppress_exceptions_ = suppress;
 }
 
 void server::run() {
     io_.run();
+}
+
+void server::async_run() {
+    loop_thread_ = std::make_unique<std::thread>([this]() { io_.run(); });
 }
 
 void server::start_accept() {

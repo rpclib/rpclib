@@ -22,8 +22,7 @@ endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(include
-    dependencies/include
-    dependencies/libuv-cmake/libuv-1.6.1/include)
+    dependencies/include)
 
 file(GLOB_RECURSE CALLME_HEADERS include/callme/*.h)
 file(GLOB_RECURSE DEP_HEADERS dependencies/include/*.h dependencies/include/*.hpp)

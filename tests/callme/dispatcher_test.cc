@@ -73,18 +73,6 @@ TEST_F(binding_test, freefunc_void_multiarg) {
     EXPECT_TRUE(g_dummy_void_multiarg_called);
 }
 
-struct IDummy {
-    virtual void dummy_void_zeroarg() = 0;
-    virtual void dummy_void_singlearg(int x) = 0;
-    virtual void dummy_void_multiarg(int x, int y) = 0;
-};
-
-struct MockDummy : IDummy {
-    MOCK_METHOD0(dummy_void_zeroarg, void());
-    MOCK_METHOD1(dummy_void_singlearg, void(int));
-    MOCK_METHOD2(dummy_void_multiarg, void(int, int));
-};
-
 TEST_F(binding_test, memfunc_void_zeroarg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_zeroarg());

@@ -1,4 +1,5 @@
 #include "callme/detail/server_session.h"
+#include "callme/detail/log.h"
 
 namespace callme {
 namespace detail {

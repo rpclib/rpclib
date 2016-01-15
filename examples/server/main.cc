@@ -1,6 +1,5 @@
 #include <iostream>
 #include "callme/server.h"
-#include "callme/detail/uv_loop.h"
 
 void foo() { std::cout << "foo was called!" << std::endl; }
 

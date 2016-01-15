@@ -1,3 +1,0 @@
-[submodule "dependencies/libuv-cmake"]
-	path = dependencies/libuv-cmake
-	url = https://github.com/sztomi/libuv-cmake.git

@@ -5,7 +5,6 @@
 
 #include "format.h"
 
-using namespace callme::detail;
 using asio::ip::tcp;
 
 namespace callme {
