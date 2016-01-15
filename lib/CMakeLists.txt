@@ -1,4 +1,3 @@
-add_definitions(-DASIO_STANDALONE)
 
 set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 
