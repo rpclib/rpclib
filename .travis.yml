@@ -26,24 +26,24 @@ addons:
       - cmake
       - cmake-data
 
-    install:
-      #- pip install --user codecov
-      - pip install --user cpp-coveralls
-        #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-      - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+install:
+  #- pip install --user codecov
+  - pip install --user cpp-coveralls
+    #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
-    script:
-      - cd $CI_HOME
-      - git submodule init
-      - git submodule update --init --recursive
-      - mkdir build && cd build
-      - cmake -Dcoverage=ON ..
-      - make -j2
+script:
+  - cd $CI_HOME
+  - git submodule init
+  - git submodule update --init --recursive
+  - mkdir build && cd build
+  - cmake -Dcoverage=ON ..
+  - make -j2
 
-    after_success:
-      - ./tests/callme_test
-      - cd ..
-      - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
-        #- codecov
+after_success:
+  - ./tests/callme_test
+  - cd ..
+  - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
+    #- codecov
 
 
