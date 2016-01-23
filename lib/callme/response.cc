@@ -11,7 +11,7 @@ response::response(uint32_t id, std::string const &error,
 
 response::response(msgpack::object const &o)
     : result_(std::make_unique<msgpack::object>()) {
-    LOG_DEBUG("Response %v", o);
+    LOG_DEBUG("Response {}", o);
     response_type r;
     o.convert(&r);
     // TODO: check protocol [t.szelei 2015-12-30]

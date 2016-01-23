@@ -16,7 +16,7 @@ server::server(std::string const &address, uint16_t port)
       socket_(io_),
       disp_(std::make_shared<dispatcher>()),
       suppress_exceptions_(false) {
-    LOG_INFO("Created server on address %v:%v", address, port);
+    LOG_INFO("Created server on address {}:{}", address, port);
     start_accept();
 }
 
