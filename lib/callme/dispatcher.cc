@@ -21,7 +21,7 @@ response dispatcher::dispatch(msgpack::object const &msg) {
 
     auto it_func = funcs_.find(name);
     if (it_func != end(funcs_)) {
-        LOG_DEBUG("Dispatching call to '%v'", name);
+        LOG_DEBUG("Dispatching call to '{}'", name);
         auto result = (it_func->second)(args);
         return response(id, std::string(), std::move(result));
     } else {

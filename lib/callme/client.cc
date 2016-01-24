@@ -29,12 +29,12 @@ void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
         [this](std::error_code ec, tcp::resolver::iterator) {
             if (!ec) {
                 std::unique_lock<std::mutex> lock(mut_connection_finished_);
-                LOG_INFO("Client connected to %v:%v", addr_, port_);
+                LOG_INFO("Client connected to {}:{}", addr_, port_);
                 is_connected_ = true;
                 conn_finished_.notify_all();
                 do_read();
             } else {
-              LOG_ERROR("Error during connect: %v", ec);
+              LOG_ERROR("Error during connect: {}", ec);
             }
         });
 }
@@ -43,7 +43,7 @@ void client::do_read() {
     socket_.async_read_some(
         asio::buffer(pac_.buffer(), default_buffer_size),
         [this](std::error_code ec, std::size_t length) {
-            LOG_TRACE("Reading from tcp. nread = %v", length);
+            LOG_TRACE("Reading from tcp. nread = {}", length);
 
             if (!ec) {
                 pac_.buffer_consumed(length);
@@ -54,7 +54,7 @@ void client::do_read() {
                     try {
                         if (r.get_error().size() > 0) {
                             throw std::runtime_error(
-                                fmt::format("callme: error during RPC call: %v",
+                                fmt::format("callme: error during RPC call: {}",
                                             r.get_error()));
                         }
                         promise.set_value(r.get_result());
