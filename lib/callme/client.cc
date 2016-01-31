@@ -18,20 +18,51 @@ client::client(std::string const &addr, uint16_t port)
       addr_(addr),
       port_(port),
       call_idx_(0),
+      exiting_(false),
       is_connected_(false) {
 
     tcp::resolver resolver(io_);
     auto endpoint_it = resolver.resolve({addr_, std::to_string(port_)});
     do_connect(endpoint_it);
-    workers_.create_threads(1, [this]() {
+    std::thread io_thread([this]() {
         name_thread("client");
         LOG_INFO("Starting");
         io_.run();
         LOG_INFO("Exiting");
     });
+    io_thread_ = std::move(io_thread);
+
+    start_write_requests();
 }
 
-client::~client() { io_.stop(); }
+client::~client() {
+    exiting_ = true;
+    io_.stop();
+    write_queue_.cancel_wait();
+    write_thread_.join();
+    io_thread_.join();
+}
+
+void client::start_write_requests() {
+    std::thread write_thread([this]() {
+        LOG_INFO("write_requests thread starts");
+        msgpack::sbuffer item;
+        while (!exiting_) {
+            write_queue_.wait_dequeue(item);
+
+            // it is possible that the flag changed during the
+            // wait above.
+            if (exiting_) {
+                break;
+            }
+
+            asio::write(socket_, asio::buffer(item.data(), item.size()));
+        }
+        LOG_INFO("write_requests thread exits");
+    });
+
+    write_thread_ = std::move(write_thread);
+}
 
 void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
     asio::async_connect(
@@ -41,6 +72,7 @@ void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
                 std::unique_lock<std::mutex> lock(mut_connection_finished_);
                 LOG_INFO("Client connected to {}:{}", addr_, port_);
                 is_connected_ = true;
+
                 conn_finished_.notify_all();
                 do_read();
             } else {
