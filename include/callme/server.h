@@ -10,6 +10,7 @@
 #include "asio.hpp"
 #include "msgpack.hpp"
 #include "callme/dispatcher.h"
+#include "callme/detail/log.h"
 
 namespace callme {
 
@@ -45,6 +46,8 @@ private:
     std::shared_ptr<dispatcher> disp_;
     std::unique_ptr<std::thread> loop_thread_;
     bool suppress_exceptions_;
+
+    CALLME_CREATE_LOG_CHANNEL(server)
 };
 
 } /* callme */

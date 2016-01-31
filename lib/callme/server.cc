@@ -1,8 +1,9 @@
 #include "callme/server.h"
 #include <stdexcept>
 
-#include "callme/detail/server_session.h"
 #include "callme/detail/log.h"
+#include "callme/detail/dev_utils.h"
+#include "callme/detail/server_session.h"
 #include "format.h"
 
 using namespace callme::detail;
@@ -31,19 +32,23 @@ void server::suppress_exceptions(bool suppress) {
     suppress_exceptions_ = suppress;
 }
 
-void server::run() {
-    io_.run();
-}
+void server::run() { io_.run(); }
 
 void server::async_run() {
-    loop_thread_ = std::make_unique<std::thread>([this]() { io_.run(); });
+    loop_thread_ = std::make_unique<std::thread>([this]() {
+        name_thread("server");
+        LOG_INFO("Starting");
+        io_.run();
+        LOG_INFO("Exiting");
+    });
 }
 
 void server::start_accept() {
     acceptor_.async_accept(socket_, [this](std::error_code ec) {
         if (!ec) {
             LOG_INFO("Accepted connection.");
-            std::make_shared<server_session>(std::move(socket_), disp_)->start();
+            std::make_shared<server_session>(io_, std::move(socket_), disp_)
+                ->start();
         } else {
             // TODO: handle error [sztomi 2016-01-13]
         }

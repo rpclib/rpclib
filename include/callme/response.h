@@ -4,6 +4,7 @@
 #define RESPONSE_H_MVRZEKPX
 
 #include "msgpack.hpp"
+#include "callme/detail/log.h"
 
 namespace callme {
 
@@ -41,6 +42,7 @@ private:
     uint32_t id_;
     std::string error_;
     std::unique_ptr<msgpack::object> result_;
+    CALLME_CREATE_LOG_CHANNEL(response)
 };
 
 } /* callme  */

@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "callme/detail/log.h"
+#include "callme/detail/thread_group.h"
 
 namespace callme {
 
@@ -54,6 +55,7 @@ private:
 
 private:
     asio::io_service io_;
+    asio::strand strand_;
     asio::ip::tcp::socket socket_;
     std::string addr_;
     uint16_t port_;
@@ -65,10 +67,12 @@ private:
     std::atomic<int> call_idx_; //< The index of the last call made
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
 
-    std::unique_ptr<std::thread> loop_thread_;
+    callme::detail::thread_group workers_;
     bool is_connected_;
     std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;
+
+    CALLME_CREATE_LOG_CHANNEL(client)
 
 };
 

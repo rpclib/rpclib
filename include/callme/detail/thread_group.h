@@ -16,7 +16,7 @@ public:
 
     void create_threads(int thread_count, std::function<void()> func) {
         for (size_t i = 0; i < thread_count; ++i) {
-            threads_.emplace_back(func);
+            threads_.push_back(std::thread(func));
         }
     }
 

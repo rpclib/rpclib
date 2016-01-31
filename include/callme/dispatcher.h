@@ -16,6 +16,7 @@
 #include "callme/detail/func_traits.h"
 #include "callme/detail/call.h"
 #include "callme/detail/not.h"
+#include "callme/detail/log.h"
 
 namespace callme {
 
@@ -23,6 +24,7 @@ namespace callme {
 //! names, and callable using a msgpack-rpc call pack.
 class dispatcher {
 public:
+    CALLME_CREATE_LOG_CHANNEL(dispatcher)
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.

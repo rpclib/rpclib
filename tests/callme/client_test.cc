@@ -28,7 +28,7 @@ TEST_F(client_test, instantiation) {
     callme::client client("127.0.0.1", test_port);
 }
 
-TEST_F(client_test, DISABLED_call) {
+TEST_F(client_test, call) {
     EXPECT_CALL(md, dummy_void_zeroarg());
     EXPECT_CALL(md, dummy_void_singlearg(5));
     EXPECT_CALL(md, dummy_void_multiarg(5, 6));

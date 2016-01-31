@@ -1,7 +1,7 @@
 #include <functional>
 
-#include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 #include "callme/dispatcher.h"
 #include "testutils.h"
@@ -45,29 +45,27 @@ class dispatch_test : public binding_test {};
 // library from hand-crafted tuples of msgpack-rpc calls.
 
 TEST_F(binding_test, freefunc_void_zeroarg) {
-    const unsigned char raw_msg[] = {
-        0x94, 0x1,  0x0,  0xb2, 0x64, 0x75, 0x6d, 0x6d, 0x79, 0x5f, 0x76, 0x6f,
-        0x69, 0x64, 0x5f, 0x7a, 0x65, 0x72, 0x6f, 0x61, 0x72, 0x67, 0x90};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb2\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x7a\x65\x72\x6f\x61"
+                                    "\x72\x67\x90";
     dispatcher.bind("dummy_void_zeroarg", &dummy_void_zeroarg);
     raw_call(raw_msg);
     EXPECT_TRUE(g_dummy_void_zeroarg_called);
 }
 
 TEST_F(binding_test, freefunc_void_singlearg) {
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
-                                     0x61, 0x72, 0x67, 0x91, 0x2a};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb4\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
+                                    "\x65\x61\x72\x67\x91\x2a";
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
     raw_call(raw_msg);
     EXPECT_TRUE(g_dummy_void_singlearg_called);
 }
 
 TEST_F(binding_test, freefunc_void_multiarg) {
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb3, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61,
-                                     0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb3\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x6d\x75\x6c\x74\x69"
+                                    "\x61\x72\x67\x92\xcd\x01\x6b\x0c";
     dispatcher.bind("dummy_void_multiarg", &dummy_void_multiarg);
     raw_call(raw_msg);
     EXPECT_TRUE(g_dummy_void_multiarg_called);
@@ -76,9 +74,9 @@ TEST_F(binding_test, freefunc_void_multiarg) {
 TEST_F(binding_test, memfunc_void_zeroarg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_zeroarg());
-    const unsigned char raw_msg[] = {
-        0x94, 0x1,  0x0,  0xb2, 0x64, 0x75, 0x6d, 0x6d, 0x79, 0x5f, 0x76, 0x6f,
-        0x69, 0x64, 0x5f, 0x7a, 0x65, 0x72, 0x6f, 0x61, 0x72, 0x67, 0x90};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb2\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x7a\x65\x72\x6f\x61"
+                                    "\x72\x67\x90";
     dispatcher.bind("dummy_void_zeroarg", [&md]() { md.dummy_void_zeroarg(); });
     raw_call(raw_msg);
 }
@@ -86,10 +84,9 @@ TEST_F(binding_test, memfunc_void_zeroarg) {
 TEST_F(binding_test, memfunc_void_singlearg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_singlearg(42));
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
-                                     0x61, 0x72, 0x67, 0x91, 0x2a};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb4\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
+                                    "\x65\x61\x72\x67\x91\x2a";
     dispatcher.bind("dummy_void_singlearg",
                     [&md](int x) { md.dummy_void_singlearg(x); });
     raw_call(raw_msg);
@@ -98,10 +95,9 @@ TEST_F(binding_test, memfunc_void_singlearg) {
 TEST_F(binding_test, memfunc_void_multiarg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_multiarg(363, 12));
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb3, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61,
-                                     0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb3\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x6d\x75\x6c\x74\x69"
+                                    "\x61\x72\x67\x92\xcd\x01\x6b\x0c";
     dispatcher.bind("dummy_void_multiarg",
                     [&md](int x, int y) { md.dummy_void_multiarg(x, y); });
     raw_call(raw_msg);
@@ -110,9 +106,9 @@ TEST_F(binding_test, memfunc_void_multiarg) {
 TEST_F(binding_test, stdfunc_void_zeroarg) {
     MockDummy md;
     EXPECT_CALL(md, dummy_void_zeroarg());
-    const unsigned char raw_msg[] = {
-        0x94, 0x1,  0x0,  0xb2, 0x64, 0x75, 0x6d, 0x6d, 0x79, 0x5f, 0x76, 0x6f,
-        0x69, 0x64, 0x5f, 0x7a, 0x65, 0x72, 0x6f, 0x61, 0x72, 0x67, 0x90};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb2\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x7a\x65\x72\x6f\x61"
+                                    "\x72\x67\x90";
     dispatcher.bind(
         "dummy_void_zeroarg",
         std::function<void()>(std::bind(&IDummy::dummy_void_zeroarg, &md)));
@@ -123,10 +119,9 @@ TEST_F(binding_test, stdfunc_void_singlearg) {
     using namespace std::placeholders;
     MockDummy md;
     EXPECT_CALL(md, dummy_void_singlearg(42));
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
-                                     0x61, 0x72, 0x67, 0x91, 0x2a};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb4\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
+                                    "\x65\x61\x72\x67\x91\x2a";
     dispatcher.bind("dummy_void_singlearg",
                     std::function<void(int)>(
                         std::bind(&IDummy::dummy_void_singlearg, &md, _1)));
@@ -137,10 +132,9 @@ TEST_F(binding_test, stdfunc_void_multiarg) {
     using namespace std::placeholders;
     MockDummy md;
     EXPECT_CALL(md, dummy_void_multiarg(363, 12));
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb3, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61,
-                                     0x72, 0x67, 0x92, 0xcd, 0x1,  0x6b, 0xc};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb3\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x6d\x75\x6c\x74\x69"
+                                    "\x61\x72\x67\x92\xcd\x01\x6b\x0c";
     dispatcher.bind("dummy_void_multiarg",
                     std::function<void(int, int)>(
                         std::bind(&IDummy::dummy_void_multiarg, &md, _1, _2)));
@@ -149,10 +143,9 @@ TEST_F(binding_test, stdfunc_void_multiarg) {
 
 TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_few) {
     // raw_msg contains a call to dummy_void_singlearg but zero arguments
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
-                                     0x61, 0x72, 0x67, 0x90};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb4\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
+                                    "\x65\x61\x72\x67\x90";
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
     EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
     EXPECT_FALSE(g_dummy_void_singlearg_called);
@@ -160,10 +153,9 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_few) {
 
 TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
     // raw_msg contains a call to dummy_void_singlearg but with two
-    const unsigned char raw_msg[] = {0x94, 0x1,  0x0,  0xb4, 0x64, 0x75, 0x6d,
-                                     0x6d, 0x79, 0x5f, 0x76, 0x6f, 0x69, 0x64,
-                                     0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65,
-                                     0x61, 0x72, 0x67, 0x92, 0x1,  0x2};
+    const unsigned char raw_msg[] = "\x94\x00\x00\xb4\x64\x75\x6d\x6d\x79\x5f"
+                                    "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
+                                    "\x65\x61\x72\x67\x92\x2a\x2b";
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
     EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
     EXPECT_FALSE(g_dummy_void_singlearg_called);
@@ -171,7 +163,7 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
-    auto msg = make_unpacked(1, 0, "bar", msgpack::type::nil());
+    auto msg = make_unpacked(0, 0, "bar", msgpack::type::nil());
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error().size() > 0);
 }

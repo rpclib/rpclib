@@ -1,27 +1,37 @@
 #include "callme/client.h"
-#include "callme/response.h"
+#include "callme/detail/dev_utils.h"
 #include "callme/detail/log.h"
+#include "callme/response.h"
 #include <thread>
 
 #include "format.h"
 
 using asio::ip::tcp;
+using namespace callme::detail;
 
 namespace callme {
 
 client::client(std::string const &addr, uint16_t port)
-    : io_(), socket_(io_), addr_(addr), port_(port), call_idx_(0) {
+    : io_(),
+      strand_(io_),
+      socket_(io_),
+      addr_(addr),
+      port_(port),
+      call_idx_(0),
+      is_connected_(false) {
 
     tcp::resolver resolver(io_);
     auto endpoint_it = resolver.resolve({addr_, std::to_string(port_)});
     do_connect(endpoint_it);
-    loop_thread_ = std::make_unique<std::thread>([this]() { io_.run(); });
+    workers_.create_threads(1, [this]() {
+        name_thread("client");
+        LOG_INFO("Starting");
+        io_.run();
+        LOG_INFO("Exiting");
+    });
 }
 
-client::~client() {
-    io_.stop();
-    loop_thread_->join();
-}
+client::~client() { io_.stop(); }
 
 void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
     asio::async_connect(
@@ -34,7 +44,7 @@ void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
                 conn_finished_.notify_all();
                 do_read();
             } else {
-              LOG_ERROR("Error during connect: {}", ec);
+                LOG_ERROR("Error during connect: {}", ec);
             }
         });
 }
@@ -42,7 +52,7 @@ void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
 void client::do_read() {
     socket_.async_read_some(
         asio::buffer(pac_.buffer(), default_buffer_size),
-        [this](std::error_code ec, std::size_t length) {
+        strand_.wrap([this](std::error_code ec, std::size_t length) {
             LOG_TRACE("Reading from tcp. nread = {}", length);
 
             if (!ec) {
@@ -51,6 +61,7 @@ void client::do_read() {
                 while (pac_.next(&result)) {
                     auto r = response(result.get());
                     auto &promise = ongoing_calls_[r.get_id()];
+                    // ongoing_calls_.erase(r.get_id());
                     try {
                         if (r.get_error().size() > 0) {
                             throw std::runtime_error(
@@ -62,9 +73,12 @@ void client::do_read() {
                         promise.set_exception(std::current_exception());
                     }
                 }
+
+                // if (ongoing_calls_.size() > 0) {
                 do_read();
+                //}
             }
-        });
+        }));
 }
 
 void client::wait_conn() {

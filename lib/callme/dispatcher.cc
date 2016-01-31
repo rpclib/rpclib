@@ -1,4 +1,5 @@
 #include "callme/dispatcher.h"
+#include <cassert>
 #include "callme/detail/log.h"
 #include "format.h"
 
@@ -15,6 +16,8 @@ response dispatcher::dispatch(msgpack::object const &msg) {
     msg.convert(&the_call);
 
     auto &&type = std::get<0>(the_call);
+    assert(type == 0);
+
     auto &&id = std::get<1>(the_call);
     auto &&name = std::get<2>(the_call);
     auto &&args = std::get<3>(the_call);

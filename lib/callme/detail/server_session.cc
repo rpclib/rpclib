@@ -4,8 +4,10 @@
 namespace callme {
 namespace detail {
 
-server_session::server_session(asio::ip::tcp::socket socket, std::shared_ptr<dispatcher> disp)
-    : socket_(std::move(socket)), disp_(disp), pac_() {
+server_session::server_session(asio::io_service &io,
+                               asio::ip::tcp::socket socket,
+                               std::shared_ptr<dispatcher> disp)
+    : socket_(std::move(socket)), strand_(io), disp_(disp), pac_() {
     pac_.reserve_buffer(default_buffer_size); // TODO: make this configurable
                                               // [sztomi 2016-01-13]
 }
@@ -19,14 +21,14 @@ void server_session::do_read() {
         [this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
                 pac_.buffer_consumed(length);
-                msgpack::unpacked result;
-                while (pac_.next(&result)) {
-                    auto msg = result.get();
+                while (pac_.next(&result_)) {
+                    auto msg = result_.get();
                     LOG_DEBUG("msgpack read from tcp.");
-                    buf_.clear();
+                    output_buf_.clear();
                     try {
+                        LOG_TRACE("Request {}", msg);
                         auto resp = disp_->dispatch(msg);
-                        resp.write(&buf_);
+                        resp.write(&output_buf_);
                     } catch (std::exception &e) {
                         dispatcher::msg_type the_call;
                         msg.convert(&the_call);
@@ -46,24 +48,15 @@ void server_session::do_read() {
                                 "contained this information: {2}.",
                                 name, args.via.array.size, e.what()),
                             std::make_unique<msgpack::object>());
-                        error_resp.write(&buf_);
+                        error_resp.write(&output_buf_);
 
-                        //if (!suppress_exceptions_) {
-                            throw;
+                        // if (!suppress_exceptions_) {
+                        throw;
                         //}
                     }
 
-                    asio::async_write(socket_,
-                                      asio::buffer(buf_.data(), buf_.size()),
-                                      [this, self](std::error_code ec,
-                                                   std::size_t /* length */) {
-                                          if (!ec) {
-                                              do_read();
-                                          } else {
-                                              // TODO: Handle error [sztomi
-                                              // 2016-01-14]
-                                          }
-                                      });
+                    asio::write(socket_, asio::buffer(output_buf_.data(),
+                                                      output_buf_.size()));
                 }
 
                 do_read();
