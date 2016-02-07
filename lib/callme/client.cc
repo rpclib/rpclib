@@ -31,37 +31,40 @@ client::client(std::string const &addr, uint16_t port)
         LOG_INFO("Exiting");
     });
     io_thread_ = std::move(io_thread);
-
-    start_write_requests();
 }
 
 client::~client() {
     exiting_ = true;
     io_.stop();
-    write_queue_.cancel_wait();
-    write_thread_.join();
+    if (write_running_.test_and_set(std::memory_order_acquire)) {
+        write_thread_.join();
+    }
     io_thread_.join();
 }
 
-void client::start_write_requests() {
-    std::thread write_thread([this]() {
-        LOG_INFO("write_requests thread starts");
-        msgpack::sbuffer item;
-        while (!exiting_) {
-            write_queue_.wait_dequeue(item);
+void client::write(std::unique_ptr<msgpack::sbuffer> item) {
+    wait_conn();
+    write_queue_.push_back(std::move(item));
 
-            // it is possible that the flag changed during the
-            // wait above.
-            if (exiting_) {
-                break;
+    if (write_queue_.size() > 1) {
+        return; // there is an ongoing write chain so don't start another
+    }
+
+    do_write();
+}
+
+void client::do_write() {
+    auto &item = write_queue_.front();
+    // the data in item remains valid until the handler is called
+    // since it will still be in the queue physically until then.
+    asio::async_write(
+        socket_, asio::buffer(item->data(), item->size()),
+        strand_.wrap([this](std::error_code ec, std::size_t transferred) {
+            write_queue_.pop_front();
+            if (write_queue_.size() > 0) {
+                do_write();
             }
-
-            asio::write(socket_, asio::buffer(item.data(), item.size()));
-        }
-        LOG_INFO("write_requests thread exits");
-    });
-
-    write_thread_ = std::move(write_thread);
+        }));
 }
 
 void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
@@ -84,7 +87,7 @@ void client::do_connect(tcp::resolver::iterator endpoint_iterator) {
 void client::do_read() {
     socket_.async_read_some(
         asio::buffer(pac_.buffer(), default_buffer_size),
-        strand_.wrap([this](std::error_code ec, std::size_t length) {
+        [this](std::error_code ec, std::size_t length) {
             LOG_TRACE("Reading from tcp. nread = {}", length);
 
             if (!ec) {
@@ -92,8 +95,9 @@ void client::do_read() {
                 msgpack::unpacked result;
                 while (pac_.next(&result)) {
                     auto r = response(result.get());
-                    auto &promise = ongoing_calls_[r.get_id()];
-                    // ongoing_calls_.erase(r.get_id());
+                    auto id = r.get_id();
+                    auto &promise = ongoing_calls_[id];
+                    strand_.post([this, id]() { ongoing_calls_.erase(id); });
                     try {
                         if (r.get_error().size() > 0) {
                             throw std::runtime_error(
@@ -110,7 +114,7 @@ void client::do_read() {
                 do_read();
                 //}
             }
-        }));
+        });
 }
 
 void client::wait_conn() {

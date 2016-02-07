@@ -1,11 +1,11 @@
 #pragma once
 
 #include "asio.hpp"
-#include "blockingconcurrentqueue.h"
 #include "msgpack.hpp"
 
 #include <atomic>
 #include <condition_variable>
+#include <deque>
 #include <future>
 #include <mutex>
 #include <unordered_map>
@@ -58,8 +58,11 @@ private:
     void wait_conn();
 
     //! \brief Waits for the write queue and writes any buffers to the network
-    //! connection.
-    void start_write_requests();
+    //! connection. Should be executed throught strand_.
+    void write(std::unique_ptr<msgpack::sbuffer> item);
+
+    //! \brief Performs writing the items of the write queue in order.
+    void do_write();
 
 private:
     asio::io_service io_;
@@ -74,6 +77,7 @@ private:
 
     std::atomic<int> call_idx_; //< The index of the last call made
     std::atomic_bool exiting_;
+    std::atomic_flag write_running_ = ATOMIC_FLAG_INIT;
     std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
 
     std::atomic_bool is_connected_;
@@ -81,7 +85,7 @@ private:
     std::mutex mut_connection_finished_;
     std::thread io_thread_, write_thread_;
 
-    moodycamel::BlockingConcurrentQueue<msgpack::sbuffer> write_queue_;
+    std::deque<std::unique_ptr<msgpack::sbuffer>> write_queue_;
 
     CALLME_CREATE_LOG_CHANNEL(client)
 };

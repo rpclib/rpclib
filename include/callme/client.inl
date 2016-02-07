@@ -20,11 +20,13 @@ std::future<msgpack::object> client::call_async(std::string const &func_name,
         std::make_tuple(static_cast<uint8_t>(client::call_type::sync), idx,
                         func_name, args_obj);
 
-    msgpack::sbuffer buffer;
-    msgpack::pack(buffer, call_obj);
+    auto buffer = new msgpack::sbuffer;
+    msgpack::pack(*buffer, call_obj);
 
-    ongoing_calls_.insert(std::make_pair(idx, std::promise<object>()));
-    write_queue_.enqueue(std::move(buffer));
+    strand_.post([this, buffer, idx]() {
+                ongoing_calls_.insert(std::make_pair(idx, std::promise<object>()));
+                write(std::unique_ptr<msgpack::sbuffer>(buffer));
+            });
 
     return ongoing_calls_[idx].get_future();
 }
