@@ -24,6 +24,11 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /DEBUG")
 	STRING(REPLACE "/O2" "/Od" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 else()
-    target_link_libraries(${TEST_PROJECT_NAME}
-        ${CMAKE_PROJECT_NAME} pthread)
+    if(logging)
+        target_link_libraries(${TEST_PROJECT_NAME}
+            ${CMAKE_PROJECT_NAME} pthread rt)
+    else()
+        target_link_libraries(${TEST_PROJECT_NAME}
+            ${CMAKE_PROJECT_NAME} pthread)
+    endif()
 endif()
