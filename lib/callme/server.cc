@@ -47,7 +47,7 @@ void server::start_accept() {
     acceptor_.async_accept(socket_, [this](std::error_code ec) {
         if (!ec) {
             LOG_INFO("Accepted connection.");
-            std::make_shared<server_session>(io_, std::move(socket_), disp_)
+            std::make_shared<server_session>(&io_, std::move(socket_), disp_)
                 ->start();
         } else {
             // TODO: handle error [sztomi 2016-01-13]

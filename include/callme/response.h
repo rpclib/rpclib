@@ -23,6 +23,8 @@ public:
     //! \brief Writes the response pack to a buffer.
     void write(msgpack::sbuffer *buf) const;
 
+    msgpack::sbuffer get_data() const;
+
     //! \brief Returns the call id/index used to identify which call
     //! this response corresponds to.
     int get_id() const;
@@ -41,7 +43,9 @@ public:
 private:
     uint32_t id_;
     std::string error_;
-    std::unique_ptr<msgpack::object> result_;
+    // I really wish to avoid shared_ptr here but at this asio does not work with 
+    // move-only handlers in post() and I need to capture responses in lambdas.
+    std::shared_ptr<msgpack::object> result_;
     CALLME_CREATE_LOG_CHANNEL(response)
 };
 

@@ -8,15 +8,15 @@
 #include <memory>
 #include <unordered_map>
 
-#include <msgpack.hpp>
 #include "format.h"
+#include <msgpack.hpp>
 
-#include "callme/response.h"
+#include "callme/detail/call.h"
 #include "callme/detail/func_tools.h"
 #include "callme/detail/func_traits.h"
-#include "callme/detail/call.h"
-#include "callme/detail/not.h"
 #include "callme/detail/log.h"
+#include "callme/detail/not.h"
+#include "callme/response.h"
 
 namespace callme {
 
@@ -30,30 +30,32 @@ public:
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
     //! \tparam Args The types of the arguments.
-    template <typename F> void bind(std::string const& name, F func);
+    template <typename F> void bind(std::string const &name, F func);
 
     //! \defgroup Tag-dispatched bind implementations for various functor cases.
     //! @{
 
     //! \brief Stores a void, zero-arg functor with a name.
     template <typename F>
-    void bind(std::string const& name, F func, detail::tags::void_result const &,
+    void bind(std::string const &name, F func,
+              detail::tags::void_result const &,
               detail::tags::zero_arg const &);
 
     //! \brief Stores a void, non-zero-arg functor with a name.
     template <typename F>
-    void bind(std::string const& name, F func, detail::tags::void_result const &,
+    void bind(std::string const &name, F func,
+              detail::tags::void_result const &,
               detail::tags::nonzero_arg const &);
 
     //! \brief Stores a non-void, zero-arg functor with a name.
     template <typename F>
-    void bind(std::string const& name, F func,
+    void bind(std::string const &name, F func,
               detail::tags::nonvoid_result const &,
               detail::tags::zero_arg const &);
 
     //! \brief Stores a non-void, non-zero-arg functor with a name.
     template <typename F>
-    void bind(std::string const& name, F func,
+    void bind(std::string const &name, F func,
               detail::tags::nonvoid_result const &,
               detail::tags::nonzero_arg const &);
 
@@ -70,15 +72,18 @@ public:
     //! \brief Processes a message that contains a call according to
     //! the Msgpack-RPC spec.
     //! \param msg_obj The messagepack object that contains the call.
-    //! \param exc_strat The exception strategy to use.
+    //! \param suppress_exceptions If true, exceptions will be caught and
+    //! written
+    //! as response for the client.
     //! \throws std::runtime_error If the types of the parameters are not
     //! convertible to the called functions' parameters.
-    response dispatch(msgpack::object const &msg);
+    response dispatch(msgpack::object const &msg,
+                      bool suppress_exceptions = false);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
-    using adaptor_type =
-        std::function<std::unique_ptr<msgpack::object>(msgpack::object const &)>;
+    using adaptor_type = std::function<std::unique_ptr<msgpack::object>(
+        msgpack::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
     using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;

@@ -32,6 +32,16 @@ void response::write(msgpack::sbuffer* buf) const {
     msgpack::pack(*buf, r);
 }
 
+msgpack::sbuffer response::get_data() const {
+    msgpack::sbuffer data;
+    response_type r(1, id_,
+                    error_.size() > 0 ? msgpack::object(error_)
+                                      : msgpack::object(msgpack::type::nil()),
+                    *result_); // TODO: avoid copy [sztomi, 2015-11-23]
+    msgpack::pack(&data, r);
+    return data;
+}
+
 int response::get_id() const { return id_; }
 
 std::string const &response::get_error() const { return error_; }
