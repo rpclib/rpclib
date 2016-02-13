@@ -27,7 +27,7 @@ else()
     if(logging)
         target_link_libraries(${TEST_PROJECT_NAME}
             ${CMAKE_PROJECT_NAME} pthread rt)
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}" -Wl,--no-as-needed)
+        set(CMAKE_EXE_LINKER_FLAGS -Wl,--no-as-needed "${CMAKE_EXE_LINKER_FLAGS}")
     else()
         target_link_libraries(${TEST_PROJECT_NAME}
             ${CMAKE_PROJECT_NAME} pthread)
