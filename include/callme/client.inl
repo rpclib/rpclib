@@ -2,13 +2,13 @@ namespace callme {
 
 template <typename... Args>
 msgpack::object client::call(std::string const &func_name, Args... args) {
-    auto future = call_async(func_name, std::forward<Args>(args)...);
+    auto future = async_call(func_name, std::forward<Args>(args)...);
     future.wait();
     return future.get();
 }
 
 template <typename... Args>
-std::future<msgpack::object> client::call_async(std::string const &func_name,
+std::future<msgpack::object> client::async_call(std::string const &func_name,
                                                 Args... args) {
     wait_conn();
     using msgpack::object;
@@ -25,7 +25,7 @@ std::future<msgpack::object> client::call_async(std::string const &func_name,
     msgpack::pack(*buffer, call_obj);
 
     // So I think the following warrants a little explanation.
-    // ongoiing_calls_ can only be touched inside the strand. However, I need 
+    // ongoing_calls_ can only be touched inside the strand. However, I need 
     // to return a future. In order to get the promise inside the lambda, I 
     // would normally move it, but right now asio::post does not accept 
     // handlers that are not copy constructable. Hence, I allocate the promise

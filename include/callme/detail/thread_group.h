@@ -3,8 +3,8 @@
 #ifndef THREAD_GROUP_H_MQSLWGKD
 #define THREAD_GROUP_H_MQSLWGKD
 
-#include <vector>
 #include <thread>
+#include <vector>
 
 namespace callme {
 namespace detail {
@@ -22,7 +22,9 @@ public:
 
     void join_all() {
         for (auto &t : threads_) {
-            t.join();
+            if (t.joinable()) {
+                t.join();
+            }
         }
     }
 

@@ -22,10 +22,8 @@ server::server(std::string const &address, uint16_t port)
 }
 
 server::~server() {
-    if (loop_thread_) {
-        io_.stop();
-        loop_thread_->join();
-    }
+    io_.stop();
+    loop_workers_.join_all();
 }
 
 void server::suppress_exceptions(bool suppress) {
@@ -34,8 +32,8 @@ void server::suppress_exceptions(bool suppress) {
 
 void server::run() { io_.run(); }
 
-void server::async_run() {
-    loop_thread_ = std::make_unique<std::thread>([this]() {
+void server::async_run(std::size_t worker_threads) {
+    loop_workers_.create_threads(worker_threads, [this]() {
         name_thread("server");
         LOG_INFO("Starting");
         io_.run();

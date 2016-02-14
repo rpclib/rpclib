@@ -44,7 +44,7 @@ public:
     //! (which is a msgpack::object). \see callme::maybe.
     //! \tparam Args THe types of the arguments.
     template <typename... Args>
-    std::future<msgpack::object> call_async(std::string const &func_name,
+    std::future<msgpack::object> async_call(std::string const &func_name,
                                             Args... args);
 
 private:

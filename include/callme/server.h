@@ -3,14 +3,15 @@
 #ifndef SERVER_H_S0HB5KXY
 #define SERVER_H_S0HB5KXY
 
-#include <stdint.h>
 #include <memory>
+#include <stdint.h>
 #include <thread>
 
 #include "asio.hpp"
-#include "msgpack.hpp"
-#include "callme/dispatcher.h"
 #include "callme/detail/log.h"
+#include "callme/detail/thread_group.h"
+#include "callme/dispatcher.h"
+#include "msgpack.hpp"
 
 namespace callme {
 
@@ -22,9 +23,10 @@ public:
     //! \brief Starts the server loop. This is a blocking call.
     void run();
 
-    //! \brief Starts the server loop on a separate thread. 
-    //! This is a non-blocking call.
-    void async_run();
+    //! \brief Starts the server loop on a separate thread. This is a
+    //! non-blocking call.
+    //! \param worker_threads The number of worker threads to start.
+    void async_run(std::size_t worker_threads = 1);
 
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
@@ -44,7 +46,7 @@ private:
     asio::ip::tcp::acceptor acceptor_;
     asio::ip::tcp::socket socket_;
     std::shared_ptr<dispatcher> disp_;
-    std::unique_ptr<std::thread> loop_thread_;
+    callme::detail::thread_group loop_workers_;
     bool suppress_exceptions_;
 
     CALLME_CREATE_LOG_CHANNEL(server)

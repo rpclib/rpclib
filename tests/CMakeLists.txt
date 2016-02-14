@@ -9,6 +9,7 @@ set(TEST_SOURCES
     callme/dispatcher_test.cc
     callme/client_test.cc
     callme/response_test.cc
+    callme/server_test.cc
     )
 
 include_directories("${PROJECT_SOURCE_DIR}/tests")
