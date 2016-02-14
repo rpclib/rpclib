@@ -26,8 +26,7 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 else()
     if(logging)
         target_link_libraries(${TEST_PROJECT_NAME}
-            ${CMAKE_PROJECT_NAME} pthread)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--no-as-needed -lrt")
+            ${CMAKE_PROJECT_NAME} pthread rt)
     else()
         target_link_libraries(${TEST_PROJECT_NAME}
             ${CMAKE_PROJECT_NAME} pthread)

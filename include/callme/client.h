@@ -12,6 +12,7 @@
 
 #include "callme/detail/log.h"
 #include "callme/detail/thread_group.h"
+#include "callme/detail/async_writer.h"
 
 namespace callme {
 

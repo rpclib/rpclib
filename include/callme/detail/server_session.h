@@ -9,12 +9,14 @@
 #include <memory>
 #include <vector>
 
+#include "callme/detail/async_writer.h"
 #include "callme/dispatcher.h"
 
 namespace callme {
 namespace detail {
 
-class server_session : public std::enable_shared_from_this<server_session> {
+class server_session : public async_writer,
+                       public std::enable_shared_from_this<server_session> {
 public:
     server_session(asio::io_service *io, asio::ip::tcp::socket socket,
                    std::shared_ptr<dispatcher> disp);
@@ -22,15 +24,11 @@ public:
 
 private:
     void do_read();
-    void do_write();
-    void write(msgpack::sbuffer&& resp);
 
 private:
-    asio::io_service* io_;
-    asio::ip::tcp::socket socket_;
-    asio::strand write_strand_, read_strand_;
+    asio::io_service *io_;
+    asio::strand read_strand_;
     std::shared_ptr<dispatcher> disp_;
-    std::deque<msgpack::sbuffer> write_queue_;
     msgpack::unpacker pac_;
     msgpack::sbuffer output_buf_;
     static const uint32_t default_buffer_size = 4096;

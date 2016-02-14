@@ -10,6 +10,7 @@ msgpack::object client::call(std::string const &func_name, Args... args) {
 template <typename... Args>
 std::future<msgpack::object> client::call_async(std::string const &func_name,
                                                 Args... args) {
+    wait_conn();
     using msgpack::object;
     LOG_DEBUG("Calling {}", func_name);
     wait_conn();
@@ -23,11 +24,26 @@ std::future<msgpack::object> client::call_async(std::string const &func_name,
     auto buffer = new msgpack::sbuffer;
     msgpack::pack(*buffer, call_obj);
 
-    strand_.post([this, buffer, idx]() {
-                ongoing_calls_.insert(std::make_pair(idx, std::promise<object>()));
+    // So I think the following warrants a little explanation.
+    // ongoiing_calls_ can only be touched inside the strand. However, I need 
+    // to return a future. In order to get the promise inside the lambda, I 
+    // would normally move it, but right now asio::post does not accept 
+    // handlers that are not copy constructable. Hence, I allocate the promise
+    // on the heap, get its future, *copy the pointer inside the lambda*,
+    // move the pointed promise into ongoing_calls_ and free whatever needs being
+    // freed after the moved-from promise object pointed by p. 
+    // Ugly, but works.
+    // TODO: Change to plain moving when asio starts supporting move-only
+    // handlers. [sztomi, 2016-02-14]
+    auto p = new std::promise<object>();
+    auto ft = p->get_future();
+
+    strand_.post([this, buffer, idx, p]() {
+                ongoing_calls_.insert(std::make_pair(idx, std::move(*p)));
+                delete p;
                 write(std::unique_ptr<msgpack::sbuffer>(buffer));
             });
 
-    return ongoing_calls_[idx].get_future();
+    return ft;
 }
 }

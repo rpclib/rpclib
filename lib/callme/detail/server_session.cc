@@ -7,9 +7,8 @@ namespace detail {
 server_session::server_session(asio::io_service *io,
                                asio::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp)
-    : io_(io),
-      socket_(std::move(socket)),
-      write_strand_(*io),
+    : async_writer(io, std::move(socket)),
+      io_(io),
       read_strand_(*io),
       disp_(disp),
       pac_() {
@@ -18,29 +17,6 @@ server_session::server_session(asio::io_service *io,
 }
 
 void server_session::start() { do_read(); }
-
-void server_session::write(msgpack::sbuffer &&data) {
-    write_queue_.push_back(std::move(data));
-    if (write_queue_.size() > 1) {
-        return; // there is an ongoing write chain so don't start another
-    }
-
-    do_write();
-}
-
-void server_session::do_write() {
-    auto &item = write_queue_.front();
-    // the data in item remains valid until the handler is called
-    // since it will still be in the queue physically until then.
-    asio::async_write(
-        socket_, asio::buffer(item.data(), item.size()),
-        write_strand_.wrap([this](std::error_code ec, std::size_t transferred) {
-            write_queue_.pop_front();
-            if (write_queue_.size() > 0) {
-                do_write();
-            }
-        }));
-}
 
 void server_session::do_read() {
     auto self(shared_from_this());
@@ -61,8 +37,8 @@ void server_session::do_read() {
                                        result.zone().release())
                     ]() {
                         auto resp = disp_->dispatch(msg);
-                        io_->post(write_strand_.wrap(
-                            [this, resp, z]() { write(resp.get_data()); }));
+                        write_strand_.post(
+                            [this, resp, z]() { write(resp.get_data()); });
                     });
                 }
 
