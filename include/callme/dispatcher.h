@@ -24,7 +24,6 @@ namespace callme {
 //! names, and callable using a msgpack-rpc call pack.
 class dispatcher {
 public:
-    CALLME_CREATE_LOG_CHANNEL(dispatcher)
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
@@ -90,6 +89,7 @@ public:
 
 private:
     std::unordered_map<std::string, adaptor_type> funcs_;
+    CALLME_CREATE_LOG_CHANNEL(dispatcher)
 };
 }
 
