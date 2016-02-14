@@ -39,7 +39,7 @@ void server_session::do_read() {
                         auto resp = disp_->dispatch(msg);
 #ifdef _MSC_VER
                         std::function<void()> mary_had_a_little_lambda(
-                            [this, resp, z]() { write(resp.get_data()); });
+                            [this, resp, z]() -> void { write(resp.get_data()); });
                         write_strand_.post(mary_had_a_little_lambda);
 #else
                         write_strand_.post(
