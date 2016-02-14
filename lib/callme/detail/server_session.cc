@@ -28,7 +28,6 @@ void server_session::do_read() {
                 msgpack::unpacked result;
                 while (pac_.next(&result)) {
                     auto msg = result.get();
-                    LOG_TRACE("msgpack read {}", msg);
                     output_buf_.clear();
 
                     // any worker thread can take this call

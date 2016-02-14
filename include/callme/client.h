@@ -60,15 +60,11 @@ private:
 
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
-    void write(std::unique_ptr<msgpack::sbuffer> item);
-
-    //! \brief Performs writing the items of the write queue in order.
-    void do_write();
+    void write(msgpack::sbuffer item);
 
 private:
     asio::io_service io_;
     asio::strand strand_;
-    asio::ip::tcp::socket socket_;
     std::string addr_;
     uint16_t port_;
     msgpack::unpacker pac_;
@@ -86,7 +82,7 @@ private:
     std::mutex mut_connection_finished_;
     std::thread io_thread_, write_thread_;
 
-    std::deque<std::unique_ptr<msgpack::sbuffer>> write_queue_;
+    detail::async_writer writer_;
 
     CALLME_CREATE_LOG_CHANNEL(client)
 };

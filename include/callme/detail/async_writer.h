@@ -16,7 +16,6 @@ public:
     async_writer(asio::io_service *io, asio::ip::tcp::socket socket)
         : socket_(std::move(socket)), write_strand_(*io) {}
 
-protected:
     void do_write() {
         auto &item = write_queue_.front();
         // the data in item remains valid until the handler is called
@@ -40,7 +39,6 @@ protected:
         do_write();
     }
 
-protected:
     asio::ip::tcp::socket socket_;
     asio::strand write_strand_;
 

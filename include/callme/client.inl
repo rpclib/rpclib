@@ -13,7 +13,6 @@ std::future<msgpack::object> client::async_call(std::string const &func_name,
     wait_conn();
     using msgpack::object;
     LOG_DEBUG("Calling {}", func_name);
-    wait_conn();
 
     auto args_obj = std::make_tuple(args...);
     const int idx = call_idx_++;
@@ -32,7 +31,7 @@ std::future<msgpack::object> client::async_call(std::string const &func_name,
     // on the heap, get its future, *copy the pointer inside the lambda*,
     // move the pointed promise into ongoing_calls_ and free whatever needs being
     // freed after the moved-from promise object pointed by p. 
-    // Ugly, but works.
+    // Ugly, but works. (same deal with buffer).
     // TODO: Change to plain moving when asio starts supporting move-only
     // handlers. [sztomi, 2016-02-14]
     auto p = new std::promise<object>();
@@ -41,7 +40,8 @@ std::future<msgpack::object> client::async_call(std::string const &func_name,
     strand_.post([this, buffer, idx, p]() {
                 ongoing_calls_.insert(std::make_pair(idx, std::move(*p)));
                 delete p;
-                write(std::unique_ptr<msgpack::sbuffer>(buffer));
+                write(std::move(*buffer));
+                delete buffer;
             });
 
     return ft;
