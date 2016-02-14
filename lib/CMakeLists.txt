@@ -11,7 +11,6 @@ add_library(${OUTPUT_LIBRARY_NAME}
     callme/server.cc
     callme/response.cc
     callme/client.cc
-    callme/detail/log.cc
     callme/detail/server_session.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}

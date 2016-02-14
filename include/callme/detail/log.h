@@ -12,13 +12,13 @@
 #include <mutex>
 #include <sstream>
 
-#ifndef _MSC_VER
-
 #include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <time.h>
 
+#ifdef _MSC_VER
+#include <Windows.h>
 #endif
 
 namespace callme {
@@ -65,29 +65,25 @@ private:
     logger() {}
 
 #ifdef _MSC_VER
-    struct timespec {
-        long tv_sec;
-        long tv_nsec;
-    };
-    static int clock_gettime(int, struct timespec *spec) {
-        __int64 wintime;
-        GetSystemTimeAsFileTime((FILETIME *)&wintime);
-        wintime -= 116444736000000000i64;            // 1jan1601 to 1jan1970
-        spec->tv_sec = wintime / 10000000i64;        // seconds
-        spec->tv_nsec = wintime % 10000000i64 * 100; // nano-seconds
-        return 0;
-    }
-#endif
-
+	static std::string now() {
+		std::stringstream ss;
+		SYSTEMTIME t;
+		GetSystemTime(&t);
+		ss << fmt::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay, t.wHour,
+			              t.wMinute, t.wSecond, t.wMilliseconds);
+		return ss.str();
+	}
+#else
     static std::string now() {
         std::stringstream ss;
         timespec now_t;
         clock_gettime(CLOCK_REALTIME, &now_t);
-        ss << std::put_time(std::localtime(&now_t.tv_sec), "%F %T")
+        ss << std::put_time(std::localtime(reinterpret_cast<time_t*>(&now_t.tv_sec)), "%F %T")
            << fmt::format(".{:03}",
                           round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
         return ss.str();
     }
+#endif
 
     void basic_log(const char *severity, const char *channel,
                    std::string const &msg) {
