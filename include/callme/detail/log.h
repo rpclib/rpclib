@@ -65,20 +65,22 @@ private:
     logger() {}
 
 #ifdef _MSC_VER
-	static std::string now() {
-		std::stringstream ss;
-		SYSTEMTIME t;
-		GetSystemTime(&t);
-		ss << fmt::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay, t.wHour,
-			              t.wMinute, t.wSecond, t.wMilliseconds);
-		return ss.str();
-	}
+    static std::string now() {
+        std::stringstream ss;
+        SYSTEMTIME t;
+        GetSystemTime(&t);
+        ss << fmt::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay,
+                          t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
+        return ss.str();
+    }
 #else
     static std::string now() {
         std::stringstream ss;
         timespec now_t;
         clock_gettime(CLOCK_REALTIME, &now_t);
-        ss << std::put_time(std::localtime(reinterpret_cast<time_t*>(&now_t.tv_sec)), "%F %T")
+        ss << std::put_time(
+                  std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),
+                  "%F %T")
            << fmt::format(".{:03}",
                           round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
         return ss.str();

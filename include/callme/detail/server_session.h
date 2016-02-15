@@ -19,7 +19,7 @@ class server_session : public async_writer,
                        public std::enable_shared_from_this<server_session> {
 public:
     server_session(asio::io_service *io, asio::ip::tcp::socket socket,
-                   std::shared_ptr<dispatcher> disp);
+                   std::shared_ptr<dispatcher> disp, bool suppress_exceptions);
     void start();
 
 private:
@@ -31,6 +31,7 @@ private:
     std::shared_ptr<dispatcher> disp_;
     msgpack::unpacker pac_;
     msgpack::sbuffer output_buf_;
+    const bool suppress_exceptions_;
     static const uint32_t default_buffer_size = 4096;
     CALLME_CREATE_LOG_CHANNEL(session)
 };

@@ -6,12 +6,14 @@ namespace detail {
 
 server_session::server_session(asio::io_service *io,
                                asio::ip::tcp::socket socket,
-                               std::shared_ptr<dispatcher> disp)
+                               std::shared_ptr<dispatcher> disp, 
+                               bool suppress_exceptions)
     : async_writer(io, std::move(socket)),
       io_(io),
       read_strand_(*io),
       disp_(disp),
-      pac_() {
+      pac_(),
+      suppress_exceptions_(suppress_exceptions) {
     pac_.reserve_buffer(default_buffer_size); // TODO: make this configurable
                                               // [sztomi 2016-01-13]
 }
@@ -35,7 +37,7 @@ void server_session::do_read() {
                         this, msg, z = std::shared_ptr<msgpack::zone>(
                                        result.zone().release())
                     ]() {
-                        auto resp = disp_->dispatch(msg);
+                        auto resp = disp_->dispatch(msg, suppress_exceptions_);
 #ifdef _MSC_VER
 						// doesn't compile otherwise.
                         write_strand_.post([=]() { write(resp.get_data()); });

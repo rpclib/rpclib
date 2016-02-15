@@ -3,6 +3,7 @@
 #ifndef SERVER_H_S0HB5KXY
 #define SERVER_H_S0HB5KXY
 
+#include <atomic>
 #include <memory>
 #include <stdint.h>
 #include <thread>
@@ -36,6 +37,11 @@ public:
         disp_->bind(name, func);
     }
 
+    //! \brief Sets the exception behavior in handlers. By default,
+    //! handlers throwing will crash the server. If suppressing is on,
+    //! the server will try to gather textual data and return it to
+    //! the client as an error response.
+    //! \note Setting this flag only affects subsequent connections.
     void suppress_exceptions(bool suppress);
 
 private:
@@ -47,7 +53,7 @@ private:
     asio::ip::tcp::socket socket_;
     std::shared_ptr<dispatcher> disp_;
     callme::detail::thread_group loop_workers_;
-    bool suppress_exceptions_;
+    std::atomic_bool suppress_exceptions_;
 
     CALLME_CREATE_LOG_CHANNEL(server)
 };

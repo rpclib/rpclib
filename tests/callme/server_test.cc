@@ -4,16 +4,19 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "callme/server.h"
 #include "callme/client.h"
+#include "callme/server.h"
 #include "testutils.h"
 
 using namespace callme::testutils;
 using namespace std::literals::chrono_literals;
 
-class server_test : public testing::Test {
+const int test_port = 8080;
+
+class server_workers_test : public testing::Test {
 public:
-    server_test() : s("localhost", test_port), long_count(0), short_count(0) {
+    server_workers_test()
+        : s("localhost", test_port), long_count(0), short_count(0) {
         s.bind("long_func", [this]() {
             std::this_thread::sleep_for(500ms);
             ++long_count;
@@ -25,13 +28,11 @@ public:
     }
 
 protected:
-    static const int test_port = 8080;
     callme::server s;
     std::atomic_int long_count, short_count;
 };
 
-
-TEST_F(server_test, single_worker) {
+TEST_F(server_workers_test, single_worker) {
     const std::size_t workers = 1;
     s.async_run(workers);
     callme::client c("127.0.0.1", test_port);
@@ -47,7 +48,7 @@ TEST_F(server_test, single_worker) {
     EXPECT_EQ(1, long_count);
 }
 
-TEST_F(server_test, multiple_workers) {
+TEST_F(server_workers_test, multiple_workers) {
     const std::size_t workers = 2;
     s.async_run(workers);
     callme::client c("127.0.0.1", test_port);
@@ -62,3 +63,32 @@ TEST_F(server_test, multiple_workers) {
     EXPECT_EQ(1, short_count);
     EXPECT_EQ(1, long_count);
 }
+
+class server_suppress_exc : public testing::Test {
+public:
+    server_suppress_exc()
+        : s("localhost", test_port) {
+        s.bind("blue",
+               []() { throw std::runtime_error("I'm blue daba dee daba die"); });
+        s.bind("red", []() { throw "Am I evil? Yes I am."; });
+        s.async_run();
+    }
+
+protected:
+    callme::server s;
+};
+
+TEST_F(server_suppress_exc, no_suppress) {
+    callme::client c("127.0.0.1", test_port);
+    EXPECT_DEATH({ c.call("blue"); }, "");
+    EXPECT_DEATH({ c.call("red"); }, "");
+}
+
+TEST_F(server_suppress_exc, suppress) {
+    s.suppress_exceptions(true);
+    callme::client c("127.0.0.1", test_port);
+    // this seems like the opposite check, but the client throwing
+    // the exception means that it reached the other side
+    EXPECT_THROW(c.call("blue"), std::runtime_error);
+}
+

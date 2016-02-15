@@ -1,8 +1,8 @@
 #include "callme/server.h"
 #include <stdexcept>
 
-#include "callme/detail/log.h"
 #include "callme/detail/dev_utils.h"
+#include "callme/detail/log.h"
 #include "callme/detail/server_session.h"
 #include "format.h"
 
@@ -45,7 +45,8 @@ void server::start_accept() {
     acceptor_.async_accept(socket_, [this](std::error_code ec) {
         if (!ec) {
             LOG_INFO("Accepted connection.");
-            std::make_shared<server_session>(&io_, std::move(socket_), disp_)
+            std::make_shared<server_session>(&io_, std::move(socket_), disp_,
+                                             suppress_exceptions_)
                 ->start();
         } else {
             // TODO: handle error [sztomi 2016-01-13]
