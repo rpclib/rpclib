@@ -78,11 +78,13 @@ protected:
     callme::server s;
 };
 
+#ifndef WIN32
 TEST_F(server_suppress_exc, no_suppress) {
     callme::client c("127.0.0.1", test_port);
     EXPECT_DEATH({ c.call("blue"); }, "");
     EXPECT_DEATH({ c.call("red"); }, "");
 }
+#endif
 
 TEST_F(server_suppress_exc, suppress) {
     s.suppress_exceptions(true);
