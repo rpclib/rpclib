@@ -88,6 +88,12 @@ public:
     using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
 
 private:
+    static void enforce_arg_count(std::string const &func, std::size_t found,
+                                  std::size_t expected);
+
+    enum class request_type { call = 0, notification = 2 };
+
+private:
     std::unordered_map<std::string, adaptor_type> funcs_;
     CALLME_CREATE_LOG_CHANNEL(dispatcher)
 };

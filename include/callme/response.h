@@ -3,8 +3,8 @@
 #ifndef RESPONSE_H_MVRZEKPX
 #define RESPONSE_H_MVRZEKPX
 
-#include "msgpack.hpp"
 #include "callme/detail/log.h"
+#include "msgpack.hpp"
 
 namespace callme {
 
@@ -20,9 +20,7 @@ public:
     //! reading a response from a stream).
     response(msgpack::object const &o);
 
-    //! \brief Writes the response pack to a buffer.
-    void write(msgpack::sbuffer *buf) const;
-
+    //! \brief Gets the response data as a msgpack::sbuffer.
     msgpack::sbuffer get_data() const;
 
     //! \brief Returns the call id/index used to identify which call
@@ -36,16 +34,29 @@ public:
     //! \brief Returns the result stored in the response. Can be empty.
     msgpack::object get_result() const;
 
+    //! \brief Gets an empty response which means "no response" (not to be
+    //! confused with void return, i.e. this means literally 
+    //! "don't write the response to the socket")
+    static response &empty();
+
+    //! \brief If true, this response is empty (\see empty())
+    bool is_empty() const;
+
     //! \brief The type of a response, according to the msgpack-rpc spec
     using response_type =
         std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
 
 private:
+    response() = default;
+
+private:
     uint32_t id_;
     std::string error_;
-    // I really wish to avoid shared_ptr here but at this asio does not work with 
+    // I really wish to avoid shared_ptr here but at this point asio does not
+    // work with
     // move-only handlers in post() and I need to capture responses in lambdas.
     std::shared_ptr<msgpack::object> result_;
+    bool empty_;
     CALLME_CREATE_LOG_CHANNEL(response)
 };
 

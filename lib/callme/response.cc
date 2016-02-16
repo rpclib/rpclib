@@ -7,7 +7,7 @@ namespace callme {
 
 response::response(uint32_t id, std::string const &error,
                    std::unique_ptr<msgpack::object> result)
-    : id_(id), error_(error), result_(std::move(result)) {}
+    : id_(id), error_(error), result_(std::move(result)), empty_(false) {}
 
 response::response(msgpack::object const &o)
     : result_(std::make_unique<msgpack::object>()) {
@@ -21,15 +21,6 @@ response::response(msgpack::object const &o)
         error_obj.convert(&error_);
     }
     *result_ = std::get<3>(r);
-}
-
-void response::write(msgpack::sbuffer* buf) const {
-    assert(buf && "Buffer passed to response::write should not be NULL!");
-    response_type r(1, id_,
-                    error_.size() > 0 ? msgpack::object(error_)
-                                      : msgpack::object(msgpack::type::nil()),
-                    *result_); // TODO: avoid copy [sztomi, 2015-11-23]
-    msgpack::pack(*buf, r);
 }
 
 msgpack::sbuffer response::get_data() const {
@@ -47,5 +38,13 @@ int response::get_id() const { return id_; }
 std::string const &response::get_error() const { return error_; }
 
 msgpack::object response::get_result() const { return *result_; }
+
+response& response::empty() {
+    static response r;
+    r.empty_ = true;
+    return r;
+}
+
+bool response::is_empty() const { return empty_; }
 
 } /* callme */

@@ -23,11 +23,10 @@ TEST(response, object_ctor) {
 TEST(response, writing) {
     auto obj = make_unpacked(1, 42, "foo", "bar");
     callme::response r(obj.get());
-    msgpack::sbuffer buf1, buf2;
-    r.write(&buf1);
-
+    auto buf1 = r.get_data();
     callme::response::response_type same_obj(1, 42, msgpack::object("foo"),
                                              msgpack::object("bar"));
+    msgpack::sbuffer buf2;
     msgpack::pack(buf2, same_obj);
 
     EXPECT_EQ(buf1.size(), buf2.size());

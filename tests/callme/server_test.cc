@@ -64,9 +64,9 @@ TEST_F(server_workers_test, multiple_workers) {
     EXPECT_EQ(1, long_count);
 }
 
-class server_suppress_exc : public testing::Test {
+class server_error_handling : public testing::Test {
 public:
-    server_suppress_exc() : s("localhost", test_port) {
+    server_error_handling() : s("localhost", test_port) {
         s.bind("blue", []() {
             throw std::runtime_error("I'm blue daba dee daba die");
         });
@@ -79,28 +79,28 @@ protected:
 };
 
 #ifndef WIN32
-TEST_F(server_suppress_exc, no_suppress) {
+TEST_F(server_error_handling, no_suppress) {
     callme::client c("127.0.0.1", test_port);
     EXPECT_DEATH({ c.call("blue"); }, "");
     EXPECT_DEATH({ c.call("red"); }, "");
 }
 #endif
 
-TEST_F(server_suppress_exc, suppress) {
+TEST_F(server_error_handling, suppress) {
     s.suppress_exceptions(true);
     callme::client c("127.0.0.1", test_port);
     // this seems like the opposite check, but the client throwing
     // the exception means that it reached the other side, i.e.
     // the server suppressed it.
     EXPECT_THROW(c.call("blue"), std::runtime_error);
+    EXPECT_THROW(c.call("red"), std::runtime_error);
+    EXPECT_THROW(c.call("green"), std::runtime_error);
+    EXPECT_THROW(c.call("blue", 1), std::runtime_error);
 }
 
-TEST_F(server_suppress_exc, suppress_right_msg) {
+TEST_F(server_error_handling, suppress_right_msg) {
     s.suppress_exceptions(true);
     callme::client c("127.0.0.1", test_port);
-
-    using std::regex;
-    using std::regex_match;
 
     try {
         c.call("blue");
@@ -114,8 +114,28 @@ TEST_F(server_suppress_exc, suppress_right_msg) {
         FAIL() << "There was no exception thrown.";
     } catch (std::exception &e) {
         EXPECT_FALSE(str_match(e.what(), ".*Am I evil.*"));
-        EXPECT_TRUE(
-            str_match(e.what(), ".*not derived from std::exception.*"));
+        EXPECT_TRUE(str_match(e.what(), ".*not derived from std::exception.*"));
     }
 }
 
+TEST_F(server_error_handling, no_such_method_right_msg) {
+    s.suppress_exceptions(true);
+    callme::client c("127.0.0.1", test_port);
+    try {
+        c.call("green");
+        FAIL() << "There was no exception thrown.";
+    } catch (std::exception &e) {
+        EXPECT_TRUE(str_match(e.what(), ".*could not find.*"));
+    }
+}
+
+TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
+    s.suppress_exceptions(true);
+    callme::client c("127.0.0.1", test_port);
+    try {
+        c.call("blue", 1);
+        FAIL() << "There was no exception thrown.";
+    } catch (std::exception &e) {
+        EXPECT_TRUE(str_match(e.what(), ".*invalid number of arguments.*"));
+    }
+}
