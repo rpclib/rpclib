@@ -47,9 +47,8 @@ response dispatcher::dispatch(msgpack::object const &msg,
             }
             return response(id,
                             fmt::format("callme: function '{0}' (taking {1} "
-                                "arg(s)) "
-                                "threw an exception. The exception "
-                                "that is not derived from std::exception. No "
+                                "arg(s)) threw an exception. The exception "
+                                "is not derived from std::exception. No "
                                 "further information available.",
                                 name, args.via.array.size),
                             std::make_unique<msgpack::object>());

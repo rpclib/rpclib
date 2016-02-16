@@ -66,10 +66,10 @@ TEST_F(server_workers_test, multiple_workers) {
 
 class server_suppress_exc : public testing::Test {
 public:
-    server_suppress_exc()
-        : s("localhost", test_port) {
-        s.bind("blue",
-               []() { throw std::runtime_error("I'm blue daba dee daba die"); });
+    server_suppress_exc() : s("localhost", test_port) {
+        s.bind("blue", []() {
+            throw std::runtime_error("I'm blue daba dee daba die");
+        });
         s.bind("red", []() { throw "Am I evil? Yes I am."; });
         s.async_run();
     }
@@ -88,7 +88,32 @@ TEST_F(server_suppress_exc, suppress) {
     s.suppress_exceptions(true);
     callme::client c("127.0.0.1", test_port);
     // this seems like the opposite check, but the client throwing
-    // the exception means that it reached the other side
+    // the exception means that it reached the other side, i.e.
+    // the server suppressed it.
     EXPECT_THROW(c.call("blue"), std::runtime_error);
+}
+
+TEST_F(server_suppress_exc, suppress_right_msg) {
+    s.suppress_exceptions(true);
+    callme::client c("127.0.0.1", test_port);
+
+    using std::regex;
+    using std::regex_match;
+
+    try {
+        c.call("blue");
+        FAIL() << "There was no exception thrown.";
+    } catch (std::exception &e) {
+        EXPECT_TRUE(str_match(e.what(), ".*I'm blue daba dee daba die.*"));
+    }
+
+    try {
+        c.call("red");
+        FAIL() << "There was no exception thrown.";
+    } catch (std::exception &e) {
+        EXPECT_FALSE(str_match(e.what(), ".*Am I evil.*"));
+        EXPECT_TRUE(
+            str_match(e.what(), ".*not derived from std::exception.*"));
+    }
 }
 

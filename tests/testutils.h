@@ -3,6 +3,7 @@
 #ifndef TESTUTILS_H_LHCAMVUX
 #define TESTUTILS_H_LHCAMVUX
 
+#include <regex>
 #include <tuple>
 #include <thread>
 #include "gmock/gmock.h"
@@ -31,6 +32,12 @@ inline msgpack::sbuffer make_packed(Types... items) {
     msgpack::sbuffer buf;
     msgpack::pack(buf, obj);
     return buf;
+}
+
+inline bool str_match(std::string const& str, std::string const& rgx) {
+    using std::regex;
+    regex r(rgx);
+    return std::regex_match(str, r);
 }
 
 struct IDummy {
