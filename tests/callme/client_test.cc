@@ -4,7 +4,9 @@
 #include "callme/server.h"
 #include "testutils.h"
 
+#include <chrono>
 using namespace callme::testutils;
+using namespace std::literals::chrono_literals;
 
 class client_test : public testing::Test {
 public:
@@ -36,4 +38,11 @@ TEST_F(client_test, call) {
     client.call("dummy_void_zeroarg");
     client.call("dummy_void_singlearg", 5);
     client.call("dummy_void_multiarg", 5, 6);
+}
+
+TEST_F(client_test, notification) {
+    EXPECT_CALL(md, dummy_void_zeroarg());
+    callme::client client("127.0.0.1", test_port);
+    client.send("dummy_void_zeroarg");
+    std::this_thread::sleep_for(100ms);
 }

@@ -6,7 +6,7 @@ namespace detail {
 
 server_session::server_session(asio::io_service *io,
                                asio::ip::tcp::socket socket,
-                               std::shared_ptr<dispatcher> disp, 
+                               std::shared_ptr<dispatcher> disp,
                                bool suppress_exceptions)
     : async_writer(io, std::move(socket)),
       io_(io),
@@ -38,13 +38,16 @@ void server_session::do_read() {
                                        result.zone().release())
                     ]() {
                         auto resp = disp_->dispatch(msg, suppress_exceptions_);
+                        if (!resp.is_empty()) {
 #ifdef _MSC_VER
-						// doesn't compile otherwise.
-                        write_strand_.post([=]() { write(resp.get_data()); });
+                            // doesn't compile otherwise.
+                            write_strand_.post(
+                                [=]() { write(resp.get_data()); });
 #else
-                        write_strand_.post(
-                            [this, resp, z]() { write(resp.get_data()); });
+                            write_strand_.post(
+                                [this, resp, z]() { write(resp.get_data()); });
 #endif
+                        }
                     });
                 }
 

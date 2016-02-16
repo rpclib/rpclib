@@ -85,11 +85,20 @@ public:
         msgpack::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
-    using msg_type = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
+    using call_t = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
+
+    //! \brief This is the type of notification messages.
+    using notification_t = std::tuple<int8_t, std::string, msgpack::object>;
 
 private:
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
+
+    response dispatch_call(msgpack::object const &msg,
+                           bool suppress_exceptions = false);
+
+    response dispatch_notification(msgpack::object const &msg,
+                                   bool suppress_exceptions = false);
 
     enum class request_type { call = 0, notification = 2 };
 

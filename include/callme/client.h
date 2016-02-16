@@ -40,15 +40,24 @@ public:
     //! arguments.
     //! \param func_name The name of the function to call.
     //! \param args The arguments to pass to the function.
-    //! \returns A callme::maybe object, possibly holding a future result
-    //! (which is a msgpack::object). \see callme::maybe.
-    //! \tparam Args THe types of the arguments.
+    //! \returns A std::future, possibly holding a future result
+    //! (which is a msgpack::object). 
+    //! \tparam Args The types of the arguments.
     template <typename... Args>
     std::future<msgpack::object> async_call(std::string const &func_name,
                                             Args... args);
 
+    //! \brief Sends a notification with the given name and arguments (if any).
+    //! \param func_name The name of the notification to call.
+    //! \param args The arguments to pass to the function.
+    //! \note This function returns immediately (possibly before the notification
+    //! is written to the socket.
+    //! \tparam Args THe types of the arguments.
+    template <typename... Args>
+    void send(std::string const &func_name, Args... args);
+
 private:
-    enum class call_type { sync = 0, async = 2 };
+    enum class request_type { call = 0, notification = 2 };
 
     void do_connect(asio::ip::tcp::resolver::iterator endpoint_iterator);
 

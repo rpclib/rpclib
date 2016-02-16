@@ -167,4 +167,3 @@ TEST_F(dispatch_test, unbound_func_error_response) {
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error().size() > 0);
 }
-
