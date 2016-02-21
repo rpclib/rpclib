@@ -25,13 +25,14 @@ int main() {
         t.y = p.y * 3;
         return t;
     });
-
     s.async_run();
 
-    point a { 1, 2 };
+    std::cout << sizeof(callme::client) << std::endl;
+    std::cout << alignof(callme::client) << std::endl;
+
     callme::client c("localhost", 8080);
 
-    auto result = c.call("transform", a).as<point>();
+    auto result = c.call("transform", point{1, 2}).as<point>();
 
     std::cout << "Transformed: " << result << std::endl;
     return 0;

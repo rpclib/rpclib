@@ -76,7 +76,7 @@ private:
 #else
     static std::string now() {
         std::stringstream ss;
-        timespec now_t;
+        timespec now_t = {0};
         clock_gettime(CLOCK_REALTIME, &now_t);
         ss << std::put_time(
                   std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),

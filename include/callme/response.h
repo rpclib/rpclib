@@ -15,7 +15,7 @@ class response {
 public:
     //! \brief Constructs a msgpack::response with the given values.
     response(uint32_t id, std::string const &error,
-             std::unique_ptr<detail::object> result);
+             std::shared_ptr<detail::object> result);
 
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).

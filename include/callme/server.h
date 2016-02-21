@@ -3,19 +3,15 @@
 #ifndef SERVER_H_S0HB5KXY
 #define SERVER_H_S0HB5KXY
 
-#include <atomic>
-#include <memory>
-#include <stdint.h>
-#include <thread>
-
-#include "asio.hpp"
-#include "callme/detail/log.h"
-#include "callme/detail/thread_group.h"
-#include "callme/dispatcher.h"
 #include "msgpack.hpp"
+
+#include "callme/dispatcher.h"
+#include "callme/detail/pimpl.h"
 
 namespace callme {
 
+//! \brief Implements a msgpack-rpc server. This is the main interfacing
+//! point with the library for creating servers.
 class server {
 public:
     explicit server(std::string const &address, uint16_t port);
@@ -45,17 +41,8 @@ public:
     void suppress_exceptions(bool suppress);
 
 private:
-    void start_accept();
-
-private:
-    asio::io_service io_;
-    asio::ip::tcp::acceptor acceptor_;
-    asio::ip::tcp::socket socket_;
+    CALLME_DECL_PIMPL(120, 8)
     std::shared_ptr<dispatcher> disp_;
-    callme::detail::thread_group loop_workers_;
-    std::atomic_bool suppress_exceptions_;
-
-    CALLME_CREATE_LOG_CHANNEL(server)
 };
 
 } /* callme */
