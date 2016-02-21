@@ -19,7 +19,7 @@ int main() {
     callme::server s("localhost", 8080);
 
     s.bind("transform", [](point &p) {
-        std::cout << "Transforming " << p << std::endl;
+        std::cout << "Transforming: " << p << std::endl;
         point t;
         t.x = p.x * 2;
         t.y = p.y * 3;
@@ -27,11 +27,7 @@ int main() {
     });
     s.async_run();
 
-    std::cout << sizeof(callme::client) << std::endl;
-    std::cout << alignof(callme::client) << std::endl;
-
     callme::client c("localhost", 8080);
-
     auto result = c.call("transform", point{1, 2}).as<point>();
 
     std::cout << "Transformed: " << result << std::endl;
