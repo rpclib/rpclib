@@ -1,7 +1,7 @@
 
-# callme ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/sztomi/callme/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/callme?branch=master)
+# callme ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/sztomi/callme/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/callme?branch=master) [![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)]
 
-`callme` may be the easiest RPC library for C++! At least, that's what I hope to achieve. It is built using modern C++14, and as such, requires a very recent compiler.
+`callme` may be the easiest RPC library for C++! It is built using modern C++14, and as such, requires a very recent compiler.
 
 The library uses a recent (continually updated) version of the msgpack headers. I decided
 to not require it as a dependency but rather keep it in the repo, because it is quite small
@@ -18,10 +18,7 @@ To build `callme` you can do the following:
 ```
 git clone git@github.com:sztomi/callme.git
 cd callme
-git submodule init
-git submodule update --init --recursive
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make
 ```
@@ -32,7 +29,7 @@ directory and the include files from include and integrate them in your project.
 
 TBD: cmake options, preprocessor definitions, handling builtin dependencies.
 
-# Example
+# What does it look like?
 
 ## Server
 
@@ -68,43 +65,40 @@ int main(int argc, char *argv[]) {
 
 When `srv.run()` is called, `callme` starts the server loop which listens to incoming connections
 and tries to dispatch calls to the bound functions. The functions are called from the thread where
-`run` was called from.
+`run` was called from. There is a convenience function called `async_run` that starts a new thread.
 
 ## Client
 
-TBD
+```cpp
+#include <iostream>
+#include "callme/client.h"
 
-
-# Why another msgpack-RPC implementation?
-
-The [original implementation for C++](https://github.com/msgpack-rpc/msgpack-rpc-cpp) was
-discontinued. It lives on as [jubatus-msgpack-rpc](https://github.com/jubatus/jubatus-msgpack-rpc/tree/master/cpp), but this implemenation has a couple of undesirable requirements (which make perfect sense in the context of the library as part of Jubatus).
-
-  * Autoconf-based build. Not only autoconf is dated, it also pretty much requires a Unix platfrom.
-    Yes, cygwin is a workable alternative, but it is not completely native on windows, and means
-    (almost) no MSVC support.
-  * Lesser-known dependencies (it uses MPIO for the async event loop, which is yet another
-    autoconf-based build, also part of Jubatus).
-  * Awkward server implementation. The server implementor is required to unpack the parameters
-    manually and dispatch the call based on the name of the methods.
-  * At this moment (November 2015) it [doesn't compile](https://github.com/jubatus/jubatus-msgpack-rpc/issues/21) with the latest msgpack library.
-  * Somewhat lacking documentation.
-
-`callme` tackles/plans to tackle these issues the following way:
-
-  * CMake build. Even though [not the most pleasant build system](http://szelei.me/cmake-is-not-great/) to work with, it provides a reliably reproducible build for the end-user. `callme` has a priority on ease of build for the target platforms/compilers.
-  * Modern interface which provides minimalistic binding for many kinds of functors, allowing the
-    library to dispatch functions automatically.
-  * Extensive documentation.
-
-On top of that, it also provides a code generator utility which can generate strongly typed,
-"batteries included" clients and servers from a class header file.
+int main() {
+    callme::client client("127.0.0.1", 8080);
+    auto result = client.call("add", 2, 3).as<int>();
+    std::cout << "The result is: " << result << std::endl;
+    return 0;
+}
+```
 
 # Thanks
 
-`callme` builds on the shoulders of great projects. These are:
+`callme` builds on the shoulders of giants. These great projects are, in no particular order:
 
-  * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) ([website](http://msgpack.org/))
-  * [libuv](https://github.com/libuv/libuv) ([website](http://libuv.org/))
+  * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) by Takatoshi Kondo ([website](http://msgpack.org/))
+  * [asio](https://github.com/chriskohlhoff/asio) by Christopher Kohlhoff ([website](http://think-async.com/Asio))
+  * [cppformat](https://github.com/cppformat/cppformat) by Victor Zverovich ([website](http://cppformat.github.io/latest/index.html))
+  * [googletest](https://github.com/google/googletest) by Google
   * [wheels](https://github.com/rmartinho/wheels) by Martinho Fernandes
+
+Shoutouts to
+
+  * [Appveyor](http://www.appveyor.com)
+  * [Travis CI](https://travis-ci.org)
+  * [Coveralls.io](http://coveralls.io)
+  * [Coverity](http://www.coverity.com)
+  * [ASan & TSan](https://github.com/google/sanitizers) helped resolving many bugs.
+
+
+
 
