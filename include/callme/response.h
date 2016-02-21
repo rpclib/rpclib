@@ -4,6 +4,7 @@
 #define RESPONSE_H_MVRZEKPX
 
 #include "callme/detail/log.h"
+#include "callme/detail/object.h"
 #include "msgpack.hpp"
 
 namespace callme {
@@ -14,7 +15,7 @@ class response {
 public:
     //! \brief Constructs a msgpack::response with the given values.
     response(uint32_t id, std::string const &error,
-             std::unique_ptr<msgpack::object> result);
+             std::unique_ptr<detail::object> result);
 
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).
@@ -53,9 +54,9 @@ private:
     uint32_t id_;
     std::string error_;
     // I really wish to avoid shared_ptr here but at this point asio does not
-    // work with
-    // move-only handlers in post() and I need to capture responses in lambdas.
-    std::shared_ptr<msgpack::object> result_;
+    // work with move-only handlers in post() and I need to capture responses
+    // in lambdas.
+    std::shared_ptr<detail::object> result_;
     bool empty_;
     CALLME_CREATE_LOG_CHANNEL(response)
 };

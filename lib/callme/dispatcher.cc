@@ -53,7 +53,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                                         "threw an exception. The exception "
                                         "contained this information: {2}.",
                                         name, args.via.array.size, e.what()),
-                            std::make_unique<msgpack::object>());
+                            std::make_unique<detail::object>());
         } catch (...) {
             if (!suppress_exceptions) {
                 throw;
@@ -64,13 +64,13 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                                 "is not derived from std::exception. No "
                                 "further information available.",
                                 name, args.via.array.size),
-                std::make_unique<msgpack::object>());
+                std::make_unique<detail::object>());
         }
     }
     return response(id, fmt::format("callme: server could not find "
                                     "function '{0}' with argument count {1}.",
                                     name, args.via.array.size),
-                    std::make_unique<msgpack::object>());
+                    std::make_unique<detail::object>());
 }
 
 response dispatcher::dispatch_notification(msgpack::object const &msg,

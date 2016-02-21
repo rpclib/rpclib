@@ -6,11 +6,11 @@
 namespace callme {
 
 response::response(uint32_t id, std::string const &error,
-                   std::unique_ptr<msgpack::object> result)
+                   std::unique_ptr<detail::object> result)
     : id_(id), error_(error), result_(std::move(result)), empty_(false) {}
 
 response::response(msgpack::object const &o)
-    : result_(std::make_unique<msgpack::object>()) {
+    : result_(std::make_unique<detail::object>()) {
     LOG_DEBUG("Response {}", o);
     response_type r;
     o.convert(&r);
@@ -20,7 +20,7 @@ response::response(msgpack::object const &o)
     if (error_obj != msgpack::type::nil()) {
         error_obj.convert(&error_);
     }
-    *result_ = std::get<3>(r);
+    result_->o = std::get<3>(r);
 }
 
 msgpack::sbuffer response::get_data() const {
@@ -28,7 +28,7 @@ msgpack::sbuffer response::get_data() const {
     response_type r(1, id_,
                     error_.size() > 0 ? msgpack::object(error_)
                                       : msgpack::object(msgpack::type::nil()),
-                    *result_); // TODO: avoid copy [sztomi, 2015-11-23]
+                    result_->o); // TODO: avoid copy [sztomi, 2015-11-23]
     msgpack::pack(&data, r);
     return data;
 }
@@ -37,7 +37,7 @@ int response::get_id() const { return id_; }
 
 std::string const &response::get_error() const { return error_; }
 
-msgpack::object response::get_result() const { return *result_; }
+msgpack::object response::get_result() const { return result_->o; }
 
 response& response::empty() {
     static response r;

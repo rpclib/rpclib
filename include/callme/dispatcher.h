@@ -16,6 +16,7 @@
 #include "callme/detail/func_traits.h"
 #include "callme/detail/log.h"
 #include "callme/detail/not.h"
+#include "callme/detail/object.h"
 #include "callme/response.h"
 
 namespace callme {
@@ -81,8 +82,8 @@ public:
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
-    using adaptor_type = std::function<std::unique_ptr<msgpack::object>(
-        msgpack::object const &)>;
+    using adaptor_type =
+        std::function<std::unique_ptr<detail::object>(msgpack::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
     using call_t = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
@@ -99,6 +100,8 @@ private:
 
     response dispatch_notification(msgpack::object const &msg,
                                    bool suppress_exceptions = false);
+
+    template <typename T> msgpack::object pack(T &&arg);
 
     enum class request_type { call = 0, notification = 2 };
 
