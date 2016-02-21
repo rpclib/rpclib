@@ -2,7 +2,6 @@
 #include "callme/server.h"
 
 #include "msgpack.hpp"
-#include "msgpack_define_external.h"
 #include <iostream>
 
 struct point {
