@@ -18,7 +18,7 @@ std::ostream& operator<<(std::ostream& os, point const& p) {
 int main() {
     callme::server s("localhost", 8080);
 
-    s.bind("transform", [](point p) {
+    s.bind("transform", [](point &p) {
         std::cout << "Transforming " << p << std::endl;
         point t;
         t.x = p.x * 2;
