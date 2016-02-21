@@ -61,7 +61,11 @@ private:
 
 private:
     static const uint32_t default_buffer_size = 4096;
+#ifndef _MSC_VER
     CALLME_DECL_PIMPL(544, 8)
+#else
+	CALLME_DECL_PIMPL(396, 4)
+#endif
 };
 }
 

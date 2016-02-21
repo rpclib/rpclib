@@ -41,7 +41,11 @@ public:
     void suppress_exceptions(bool suppress);
 
 private:
+#ifndef _MSC_VER
     CALLME_DECL_PIMPL(120, 8)
+#else
+	CALLME_DECL_PIMPL(172, 4)
+#endif
     std::shared_ptr<dispatcher> disp_;
 };
 

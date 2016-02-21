@@ -40,10 +40,6 @@ public:
         PIMPL_PTR_CHECK_();
         new (&data) T(*o);
     }
-    pimpl_ptr(pimpl_ptr &o) {
-        PIMPL_PTR_CHECK_();
-        new (&data) T(*o);
-    }
     pimpl_ptr(pimpl_ptr &&o) {
         PIMPL_PTR_CHECK_();
         new (&data) T(std::move(*o));
