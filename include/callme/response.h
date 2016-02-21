@@ -48,7 +48,7 @@ public:
         std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
 
 private:
-    response() = default;
+    response();
 
 private:
     uint32_t id_;

@@ -5,12 +5,18 @@
 
 namespace callme {
 
+response::response()
+    : id_(0),
+      error_(""),
+      result_(std::shared_ptr<detail::object>()),
+      empty_(false) {}
+
 response::response(uint32_t id, std::string const &error,
                    std::shared_ptr<detail::object> result)
     : id_(id), error_(error), result_(std::move(result)), empty_(false) {}
 
 response::response(msgpack::object const &o)
-    : result_(std::make_shared<detail::object>()) {
+    : response() {
     LOG_DEBUG("Response {}", o);
     response_type r;
     o.convert(&r);
@@ -20,7 +26,8 @@ response::response(msgpack::object const &o)
     if (error_obj != msgpack::type::nil()) {
         error_obj.convert(&error_);
     }
-    result_->o = msgpack::object(std::get<3>(r), detail::zones::instance().client());
+    result_->o =
+        msgpack::object(std::get<3>(r), detail::zones::instance().client());
 }
 
 msgpack::sbuffer response::get_data() const {
@@ -39,7 +46,7 @@ std::string const &response::get_error() const { return error_; }
 
 msgpack::object response::get_result() const { return result_->o; }
 
-response& response::empty() {
+response &response::empty() {
     static response r;
     r.empty_ = true;
     return r;

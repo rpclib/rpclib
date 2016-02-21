@@ -10,7 +10,7 @@ using namespace std::literals::chrono_literals;
 
 class client_test : public testing::Test {
 public:
-    client_test() : s("localhost", test_port) {
+    client_test() : s("localhost", test_port), is_running_(false) {
         s.bind("dummy_void_zeroarg", [this]() { md.dummy_void_zeroarg(); });
         s.bind("dummy_void_singlearg",
                [this](int x) { md.dummy_void_singlearg(x); });
