@@ -5,8 +5,14 @@
 
 #include "pimpl_ptr.hh"
 
-#define CALLME_DECL_PIMPL(Size, Alignment)                                     \
+#ifdef _MSC_VER
+#define CALLME_DEF_ALIGN 4
+#else
+#define CALLME_DEF_ALIGN 8
+#endif
+
+#define CALLME_DECL_PIMPL(Size)                                                \
     struct impl;                                                               \
-    pimpl_ptr<impl, Size, Alignment> pimpl;
+    pimpl_ptr<impl, Size, CALLME_DEF_ALIGN> pimpl;
 
 #endif /* end of include guard: PIMPL_H_TV7E3C9K */

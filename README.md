@@ -1,5 +1,5 @@
 
-# callme ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/sztomi/callme/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/callme?branch=master) [![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)]
+# callme ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/sztomi/callme/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/callme?branch=master) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)
 
 `callme` may be the easiest RPC library for C++! It is built using modern C++14, and as such, requires a very recent compiler.
 

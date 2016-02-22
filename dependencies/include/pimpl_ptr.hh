@@ -18,7 +18,7 @@ template <std::size_t Size> struct aligned_storage<Size, -1> {
 template <typename T, std::size_t ReqSize, std::size_t Size, int ReqAlignment,
           int Alignment>
 struct ptr_checker {
-    static_assert(ReqSize == Size, "pimpl_ptr: T has a different size!");
+    static_assert(ReqSize <= Size, "pimpl_ptr: T has a different size!");
     static_assert(ReqAlignment == Alignment,
                   "pimpl_ptr: T has a different alignment!");
 };
