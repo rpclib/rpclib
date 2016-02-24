@@ -14,7 +14,7 @@ void dispatcher::bind(std::string const &name, F func,
         std::make_pair(name, [func, name](msgpack::object const &args) {
             enforce_arg_count(name, 0, args.via.array.size);
             func();
-            return std::make_unique<detail::object>();
+            return std::make_unique<msgpack::object_handle>();
         }));
 }
 
@@ -32,7 +32,7 @@ void dispatcher::bind(std::string const &name, F func,
             args_type args_real;
             args.convert(&args_real);
             detail::call(func, args_real);
-            return std::make_unique<detail::object>();
+            return std::make_unique<msgpack::object_handle>();
         }));
 }
 
@@ -42,13 +42,13 @@ void dispatcher::bind(std::string const &name, F func,
                       detail::tags::zero_arg const &) {
     using detail::func_traits;
 
-    funcs_.insert(
-        std::make_pair(name, [func, name](msgpack::object const &args) {
-            enforce_arg_count(name, 0, args.via.array.size);
-            auto result = std::make_unique<detail::object>();
-            result->o = msgpack::object(func(), result->z);
-            return result;
-        }));
+    funcs_.insert(std::make_pair(name, [func,
+                                        name](msgpack::object const &args) {
+        enforce_arg_count(name, 0, args.via.array.size);
+        auto z = std::make_unique<msgpack::zone>();
+        auto result = msgpack::object(func(), *z);
+        return std::make_unique<msgpack::object_handle>(result, std::move(z));
+    }));
 }
 
 template <typename F>
@@ -64,10 +64,9 @@ void dispatcher::bind(std::string const &name, F func,
         enforce_arg_count(name, args_count, args.via.array.size);
         args_type args_real;
         args.convert(&args_real);
-        auto result = std::make_unique<detail::object>();
-        result->o = msgpack::object(detail::call(func, args_real), result->z);
-
-        return result;
+        auto z = std::make_unique<msgpack::zone>();
+        auto result = msgpack::object(detail::call(func, args_real), *z);
+        return std::make_unique<msgpack::object_handle>(result, std::move(z));
     }));
 }
 }

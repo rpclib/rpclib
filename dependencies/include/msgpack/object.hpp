@@ -51,6 +51,12 @@ public:
     const msgpack::object& get() const
         { return m_obj; }
 
+    template<typename T>
+    T as() const { return m_obj.as<T>(); }
+
+    template <typename T>
+    void convert(T&& v) { m_obj.convert(std::forward<T>(v)); }
+
     msgpack::unique_ptr<msgpack::zone>& zone()
         { return m_zone; }
 

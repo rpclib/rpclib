@@ -6,7 +6,6 @@
 #include "callme/detail/pimpl.h"
 #include "msgpack.hpp"
 
-
 namespace callme {
 
 //! \brief Implements a client that connects to a msgpack-rpc server and is
@@ -27,7 +26,7 @@ public:
     //! To obtain a typed value, use the msgpack API.
     //! \tparam Args THe types of the arguments.
     template <typename... Args>
-    msgpack::object call(std::string const &func_name, Args... args);
+    msgpack::object_handle call(std::string const &func_name, Args... args);
 
     //! \brief Calls a function asynchronously with the given name and
     //! arguments.
@@ -37,8 +36,8 @@ public:
     //! (which is a msgpack::object).
     //! \tparam Args The types of the arguments.
     template <typename... Args>
-    std::future<msgpack::object> async_call(std::string const &func_name,
-                                            Args... args);
+    std::future<msgpack::object_handle> async_call(std::string const &func_name,
+                                                   Args... args);
 
     //! \brief Sends a notification with the given name and arguments (if any).
     //! \param func_name The name of the notification to call.
@@ -55,13 +54,13 @@ private:
 
     void wait_conn();
     void post(msgpack::sbuffer *buffer, int idx,
-              std::promise<msgpack::object> *p);
+              std::promise<msgpack::object_handle> *p);
     void post(msgpack::sbuffer *buffer);
     int get_next_call_idx();
 
 private:
     static const uint32_t default_buffer_size = 4096;
-	CALLME_DECL_PIMPL(600)
+    CALLME_DECL_PIMPL(600)
 };
 }
 

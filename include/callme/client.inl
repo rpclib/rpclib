@@ -1,15 +1,16 @@
 namespace callme {
 
 template <typename... Args>
-msgpack::object client::call(std::string const &func_name, Args... args) {
+msgpack::object_handle client::call(std::string const &func_name,
+                                    Args... args) {
     auto future = async_call(func_name, std::forward<Args>(args)...);
     future.wait();
     return future.get();
 }
 
 template <typename... Args>
-std::future<msgpack::object> client::async_call(std::string const &func_name,
-                                                Args... args) {
+std::future<msgpack::object_handle>
+client::async_call(std::string const &func_name, Args... args) {
     wait_conn();
     using msgpack::object;
     LOG_DEBUG("Calling {}", func_name);
@@ -34,7 +35,7 @@ std::future<msgpack::object> client::async_call(std::string const &func_name,
     // Ugly, but works. (same deal with buffer).
     // TODO: Change to plain moving when asio starts supporting move-only
     // handlers. [sztomi, 2016-02-14]
-    auto p = new std::promise<object>();
+    auto p = new std::promise<msgpack::object_handle>();
     auto ft = p->get_future();
 
     post(buffer, idx, p);

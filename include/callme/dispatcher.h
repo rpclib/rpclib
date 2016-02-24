@@ -82,8 +82,8 @@ public:
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
-    using adaptor_type =
-        std::function<std::unique_ptr<detail::object>(msgpack::object const &)>;
+    using adaptor_type = std::function<std::unique_ptr<msgpack::object_handle>(
+        msgpack::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
     using call_t = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;

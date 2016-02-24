@@ -15,11 +15,12 @@ class response {
 public:
     //! \brief Constructs a msgpack::response with the given values.
     response(uint32_t id, std::string const &error,
-             std::shared_ptr<detail::object> result);
+             std::unique_ptr<msgpack::object_handle> result =
+                 std::unique_ptr<msgpack::object_handle>());
 
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).
-    response(msgpack::object const &o);
+    response(msgpack::object_handle o);
 
     //! \brief Gets the response data as a msgpack::sbuffer.
     msgpack::sbuffer get_data() const;
@@ -33,10 +34,10 @@ public:
     std::string const &get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
-    msgpack::object get_result() const;
+    msgpack::object_handle get_result() const;
 
     //! \brief Gets an empty response which means "no response" (not to be
-    //! confused with void return, i.e. this means literally 
+    //! confused with void return, i.e. this means literally
     //! "don't write the response to the socket")
     static response &empty();
 
@@ -56,7 +57,7 @@ private:
     // I really wish to avoid shared_ptr here but at this point asio does not
     // work with move-only handlers in post() and I need to capture responses
     // in lambdas.
-    std::shared_ptr<detail::object> result_;
+    std::shared_ptr<msgpack::object_handle> result_;
     bool empty_;
     CALLME_CREATE_LOG_CHANNEL(response)
 };

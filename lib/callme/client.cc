@@ -56,7 +56,7 @@ struct client::impl {
                     pac_.buffer_consumed(length);
                     msgpack::unpacked result;
                     while (pac_.next(&result)) {
-                        auto r = response(result.get());
+                        auto r = response(std::move(result));
                         auto id = r.get_id();
                         auto &promise = ongoing_calls_[id];
                         strand_.post([this, id]() {
@@ -87,7 +87,7 @@ struct client::impl {
     asio::io_service io_;
     asio::strand strand_;
     std::atomic<int> call_idx_; //< The index of the last call made
-    std::unordered_map<int, std::promise<msgpack::object>> ongoing_calls_;
+    std::unordered_map<int, std::promise<msgpack::object_handle>> ongoing_calls_;
     std::string addr_;
     uint16_t port_;
     msgpack::unpacker pac_;
@@ -127,7 +127,7 @@ int client::get_next_call_idx() {
 }
 
 void client::post(msgpack::sbuffer *buffer, int idx,
-                  std::promise<msgpack::object> *p) {
+                  std::promise<msgpack::object_handle> *p) {
     pimpl->strand_.post([this, buffer, idx, p]() {
         pimpl->ongoing_calls_.insert(std::make_pair(idx, std::move(*p)));
         delete p;
