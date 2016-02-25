@@ -44,8 +44,10 @@ public:
     object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
+#ifdef _MSC_VER
 	object_handle(msgpack::object const& obj, std::unique_ptr<msgpack::zone>&& z) :
 		m_obj(obj), m_zone(z.release()) { }
+#endif
 
     // obsolete
     void set(msgpack::object const& obj)
