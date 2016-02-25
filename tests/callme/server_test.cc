@@ -139,3 +139,22 @@ TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
         EXPECT_TRUE(str_match(e.what(), ".*invalid number of arguments.*"));
     }
 }
+
+class dispatch_unicode : public testing::Test {
+public:
+    dispatch_unicode()
+        : s("localhost", 8080),
+          str_utf8("árvíztűrő tükörfúrógép") {
+        s.bind("utf", [](std::string const &p) { return p; });
+        s.async_run();
+    }
+
+protected:
+    callme::server s;
+    std::string str_utf8;
+};
+
+TEST_F(dispatch_unicode, narrow_unicode) {
+    callme::client c("127.0.0.1", test_port);
+    EXPECT_EQ(str_utf8, c.call("utf", str_utf8).as<std::string>());
+}

@@ -167,3 +167,10 @@ TEST_F(dispatch_test, unbound_func_error_response) {
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error().size() > 0);
 }
+
+TEST_F(dispatch_test, bad_format_msgpack_returns_empty) {
+    auto msg = make_unpacked(1, 2, 3, 4, 5); // 5 items is breaking the protocol
+    auto response = dispatcher.dispatch(msg.get());
+    EXPECT_TRUE(response.is_empty());
+}
+
