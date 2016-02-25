@@ -81,6 +81,7 @@ protected:
 #ifndef WIN32
 TEST_F(server_error_handling, no_suppress) {
     callme::client c("127.0.0.1", test_port);
+    s.suppress_exceptions(false);
     EXPECT_DEATH({ c.call("blue"); }, "");
     EXPECT_DEATH({ c.call("red"); }, "");
 }
