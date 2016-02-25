@@ -1,0 +1,24 @@
+= callme - modern msgpack-rpc for C++
+
+== Intro
+
+Welcome to the documentation of `callme`! `callme` is a new msgpack-rpc implementation written using modern C++. The goal of this library is to provide a simple, no-nonsense RPC solution.
+
+== Topics
+
+=== Using the library
+
+  * <<gettingstarted.adoc#,Getting started>>: Requirements, installations - everything you need to be able to use `callme`.
+  * <<primer.adoc#,Primer>>: A tutorial-like introduction to using the library, intended for newcomers.
+  * <<cookbook.adoc#,Cookbook>>: Recipes for common tasks the library was designed for handling, in the form of examples
+  * <<troubleshooting.adoc#,Troubleshooting>>: Common problems and their solutions
+  * <<faq.adoc#,FAQ>>: Frequently Asked Questions
+
+=== Related Information
+
+  * <<design.adoc#,Design>>: Explains the internal design of `callme`
+  * <<spec.adoc#,MsgPack-RPC specification>>: The specification of the Msgpack-RPC protocol, as `callme` implements it
+  * <<devguide.adoc#,Developer guide>>: Read this before contributing to `callme`
+  * <<roadmap.adoc#,Roadmap>>: Planned features
+
+
