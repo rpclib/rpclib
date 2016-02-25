@@ -31,20 +31,11 @@ response::response(msgpack::object_handle o) : response() {
 
 msgpack::sbuffer response::get_data() const {
     msgpack::sbuffer data;
-	if (!result_) {
-		auto error_resp = std::make_tuple(1, id_,
-			error_.size() > 0 ? msgpack::object(error_)
-			                  : msgpack::object(msgpack::type::nil()));
-		msgpack::pack(&data, error_resp);
-	}
-	else {
-		response_type r(1, id_,
-			error_.size() > 0 ? msgpack::object(error_)
-			: msgpack::object(msgpack::type::nil()),
-			result_->get());
-		msgpack::pack(&data, r);
-	}
-
+    response_type r(1, id_,
+                    error_.size() > 0 ? msgpack::object(error_)
+                                      : msgpack::object(msgpack::type::nil()),
+                    result_ ? result_->get() : msgpack::object());
+    msgpack::pack(&data, r);
     return data;
 }
 

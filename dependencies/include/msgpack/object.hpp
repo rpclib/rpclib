@@ -44,6 +44,9 @@ public:
     object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
+	object_handle(msgpack::object const& obj, std::unique_ptr<msgpack::zone>&& z) :
+		m_obj(obj), m_zone(z.release()) { }
+
     // obsolete
     void set(msgpack::object const& obj)
         { m_obj = obj; }
