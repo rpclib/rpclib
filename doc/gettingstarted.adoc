@@ -1,0 +1,46 @@
+= Getting started
+
+== Building
+
+=== Compiler
+
+`callme` uses some C++14 features, and as such, requires a very recent compiler. The following compilers are tried and tested with `callme` at the moment:
+
+  * g++ 5.0 (and likely newer versions)
+  * clang++ 3.7 (and likely newer versions)
+  * MSVC 2015 Update 1 (and likely newer versions)
+
+TIP: This is not an exhaustive list; if you have success with other compilers, please let me know!
+
+=== Building
+
+In addition to a capable compiler, you will need:
+
+  * cmake 3.x
+  * git (optional, to get the sources, but you can obtain it in a number ways, like downloading from GitHub as a zip)
+
+==== Unix-type systems
+
+Building `callme` is much similar to other cmake-based projects:
+
+[source,bash]
+----
+git clone git@github.com:sztomi/callme.git
+cd callme
+mkdir build && cd build
+cmake ..
+make
+----
+
+==== Windows
+
+== Dependencies
+
+From a practical point of view, `callme` has no external dependencies with the exception of `msgpack` which it ships along with its headers (including some compatibility patches, which are being sent to upstream). 
+
+NOTE: The whole truth is a bit more complicated, see the <<design.adoc#,Design>> documentation for details.
+
+
+
+
+== Releases

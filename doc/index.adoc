@@ -8,7 +8,7 @@ Welcome to the documentation of `callme`! `callme` is a new msgpack-rpc implemen
 
 === Using the library
 
-  * <<gettingstarted.adoc#,Getting started>>: Requirements, installations - everything you need to be able to use `callme`.
+  * <<gettingstarted.adoc#,Getting started>>: Requirements, installation - everything you need to be able to start using `callme`.
   * <<primer.adoc#,Primer>>: A tutorial-like introduction to using the library, intended for newcomers.
   * <<cookbook.adoc#,Cookbook>>: Recipes for common tasks the library was designed for handling, in the form of examples
   * <<troubleshooting.adoc#,Troubleshooting>>: Common problems and their solutions
