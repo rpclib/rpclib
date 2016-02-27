@@ -21,12 +21,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace error {
 
 namespace detail {
 
-class ssl_category : public asio::error_category
+class ssl_category : public clmdep_asio::error_category
 {
 public:
   const char* name() const ASIO_ERROR_CATEGORY_NOEXCEPT
@@ -43,14 +43,14 @@ public:
 
 } // namespace detail
 
-const asio::error_category& get_ssl_category()
+const clmdep_asio::error_category& get_ssl_category()
 {
   static detail::ssl_category instance;
   return instance;
 }
 
 } // namespace error
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

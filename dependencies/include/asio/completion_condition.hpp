@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 namespace detail {
 
@@ -118,10 +118,10 @@ private:
  * Reading until a buffer is full:
  * @code
  * boost::array<char, 128> buf;
- * asio::error_code ec;
- * std::size_t n = asio::read(
- *     sock, asio::buffer(buf),
- *     asio::transfer_all(), ec);
+ * clmdep_asio::error_code ec;
+ * std::size_t n = clmdep_asio::read(
+ *     sock, clmdep_asio::buffer(buf),
+ *     clmdep_asio::transfer_all(), ec);
  * if (ec)
  * {
  *   // An error occurred.
@@ -152,10 +152,10 @@ inline detail::transfer_all_t transfer_all()
  * Reading until a buffer is full or contains at least 64 bytes:
  * @code
  * boost::array<char, 128> buf;
- * asio::error_code ec;
- * std::size_t n = asio::read(
- *     sock, asio::buffer(buf),
- *     asio::transfer_at_least(64), ec);
+ * clmdep_asio::error_code ec;
+ * std::size_t n = clmdep_asio::read(
+ *     sock, clmdep_asio::buffer(buf),
+ *     clmdep_asio::transfer_at_least(64), ec);
  * if (ec)
  * {
  *   // An error occurred.
@@ -186,10 +186,10 @@ inline detail::transfer_at_least_t transfer_at_least(std::size_t minimum)
  * Reading until a buffer is full or contains exactly 64 bytes:
  * @code
  * boost::array<char, 128> buf;
- * asio::error_code ec;
- * std::size_t n = asio::read(
- *     sock, asio::buffer(buf),
- *     asio::transfer_exactly(64), ec);
+ * clmdep_asio::error_code ec;
+ * std::size_t n = clmdep_asio::read(
+ *     sock, clmdep_asio::buffer(buf),
+ *     clmdep_asio::transfer_exactly(64), ec);
  * if (ec)
  * {
  *   // An error occurred.
@@ -211,7 +211,7 @@ inline detail::transfer_exactly_t transfer_exactly(std::size_t size)
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 namespace detail {
 
@@ -39,7 +39,7 @@ public:
   ASIO_DECL endpoint(int family, unsigned short port_num);
 
   // Construct an endpoint using an address and port number.
-  ASIO_DECL endpoint(const asio::ip::address& addr,
+  ASIO_DECL endpoint(const clmdep_asio::ip::address& addr,
       unsigned short port_num);
 
   // Copy constructor.
@@ -56,13 +56,13 @@ public:
   }
 
   // Get the underlying endpoint in the native type.
-  asio::detail::socket_addr_type* data()
+  clmdep_asio::detail::socket_addr_type* data()
   {
     return &data_.base;
   }
 
   // Get the underlying endpoint in the native type.
-  const asio::detail::socket_addr_type* data() const
+  const clmdep_asio::detail::socket_addr_type* data() const
   {
     return &data_.base;
   }
@@ -71,9 +71,9 @@ public:
   std::size_t size() const
   {
     if (is_v4())
-      return sizeof(asio::detail::sockaddr_in4_type);
+      return sizeof(clmdep_asio::detail::sockaddr_in4_type);
     else
-      return sizeof(asio::detail::sockaddr_in6_type);
+      return sizeof(clmdep_asio::detail::sockaddr_in6_type);
   }
 
   // Set the underlying size of the endpoint in the native type.
@@ -92,10 +92,10 @@ public:
   ASIO_DECL void port(unsigned short port_num);
 
   // Get the IP address associated with the endpoint.
-  ASIO_DECL asio::ip::address address() const;
+  ASIO_DECL clmdep_asio::ip::address address() const;
 
   // Set the IP address associated with the endpoint.
-  ASIO_DECL void address(const asio::ip::address& addr);
+  ASIO_DECL void address(const clmdep_asio::ip::address& addr);
 
   // Compare two endpoints for equality.
   ASIO_DECL friend bool operator==(
@@ -113,22 +113,22 @@ public:
 
 #if !defined(ASIO_NO_IOSTREAM)
   // Convert to a string.
-  ASIO_DECL std::string to_string(asio::error_code& ec) const;
+  ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 private:
   // The underlying IP socket address.
   union data_union
   {
-    asio::detail::socket_addr_type base;
-    asio::detail::sockaddr_in4_type v4;
-    asio::detail::sockaddr_in6_type v6;
+    clmdep_asio::detail::socket_addr_type base;
+    clmdep_asio::detail::sockaddr_in4_type v4;
+    clmdep_asio::detail::sockaddr_in6_type v6;
   } data_;
 };
 
 } // namespace detail
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

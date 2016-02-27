@@ -15,7 +15,7 @@
 #include "callme/detail/dev_utils.h"
 #include "callme/response.h"
 
-using asio::ip::tcp;
+using CALLME_ASIO::ip::tcp;
 using namespace callme::detail;
 
 namespace callme {
@@ -29,10 +29,10 @@ struct client::impl {
           addr_(addr),
           port_(port),
           is_connected_(false),
-          writer_(&io_, asio::ip::tcp::socket(io_)) {}
+          writer_(&io_, CALLME_ASIO::ip::tcp::socket(io_)) {}
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
-        asio::async_connect(
+        CALLME_ASIO::async_connect(
             writer_.socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
                 if (!ec) {
@@ -49,7 +49,7 @@ struct client::impl {
 
     void do_read() {
         writer_.socket_.async_read_some(
-            asio::buffer(pac_.buffer(), default_buffer_size),
+            CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 LOG_TRACE("Reading from tcp. nread = {}", length);
                 if (!ec) {
@@ -64,7 +64,7 @@ struct client::impl {
                         });
                         try {
                             if (r.get_error().size() > 0) {
-                                throw std::runtime_error(fmt::format(
+                                throw std::runtime_error(CALLME_FMT::format(
                                     "callme: error during RPC call: {}",
                                     r.get_error()));
                             }
@@ -84,8 +84,8 @@ struct client::impl {
     void write(msgpack::sbuffer item) { writer_.write(std::move(item)); }
 
     client *parent_;
-    asio::io_service io_;
-    asio::strand strand_;
+    CALLME_ASIO::io_service io_;
+    CALLME_ASIO::strand strand_;
     std::atomic<int> call_idx_; //< The index of the last call made
     std::unordered_map<int, std::promise<msgpack::object_handle>> ongoing_calls_;
     std::string addr_;

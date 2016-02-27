@@ -26,20 +26,20 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 namespace descriptor_ops {
 
-int open(const char* path, int flags, asio::error_code& ec)
+int open(const char* path, int flags, clmdep_asio::error_code& ec)
 {
   errno = 0;
   int result = error_wrapper(::open(path, flags), ec);
   if (result >= 0)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
-int close(int d, state_type& state, asio::error_code& ec)
+int close(int d, state_type& state, clmdep_asio::error_code& ec)
 {
   int result = 0;
   if (d != -1)
@@ -48,8 +48,8 @@ int close(int d, state_type& state, asio::error_code& ec)
     result = error_wrapper(::close(d), ec);
 
     if (result != 0
-        && (ec == asio::error::would_block
-          || ec == asio::error::try_again))
+        && (ec == clmdep_asio::error::would_block
+          || ec == clmdep_asio::error::try_again))
     {
       // According to UNIX Network Programming Vol. 1, it is possible for
       // close() to fail with EWOULDBLOCK under certain circumstances. What
@@ -73,16 +73,16 @@ int close(int d, state_type& state, asio::error_code& ec)
   }
 
   if (result == 0)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
 bool set_user_non_blocking(int d, state_type& state,
-    bool value, asio::error_code& ec)
+    bool value, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return false;
   }
 
@@ -102,7 +102,7 @@ bool set_user_non_blocking(int d, state_type& state,
 
   if (result >= 0)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     if (value)
       state |= user_set_non_blocking;
     else
@@ -119,11 +119,11 @@ bool set_user_non_blocking(int d, state_type& state,
 }
 
 bool set_internal_non_blocking(int d, state_type& state,
-    bool value, asio::error_code& ec)
+    bool value, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return false;
   }
 
@@ -132,7 +132,7 @@ bool set_internal_non_blocking(int d, state_type& state,
     // It does not make sense to clear the internal non-blocking flag if the
     // user still wants non-blocking behaviour. Return an error and let the
     // caller figure out whether to update the user-set non-blocking flag.
-    ec = asio::error::invalid_argument;
+    ec = clmdep_asio::error::invalid_argument;
     return false;
   }
 
@@ -152,7 +152,7 @@ bool set_internal_non_blocking(int d, state_type& state,
 
   if (result >= 0)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     if (value)
       state |= internal_non_blocking;
     else
@@ -164,18 +164,18 @@ bool set_internal_non_blocking(int d, state_type& state,
 }
 
 std::size_t sync_read(int d, state_type state, buf* bufs,
-    std::size_t count, bool all_empty, asio::error_code& ec)
+    std::size_t count, bool all_empty, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return 0;
   }
 
   // A request to read 0 bytes on a stream is a no-op.
   if (all_empty)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -194,14 +194,14 @@ std::size_t sync_read(int d, state_type state, buf* bufs,
     // Check for EOF.
     if (bytes == 0)
     {
-      ec = asio::error::eof;
+      ec = clmdep_asio::error::eof;
       return 0;
     }
 
     // Operation failed.
     if ((state & user_set_non_blocking)
-        || (ec != asio::error::would_block
-          && ec != asio::error::try_again))
+        || (ec != clmdep_asio::error::would_block
+          && ec != clmdep_asio::error::try_again))
       return 0;
 
     // Wait for descriptor to become ready.
@@ -211,7 +211,7 @@ std::size_t sync_read(int d, state_type state, buf* bufs,
 }
 
 bool non_blocking_read(int d, buf* bufs, std::size_t count,
-    asio::error_code& ec, std::size_t& bytes_transferred)
+    clmdep_asio::error_code& ec, std::size_t& bytes_transferred)
 {
   for (;;)
   {
@@ -223,23 +223,23 @@ bool non_blocking_read(int d, buf* bufs, std::size_t count,
     // Check for end of stream.
     if (bytes == 0)
     {
-      ec = asio::error::eof;
+      ec = clmdep_asio::error::eof;
       return true;
     }
 
     // Retry operation if interrupted by signal.
-    if (ec == asio::error::interrupted)
+    if (ec == clmdep_asio::error::interrupted)
       continue;
 
     // Check if we need to run the operation again.
-    if (ec == asio::error::would_block
-        || ec == asio::error::try_again)
+    if (ec == clmdep_asio::error::would_block
+        || ec == clmdep_asio::error::try_again)
       return false;
 
     // Operation is complete.
     if (bytes > 0)
     {
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       bytes_transferred = bytes;
     }
     else
@@ -250,18 +250,18 @@ bool non_blocking_read(int d, buf* bufs, std::size_t count,
 }
 
 std::size_t sync_write(int d, state_type state, const buf* bufs,
-    std::size_t count, bool all_empty, asio::error_code& ec)
+    std::size_t count, bool all_empty, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return 0;
   }
 
   // A request to write 0 bytes on a stream is a no-op.
   if (all_empty)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -279,8 +279,8 @@ std::size_t sync_write(int d, state_type state, const buf* bufs,
 
     // Operation failed.
     if ((state & user_set_non_blocking)
-        || (ec != asio::error::would_block
-          && ec != asio::error::try_again))
+        || (ec != clmdep_asio::error::would_block
+          && ec != clmdep_asio::error::try_again))
       return 0;
 
     // Wait for descriptor to become ready.
@@ -290,7 +290,7 @@ std::size_t sync_write(int d, state_type state, const buf* bufs,
 }
 
 bool non_blocking_write(int d, const buf* bufs, std::size_t count,
-    asio::error_code& ec, std::size_t& bytes_transferred)
+    clmdep_asio::error_code& ec, std::size_t& bytes_transferred)
 {
   for (;;)
   {
@@ -300,18 +300,18 @@ bool non_blocking_write(int d, const buf* bufs, std::size_t count,
           d, bufs, static_cast<int>(count)), ec);
 
     // Retry operation if interrupted by signal.
-    if (ec == asio::error::interrupted)
+    if (ec == clmdep_asio::error::interrupted)
       continue;
 
     // Check if we need to run the operation again.
-    if (ec == asio::error::would_block
-        || ec == asio::error::try_again)
+    if (ec == clmdep_asio::error::would_block
+        || ec == clmdep_asio::error::try_again)
       return false;
 
     // Operation is complete.
     if (bytes >= 0)
     {
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       bytes_transferred = bytes;
     }
     else
@@ -322,11 +322,11 @@ bool non_blocking_write(int d, const buf* bufs, std::size_t count,
 }
 
 int ioctl(int d, state_type& state, long cmd,
-    ioctl_arg_type* arg, asio::error_code& ec)
+    ioctl_arg_type* arg, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return -1;
   }
 
@@ -335,7 +335,7 @@ int ioctl(int d, state_type& state, long cmd,
 
   if (result >= 0)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
 
     // When updating the non-blocking mode we always perform the ioctl syscall,
     // even if the flags would otherwise indicate that the descriptor is
@@ -362,41 +362,41 @@ int ioctl(int d, state_type& state, long cmd,
   return result;
 }
 
-int fcntl(int d, int cmd, asio::error_code& ec)
+int fcntl(int d, int cmd, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return -1;
   }
 
   errno = 0;
   int result = error_wrapper(::fcntl(d, cmd), ec);
   if (result != -1)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
-int fcntl(int d, int cmd, long arg, asio::error_code& ec)
+int fcntl(int d, int cmd, long arg, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return -1;
   }
 
   errno = 0;
   int result = error_wrapper(::fcntl(d, cmd, arg), ec);
   if (result != -1)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
-int poll_read(int d, state_type state, asio::error_code& ec)
+int poll_read(int d, state_type state, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return -1;
   }
 
@@ -409,17 +409,17 @@ int poll_read(int d, state_type state, asio::error_code& ec)
   int result = error_wrapper(::poll(&fds, 1, timeout), ec);
   if (result == 0)
     ec = (state & user_set_non_blocking)
-      ? asio::error::would_block : asio::error_code();
+      ? clmdep_asio::error::would_block : clmdep_asio::error_code();
   else if (result > 0)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
-int poll_write(int d, state_type state, asio::error_code& ec)
+int poll_write(int d, state_type state, clmdep_asio::error_code& ec)
 {
   if (d == -1)
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return -1;
   }
 
@@ -432,15 +432,15 @@ int poll_write(int d, state_type state, asio::error_code& ec)
   int result = error_wrapper(::poll(&fds, 1, timeout), ec);
   if (result == 0)
     ec = (state & user_set_non_blocking)
-      ? asio::error::would_block : asio::error_code();
+      ? clmdep_asio::error::would_block : clmdep_asio::error_code();
   else if (result > 0)
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   return result;
 }
 
 } // namespace descriptor_ops
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

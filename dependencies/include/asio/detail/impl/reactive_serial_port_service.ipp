@@ -26,11 +26,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 reactive_serial_port_service::reactive_serial_port_service(
-    asio::io_service& io_service)
+    clmdep_asio::io_service& io_service)
   : descriptor_service_(io_service)
 {
 }
@@ -40,13 +40,13 @@ void reactive_serial_port_service::shutdown_service()
   descriptor_service_.shutdown_service();
 }
 
-asio::error_code reactive_serial_port_service::open(
+clmdep_asio::error_code reactive_serial_port_service::open(
     reactive_serial_port_service::implementation_type& impl,
-    const std::string& device, asio::error_code& ec)
+    const std::string& device, clmdep_asio::error_code& ec)
 {
   if (is_open(impl))
   {
-    ec = asio::error::already_open;
+    ec = clmdep_asio::error::already_open;
     return ec;
   }
 
@@ -61,7 +61,7 @@ asio::error_code reactive_serial_port_service::open(
     s = descriptor_ops::fcntl(fd, F_SETFL, s | O_NONBLOCK, ec);
   if (s < 0)
   {
-    asio::error_code ignored_ec;
+    clmdep_asio::error_code ignored_ec;
     descriptor_ops::close(fd, state, ignored_ec);
     return ec;
   }
@@ -89,7 +89,7 @@ asio::error_code reactive_serial_port_service::open(
   }
   if (s < 0)
   {
-    asio::error_code ignored_ec;
+    clmdep_asio::error_code ignored_ec;
     descriptor_ops::close(fd, state, ignored_ec);
     return ec;
   }
@@ -97,17 +97,17 @@ asio::error_code reactive_serial_port_service::open(
   // We're done. Take ownership of the serial port descriptor.
   if (descriptor_service_.assign(impl, fd, ec))
   {
-    asio::error_code ignored_ec;
+    clmdep_asio::error_code ignored_ec;
     descriptor_ops::close(fd, state, ignored_ec);
   }
 
   return ec;
 }
 
-asio::error_code reactive_serial_port_service::do_set_option(
+clmdep_asio::error_code reactive_serial_port_service::do_set_option(
     reactive_serial_port_service::implementation_type& impl,
     reactive_serial_port_service::store_function_type store,
-    const void* option, asio::error_code& ec)
+    const void* option, clmdep_asio::error_code& ec)
 {
   termios ios;
   errno = 0;
@@ -125,10 +125,10 @@ asio::error_code reactive_serial_port_service::do_set_option(
   return ec;
 }
 
-asio::error_code reactive_serial_port_service::do_get_option(
+clmdep_asio::error_code reactive_serial_port_service::do_get_option(
     const reactive_serial_port_service::implementation_type& impl,
     reactive_serial_port_service::load_function_type load,
-    void* option, asio::error_code& ec) const
+    void* option, clmdep_asio::error_code& ec) const
 {
   termios ios;
   errno = 0;
@@ -141,7 +141,7 @@ asio::error_code reactive_serial_port_service::do_get_option(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

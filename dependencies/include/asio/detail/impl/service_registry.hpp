@@ -17,16 +17,16 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Service, typename Arg>
 service_registry::service_registry(
-    asio::io_service& o, Service*, Arg arg)
+    clmdep_asio::io_service& o, Service*, Arg arg)
   : owner_(o),
     first_service_(new Service(o, arg))
 {
-  asio::io_service::service::key key;
+  clmdep_asio::io_service::service::key key;
   init_key(key, Service::id);
   first_service_->key_ = key;
   first_service_->next_ = 0;
@@ -41,7 +41,7 @@ Service& service_registry::first_service()
 template <typename Service>
 Service& service_registry::use_service()
 {
-  asio::io_service::service::key key;
+  clmdep_asio::io_service::service::key key;
   init_key(key, Service::id);
   factory_type factory = &service_registry::create<Service>;
   return *static_cast<Service*>(do_use_service(key, factory));
@@ -50,7 +50,7 @@ Service& service_registry::use_service()
 template <typename Service>
 void service_registry::add_service(Service* new_service)
 {
-  asio::io_service::service::key key;
+  clmdep_asio::io_service::service::key key;
   init_key(key, Service::id);
   return do_add_service(key, new_service);
 }
@@ -58,15 +58,15 @@ void service_registry::add_service(Service* new_service)
 template <typename Service>
 bool service_registry::has_service() const
 {
-  asio::io_service::service::key key;
+  clmdep_asio::io_service::service::key key;
   init_key(key, Service::id);
   return do_has_service(key);
 }
 
 #if !defined(ASIO_NO_TYPEID)
 template <typename Service>
-void service_registry::init_key(asio::io_service::service::key& key,
-    const asio::detail::service_id<Service>& /*id*/)
+void service_registry::init_key(clmdep_asio::io_service::service::key& key,
+    const clmdep_asio::detail::service_id<Service>& /*id*/)
 {
   key.type_info_ = &typeid(typeid_wrapper<Service>);
   key.id_ = 0;
@@ -74,14 +74,14 @@ void service_registry::init_key(asio::io_service::service::key& key,
 #endif // !defined(ASIO_NO_TYPEID)
 
 template <typename Service>
-asio::io_service::service* service_registry::create(
-    asio::io_service& owner)
+clmdep_asio::io_service::service* service_registry::create(
+    clmdep_asio::io_service& owner)
 {
   return new Service(owner);
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

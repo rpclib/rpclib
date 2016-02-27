@@ -32,7 +32,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Automatically resizable buffer class based on std::streambuf.
 /**
@@ -75,7 +75,7 @@ namespace asio {
  * @par Examples
  * Writing directly from an streambuf to a socket:
  * @code
- * asio::streambuf b;
+ * clmdep_asio::streambuf b;
  * std::ostream os(&b);
  * os << "Hello, World!\n";
  *
@@ -87,10 +87,10 @@ namespace asio {
  *
  * Reading from a socket directly into a streambuf:
  * @code
- * asio::streambuf b;
+ * clmdep_asio::streambuf b;
  *
  * // reserve 512 bytes in output sequence
- * asio::streambuf::mutable_buffers_type bufs = b.prepare(512);
+ * clmdep_asio::streambuf::mutable_buffers_type bufs = b.prepare(512);
  *
  * size_t n = sock.receive(bufs);
  *
@@ -119,8 +119,8 @@ public:
   /// The type used to represent the output sequence as a list of buffers.
   typedef implementation_defined mutable_buffers_type;
 #else
-  typedef asio::const_buffers_1 const_buffers_type;
-  typedef asio::mutable_buffers_1 mutable_buffers_type;
+  typedef clmdep_asio::const_buffers_1 const_buffers_type;
+  typedef clmdep_asio::mutable_buffers_1 mutable_buffers_type;
 #endif
 
   /// Construct a basic_streambuf object.
@@ -181,7 +181,7 @@ public:
    */
   const_buffers_type data() const
   {
-    return asio::buffer(asio::const_buffer(gptr(),
+    return clmdep_asio::buffer(clmdep_asio::const_buffer(gptr(),
           (pptr() - gptr()) * sizeof(char_type)));
   }
 
@@ -204,7 +204,7 @@ public:
   mutable_buffers_type prepare(std::size_t n)
   {
     reserve(n);
-    return asio::buffer(asio::mutable_buffer(
+    return clmdep_asio::buffer(clmdep_asio::mutable_buffer(
           pptr(), n * sizeof(char_type)));
   }
 
@@ -326,8 +326,8 @@ protected:
       }
       else
       {
-        std::length_error ex("asio::streambuf too long");
-        asio::detail::throw_exception(ex);
+        std::length_error ex("clmdep_asio::streambuf too long");
+        clmdep_asio::detail::throw_exception(ex);
       }
     }
 
@@ -360,7 +360,7 @@ inline std::size_t read_size_helper(
       std::min<std::size_t>(max_size, sb.max_size() - sb.size()));
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

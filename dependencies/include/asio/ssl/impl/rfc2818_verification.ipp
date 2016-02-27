@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 
 #if !defined(ASIO_ENABLE_OLD_SSL)
@@ -48,7 +48,7 @@ bool rfc2818_verification::operator()(
 
   // Try converting the host name to an address. If it is an address then we
   // need to look for an IP address in the certificate rather than a host name.
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   ip::address address = ip::address::from_string(host_, ec);
   bool is_address = !ec;
 
@@ -159,7 +159,7 @@ bool rfc2818_verification::match_pattern(const char* pattern,
 #endif // !defined(ASIO_ENABLE_OLD_SSL)
 
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

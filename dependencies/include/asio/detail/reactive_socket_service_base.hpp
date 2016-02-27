@@ -38,7 +38,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class reactive_socket_service_base
@@ -62,7 +62,7 @@ public:
 
   // Constructor.
   ASIO_DECL reactive_socket_service_base(
-      asio::io_service& io_service);
+      clmdep_asio::io_service& io_service);
 
   // Destroy all user-defined handler objects owned by the service.
   ASIO_DECL void shutdown_service();
@@ -89,8 +89,8 @@ public:
   }
 
   // Destroy a socket implementation.
-  ASIO_DECL asio::error_code close(
-      base_implementation_type& impl, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code close(
+      base_implementation_type& impl, clmdep_asio::error_code& ec);
 
   // Get the native socket representation.
   native_handle_type native_handle(base_implementation_type& impl)
@@ -99,26 +99,26 @@ public:
   }
 
   // Cancel all operations associated with the socket.
-  ASIO_DECL asio::error_code cancel(
-      base_implementation_type& impl, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code cancel(
+      base_implementation_type& impl, clmdep_asio::error_code& ec);
 
   // Determine whether the socket is at the out-of-band data mark.
   bool at_mark(const base_implementation_type& impl,
-      asio::error_code& ec) const
+      clmdep_asio::error_code& ec) const
   {
     return socket_ops::sockatmark(impl.socket_, ec);
   }
 
   // Determine the number of bytes available for reading.
   std::size_t available(const base_implementation_type& impl,
-      asio::error_code& ec) const
+      clmdep_asio::error_code& ec) const
   {
     return socket_ops::available(impl.socket_, ec);
   }
 
   // Place the socket into the state where it will listen for new connections.
-  asio::error_code listen(base_implementation_type& impl,
-      int backlog, asio::error_code& ec)
+  clmdep_asio::error_code listen(base_implementation_type& impl,
+      int backlog, clmdep_asio::error_code& ec)
   {
     socket_ops::listen(impl.socket_, backlog, ec);
     return ec;
@@ -126,8 +126,8 @@ public:
 
   // Perform an IO control command on the socket.
   template <typename IO_Control_Command>
-  asio::error_code io_control(base_implementation_type& impl,
-      IO_Control_Command& command, asio::error_code& ec)
+  clmdep_asio::error_code io_control(base_implementation_type& impl,
+      IO_Control_Command& command, clmdep_asio::error_code& ec)
   {
     socket_ops::ioctl(impl.socket_, impl.state_, command.name(),
         static_cast<ioctl_arg_type*>(command.data()), ec);
@@ -141,8 +141,8 @@ public:
   }
 
   // Sets the non-blocking mode of the socket.
-  asio::error_code non_blocking(base_implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code non_blocking(base_implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     socket_ops::set_user_non_blocking(impl.socket_, impl.state_, mode, ec);
     return ec;
@@ -155,16 +155,16 @@ public:
   }
 
   // Sets the non-blocking mode of the native socket implementation.
-  asio::error_code native_non_blocking(base_implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code native_non_blocking(base_implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     socket_ops::set_internal_non_blocking(impl.socket_, impl.state_, mode, ec);
     return ec;
   }
 
   // Disable sends or receives on the socket.
-  asio::error_code shutdown(base_implementation_type& impl,
-      socket_base::shutdown_type what, asio::error_code& ec)
+  clmdep_asio::error_code shutdown(base_implementation_type& impl,
+      socket_base::shutdown_type what, clmdep_asio::error_code& ec)
   {
     socket_ops::shutdown(impl.socket_, what, ec);
     return ec;
@@ -174,9 +174,9 @@ public:
   template <typename ConstBufferSequence>
   size_t send(base_implementation_type& impl,
       const ConstBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
+      socket_base::message_flags flags, clmdep_asio::error_code& ec)
   {
-    buffer_sequence_adapter<asio::const_buffer,
+    buffer_sequence_adapter<clmdep_asio::const_buffer,
         ConstBufferSequence> bufs(buffers);
 
     return socket_ops::sync_send(impl.socket_, impl.state_,
@@ -185,7 +185,7 @@ public:
 
   // Wait until data can be sent without blocking.
   size_t send(base_implementation_type& impl, const null_buffers&,
-      socket_base::message_flags, asio::error_code& ec)
+      socket_base::message_flags, clmdep_asio::error_code& ec)
   {
     // Wait for socket to become ready.
     socket_ops::poll_write(impl.socket_, impl.state_, ec);
@@ -201,12 +201,12 @@ public:
       socket_base::message_flags flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_socket_send_op<ConstBufferSequence, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(impl.socket_, buffers, flags, handler);
 
@@ -214,7 +214,7 @@ public:
 
     start_op(impl, reactor::write_op, p.p, is_continuation, true,
         ((impl.state_ & socket_ops::stream_oriented)
-          && buffer_sequence_adapter<asio::const_buffer,
+          && buffer_sequence_adapter<clmdep_asio::const_buffer,
             ConstBufferSequence>::all_empty(buffers)));
     p.v = p.p = 0;
   }
@@ -225,12 +225,12 @@ public:
       socket_base::message_flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_null_buffers_op<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -245,9 +245,9 @@ public:
   template <typename MutableBufferSequence>
   size_t receive(base_implementation_type& impl,
       const MutableBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
+      socket_base::message_flags flags, clmdep_asio::error_code& ec)
   {
-    buffer_sequence_adapter<asio::mutable_buffer,
+    buffer_sequence_adapter<clmdep_asio::mutable_buffer,
         MutableBufferSequence> bufs(buffers);
 
     return socket_ops::sync_recv(impl.socket_, impl.state_,
@@ -256,7 +256,7 @@ public:
 
   // Wait until data can be received without blocking.
   size_t receive(base_implementation_type& impl, const null_buffers&,
-      socket_base::message_flags, asio::error_code& ec)
+      socket_base::message_flags, clmdep_asio::error_code& ec)
   {
     // Wait for socket to become ready.
     socket_ops::poll_read(impl.socket_, impl.state_, ec);
@@ -272,12 +272,12 @@ public:
       socket_base::message_flags flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_socket_recv_op<MutableBufferSequence, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(impl.socket_, impl.state_, buffers, flags, handler);
 
@@ -289,7 +289,7 @@ public:
         p.p, is_continuation,
         (flags & socket_base::message_out_of_band) == 0,
         ((impl.state_ & socket_ops::stream_oriented)
-          && buffer_sequence_adapter<asio::mutable_buffer,
+          && buffer_sequence_adapter<clmdep_asio::mutable_buffer,
             MutableBufferSequence>::all_empty(buffers)));
     p.v = p.p = 0;
   }
@@ -300,12 +300,12 @@ public:
       socket_base::message_flags flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_null_buffers_op<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -325,9 +325,9 @@ public:
   size_t receive_with_flags(base_implementation_type& impl,
       const MutableBufferSequence& buffers,
       socket_base::message_flags in_flags,
-      socket_base::message_flags& out_flags, asio::error_code& ec)
+      socket_base::message_flags& out_flags, clmdep_asio::error_code& ec)
   {
-    buffer_sequence_adapter<asio::mutable_buffer,
+    buffer_sequence_adapter<clmdep_asio::mutable_buffer,
         MutableBufferSequence> bufs(buffers);
 
     return socket_ops::sync_recvmsg(impl.socket_, impl.state_,
@@ -337,7 +337,7 @@ public:
   // Wait until data can be received without blocking.
   size_t receive_with_flags(base_implementation_type& impl,
       const null_buffers&, socket_base::message_flags,
-      socket_base::message_flags& out_flags, asio::error_code& ec)
+      socket_base::message_flags& out_flags, clmdep_asio::error_code& ec)
   {
     // Wait for socket to become ready.
     socket_ops::poll_read(impl.socket_, impl.state_, ec);
@@ -357,12 +357,12 @@ public:
       socket_base::message_flags& out_flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_socket_recvmsg_op<MutableBufferSequence, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(impl.socket_, buffers, in_flags, out_flags, handler);
 
@@ -384,12 +384,12 @@ public:
       socket_base::message_flags& out_flags, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef reactive_null_buffers_op<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -409,14 +409,14 @@ public:
 
 protected:
   // Open a new socket implementation.
-  ASIO_DECL asio::error_code do_open(
+  ASIO_DECL clmdep_asio::error_code do_open(
       base_implementation_type& impl, int af,
-      int type, int protocol, asio::error_code& ec);
+      int type, int protocol, clmdep_asio::error_code& ec);
 
   // Assign a native socket to a socket implementation.
-  ASIO_DECL asio::error_code do_assign(
+  ASIO_DECL clmdep_asio::error_code do_assign(
       base_implementation_type& impl, int type,
-      const native_handle_type& native_socket, asio::error_code& ec);
+      const native_handle_type& native_socket, clmdep_asio::error_code& ec);
 
   // Start the asynchronous read or write operation.
   ASIO_DECL void start_op(base_implementation_type& impl, int op_type,
@@ -436,7 +436,7 @@ protected:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

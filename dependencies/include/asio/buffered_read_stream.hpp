@@ -30,7 +30,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Adds buffering to the read-related operations of a stream.
 /**
@@ -97,7 +97,7 @@ public:
   }
 
   /// Get the io_service associated with the object.
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return next_layer_.get_io_service();
   }
@@ -109,7 +109,7 @@ public:
   }
 
   /// Close the stream.
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return next_layer_.close(ec);
   }
@@ -126,7 +126,7 @@ public:
   /// or 0 if an error occurred.
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return next_layer_.write_some(buffers, ec);
   }
@@ -135,17 +135,17 @@ public:
   /// lifetime of the asynchronous operation.
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some(const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
     detail::async_result_init<
-      WriteHandler, void (asio::error_code, std::size_t)> init(
+      WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(WriteHandler)(handler));
 
     next_layer_.async_write_some(buffers,
         ASIO_MOVE_CAST(ASIO_HANDLER_TYPE(WriteHandler,
-            void (asio::error_code, std::size_t)))(init.handler));
+            void (clmdep_asio::error_code, std::size_t)))(init.handler));
 
     return init.result.get();
   }
@@ -156,12 +156,12 @@ public:
 
   /// Fill the buffer with some data. Returns the number of bytes placed in the
   /// buffer as a result of the operation, or 0 if an error occurred.
-  std::size_t fill(asio::error_code& ec);
+  std::size_t fill(clmdep_asio::error_code& ec);
 
   /// Start an asynchronous fill.
   template <typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_fill(ASIO_MOVE_ARG(ReadHandler) handler);
 
   /// Read some data from the stream. Returns the number of bytes read. Throws
@@ -173,13 +173,13 @@ public:
   /// an error occurred.
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Start an asynchronous read. The buffer into which the data will be read
   /// must be valid for the lifetime of the asynchronous operation.
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some(const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler);
 
@@ -192,7 +192,7 @@ public:
   /// or 0 if an error occurred.
   template <typename MutableBufferSequence>
   std::size_t peek(const MutableBufferSequence& buffers,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Determine the amount of data that may be read without blocking.
   std::size_t in_avail()
@@ -201,9 +201,9 @@ public:
   }
 
   /// Determine the amount of data that may be read without blocking.
-  std::size_t in_avail(asio::error_code& ec)
+  std::size_t in_avail(clmdep_asio::error_code& ec)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return storage_.size();
   }
 
@@ -213,7 +213,7 @@ private:
   template <typename MutableBufferSequence>
   std::size_t copy(const MutableBufferSequence& buffers)
   {
-    std::size_t bytes_copied = asio::buffer_copy(
+    std::size_t bytes_copied = clmdep_asio::buffer_copy(
         buffers, storage_.data(), storage_.size());
     storage_.consume(bytes_copied);
     return bytes_copied;
@@ -225,7 +225,7 @@ private:
   template <typename MutableBufferSequence>
   std::size_t peek_copy(const MutableBufferSequence& buffers)
   {
-    return asio::buffer_copy(buffers, storage_.data(), storage_.size());
+    return clmdep_asio::buffer_copy(buffers, storage_.data(), storage_.size());
   }
 
   /// The next layer.
@@ -235,7 +235,7 @@ private:
   detail::buffered_stream_storage storage_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

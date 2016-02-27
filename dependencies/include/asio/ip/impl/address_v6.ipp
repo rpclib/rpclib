@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 address_v6::address_v6()
@@ -46,7 +46,7 @@ address_v6::address_v6(const address_v6::bytes_type& bytes,
     if (bytes[i] > 0xFF)
     {
       std::out_of_range ex("address_v6 from bytes_type");
-      asio::detail::throw_exception(ex);
+      clmdep_asio::detail::throw_exception(ex);
     }
   }
 #endif // UCHAR_MAX > 0xFF
@@ -99,19 +99,19 @@ address_v6::bytes_type address_v6::to_bytes() const
 
 std::string address_v6::to_string() const
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::string addr = to_string(ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return addr;
 }
 
-std::string address_v6::to_string(asio::error_code& ec) const
+std::string address_v6::to_string(clmdep_asio::error_code& ec) const
 {
-  char addr_str[asio::detail::max_addr_v6_str_len];
+  char addr_str[clmdep_asio::detail::max_addr_v6_str_len];
   const char* addr =
-    asio::detail::socket_ops::inet_ntop(
+    clmdep_asio::detail::socket_ops::inet_ntop(
         ASIO_OS_DEF(AF_INET6), &addr_, addr_str,
-        asio::detail::max_addr_v6_str_len, scope_id_, ec);
+        clmdep_asio::detail::max_addr_v6_str_len, scope_id_, ec);
   if (addr == 0)
     return std::string();
   return addr;
@@ -119,17 +119,17 @@ std::string address_v6::to_string(asio::error_code& ec) const
 
 address_v6 address_v6::from_string(const char* str)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   address_v6 addr = from_string(str, ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return addr;
 }
 
 address_v6 address_v6::from_string(
-    const char* str, asio::error_code& ec)
+    const char* str, clmdep_asio::error_code& ec)
 {
   address_v6 tmp;
-  if (asio::detail::socket_ops::inet_pton(
+  if (clmdep_asio::detail::socket_ops::inet_pton(
         ASIO_OS_DEF(AF_INET6), str, &tmp.addr_, &tmp.scope_id_, ec) <= 0)
     return address_v6();
   return tmp;
@@ -141,7 +141,7 @@ address_v6 address_v6::from_string(const std::string& str)
 }
 
 address_v6 address_v6::from_string(
-    const std::string& str, asio::error_code& ec)
+    const std::string& str, clmdep_asio::error_code& ec)
 {
   return from_string(str.c_str(), ec);
 }
@@ -151,7 +151,7 @@ address_v4 address_v6::to_v4() const
   if (!is_v4_mapped() && !is_v4_compatible())
   {
     std::bad_cast ex;
-    asio::detail::throw_exception(ex);
+    clmdep_asio::detail::throw_exception(ex);
   }
 
   address_v4::bytes_type v4_bytes = { { addr_.s6_addr[12],
@@ -251,7 +251,7 @@ bool operator==(const address_v6& a1, const address_v6& a2)
 {
   using namespace std; // For memcmp.
   return memcmp(&a1.addr_, &a2.addr_,
-      sizeof(asio::detail::in6_addr_type)) == 0
+      sizeof(clmdep_asio::detail::in6_addr_type)) == 0
     && a1.scope_id_ == a2.scope_id_;
 }
 
@@ -259,7 +259,7 @@ bool operator<(const address_v6& a1, const address_v6& a2)
 {
   using namespace std; // For memcmp.
   int memcmp_result = memcmp(&a1.addr_, &a2.addr_,
-      sizeof(asio::detail::in6_addr_type));
+      sizeof(clmdep_asio::detail::in6_addr_type));
   if (memcmp_result < 0)
     return true;
   if (memcmp_result > 0)
@@ -291,7 +291,7 @@ address_v6 address_v6::v4_compatible(const address_v4& addr)
 }
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

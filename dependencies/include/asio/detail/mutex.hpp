@@ -29,7 +29,7 @@
 # error Only Windows, POSIX and std::mutex are supported!
 #endif
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if !defined(ASIO_HAS_THREADS)
@@ -43,6 +43,6 @@ typedef std_mutex mutex;
 #endif
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_MUTEX_HPP

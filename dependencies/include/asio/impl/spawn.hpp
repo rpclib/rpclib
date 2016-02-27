@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
   template <typename Handler, typename T>
@@ -46,13 +46,13 @@ namespace detail {
 
     void operator()(T value)
     {
-      *ec_ = asio::error_code();
+      *ec_ = clmdep_asio::error_code();
       *value_ = ASIO_MOVE_CAST(T)(value);
       if (--*ready_ == 0)
         (*coro_)();
     }
 
-    void operator()(asio::error_code ec, T value)
+    void operator()(clmdep_asio::error_code ec, T value)
     {
       *ec_ = ec;
       *value_ = ASIO_MOVE_CAST(T)(value);
@@ -65,7 +65,7 @@ namespace detail {
     typename basic_yield_context<Handler>::caller_type& ca_;
     Handler& handler_;
     atomic_count* ready_;
-    asio::error_code* ec_;
+    clmdep_asio::error_code* ec_;
     T* value_;
   };
 
@@ -84,12 +84,12 @@ namespace detail {
 
     void operator()()
     {
-      *ec_ = asio::error_code();
+      *ec_ = clmdep_asio::error_code();
       if (--*ready_ == 0)
         (*coro_)();
     }
 
-    void operator()(asio::error_code ec)
+    void operator()(clmdep_asio::error_code ec)
     {
       *ec_ = ec;
       if (--*ready_ == 0)
@@ -101,44 +101,44 @@ namespace detail {
     typename basic_yield_context<Handler>::caller_type& ca_;
     Handler& handler_;
     atomic_count* ready_;
-    asio::error_code* ec_;
+    clmdep_asio::error_code* ec_;
   };
 
   template <typename Handler, typename T>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       coro_handler<Handler, T>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename Handler, typename T>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       coro_handler<Handler, T>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename Handler, typename T>
-  inline bool asio_handler_is_continuation(coro_handler<Handler, T>*)
+  inline bool clmdep_asio_handler_is_continuation(coro_handler<Handler, T>*)
   {
     return true;
   }
 
   template <typename Function, typename Handler, typename T>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       coro_handler<Handler, T>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename Handler, typename T>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       coro_handler<Handler, T>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
@@ -160,14 +160,14 @@ struct handler_type<basic_yield_context<Handler>, ReturnType(Arg1)>
 
 template <typename Handler, typename ReturnType>
 struct handler_type<basic_yield_context<Handler>,
-    ReturnType(asio::error_code)>
+    ReturnType(clmdep_asio::error_code)>
 {
   typedef detail::coro_handler<Handler, void> type;
 };
 
 template <typename Handler, typename ReturnType, typename Arg2>
 struct handler_type<basic_yield_context<Handler>,
-    ReturnType(asio::error_code, Arg2)>
+    ReturnType(clmdep_asio::error_code, Arg2)>
 {
   typedef detail::coro_handler<Handler, Arg2> type;
 };
@@ -194,7 +194,7 @@ public:
     handler_.coro_.reset(); // Must not hold shared_ptr to coro while suspended.
     if (--ready_ != 0)
       ca_();
-    if (!out_ec_ && ec_) throw asio::system_error(ec_);
+    if (!out_ec_ && ec_) throw clmdep_asio::system_error(ec_);
     return ASIO_MOVE_CAST(type)(value_);
   }
 
@@ -202,8 +202,8 @@ private:
   detail::coro_handler<Handler, T>& handler_;
   typename basic_yield_context<Handler>::caller_type& ca_;
   detail::atomic_count ready_;
-  asio::error_code* out_ec_;
-  asio::error_code ec_;
+  clmdep_asio::error_code* out_ec_;
+  clmdep_asio::error_code ec_;
   type value_;
 };
 
@@ -228,15 +228,15 @@ public:
     handler_.coro_.reset(); // Must not hold shared_ptr to coro while suspended.
     if (--ready_ != 0)
       ca_();
-    if (!out_ec_ && ec_) throw asio::system_error(ec_);
+    if (!out_ec_ && ec_) throw clmdep_asio::system_error(ec_);
   }
 
 private:
   detail::coro_handler<Handler, void>& handler_;
   typename basic_yield_context<Handler>::caller_type& ca_;
   detail::atomic_count ready_;
-  asio::error_code* out_ec_;
-  asio::error_code ec_;
+  clmdep_asio::error_code* out_ec_;
+  clmdep_asio::error_code ec_;
 };
 
 namespace detail {
@@ -308,7 +308,7 @@ void spawn(ASIO_MOVE_ARG(Handler) handler,
         ASIO_MOVE_CAST(Handler)(handler), true,
         ASIO_MOVE_CAST(Function)(function)));
   helper.attributes_ = attributes;
-  asio_handler_invoke_helpers::invoke(helper, helper.data_->handler_);
+  clmdep_asio_handler_invoke_helpers::invoke(helper, helper.data_->handler_);
 }
 
 template <typename Handler, typename Function>
@@ -323,30 +323,30 @@ void spawn(basic_yield_context<Handler> ctx,
         ASIO_MOVE_CAST(Handler)(handler), false,
         ASIO_MOVE_CAST(Function)(function)));
   helper.attributes_ = attributes;
-  asio_handler_invoke_helpers::invoke(helper, helper.data_->handler_);
+  clmdep_asio_handler_invoke_helpers::invoke(helper, helper.data_->handler_);
 }
 
 template <typename Function>
-void spawn(asio::io_service::strand strand,
+void spawn(clmdep_asio::io_service::strand strand,
     ASIO_MOVE_ARG(Function) function,
     const boost::coroutines::attributes& attributes)
 {
-  asio::spawn(strand.wrap(&detail::default_spawn_handler),
+  clmdep_asio::spawn(strand.wrap(&detail::default_spawn_handler),
       ASIO_MOVE_CAST(Function)(function), attributes);
 }
 
 template <typename Function>
-void spawn(asio::io_service& io_service,
+void spawn(clmdep_asio::io_service& io_service,
     ASIO_MOVE_ARG(Function) function,
     const boost::coroutines::attributes& attributes)
 {
-  asio::spawn(asio::io_service::strand(io_service),
+  clmdep_asio::spawn(clmdep_asio::io_service::strand(io_service),
       ASIO_MOVE_CAST(Function)(function), attributes);
 }
 
 #endif // !defined(GENERATING_DOCUMENTATION)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

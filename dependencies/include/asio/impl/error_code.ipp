@@ -31,7 +31,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class system_category : public error_category
@@ -121,7 +121,7 @@ const error_category& system_category()
   return instance;
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

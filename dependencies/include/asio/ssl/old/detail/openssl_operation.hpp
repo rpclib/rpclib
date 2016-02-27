@@ -30,13 +30,13 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace old {
 namespace detail {
 
 typedef boost::function<int (::SSL*)> ssl_primitive_func; 
-typedef boost::function<void (const asio::error_code&, int)>
+typedef boost::function<void (const clmdep_asio::error_code&, int)>
   user_handler_func;
 
 // Network send_/recv buffer implementation
@@ -91,7 +91,7 @@ public:
                     SSL* session,
                     BIO* ssl_bio,
                     user_handler_func  handler,
-                    asio::io_service::strand& strand
+                    clmdep_asio::io_service::strand& strand
                     )
     : primitive_(primitive)
     , user_handler_(handler)
@@ -161,8 +161,8 @@ public:
     int sys_error_code = ERR_get_error();
 
     if (error_code == SSL_ERROR_SSL)
-      return handler_(asio::error_code(
-            sys_error_code, asio::error::get_ssl_category()), rc);
+      return handler_(clmdep_asio::error_code(
+            sys_error_code, clmdep_asio::error::get_ssl_category()), rc);
 
     bool is_read_needed = (error_code == SSL_ERROR_WANT_READ);
     bool is_write_needed = (error_code == SSL_ERROR_WANT_WRITE ||
@@ -177,12 +177,12 @@ public:
     if (is_shut_down_sent && is_shut_down_received
         && is_operation_done && !is_write_needed)
       // SSL connection is shut down cleanly
-      return handler_(asio::error_code(), 1);
+      return handler_(clmdep_asio::error_code(), 1);
 
     if (is_shut_down_received && !is_operation_done)
       // Shutdown has been requested, while we were reading or writing...
       // abort our action...
-      return handler_(asio::error::shut_down, 0);
+      return handler_(clmdep_asio::error::shut_down, 0);
 
     if (!is_operation_done && !is_read_needed && !is_write_needed 
       && !is_shut_down_sent)
@@ -191,13 +191,13 @@ public:
       // not want network communication nor does want to send shutdown out...
       if (error_code == SSL_ERROR_SYSCALL)
       {
-        return handler_(asio::error_code(
-              sys_error_code, asio::error::system_category), rc); 
+        return handler_(clmdep_asio::error_code(
+              sys_error_code, clmdep_asio::error::system_category), rc); 
       }
       else
       {
-        return handler_(asio::error_code(
-              sys_error_code, asio::error::get_ssl_category()), rc); 
+        return handler_(clmdep_asio::error_code(
+              sys_error_code, clmdep_asio::error::get_ssl_category()), rc); 
       }
     }
 
@@ -223,7 +223,7 @@ public:
           if (!BIO_should_retry(ssl_bio_))
           {
             // Some serios error with BIO....
-            return handler_(asio::error::no_recovery, 0);
+            return handler_(clmdep_asio::error::no_recovery, 0);
           }
         }
 
@@ -241,14 +241,14 @@ public:
 
 // Private implementation
 private:
-  typedef boost::function<int (const asio::error_code&, int)>
+  typedef boost::function<int (const clmdep_asio::error_code&, int)>
     int_handler_func;
   typedef boost::function<int (bool, int)> write_func;
   typedef boost::function<int ()> read_func;
 
   ssl_primitive_func  primitive_;
   user_handler_func  user_handler_;
-  asio::io_service::strand* strand_;
+  clmdep_asio::io_service::strand* strand_;
   write_func  write_;
   read_func  read_;
   int_handler_func handler_;
@@ -266,20 +266,20 @@ private:
   SSL*    session_;
 
   //
-  int sync_user_handler(const asio::error_code& error, int rc)
+  int sync_user_handler(const clmdep_asio::error_code& error, int rc)
   {
     if (!error)
       return rc;
 
-    throw asio::system_error(error);
+    throw clmdep_asio::system_error(error);
   }
     
-  int async_user_handler(asio::error_code error, int rc)
+  int async_user_handler(clmdep_asio::error_code error, int rc)
   {
     if (rc < 0)
     {
       if (!error)
-        error = asio::error::no_recovery;
+        error = clmdep_asio::error::no_recovery;
       rc = 0;
     }
 
@@ -314,10 +314,10 @@ private:
         send_buf_.data_added(len);
  
         ASIO_ASSERT(strand_);
-        asio::async_write
+        clmdep_asio::async_write
         ( 
           socket_, 
-          asio::buffer(data_start, len),
+          clmdep_asio::buffer(data_start, len),
           strand_->wrap
           (
             boost::bind
@@ -326,8 +326,8 @@ private:
               this, 
               is_operation_done,
               rc, 
-              asio::placeholders::error, 
-              asio::placeholders::bytes_transferred
+              clmdep_asio::placeholders::error, 
+              clmdep_asio::placeholders::bytes_transferred
             )
           )
         );
@@ -338,7 +338,7 @@ private:
       {
         // Seems like fatal error
         // reading from SSL BIO has failed...
-        handler_(asio::error::no_recovery, 0);
+        handler_(clmdep_asio::error::no_recovery, 0);
         return 0;
       }
     }
@@ -346,7 +346,7 @@ private:
     if (is_operation_done)
     {
       // Finish the operation, with success
-      handler_(asio::error_code(), rc);
+      handler_(clmdep_asio::error_code(), rc);
       return 0;
     }
     
@@ -358,7 +358,7 @@ private:
   }
 
   void async_write_handler(bool is_operation_done, int rc, 
-    const asio::error_code& error, size_t bytes_sent)
+    const clmdep_asio::error_code& error, size_t bytes_sent)
   {
     if (!error)
     {
@@ -366,7 +366,7 @@ private:
       send_buf_.data_removed(bytes_sent);
 
       if (is_operation_done)
-        handler_(asio::error_code(), rc);
+        handler_(clmdep_asio::error_code(), rc);
       else
         // Since the operation was not completed, try it again...
         start();
@@ -381,7 +381,7 @@ private:
     ASIO_ASSERT(strand_);
     socket_.async_read_some
     ( 
-      asio::buffer(recv_buf_.get_unused_start(),
+      clmdep_asio::buffer(recv_buf_.get_unused_start(),
         recv_buf_.get_unused_len()),
       strand_->wrap
       (
@@ -389,15 +389,15 @@ private:
         (
           &openssl_operation::async_read_handler, 
           this, 
-          asio::placeholders::error, 
-          asio::placeholders::bytes_transferred
+          clmdep_asio::placeholders::error, 
+          clmdep_asio::placeholders::bytes_transferred
         )
       )
     );
     return 0;
   }
 
-  void async_read_handler(const asio::error_code& error,
+  void async_read_handler(const clmdep_asio::error_code& error,
       size_t bytes_recvd)
   {
     if (!error)
@@ -421,7 +421,7 @@ private:
         if (!BIO_should_retry(ssl_bio_))
         {
           // Some serios error with BIO....
-          handler_(asio::error::no_recovery, 0);
+          handler_(clmdep_asio::error::no_recovery, 0);
           return;
         }
       }
@@ -453,9 +453,9 @@ private:
          
       if (len > 0)
       {
-        size_t sent_len = asio::write( 
+        size_t sent_len = clmdep_asio::write( 
                   socket_, 
-                  asio::buffer(send_buf_.get_unused_start(), len)
+                  clmdep_asio::buffer(send_buf_.get_unused_start(), len)
                   );
 
         send_buf_.data_added(len);
@@ -465,7 +465,7 @@ private:
       {
         // Seems like fatal error
         // reading from SSL BIO has failed...
-        throw asio::system_error(asio::error::no_recovery);
+        throw clmdep_asio::system_error(clmdep_asio::error::no_recovery);
       }
     }
     
@@ -481,7 +481,7 @@ private:
   {
     size_t len = socket_.read_some
       ( 
-        asio::buffer(recv_buf_.get_unused_start(),
+        clmdep_asio::buffer(recv_buf_.get_unused_start(),
           recv_buf_.get_unused_len())
       );
 
@@ -505,7 +505,7 @@ private:
       if (!BIO_should_retry(ssl_bio_))
       {
         // Some serios error with BIO....
-        throw asio::system_error(asio::error::no_recovery);
+        throw clmdep_asio::system_error(clmdep_asio::error::no_recovery);
       }
     }
 
@@ -517,7 +517,7 @@ private:
 } // namespace detail
 } // namespace old
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

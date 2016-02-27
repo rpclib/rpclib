@@ -28,21 +28,21 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace windows {
 
 /// Default service implementation for an object handle.
 class object_handle_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<object_handle_service>
+  : public clmdep_asio::detail::service_base<object_handle_service>
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
 private:
@@ -65,8 +65,8 @@ public:
 #endif
 
   /// Construct a new object handle service for the specified io_service.
-  explicit object_handle_service(asio::io_service& io_service)
-    : asio::detail::service_base<object_handle_service>(io_service),
+  explicit object_handle_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<object_handle_service>(io_service),
       service_impl_(io_service)
   {
   }
@@ -101,8 +101,8 @@ public:
   }
 
   /// Assign an existing native handle to an object handle.
-  asio::error_code assign(implementation_type& impl,
-      const native_handle_type& handle, asio::error_code& ec)
+  clmdep_asio::error_code assign(implementation_type& impl,
+      const native_handle_type& handle, clmdep_asio::error_code& ec)
   {
     return service_impl_.assign(impl, handle, ec);
   }
@@ -114,8 +114,8 @@ public:
   }
 
   /// Close an object handle implementation.
-  asio::error_code close(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code close(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.close(impl, ec);
   }
@@ -127,14 +127,14 @@ public:
   }
 
   /// Cancel all asynchronous operations associated with the handle.
-  asio::error_code cancel(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code cancel(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
 
   // Wait for a signaled state.
-  void wait(implementation_type& impl, asio::error_code& ec)
+  void wait(implementation_type& impl, clmdep_asio::error_code& ec)
   {
     service_impl_.wait(impl, ec);
   }
@@ -142,12 +142,12 @@ public:
   /// Start an asynchronous wait.
   template <typename WaitHandler>
   ASIO_INITFN_RESULT_TYPE(WaitHandler,
-      void (asio::error_code))
+      void (clmdep_asio::error_code))
   async_wait(implementation_type& impl,
       ASIO_MOVE_ARG(WaitHandler) handler)
   {
-    asio::detail::async_result_init<
-      WaitHandler, void (asio::error_code)> init(
+    clmdep_asio::detail::async_result_init<
+      WaitHandler, void (clmdep_asio::error_code)> init(
         ASIO_MOVE_CAST(WaitHandler)(handler));
 
     service_impl_.async_wait(impl, init.handler);
@@ -167,7 +167,7 @@ private:
 };
 
 } // namespace windows
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

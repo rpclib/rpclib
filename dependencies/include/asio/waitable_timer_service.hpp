@@ -25,23 +25,23 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default service implementation for a timer.
 template <typename Clock,
-    typename WaitTraits = asio::wait_traits<Clock> >
+    typename WaitTraits = clmdep_asio::wait_traits<Clock> >
 class waitable_timer_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<
+  : public clmdep_asio::detail::service_base<
       waitable_timer_service<Clock, WaitTraits> >
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
   /// The clock type.
@@ -70,8 +70,8 @@ public:
 #endif
 
   /// Construct a new timer service for the specified io_service.
-  explicit waitable_timer_service(asio::io_service& io_service)
-    : asio::detail::service_base<
+  explicit waitable_timer_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<
         waitable_timer_service<Clock, WaitTraits> >(io_service),
       service_impl_(io_service)
   {
@@ -90,14 +90,14 @@ public:
   }
 
   /// Cancel any asynchronous wait operations associated with the timer.
-  std::size_t cancel(implementation_type& impl, asio::error_code& ec)
+  std::size_t cancel(implementation_type& impl, clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
 
   /// Cancels one asynchronous wait operation associated with the timer.
   std::size_t cancel_one(implementation_type& impl,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel_one(impl, ec);
   }
@@ -110,7 +110,7 @@ public:
 
   /// Set the expiry time for the timer as an absolute time.
   std::size_t expires_at(implementation_type& impl,
-      const time_point& expiry_time, asio::error_code& ec)
+      const time_point& expiry_time, clmdep_asio::error_code& ec)
   {
     return service_impl_.expires_at(impl, expiry_time, ec);
   }
@@ -123,13 +123,13 @@ public:
 
   /// Set the expiry time for the timer relative to now.
   std::size_t expires_from_now(implementation_type& impl,
-      const duration& expiry_time, asio::error_code& ec)
+      const duration& expiry_time, clmdep_asio::error_code& ec)
   {
     return service_impl_.expires_from_now(impl, expiry_time, ec);
   }
 
   // Perform a blocking wait on the timer.
-  void wait(implementation_type& impl, asio::error_code& ec)
+  void wait(implementation_type& impl, clmdep_asio::error_code& ec)
   {
     service_impl_.wait(impl, ec);
   }
@@ -137,12 +137,12 @@ public:
   // Start an asynchronous wait on the timer.
   template <typename WaitHandler>
   ASIO_INITFN_RESULT_TYPE(WaitHandler,
-      void (asio::error_code))
+      void (clmdep_asio::error_code))
   async_wait(implementation_type& impl,
       ASIO_MOVE_ARG(WaitHandler) handler)
   {
     detail::async_result_init<
-      WaitHandler, void (asio::error_code)> init(
+      WaitHandler, void (clmdep_asio::error_code)> init(
         ASIO_MOVE_CAST(WaitHandler)(handler));
 
     service_impl_.async_wait(impl, init.handler);
@@ -161,7 +161,7 @@ private:
   service_impl_type service_impl_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

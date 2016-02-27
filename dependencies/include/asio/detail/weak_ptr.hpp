@@ -23,7 +23,7 @@
 # include <boost/weak_ptr.hpp>
 #endif // defined(ASIO_HAS_STD_SHARED_PTR)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if defined(ASIO_HAS_STD_SHARED_PTR)
@@ -33,6 +33,6 @@ using boost::weak_ptr;
 #endif // defined(ASIO_HAS_STD_SHARED_PTR)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_WEAK_PTR_HPP

@@ -19,7 +19,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default continuation function for handlers.
 /**
@@ -27,7 +27,7 @@ namespace asio {
  * control flow associated with the current handler. The implementation can use
  * this knowledge to optimise scheduling of the handler.
  *
- * Implement asio_handler_is_continuation for your own handlers to indicate
+ * Implement clmdep_asio_handler_is_continuation for your own handlers to indicate
  * when a handler represents a continuation.
  *
  * The default implementation of the continuation hook returns <tt>false</tt>.
@@ -36,18 +36,18 @@ namespace asio {
  * @code
  * class my_handler;
  *
- * bool asio_handler_is_continuation(my_handler* context)
+ * bool clmdep_asio_handler_is_continuation(my_handler* context)
  * {
  *   return true;
  * }
  * @endcode
  */
-inline bool asio_handler_is_continuation(...)
+inline bool clmdep_asio_handler_is_continuation(...)
 {
   return false;
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

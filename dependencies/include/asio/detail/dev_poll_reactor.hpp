@@ -37,11 +37,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class dev_poll_reactor
-  : public asio::detail::service_base<dev_poll_reactor>
+  : public clmdep_asio::detail::service_base<dev_poll_reactor>
 {
 public:
   enum op_types { read_op = 0, write_op = 1,
@@ -53,7 +53,7 @@ public:
   };
 
   // Constructor.
-  ASIO_DECL dev_poll_reactor(asio::io_service& io_service);
+  ASIO_DECL dev_poll_reactor(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~dev_poll_reactor();
@@ -63,7 +63,7 @@ public:
 
   // Recreate internal descriptors following a fork.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Initialise the task.
   ASIO_DECL void init_task();
@@ -158,7 +158,7 @@ private:
   // function of the handler objects will be invoked. This function does not
   // acquire the dev_poll_reactor's mutex.
   ASIO_DECL void cancel_ops_unlocked(socket_type descriptor,
-      const asio::error_code& ec);
+      const clmdep_asio::error_code& ec);
 
   // Add a pending event entry for the given descriptor.
   ASIO_DECL ::pollfd& add_pending_event_change(int descriptor);
@@ -167,7 +167,7 @@ private:
   io_service_impl& io_service_;
 
   // Mutex to protect access to internal data.
-  asio::detail::mutex mutex_;
+  clmdep_asio::detail::mutex mutex_;
 
   // The /dev/poll file descriptor.
   int dev_poll_fd_;
@@ -192,7 +192,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

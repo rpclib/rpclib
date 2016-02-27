@@ -25,12 +25,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace generic {
 
 /// Encapsulates the flags needed for a generic sequenced packet socket.
 /**
- * The asio::generic::seq_packet_protocol class contains flags necessary
+ * The clmdep_asio::generic::seq_packet_protocol class contains flags necessary
  * for seq_packet-oriented sockets of any address family and protocol.
  *
  * @par Examples
@@ -67,7 +67,7 @@ public:
     if (source_protocol.type() != type())
     {
       std::bad_cast ex;
-      asio::detail::throw_exception(ex);
+      clmdep_asio::detail::throw_exception(ex);
     }
   }
 
@@ -115,7 +115,7 @@ private:
 };
 
 } // namespace generic
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

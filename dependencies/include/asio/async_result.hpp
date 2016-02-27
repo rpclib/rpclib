@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// An interface for customising the behaviour of an initiating function.
 /**
@@ -75,7 +75,7 @@ struct async_result_type_helper
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 
@@ -84,11 +84,11 @@ struct async_result_type_helper
   void_or_deduced
 #elif defined(_MSC_VER) && (_MSC_VER < 1500)
 # define ASIO_INITFN_RESULT_TYPE(h, sig) \
-  typename ::asio::detail::async_result_type_helper<h, sig>::type
+  typename ::clmdep_asio::detail::async_result_type_helper<h, sig>::type
 #else
 # define ASIO_INITFN_RESULT_TYPE(h, sig) \
-  typename ::asio::async_result< \
-    typename ::asio::handler_type<h, sig>::type>::type
+  typename ::clmdep_asio::async_result< \
+    typename ::clmdep_asio::handler_type<h, sig>::type>::type
 #endif
 
 #endif // ASIO_ASYNC_RESULT_HPP

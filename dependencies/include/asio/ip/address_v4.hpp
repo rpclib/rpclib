@@ -28,12 +28,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Implements IP version 4 style addresses.
 /**
- * The asio::ip::address_v4 class provides the ability to use and
+ * The clmdep_asio::ip::address_v4 class provides the ability to use and
  * manipulate IP version 4 addresses.
  *
  * @par Thread Safety
@@ -51,7 +51,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef array<unsigned char, 4> bytes_type;
 #else
-  typedef asio::detail::array<unsigned char, 4> bytes_type;
+  typedef clmdep_asio::detail::array<unsigned char, 4> bytes_type;
 #endif
 
   /// Default constructor.
@@ -106,21 +106,21 @@ public:
   ASIO_DECL std::string to_string() const;
 
   /// Get the address as a string in dotted decimal format.
-  ASIO_DECL std::string to_string(asio::error_code& ec) const;
+  ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
 
   /// Create an address from an IP address string in dotted decimal form.
   ASIO_DECL static address_v4 from_string(const char* str);
 
   /// Create an address from an IP address string in dotted decimal form.
   ASIO_DECL static address_v4 from_string(
-      const char* str, asio::error_code& ec);
+      const char* str, clmdep_asio::error_code& ec);
 
   /// Create an address from an IP address string in dotted decimal form.
   ASIO_DECL static address_v4 from_string(const std::string& str);
 
   /// Create an address from an IP address string in dotted decimal form.
   ASIO_DECL static address_v4 from_string(
-      const std::string& str, asio::error_code& ec);
+      const std::string& str, clmdep_asio::error_code& ec);
 
   /// Determine whether the address is a loopback address.
   ASIO_DECL bool is_loopback() const;
@@ -205,7 +205,7 @@ public:
 
 private:
   // The underlying IPv4 address.
-  asio::detail::in4_addr_type addr_;
+  clmdep_asio::detail::in4_addr_type addr_;
 };
 
 #if !defined(ASIO_NO_IOSTREAM)
@@ -220,7 +220,7 @@ private:
  *
  * @return The output stream.
  *
- * @relates asio::ip::address_v4
+ * @relates clmdep_asio::ip::address_v4
  */
 template <typename Elem, typename Traits>
 std::basic_ostream<Elem, Traits>& operator<<(
@@ -229,7 +229,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

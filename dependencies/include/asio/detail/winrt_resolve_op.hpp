@@ -30,7 +30,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Protocol, typename Handler>
@@ -43,8 +43,8 @@ public:
   ASIO_DEFINE_HANDLER_PTR(winrt_resolve_op);
 
   typedef typename Protocol::endpoint endpoint_type;
-  typedef asio::ip::basic_resolver_query<Protocol> query_type;
-  typedef asio::ip::basic_resolver_iterator<Protocol> iterator_type;
+  typedef clmdep_asio::ip::basic_resolver_query<Protocol> query_type;
+  typedef clmdep_asio::ip::basic_resolver_iterator<Protocol> iterator_type;
 
   winrt_resolve_op(const query_type& query, Handler& handler)
     : winrt_async_op<
@@ -57,11 +57,11 @@ public:
   }
 
   static void do_complete(io_service_impl* owner, operation* base,
-      const asio::error_code&, std::size_t)
+      const clmdep_asio::error_code&, std::size_t)
   {
     // Take ownership of the operation object.
     winrt_resolve_op* o(static_cast<winrt_resolve_op*>(base));
-    ptr p = { asio::detail::addressof(o->handler_), o, o };
+    ptr p = { clmdep_asio::detail::addressof(o->handler_), o, o };
 
     ASIO_HANDLER_COMPLETION((o));
 
@@ -76,8 +76,8 @@ public:
       }
       catch (Platform::Exception^ e)
       {
-        o->ec_ = asio::error_code(e->HResult,
-            asio::system_category());
+        o->ec_ = clmdep_asio::error_code(e->HResult,
+            clmdep_asio::system_category());
       }
     }
 
@@ -87,9 +87,9 @@ public:
     // with the handler. Consequently, a local copy of the handler is required
     // to ensure that any owning sub-object remains valid until after we have
     // deallocated the memory here.
-    detail::binder2<Handler, asio::error_code, iterator_type>
+    detail::binder2<Handler, clmdep_asio::error_code, iterator_type>
       handler(o->handler_, o->ec_, iterator);
-    p.h = asio::detail::addressof(handler.handler_);
+    p.h = clmdep_asio::detail::addressof(handler.handler_);
     p.reset();
 
     // Make the upcall if required.
@@ -97,7 +97,7 @@ public:
     {
       fenced_block b(fenced_block::half);
       ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_, handler.arg2_));
-      asio_handler_invoke_helpers::invoke(handler, handler.handler_);
+      clmdep_asio_handler_invoke_helpers::invoke(handler, handler.handler_);
       ASIO_HANDLER_INVOCATION_END;
     }
   }
@@ -108,7 +108,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

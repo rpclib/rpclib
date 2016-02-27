@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class wait_op
@@ -28,7 +28,7 @@ class wait_op
 {
 public:
   // The error code to be passed to the completion handler.
-  asio::error_code ec_;
+  clmdep_asio::error_code ec_;
 
 protected:
   wait_op(func_type func)
@@ -38,7 +38,7 @@ protected:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

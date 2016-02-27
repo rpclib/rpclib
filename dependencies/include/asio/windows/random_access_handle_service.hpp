@@ -29,21 +29,21 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace windows {
 
 /// Default service implementation for a random-access handle.
 class random_access_handle_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<random_access_handle_service>
+  : public clmdep_asio::detail::service_base<random_access_handle_service>
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
 private:
@@ -73,8 +73,8 @@ public:
 #endif
 
   /// Construct a new random-access handle service for the specified io_service.
-  explicit random_access_handle_service(asio::io_service& io_service)
-    : asio::detail::service_base<
+  explicit random_access_handle_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<
         random_access_handle_service>(io_service),
       service_impl_(io_service)
   {
@@ -110,8 +110,8 @@ public:
   }
 
   /// Assign an existing native handle to a random-access handle.
-  asio::error_code assign(implementation_type& impl,
-      const native_handle_type& handle, asio::error_code& ec)
+  clmdep_asio::error_code assign(implementation_type& impl,
+      const native_handle_type& handle, clmdep_asio::error_code& ec)
   {
     return service_impl_.assign(impl, handle, ec);
   }
@@ -123,8 +123,8 @@ public:
   }
 
   /// Close a random-access handle implementation.
-  asio::error_code close(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code close(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.close(impl, ec);
   }
@@ -142,8 +142,8 @@ public:
   }
 
   /// Cancel all asynchronous operations associated with the handle.
-  asio::error_code cancel(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code cancel(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
@@ -151,7 +151,7 @@ public:
   /// Write the given data at the specified offset.
   template <typename ConstBufferSequence>
   std::size_t write_some_at(implementation_type& impl, uint64_t offset,
-      const ConstBufferSequence& buffers, asio::error_code& ec)
+      const ConstBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.write_some_at(impl, offset, buffers, ec);
   }
@@ -159,13 +159,13 @@ public:
   /// Start an asynchronous write at the specified offset.
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some_at(implementation_type& impl,
       uint64_t offset, const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
-    asio::detail::async_result_init<
-      WriteHandler, void (asio::error_code, std::size_t)> init(
+    clmdep_asio::detail::async_result_init<
+      WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(WriteHandler)(handler));
 
     service_impl_.async_write_some_at(impl, offset, buffers, init.handler);
@@ -176,7 +176,7 @@ public:
   /// Read some data from the specified offset.
   template <typename MutableBufferSequence>
   std::size_t read_some_at(implementation_type& impl, uint64_t offset,
-      const MutableBufferSequence& buffers, asio::error_code& ec)
+      const MutableBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.read_some_at(impl, offset, buffers, ec);
   }
@@ -184,13 +184,13 @@ public:
   /// Start an asynchronous read at the specified offset.
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some_at(implementation_type& impl,
       uint64_t offset, const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
-    asio::detail::async_result_init<
-      ReadHandler, void (asio::error_code, std::size_t)> init(
+    clmdep_asio::detail::async_result_init<
+      ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(ReadHandler)(handler));
 
     service_impl_.async_read_some_at(impl, offset, buffers, init.handler);
@@ -210,7 +210,7 @@ private:
 };
 
 } // namespace windows
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

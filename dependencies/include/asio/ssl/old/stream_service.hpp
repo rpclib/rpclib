@@ -26,16 +26,16 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace old {
 
 /// Default service implementation for an SSL stream.
 class stream_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<stream_service>
+  : public clmdep_asio::detail::service_base<stream_service>
 #endif
 {
 private:
@@ -45,7 +45,7 @@ private:
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
   /// The type of a stream implementation.
@@ -56,9 +56,9 @@ public:
 #endif
 
   /// Construct a new stream service for the specified io_service.
-  explicit stream_service(asio::io_service& io_service)
-    : asio::detail::service_base<stream_service>(io_service),
-      service_impl_(asio::use_service<service_impl_type>(io_service))
+  explicit stream_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<stream_service>(io_service),
+      service_impl_(clmdep_asio::use_service<service_impl_type>(io_service))
   {
   }
 
@@ -85,8 +85,8 @@ public:
 
   /// Perform SSL handshaking.
   template <typename Stream>
-  asio::error_code handshake(impl_type& impl, Stream& next_layer,
-      stream_base::handshake_type type, asio::error_code& ec)
+  clmdep_asio::error_code handshake(impl_type& impl, Stream& next_layer,
+      stream_base::handshake_type type, clmdep_asio::error_code& ec)
   {
     return service_impl_.handshake(impl, next_layer, type, ec);
   }
@@ -101,8 +101,8 @@ public:
 
   /// Shut down SSL on the stream.
   template <typename Stream>
-  asio::error_code shutdown(impl_type& impl, Stream& next_layer,
-      asio::error_code& ec)
+  clmdep_asio::error_code shutdown(impl_type& impl, Stream& next_layer,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.shutdown(impl, next_layer, ec);
   }
@@ -118,7 +118,7 @@ public:
   /// Write some data to the stream.
   template <typename Stream, typename ConstBufferSequence>
   std::size_t write_some(impl_type& impl, Stream& next_layer,
-      const ConstBufferSequence& buffers, asio::error_code& ec)
+      const ConstBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.write_some(impl, next_layer, buffers, ec);
   }
@@ -135,7 +135,7 @@ public:
   /// Read some data from the stream.
   template <typename Stream, typename MutableBufferSequence>
   std::size_t read_some(impl_type& impl, Stream& next_layer,
-      const MutableBufferSequence& buffers, asio::error_code& ec)
+      const MutableBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.read_some(impl, next_layer, buffers, ec);
   }
@@ -152,7 +152,7 @@ public:
   /// Peek at the incoming data on the stream.
   template <typename Stream, typename MutableBufferSequence>
   std::size_t peek(impl_type& impl, Stream& next_layer,
-      const MutableBufferSequence& buffers, asio::error_code& ec)
+      const MutableBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.peek(impl, next_layer, buffers, ec);
   }
@@ -160,7 +160,7 @@ public:
   /// Determine the amount of data that may be read without blocking.
   template <typename Stream>
   std::size_t in_avail(impl_type& impl, Stream& next_layer,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.in_avail(impl, next_layer, ec);
   }
@@ -177,7 +177,7 @@ private:
 
 } // namespace old
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

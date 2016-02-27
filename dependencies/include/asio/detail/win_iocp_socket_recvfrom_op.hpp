@@ -31,7 +31,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename MutableBufferSequence, typename Endpoint, typename Handler>
@@ -58,15 +58,15 @@ public:
   }
 
   static void do_complete(io_service_impl* owner, operation* base,
-      const asio::error_code& result_ec,
+      const clmdep_asio::error_code& result_ec,
       std::size_t bytes_transferred)
   {
-    asio::error_code ec(result_ec);
+    clmdep_asio::error_code ec(result_ec);
 
     // Take ownership of the operation object.
     win_iocp_socket_recvfrom_op* o(
         static_cast<win_iocp_socket_recvfrom_op*>(base));
-    ptr p = { asio::detail::addressof(o->handler_), o, o };
+    ptr p = { clmdep_asio::detail::addressof(o->handler_), o, o };
 
     ASIO_HANDLER_COMPLETION((o));
 
@@ -74,7 +74,7 @@ public:
     // Check whether buffers are still valid.
     if (owner)
     {
-      buffer_sequence_adapter<asio::mutable_buffer,
+      buffer_sequence_adapter<clmdep_asio::mutable_buffer,
           MutableBufferSequence>::validate(o->buffers_);
     }
 #endif // defined(ASIO_ENABLE_BUFFER_DEBUGGING)
@@ -90,9 +90,9 @@ public:
     // with the handler. Consequently, a local copy of the handler is required
     // to ensure that any owning sub-object remains valid until after we have
     // deallocated the memory here.
-    detail::binder2<Handler, asio::error_code, std::size_t>
+    detail::binder2<Handler, clmdep_asio::error_code, std::size_t>
       handler(o->handler_, ec, bytes_transferred);
-    p.h = asio::detail::addressof(handler.handler_);
+    p.h = clmdep_asio::detail::addressof(handler.handler_);
     p.reset();
 
     // Make the upcall if required.
@@ -100,7 +100,7 @@ public:
     {
       fenced_block b(fenced_block::half);
       ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_, handler.arg2_));
-      asio_handler_invoke_helpers::invoke(handler, handler.handler_);
+      clmdep_asio_handler_invoke_helpers::invoke(handler, handler.handler_);
       ASIO_HANDLER_INVOCATION_END;
     }
   }
@@ -114,7 +114,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -30,7 +30,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Protocol>
@@ -46,13 +46,13 @@ public:
   typedef typename Protocol::endpoint endpoint_type;
 
   // The query type.
-  typedef asio::ip::basic_resolver_query<Protocol> query_type;
+  typedef clmdep_asio::ip::basic_resolver_query<Protocol> query_type;
 
   // The iterator type.
-  typedef asio::ip::basic_resolver_iterator<Protocol> iterator_type;
+  typedef clmdep_asio::ip::basic_resolver_iterator<Protocol> iterator_type;
 
   // Constructor.
-  winrt_resolver_service(asio::io_service& io_service)
+  winrt_resolver_service(clmdep_asio::io_service& io_service)
     : io_service_(use_service<io_service_impl>(io_service)),
       async_manager_(use_service<winrt_async_manager>(io_service))
   {
@@ -69,7 +69,7 @@ public:
   }
 
   // Perform any fork-related housekeeping.
-  void fork_service(asio::io_service::fork_event)
+  void fork_service(clmdep_asio::io_service::fork_event)
   {
   }
 
@@ -90,7 +90,7 @@ public:
 
   // Resolve a query to a list of entries.
   iterator_type resolve(implementation_type&,
-      const query_type& query, asio::error_code& ec)
+      const query_type& query, clmdep_asio::error_code& ec)
   {
     try
     {
@@ -109,8 +109,8 @@ public:
     }
     catch (Platform::Exception^ e)
     {
-      ec = asio::error_code(e->HResult,
-          asio::system_category());
+      ec = clmdep_asio::error_code(e->HResult,
+          clmdep_asio::system_category());
       return iterator_type();
     }
   }
@@ -121,12 +121,12 @@ public:
       const query_type& query, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef winrt_resolve_op<Protocol, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(query, handler);
 
@@ -142,8 +142,8 @@ public:
     }
     catch (Platform::Exception^ e)
     {
-      p.p->ec_ = asio::error_code(
-          e->HResult, asio::system_category());
+      p.p->ec_ = clmdep_asio::error_code(
+          e->HResult, clmdep_asio::system_category());
       io_service_.post_immediate_completion(p.p, is_continuation);
       p.v = p.p = 0;
     }
@@ -151,9 +151,9 @@ public:
 
   // Resolve an endpoint to a list of entries.
   iterator_type resolve(implementation_type&,
-      const endpoint_type&, asio::error_code& ec)
+      const endpoint_type&, clmdep_asio::error_code& ec)
   {
-    ec = asio::error::operation_not_supported;
+    ec = clmdep_asio::error::operation_not_supported;
     return iterator_type();
   }
 
@@ -162,7 +162,7 @@ public:
   void async_resolve(implementation_type&,
       const endpoint_type&, Handler& handler)
   {
-    asio::error_code ec = asio::error::operation_not_supported;
+    clmdep_asio::error_code ec = clmdep_asio::error::operation_not_supported;
     const iterator_type iterator;
     io_service_.get_io_service().post(
         detail::bind_handler(handler, ec, iterator));
@@ -174,7 +174,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

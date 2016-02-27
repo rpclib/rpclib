@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Provides endpoint resolution functionality.
@@ -63,7 +63,7 @@ public:
    * @param io_service The io_service object that the resolver will use to
    * dispatch handlers for any asynchronous operations performed on the timer.
    */
-  explicit basic_resolver(asio::io_service& io_service)
+  explicit basic_resolver(clmdep_asio::io_service& io_service)
     : basic_io_object<ResolverService>(io_service)
   {
   }
@@ -72,7 +72,7 @@ public:
   /**
    * This function forces the completion of any pending asynchronous
    * operations on the host resolver. The handler for each cancelled operation
-   * will be invoked with the asio::error::operation_aborted error code.
+   * will be invoked with the clmdep_asio::error::operation_aborted error code.
    */
   void cancel()
   {
@@ -88,7 +88,7 @@ public:
    * @returns A forward-only iterator that can be used to traverse the list
    * of endpoint entries.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note A default constructed iterator represents the end of the list.
    *
@@ -97,9 +97,9 @@ public:
    */
   iterator resolve(const query& q)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     iterator i = this->service.resolve(this->implementation, q, ec);
-    asio::detail::throw_error(ec, "resolve");
+    clmdep_asio::detail::throw_error(ec, "resolve");
     return i;
   }
 
@@ -120,7 +120,7 @@ public:
    * A successful call to this function is guaranteed to return at least one
    * entry.
    */
-  iterator resolve(const query& q, asio::error_code& ec)
+  iterator resolve(const query& q, clmdep_asio::error_code& ec)
   {
     return this->service.resolve(this->implementation, q, ec);
   }
@@ -136,7 +136,7 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   resolver::iterator iterator             // Forward-only iterator that can
    *                                           // be used to traverse the list
    *                                           // of endpoint entries.
@@ -144,7 +144,7 @@ public:
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note A default constructed iterator represents the end of the list.
    *
@@ -153,7 +153,7 @@ public:
    */
   template <typename ResolveHandler>
   ASIO_INITFN_RESULT_TYPE(ResolveHandler,
-      void (asio::error_code, iterator))
+      void (clmdep_asio::error_code, iterator))
   async_resolve(const query& q,
       ASIO_MOVE_ARG(ResolveHandler) handler)
   {
@@ -177,7 +177,7 @@ public:
    * @returns A forward-only iterator that can be used to traverse the list
    * of endpoint entries.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note A default constructed iterator represents the end of the list.
    *
@@ -186,9 +186,9 @@ public:
    */
   iterator resolve(const endpoint_type& e)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     iterator i = this->service.resolve(this->implementation, e, ec);
-    asio::detail::throw_error(ec, "resolve");
+    clmdep_asio::detail::throw_error(ec, "resolve");
     return i;
   }
 
@@ -211,7 +211,7 @@ public:
    * A successful call to this function is guaranteed to return at least one
    * entry.
    */
-  iterator resolve(const endpoint_type& e, asio::error_code& ec)
+  iterator resolve(const endpoint_type& e, clmdep_asio::error_code& ec)
   {
     return this->service.resolve(this->implementation, e, ec);
   }
@@ -229,7 +229,7 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   resolver::iterator iterator             // Forward-only iterator that can
    *                                           // be used to traverse the list
    *                                           // of endpoint entries.
@@ -237,7 +237,7 @@ public:
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note A default constructed iterator represents the end of the list.
    *
@@ -246,7 +246,7 @@ public:
    */
   template <typename ResolveHandler>
   ASIO_INITFN_RESULT_TYPE(ResolveHandler,
-      void (asio::error_code, iterator))
+      void (clmdep_asio::error_code, iterator))
   async_resolve(const endpoint_type& e,
       ASIO_MOVE_ARG(ResolveHandler) handler)
   {
@@ -261,7 +261,7 @@ public:
 };
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

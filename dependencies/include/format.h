@@ -66,7 +66,7 @@ typedef long long          intmax_t;
 #ifdef _MSC_VER
 # include <intrin.h>  // _BitScanReverse, _BitScanReverse64
 
-namespace fmt {
+namespace clmdep_fmt {
 namespace internal {
 # pragma intrinsic(_BitScanReverse)
 inline uint32_t clz(uint32_t x) {
@@ -74,7 +74,7 @@ inline uint32_t clz(uint32_t x) {
   _BitScanReverse(&r, x);
   return 31 - r;
 }
-# define FMT_BUILTIN_CLZ(n) fmt::internal::clz(n)
+# define FMT_BUILTIN_CLZ(n) clmdep_fmt::internal::clz(n)
 
 # ifdef _WIN64
 #  pragma intrinsic(_BitScanReverse64)
@@ -94,7 +94,7 @@ inline uint32_t clzll(uint64_t x) {
 # endif
   return 63 - r;
 }
-# define FMT_BUILTIN_CLZLL(n) fmt::internal::clzll(n)
+# define FMT_BUILTIN_CLZLL(n) clmdep_fmt::internal::clzll(n)
 }
 }
 #endif
@@ -209,7 +209,7 @@ inline uint32_t clzll(uint64_t x) {
 
 #ifndef FMT_USE_USER_DEFINED_LITERALS
 // All compilers which support UDLs also support variadic templates. This
-// makes the fmt::literals implementation easier. However, an explicit check
+// makes the clmdep_fmt::literals implementation easier. However, an explicit check
 // for variadic templates is added here just in case.
 # define FMT_USE_USER_DEFINED_LITERALS \
    FMT_USE_VARIADIC_TEMPLATES && FMT_USE_RVALUE_REFERENCES && \
@@ -221,13 +221,13 @@ inline uint32_t clzll(uint64_t x) {
 # define FMT_ASSERT(condition, message) assert((condition) && message)
 #endif
 
-namespace fmt {
+namespace clmdep_fmt {
 namespace internal {
 struct DummyInt {
   int data[2];
   operator int() const { return 0; }
 };
-typedef std::numeric_limits<fmt::internal::DummyInt> FPUtil;
+typedef std::numeric_limits<clmdep_fmt::internal::DummyInt> FPUtil;
 
 // Dummy implementations of system functions such as signbit and ecvt called
 // if the latter are not available.
@@ -243,7 +243,7 @@ inline DummyInt _isnan(...) { return DummyInt(); }
 template <typename T>
 inline T check(T value) { return value; }
 }
-}  // namespace fmt
+}  // namespace clmdep_fmt
 
 namespace std {
 // Standard permits specialization of std::numeric_limits. This specialization
@@ -251,15 +251,15 @@ namespace std {
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=48891
 // and the same for isnan and signbit.
 template <>
-class numeric_limits<fmt::internal::DummyInt> :
+class numeric_limits<clmdep_fmt::internal::DummyInt> :
     public std::numeric_limits<int> {
  public:
   // Portable version of isinf.
   template <typename T>
   static bool isinfinity(T x) {
-    using namespace fmt::internal;
+    using namespace clmdep_fmt::internal;
     // The resolution "priority" is:
-    // isinf macro > std::isinf > ::isinf > fmt::internal::isinf
+    // isinf macro > std::isinf > ::isinf > clmdep_fmt::internal::isinf
     if (check(sizeof(isinf(x)) == sizeof(bool) ||
               sizeof(isinf(x)) == sizeof(int))) {
       return !!isinf(x);
@@ -270,7 +270,7 @@ class numeric_limits<fmt::internal::DummyInt> :
   // Portable version of isnan.
   template <typename T>
   static bool isnotanumber(T x) {
-    using namespace fmt::internal;
+    using namespace clmdep_fmt::internal;
     if (check(sizeof(isnan(x)) == sizeof(bool) ||
               sizeof(isnan(x)) == sizeof(int))) {
       return !!isnan(x);
@@ -280,7 +280,7 @@ class numeric_limits<fmt::internal::DummyInt> :
 
   // Portable version of signbit.
   static bool isnegative(double x) {
-    using namespace fmt::internal;
+    using namespace clmdep_fmt::internal;
     if (check(sizeof(signbit(x)) == sizeof(int)))
       return !!signbit(x);
     if (x < 0) return true;
@@ -293,7 +293,7 @@ class numeric_limits<fmt::internal::DummyInt> :
 };
 }  // namespace std
 
-namespace fmt {
+namespace clmdep_fmt {
 
 // Fix the warning about long long on older versions of GCC
 // that don't support the diagnostic pragma.
@@ -649,9 +649,9 @@ void MemoryBuffer<T, SIZE, Allocator>::grow(std::size_t size) {
 
 // A fixed-size buffer.
 template <typename Char>
-class FixedBuffer : public fmt::Buffer<Char> {
+class FixedBuffer : public clmdep_fmt::Buffer<Char> {
  public:
-  FixedBuffer(Char *array, std::size_t size) : fmt::Buffer<Char>(array, size) {}
+  FixedBuffer(Char *array, std::size_t size) : clmdep_fmt::Buffer<Char>(array, size) {}
 
  protected:
   void grow(std::size_t size);
@@ -868,12 +868,12 @@ class UTF16ToUTF8 {
   int convert(WStringRef s);
 };
 
-void format_windows_error(fmt::Writer &out, int error_code,
-                          fmt::StringRef message) FMT_NOEXCEPT;
+void format_windows_error(clmdep_fmt::Writer &out, int error_code,
+                          clmdep_fmt::StringRef message) FMT_NOEXCEPT;
 #endif
 
-void format_system_error(fmt::Writer &out, int error_code,
-                         fmt::StringRef message) FMT_NOEXCEPT;
+void format_system_error(clmdep_fmt::Writer &out, int error_code,
+                         clmdep_fmt::StringRef message) FMT_NOEXCEPT;
 
 // A formatting argument value.
 struct Value {
@@ -946,7 +946,7 @@ typedef char Yes[1];
 typedef char No[2];
 
 // These are non-members to workaround an overload resolution bug in bcc32.
-Yes &convert(fmt::ULongLong);
+Yes &convert(clmdep_fmt::ULongLong);
 Yes &convert(std::ostream &);
 No &convert(...);
 
@@ -1036,8 +1036,8 @@ class MakeValue : public Arg {
 
   // The following methods are private to disallow formatting of wide
   // characters and strings into narrow strings as in
-  //   fmt::format("{}", L"test");
-  // To fix this, use a wide format string: fmt::format(L"{}", L"test").
+  //   clmdep_fmt::format("{}", L"test");
+  // To fix this, use a wide format string: clmdep_fmt::format(L"{}", L"test").
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   MakeValue(typename WCharHelper<wchar_t, Char>::Unsupported);
 #endif
@@ -1388,7 +1388,7 @@ namespace internal {
 template <typename Char>
 class ArgMap {
  private:
-  typedef std::map<fmt::BasicStringRef<Char>, internal::Arg> MapType;
+  typedef std::map<clmdep_fmt::BasicStringRef<Char>, internal::Arg> MapType;
   typedef typename MapType::value_type Pair;
 
   MapType map_;
@@ -1396,7 +1396,7 @@ class ArgMap {
  public:
   void init(const ArgList &args);
 
-  const internal::Arg* find(const fmt::BasicStringRef<Char> &name) const {
+  const internal::Arg* find(const clmdep_fmt::BasicStringRef<Char> &name) const {
     typename MapType::const_iterator it = map_.find(name);
     return it != map_.end() ? &it->second : 0;
   }
@@ -1847,29 +1847,29 @@ class FormatBuf : public std::basic_streambuf<Char> {
 # define FMT_MAKE_TEMPLATE_ARG(n) typename T##n
 # define FMT_MAKE_ARG_TYPE(n) T##n
 # define FMT_MAKE_ARG(n) const T##n &v##n
-# define FMT_ASSIGN_char(n) arr[n] = fmt::internal::MakeValue<char>(v##n)
-# define FMT_ASSIGN_wchar_t(n) arr[n] = fmt::internal::MakeValue<wchar_t>(v##n)
+# define FMT_ASSIGN_char(n) arr[n] = clmdep_fmt::internal::MakeValue<char>(v##n)
+# define FMT_ASSIGN_wchar_t(n) arr[n] = clmdep_fmt::internal::MakeValue<wchar_t>(v##n)
 
 #if FMT_USE_VARIADIC_TEMPLATES
 // Defines a variadic function returning void.
 # define FMT_VARIADIC_VOID(func, arg_type) \
   template <typename... Args> \
   void func(arg_type arg0, const Args & ... args) { \
-    typename fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
-    func(arg0, fmt::internal::make_arg_list<Char>(array, args...)); \
+    typename clmdep_fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
+    func(arg0, clmdep_fmt::internal::make_arg_list<Char>(array, args...)); \
   }
 
 // Defines a variadic constructor.
 # define FMT_VARIADIC_CTOR(ctor, func, arg0_type, arg1_type) \
   template <typename... Args> \
   ctor(arg0_type arg0, arg1_type arg1, const Args & ... args) { \
-    typename fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
-    func(arg0, arg1, fmt::internal::make_arg_list<Char>(array, args...)); \
+    typename clmdep_fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
+    func(arg0, arg1, clmdep_fmt::internal::make_arg_list<Char>(array, args...)); \
   }
 
 #else
 
-# define FMT_MAKE_REF(n) fmt::internal::MakeValue<Char>(v##n)
+# define FMT_MAKE_REF(n) clmdep_fmt::internal::MakeValue<Char>(v##n)
 # define FMT_MAKE_REF2(n) v##n
 
 // Defines a wrapper for a function taking one argument of type arg_type
@@ -1877,14 +1877,14 @@ class FormatBuf : public std::basic_streambuf<Char> {
 # define FMT_WRAP1(func, arg_type, n) \
   template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
   inline void func(arg_type arg1, FMT_GEN(n, FMT_MAKE_ARG)) { \
-    const fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, FMT_MAKE_REF)}; \
-    func(arg1, fmt::ArgList( \
-      fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
+    const clmdep_fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, FMT_MAKE_REF)}; \
+    func(arg1, clmdep_fmt::ArgList( \
+      clmdep_fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
   }
 
 // Emulates a variadic function returning void on a pre-C++11 compiler.
 # define FMT_VARIADIC_VOID(func, arg_type) \
-  inline void func(arg_type arg) { func(arg, fmt::ArgList()); } \
+  inline void func(arg_type arg) { func(arg, clmdep_fmt::ArgList()); } \
   FMT_WRAP1(func, arg_type, 1) FMT_WRAP1(func, arg_type, 2) \
   FMT_WRAP1(func, arg_type, 3) FMT_WRAP1(func, arg_type, 4) \
   FMT_WRAP1(func, arg_type, 5) FMT_WRAP1(func, arg_type, 6) \
@@ -1894,9 +1894,9 @@ class FormatBuf : public std::basic_streambuf<Char> {
 # define FMT_CTOR(ctor, func, arg0_type, arg1_type, n) \
   template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
   ctor(arg0_type arg0, arg1_type arg1, FMT_GEN(n, FMT_MAKE_ARG)) { \
-    const fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, FMT_MAKE_REF)}; \
-    func(arg0, arg1, fmt::ArgList( \
-      fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
+    const clmdep_fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, FMT_MAKE_REF)}; \
+    func(arg0, arg1, clmdep_fmt::ArgList( \
+      clmdep_fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
   }
 
 // Emulates a variadic constructor on a pre-C++11 compiler.
@@ -1953,7 +1953,7 @@ class SystemError : public internal::RuntimeError {
  public:
   /**
    \rst
-   Constructs a :class:`fmt::SystemError` object with the description
+   Constructs a :class:`clmdep_fmt::SystemError` object with the description
    of the form
 
    .. parsed-literal::
@@ -1973,7 +1973,7 @@ class SystemError : public internal::RuntimeError {
      const char *filename = "madeup";
      std::FILE *file = std::fopen(filename, "r");
      if (!file)
-       throw fmt::SystemError(errno, "cannot open file '{}'", filename);
+       throw clmdep_fmt::SystemError(errno, "cannot open file '{}'", filename);
    \endrst
   */
   SystemError(int error_code, CStringRef message) {
@@ -1988,7 +1988,7 @@ class SystemError : public internal::RuntimeError {
   \rst
   This template provides operations for formatting and writing data into
   a character stream. The output is stored in a buffer provided by a subclass
-  such as :class:`fmt::BasicMemoryWriter`.
+  such as :class:`clmdep_fmt::BasicMemoryWriter`.
 
   You can use one of the following typedefs for common character types:
 
@@ -2243,7 +2243,7 @@ class BasicWriter {
     Writes *value* to the stream.
     \endrst
    */
-  BasicWriter &operator<<(fmt::BasicStringRef<Char> value) {
+  BasicWriter &operator<<(clmdep_fmt::BasicStringRef<Char> value) {
     const Char *str = value.data();
     buffer_.append(str, str + value.size());
     return *this;
@@ -2653,7 +2653,7 @@ class BasicMemoryWriter : public BasicWriter<Char> {
 #if FMT_USE_RVALUE_REFERENCES
   /**
     \rst
-    Constructs a :class:`fmt::BasicMemoryWriter` object moving the content
+    Constructs a :class:`clmdep_fmt::BasicMemoryWriter` object moving the content
     of the other object to it.
     \endrst
    */
@@ -2680,7 +2680,7 @@ typedef BasicMemoryWriter<wchar_t> WMemoryWriter;
   \rst
   This class template provides operations for formatting and writing data
   into a fixed-size array. For writing into a dynamically growing buffer
-  use :class:`fmt::BasicMemoryWriter`.
+  use :class:`clmdep_fmt::BasicMemoryWriter`.
 
   Any write method will throw ``std::runtime_error`` if the output doesn't fit
   into the array.
@@ -2704,7 +2704,7 @@ class BasicArrayWriter : public BasicWriter<Char> {
  public:
   /**
    \rst
-   Constructs a :class:`fmt::BasicArrayWriter` object for *array* of the
+   Constructs a :class:`clmdep_fmt::BasicArrayWriter` object for *array* of the
    given size.
    \endrst
    */
@@ -2713,7 +2713,7 @@ class BasicArrayWriter : public BasicWriter<Char> {
 
   /**
    \rst
-   Constructs a :class:`fmt::BasicArrayWriter` object for *array* of the
+   Constructs a :class:`clmdep_fmt::BasicArrayWriter` object for *array* of the
    size known at compile time.
    \endrst
    */
@@ -2755,7 +2755,7 @@ class WindowsError : public SystemError {
  public:
   /**
    \rst
-   Constructs a :class:`fmt::WindowsError` object with the description
+   Constructs a :class:`clmdep_fmt::WindowsError` object with the description
    of the form
 
    .. parsed-literal::
@@ -2776,7 +2776,7 @@ class WindowsError : public SystemError {
      LPOFSTRUCT of = LPOFSTRUCT();
      HFILE file = OpenFile(filename, &of, OF_READ);
      if (file == HFILE_ERROR) {
-       throw fmt::WindowsError(GetLastError(),
+       throw clmdep_fmt::WindowsError(GetLastError(),
                                "cannot open file '{}'", filename);
      }
    \endrst
@@ -2799,7 +2799,7 @@ enum Color { BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE };
   Formats a string and prints it to stdout using ANSI escape sequences
   to specify color (experimental).
   Example:
-    print_colored(fmt::RED, "Elapsed time: {0:.2f} seconds", 1.23);
+    print_colored(clmdep_fmt::RED, "Elapsed time: {0:.2f} seconds", 1.23);
  */
 void print_colored(Color c, CStringRef format, ArgList args);
 
@@ -2857,7 +2857,7 @@ void printf(BasicWriter<Char> &w, BasicCStringRef<Char> format, ArgList args) {
 
   **Example**::
 
-    std::string message = fmt::sprintf("The answer is %d", 42);
+    std::string message = clmdep_fmt::sprintf("The answer is %d", 42);
   \endrst
 */
 inline std::string sprintf(CStringRef format, ArgList args) {
@@ -2878,7 +2878,7 @@ inline std::wstring sprintf(WCStringRef format, ArgList args) {
 
   **Example**::
 
-    fmt::fprintf(stderr, "Don't %s!", "panic");
+    clmdep_fmt::fprintf(stderr, "Don't %s!", "panic");
   \endrst
  */
 int fprintf(std::FILE *f, CStringRef format, ArgList args);
@@ -2889,7 +2889,7 @@ int fprintf(std::FILE *f, CStringRef format, ArgList args);
 
   **Example**::
 
-    fmt::printf("Elapsed time: %.2f seconds", 1.23);
+    clmdep_fmt::printf("Elapsed time: %.2f seconds", 1.23);
   \endrst
  */
 inline int printf(CStringRef format, ArgList args) {
@@ -3060,9 +3060,9 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
   template <typename... Args> \
   ReturnType func(FMT_FOR_EACH(FMT_ADD_ARG_NAME, __VA_ARGS__), \
       const Args & ... args) { \
-    typename fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
+    typename clmdep_fmt::internal::ArgArray<sizeof...(Args)>::Type array; \
     call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), \
-      fmt::internal::make_arg_list<Char>(array, args...)); \
+      clmdep_fmt::internal::make_arg_list<Char>(array, args...)); \
   }
 #else
 // Defines a wrapper for a function taking __VA_ARGS__ arguments
@@ -3071,15 +3071,15 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
   template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
   inline ReturnType func(FMT_FOR_EACH(FMT_ADD_ARG_NAME, __VA_ARGS__), \
       FMT_GEN(n, FMT_MAKE_ARG)) { \
-    fmt::internal::ArgArray<n>::Type arr; \
+    clmdep_fmt::internal::ArgArray<n>::Type arr; \
     FMT_GEN(n, FMT_ASSIGN_##Char); \
-    call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), fmt::ArgList( \
-      fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), arr)); \
+    call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), clmdep_fmt::ArgList( \
+      clmdep_fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), arr)); \
   }
 
 # define FMT_VARIADIC_(Char, ReturnType, func, call, ...) \
   inline ReturnType func(FMT_FOR_EACH(FMT_ADD_ARG_NAME, __VA_ARGS__)) { \
-    call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), fmt::ArgList()); \
+    call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), clmdep_fmt::ArgList()); \
   } \
   FMT_WRAP(Char, ReturnType, func, call, 1, __VA_ARGS__) \
   FMT_WRAP(Char, ReturnType, func, call, 2, __VA_ARGS__) \
@@ -3106,9 +3106,9 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
   **Example**::
 
     void print_error(const char *file, int line, const char *format,
-                     fmt::ArgList args) {
-      fmt::print("{}: {}: ", file, line);
-      fmt::print(format, args);
+                     clmdep_fmt::ArgList args) {
+      clmdep_fmt::print("{}: {}: ", file, line);
+      clmdep_fmt::print(format, args);
     }
     FMT_VARIADIC(void, print_error, const char *, int, const char *)
 
@@ -3120,8 +3120,8 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
     template <typename... Args>
     void print_error(const char *file, int line, const char *format,
                      const Args & ... args) {
-      fmt::print("{}: {}: ", file, line);
-      fmt::print(format, args...);
+      clmdep_fmt::print("{}: {}: ", file, line);
+      clmdep_fmt::print(format, args...);
     }
   \endrst
  */
@@ -3131,14 +3131,14 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
 #define FMT_VARIADIC_W(ReturnType, func, ...) \
   FMT_VARIADIC_(wchar_t, ReturnType, func, return func, __VA_ARGS__)
 
-#define FMT_CAPTURE_ARG_(id, index) ::fmt::arg(#id, id)
+#define FMT_CAPTURE_ARG_(id, index) ::clmdep_fmt::arg(#id, id)
 
-#define FMT_CAPTURE_ARG_W_(id, index) ::fmt::arg(L###id, id)
+#define FMT_CAPTURE_ARG_W_(id, index) ::clmdep_fmt::arg(L###id, id)
 
 /**
   \rst
   Convenient macro to capture the arguments' names and values into several
-  ``fmt::arg(name, value)``.
+  ``clmdep_fmt::arg(name, value)``.
 
   **Example**::
 
@@ -3153,7 +3153,7 @@ void arg(WStringRef, const internal::NamedArg<Char>&) FMT_DELETED_OR_UNDEFINED;
 
 #define FMT_CAPTURE_W(...) FMT_FOR_EACH(FMT_CAPTURE_ARG_W_, __VA_ARGS__)
 
-namespace fmt {
+namespace clmdep_fmt {
 FMT_VARIADIC(std::string, format, CStringRef)
 FMT_VARIADIC_W(std::wstring, format, WCStringRef)
 FMT_VARIADIC(void, print, CStringRef)
@@ -3178,10 +3178,10 @@ FMT_VARIADIC(int, fprintf, std::FILE *, CStringRef)
 void print(std::ostream &os, CStringRef format_str, ArgList args);
 FMT_VARIADIC(void, print, std::ostream &, CStringRef)
 #endif
-}  // namespace fmt
+}  // namespace clmdep_fmt
 
 #if FMT_USE_USER_DEFINED_LITERALS
-namespace fmt {
+namespace clmdep_fmt {
 namespace internal {
 
 template <typename Char>
@@ -3211,11 +3211,11 @@ inline namespace literals {
 
 /**
   \rst
-  C++11 literal equivalent of :func:`fmt::format`.
+  C++11 literal equivalent of :func:`clmdep_fmt::format`.
 
   **Example**::
 
-    using namespace fmt::literals;
+    using namespace clmdep_fmt::literals;
     std::string message = "The answer is {}"_format(42);
   \endrst
  */
@@ -3226,11 +3226,11 @@ operator"" _format(const wchar_t *s, std::size_t) { return {s}; }
 
 /**
   \rst
-  C++11 literal equivalent of :func:`fmt::arg`.
+  C++11 literal equivalent of :func:`clmdep_fmt::arg`.
 
   **Example**::
 
-    using namespace fmt::literals;
+    using namespace clmdep_fmt::literals;
     print("Elapsed time: {s:.2f} seconds", "s"_a=1.23);
   \endrst
  */
@@ -3240,7 +3240,7 @@ inline internal::UdlArg<wchar_t>
 operator"" _a(const wchar_t *s, std::size_t) { return {s}; }
 
 } // inline namespace literals
-} // namespace fmt
+} // namespace clmdep_fmt
 #endif // FMT_USE_USER_DEFINED_LITERALS
 
 // Restore warnings.

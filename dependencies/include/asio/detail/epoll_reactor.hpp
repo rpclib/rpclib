@@ -34,11 +34,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class epoll_reactor
-  : public asio::detail::service_base<epoll_reactor>
+  : public clmdep_asio::detail::service_base<epoll_reactor>
 {
 public:
   enum op_types { read_op = 0, write_op = 1,
@@ -65,14 +65,14 @@ public:
     ASIO_DECL operation* perform_io(uint32_t events);
     ASIO_DECL static void do_complete(
         io_service_impl* owner, operation* base,
-        const asio::error_code& ec, std::size_t bytes_transferred);
+        const clmdep_asio::error_code& ec, std::size_t bytes_transferred);
   };
 
   // Per-descriptor data.
   typedef descriptor_state* per_descriptor_data;
 
   // Constructor.
-  ASIO_DECL epoll_reactor(asio::io_service& io_service);
+  ASIO_DECL epoll_reactor(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~epoll_reactor();
@@ -82,7 +82,7 @@ public:
 
   // Recreate internal descriptors following a fork.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Initialise the task.
   ASIO_DECL void init_task();
@@ -228,7 +228,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

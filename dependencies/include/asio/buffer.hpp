@@ -57,7 +57,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 class mutable_buffer;
 class const_buffer;
@@ -80,12 +80,12 @@ std::size_t buffer_size_helper(const const_buffer&);
  * The contents of a buffer may be accessed using the @ref buffer_size
  * and @ref buffer_cast functions:
  *
- * @code asio::mutable_buffer b1 = ...;
- * std::size_t s1 = asio::buffer_size(b1);
- * unsigned char* p1 = asio::buffer_cast<unsigned char*>(b1);
+ * @code clmdep_asio::mutable_buffer b1 = ...;
+ * std::size_t s1 = clmdep_asio::buffer_size(b1);
+ * unsigned char* p1 = clmdep_asio::buffer_cast<unsigned char*>(b1);
  * @endcode
  *
- * The asio::buffer_cast function permits violations of type safety, so
+ * The clmdep_asio::buffer_cast function permits violations of type safety, so
  * uses of it in application code should be carefully considered.
  */
 class mutable_buffer
@@ -107,30 +107,30 @@ public:
 
 #if defined(ASIO_ENABLE_BUFFER_DEBUGGING)
   mutable_buffer(void* data, std::size_t size,
-      asio::detail::function<void()> debug_check)
+      clmdep_asio::detail::function<void()> debug_check)
     : data_(data),
       size_(size),
       debug_check_(debug_check)
   {
   }
 
-  const asio::detail::function<void()>& get_debug_check() const
+  const clmdep_asio::detail::function<void()>& get_debug_check() const
   {
     return debug_check_;
   }
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
 
 private:
-  friend void* asio::detail::buffer_cast_helper(
+  friend void* clmdep_asio::detail::buffer_cast_helper(
       const mutable_buffer& b);
-  friend std::size_t asio::detail::buffer_size_helper(
+  friend std::size_t clmdep_asio::detail::buffer_size_helper(
       const mutable_buffer& b);
 
   void* data_;
   std::size_t size_;
 
 #if defined(ASIO_ENABLE_BUFFER_DEBUGGING)
-  asio::detail::function<void()> debug_check_;
+  clmdep_asio::detail::function<void()> debug_check_;
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
 };
 
@@ -200,12 +200,12 @@ public:
  * The contents of a buffer may be accessed using the @ref buffer_size
  * and @ref buffer_cast functions:
  *
- * @code asio::const_buffer b1 = ...;
- * std::size_t s1 = asio::buffer_size(b1);
- * const unsigned char* p1 = asio::buffer_cast<const unsigned char*>(b1);
+ * @code clmdep_asio::const_buffer b1 = ...;
+ * std::size_t s1 = clmdep_asio::buffer_size(b1);
+ * const unsigned char* p1 = clmdep_asio::buffer_cast<const unsigned char*>(b1);
  * @endcode
  *
- * The asio::buffer_cast function permits violations of type safety, so
+ * The clmdep_asio::buffer_cast function permits violations of type safety, so
  * uses of it in application code should be carefully considered.
  */
 class const_buffer
@@ -227,8 +227,8 @@ public:
 
   /// Construct a non-modifiable buffer from a modifiable one.
   const_buffer(const mutable_buffer& b)
-    : data_(asio::detail::buffer_cast_helper(b)),
-      size_(asio::detail::buffer_size_helper(b))
+    : data_(clmdep_asio::detail::buffer_cast_helper(b)),
+      size_(clmdep_asio::detail::buffer_size_helper(b))
 #if defined(ASIO_ENABLE_BUFFER_DEBUGGING)
       , debug_check_(b.get_debug_check())
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
@@ -237,30 +237,30 @@ public:
 
 #if defined(ASIO_ENABLE_BUFFER_DEBUGGING)
   const_buffer(const void* data, std::size_t size,
-      asio::detail::function<void()> debug_check)
+      clmdep_asio::detail::function<void()> debug_check)
     : data_(data),
       size_(size),
       debug_check_(debug_check)
   {
   }
 
-  const asio::detail::function<void()>& get_debug_check() const
+  const clmdep_asio::detail::function<void()>& get_debug_check() const
   {
     return debug_check_;
   }
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
 
 private:
-  friend const void* asio::detail::buffer_cast_helper(
+  friend const void* clmdep_asio::detail::buffer_cast_helper(
       const const_buffer& b);
-  friend std::size_t asio::detail::buffer_size_helper(
+  friend std::size_t clmdep_asio::detail::buffer_size_helper(
       const const_buffer& b);
 
   const void* data_;
   std::size_t size_;
 
 #if defined(ASIO_ENABLE_BUFFER_DEBUGGING)
-  asio::detail::function<void()> debug_check_;
+  clmdep_asio::detail::function<void()> debug_check_;
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
 };
 
@@ -346,9 +346,9 @@ private:
   mutable_buffer buf_;
 };
 
-/** @defgroup buffer_size asio::buffer_size
+/** @defgroup buffer_size clmdep_asio::buffer_size
  *
- * @brief The asio::buffer_size function determines the total number of
+ * @brief The clmdep_asio::buffer_size function determines the total number of
  * bytes in a buffer or buffer sequence.
  */
 /*@{*/
@@ -397,24 +397,24 @@ inline std::size_t buffer_size(const BufferSequence& b)
 
 /*@}*/
 
-/** @defgroup buffer_cast asio::buffer_cast
+/** @defgroup buffer_cast clmdep_asio::buffer_cast
  *
- * @brief The asio::buffer_cast function is used to obtain a pointer to
+ * @brief The clmdep_asio::buffer_cast function is used to obtain a pointer to
  * the underlying memory region associated with a buffer.
  *
  * @par Examples:
  *
  * To access the memory of a non-modifiable buffer, use:
- * @code asio::const_buffer b1 = ...;
- * const unsigned char* p1 = asio::buffer_cast<const unsigned char*>(b1);
+ * @code clmdep_asio::const_buffer b1 = ...;
+ * const unsigned char* p1 = clmdep_asio::buffer_cast<const unsigned char*>(b1);
  * @endcode
  *
  * To access the memory of a modifiable buffer, use:
- * @code asio::mutable_buffer b2 = ...;
- * unsigned char* p2 = asio::buffer_cast<unsigned char*>(b2);
+ * @code clmdep_asio::mutable_buffer b2 = ...;
+ * unsigned char* p2 = clmdep_asio::buffer_cast<unsigned char*>(b2);
  * @endcode
  *
- * The asio::buffer_cast function permits violations of type safety, so
+ * The clmdep_asio::buffer_cast function permits violations of type safety, so
  * uses of it in application code should be carefully considered.
  */
 /*@{*/
@@ -537,9 +537,9 @@ private:
 } // namespace detail
 #endif // ASIO_ENABLE_BUFFER_DEBUGGING
 
-/** @defgroup buffer asio::buffer
+/** @defgroup buffer clmdep_asio::buffer
  *
- * @brief The asio::buffer function is used to create a buffer object to
+ * @brief The clmdep_asio::buffer function is used to create a buffer object to
  * represent raw memory, an array of POD elements, a vector of POD elements,
  * or a std::string.
  *
@@ -555,9 +555,9 @@ private:
  * The simplest use case involves reading or writing a single buffer of a
  * specified size:
  *
- * @code sock.send(asio::buffer(data, size)); @endcode
+ * @code sock.send(clmdep_asio::buffer(data, size)); @endcode
  *
- * In the above example, the return value of asio::buffer meets the
+ * In the above example, the return value of clmdep_asio::buffer meets the
  * requirements of the ConstBufferSequence concept so that it may be directly
  * passed to the socket's write function. A buffer created for modifiable
  * memory also meets the requirements of the MutableBufferSequence concept.
@@ -567,16 +567,16 @@ private:
  * overruns by automatically determining the size of the buffer:
  *
  * @code char d1[128];
- * size_t bytes_transferred = sock.receive(asio::buffer(d1));
+ * size_t bytes_transferred = sock.receive(clmdep_asio::buffer(d1));
  *
  * std::vector<char> d2(128);
- * bytes_transferred = sock.receive(asio::buffer(d2));
+ * bytes_transferred = sock.receive(clmdep_asio::buffer(d2));
  *
  * std::array<char, 128> d3;
- * bytes_transferred = sock.receive(asio::buffer(d3));
+ * bytes_transferred = sock.receive(clmdep_asio::buffer(d3));
  *
  * boost::array<char, 128> d4;
- * bytes_transferred = sock.receive(asio::buffer(d4)); @endcode
+ * bytes_transferred = sock.receive(clmdep_asio::buffer(d4)); @endcode
  *
  * In all three cases above, the buffers created are exactly 128 bytes long.
  * Note that a vector is @e never automatically resized when creating or using
@@ -588,15 +588,15 @@ private:
  * The contents of a buffer may be accessed using the @ref buffer_size and
  * @ref buffer_cast functions:
  *
- * @code asio::mutable_buffer b1 = ...;
- * std::size_t s1 = asio::buffer_size(b1);
- * unsigned char* p1 = asio::buffer_cast<unsigned char*>(b1);
+ * @code clmdep_asio::mutable_buffer b1 = ...;
+ * std::size_t s1 = clmdep_asio::buffer_size(b1);
+ * unsigned char* p1 = clmdep_asio::buffer_cast<unsigned char*>(b1);
  *
- * asio::const_buffer b2 = ...;
- * std::size_t s2 = asio::buffer_size(b2);
- * const void* p2 = asio::buffer_cast<const void*>(b2); @endcode
+ * clmdep_asio::const_buffer b2 = ...;
+ * std::size_t s2 = clmdep_asio::buffer_size(b2);
+ * const void* p2 = clmdep_asio::buffer_cast<const void*>(b2); @endcode
  *
- * The asio::buffer_cast function permits violations of type safety, so
+ * The clmdep_asio::buffer_cast function permits violations of type safety, so
  * uses of it in application code should be carefully considered.
  *
  * For convenience, the @ref buffer_size function also works on buffer
@@ -614,8 +614,8 @@ private:
  *
  * @code vector<const_buffer> buffers = ...;
  *
- * vector<unsigned char> data(asio::buffer_size(buffers));
- * asio::buffer_copy(asio::buffer(data), buffers); @endcode
+ * vector<unsigned char> data(clmdep_asio::buffer_size(buffers));
+ * clmdep_asio::buffer_copy(clmdep_asio::buffer(data), buffers); @endcode
  *
  * Note that @ref buffer_copy is implemented in terms of @c memcpy, and
  * consequently it cannot be used to copy between overlapping memory regions.
@@ -627,12 +627,12 @@ private:
  * valid until it is no longer required for an I/O operation. When the memory
  * is no longer available, the buffer is said to have been invalidated.
  *
- * For the asio::buffer overloads that accept an argument of type
+ * For the clmdep_asio::buffer overloads that accept an argument of type
  * std::vector, the buffer objects returned are invalidated by any vector
  * operation that also invalidates all references, pointers and iterators
  * referring to the elements in the sequence (C++ Std, 23.2.4)
  *
- * For the asio::buffer overloads that accept an argument of type
+ * For the clmdep_asio::buffer overloads that accept an argument of type
  * std::basic_string, the buffer objects returned are invalidated according to
  * the rules defined for invalidation of references, pointers and iterators
  * referring to elements of the sequence (C++ Std, 21.3).
@@ -647,13 +647,13 @@ private:
  *
  * A buffer object @c b1 created using:
  *
- * @code b1 = asio::buffer(a); @endcode
+ * @code b1 = clmdep_asio::buffer(a); @endcode
  *
  * represents the entire array, <tt>{ 'a', 'b', 'c', 'd', 'e' }</tt>. An
- * optional second argument to the asio::buffer function may be used to
+ * optional second argument to the clmdep_asio::buffer function may be used to
  * limit the size, in bytes, of the buffer:
  *
- * @code b2 = asio::buffer(a, 3); @endcode
+ * @code b2 = clmdep_asio::buffer(a, 3); @endcode
  *
  * such that @c b2 represents the data <tt>{ 'a', 'b', 'c' }</tt>. Even if the
  * size argument exceeds the actual size of the array, the size of the buffer
@@ -670,7 +670,7 @@ private:
  * Both an offset and size may be specified to create a buffer that corresponds
  * to a specific range of bytes within an existing buffer:
  *
- * @code b4 = asio::buffer(b1 + 1, 3); @endcode
+ * @code b4 = clmdep_asio::buffer(b1 + 1, 3); @endcode
  *
  * so that @c b4 will refer to the bytes <tt>{ 'b', 'c', 'd' }</tt>.
  *
@@ -686,15 +686,15 @@ private:
  * boost::array<char, 128> d3;
  *
  * boost::array<mutable_buffer, 3> bufs1 = {
- *   asio::buffer(d1),
- *   asio::buffer(d2),
- *   asio::buffer(d3) };
+ *   clmdep_asio::buffer(d1),
+ *   clmdep_asio::buffer(d2),
+ *   clmdep_asio::buffer(d3) };
  * bytes_transferred = sock.receive(bufs1);
  *
  * std::vector<const_buffer> bufs2;
- * bufs2.push_back(asio::buffer(d1));
- * bufs2.push_back(asio::buffer(d2));
- * bufs2.push_back(asio::buffer(d3));
+ * bufs2.push_back(clmdep_asio::buffer(d1));
+ * bufs2.push_back(clmdep_asio::buffer(d2));
+ * bufs2.push_back(clmdep_asio::buffer(d3));
  * bytes_transferred = sock.send(bufs2); @endcode
  */
 /*@{*/
@@ -881,9 +881,9 @@ template <typename PodType, std::size_t N>
 inline typename detail::buffer_types<PodType>::container_type
 buffer(boost::array<PodType, N>& data)
 {
-  typedef typename asio::detail::buffer_types<PodType>::buffer_type
+  typedef typename clmdep_asio::detail::buffer_types<PodType>::buffer_type
     buffer_type;
-  typedef typename asio::detail::buffer_types<PodType>::container_type
+  typedef typename clmdep_asio::detail::buffer_types<PodType>::container_type
     container_type;
   return container_type(
       buffer_type(data.c_array(), data.size() * sizeof(PodType)));
@@ -893,9 +893,9 @@ template <typename PodType, std::size_t N>
 inline typename detail::buffer_types<PodType>::container_type
 buffer(boost::array<PodType, N>& data, std::size_t max_size_in_bytes)
 {
-  typedef typename asio::detail::buffer_types<PodType>::buffer_type
+  typedef typename clmdep_asio::detail::buffer_types<PodType>::buffer_type
     buffer_type;
-  typedef typename asio::detail::buffer_types<PodType>::container_type
+  typedef typename clmdep_asio::detail::buffer_types<PodType>::container_type
     container_type;
   return container_type(
       buffer_type(data.c_array(),
@@ -1245,9 +1245,9 @@ inline const_buffers_1 buffer(
 
 /*@}*/
 
-/** @defgroup buffer_copy asio::buffer_copy
+/** @defgroup buffer_copy clmdep_asio::buffer_copy
  *
- * @brief The asio::buffer_copy function is used to copy bytes from a
+ * @brief The clmdep_asio::buffer_copy function is used to copy bytes from a
  * source buffer (or buffer sequence) to a target buffer (or buffer sequence).
  *
  * The @c buffer_copy function is available in two forms:
@@ -2232,7 +2232,7 @@ std::size_t buffer_copy(const MutableBufferSequence& target,
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

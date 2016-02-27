@@ -31,21 +31,21 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default service implementation for a socket acceptor.
 template <typename Protocol>
 class socket_acceptor_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<socket_acceptor_service<Protocol> >
+  : public clmdep_asio::detail::service_base<socket_acceptor_service<Protocol> >
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
   /// The protocol type.
@@ -87,8 +87,8 @@ public:
 #endif
 
   /// Construct a new socket acceptor service for the specified io_service.
-  explicit socket_acceptor_service(asio::io_service& io_service)
-    : asio::detail::service_base<
+  explicit socket_acceptor_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<
         socket_acceptor_service<Protocol> >(io_service),
       service_impl_(io_service)
   {
@@ -137,16 +137,16 @@ public:
   }
 
   /// Open a new socket acceptor implementation.
-  asio::error_code open(implementation_type& impl,
-      const protocol_type& protocol, asio::error_code& ec)
+  clmdep_asio::error_code open(implementation_type& impl,
+      const protocol_type& protocol, clmdep_asio::error_code& ec)
   {
     return service_impl_.open(impl, protocol, ec);
   }
 
   /// Assign an existing native acceptor to a socket acceptor.
-  asio::error_code assign(implementation_type& impl,
+  clmdep_asio::error_code assign(implementation_type& impl,
       const protocol_type& protocol, const native_handle_type& native_acceptor,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.assign(impl, protocol, native_acceptor, ec);
   }
@@ -158,30 +158,30 @@ public:
   }
 
   /// Cancel all asynchronous operations associated with the acceptor.
-  asio::error_code cancel(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code cancel(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
 
   /// Bind the socket acceptor to the specified local endpoint.
-  asio::error_code bind(implementation_type& impl,
-      const endpoint_type& endpoint, asio::error_code& ec)
+  clmdep_asio::error_code bind(implementation_type& impl,
+      const endpoint_type& endpoint, clmdep_asio::error_code& ec)
   {
     return service_impl_.bind(impl, endpoint, ec);
   }
 
   /// Place the socket acceptor into the state where it will listen for new
   /// connections.
-  asio::error_code listen(implementation_type& impl, int backlog,
-      asio::error_code& ec)
+  clmdep_asio::error_code listen(implementation_type& impl, int backlog,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.listen(impl, backlog, ec);
   }
 
   /// Close a socket acceptor implementation.
-  asio::error_code close(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code close(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.close(impl, ec);
   }
@@ -200,24 +200,24 @@ public:
 
   /// Set a socket option.
   template <typename SettableSocketOption>
-  asio::error_code set_option(implementation_type& impl,
-      const SettableSocketOption& option, asio::error_code& ec)
+  clmdep_asio::error_code set_option(implementation_type& impl,
+      const SettableSocketOption& option, clmdep_asio::error_code& ec)
   {
     return service_impl_.set_option(impl, option, ec);
   }
 
   /// Get a socket option.
   template <typename GettableSocketOption>
-  asio::error_code get_option(const implementation_type& impl,
-      GettableSocketOption& option, asio::error_code& ec) const
+  clmdep_asio::error_code get_option(const implementation_type& impl,
+      GettableSocketOption& option, clmdep_asio::error_code& ec) const
   {
     return service_impl_.get_option(impl, option, ec);
   }
 
   /// Perform an IO control command on the socket.
   template <typename IoControlCommand>
-  asio::error_code io_control(implementation_type& impl,
-      IoControlCommand& command, asio::error_code& ec)
+  clmdep_asio::error_code io_control(implementation_type& impl,
+      IoControlCommand& command, clmdep_asio::error_code& ec)
   {
     return service_impl_.io_control(impl, command, ec);
   }
@@ -229,8 +229,8 @@ public:
   }
 
   /// Sets the non-blocking mode of the acceptor.
-  asio::error_code non_blocking(implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code non_blocking(implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     return service_impl_.non_blocking(impl, mode, ec);
   }
@@ -242,24 +242,24 @@ public:
   }
 
   /// Sets the non-blocking mode of the native acceptor implementation.
-  asio::error_code native_non_blocking(implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code native_non_blocking(implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     return service_impl_.native_non_blocking(impl, mode, ec);
   }
 
   /// Get the local endpoint.
   endpoint_type local_endpoint(const implementation_type& impl,
-      asio::error_code& ec) const
+      clmdep_asio::error_code& ec) const
   {
     return service_impl_.local_endpoint(impl, ec);
   }
 
   /// Accept a new connection.
   template <typename Protocol1, typename SocketService>
-  asio::error_code accept(implementation_type& impl,
+  clmdep_asio::error_code accept(implementation_type& impl,
       basic_socket<Protocol1, SocketService>& peer,
-      endpoint_type* peer_endpoint, asio::error_code& ec,
+      endpoint_type* peer_endpoint, clmdep_asio::error_code& ec,
       typename enable_if<is_convertible<Protocol, Protocol1>::value>::type* = 0)
   {
     return service_impl_.accept(impl, peer, peer_endpoint, ec);
@@ -268,7 +268,7 @@ public:
   /// Start an asynchronous accept.
   template <typename Protocol1, typename SocketService, typename AcceptHandler>
   ASIO_INITFN_RESULT_TYPE(AcceptHandler,
-      void (asio::error_code))
+      void (clmdep_asio::error_code))
   async_accept(implementation_type& impl,
       basic_socket<Protocol1, SocketService>& peer,
       endpoint_type* peer_endpoint,
@@ -276,7 +276,7 @@ public:
       typename enable_if<is_convertible<Protocol, Protocol1>::value>::type* = 0)
   {
     detail::async_result_init<
-      AcceptHandler, void (asio::error_code)> init(
+      AcceptHandler, void (clmdep_asio::error_code)> init(
         ASIO_MOVE_CAST(AcceptHandler)(handler));
 
     service_impl_.async_accept(impl, peer, peer_endpoint, init.handler);
@@ -295,7 +295,7 @@ private:
   service_impl_type service_impl_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

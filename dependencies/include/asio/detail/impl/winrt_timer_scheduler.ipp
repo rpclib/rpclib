@@ -24,12 +24,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 winrt_timer_scheduler::winrt_timer_scheduler(
-    asio::io_service& io_service)
-  : asio::detail::service_base<winrt_timer_scheduler>(io_service),
+    clmdep_asio::io_service& io_service)
+  : clmdep_asio::detail::service_base<winrt_timer_scheduler>(io_service),
     io_service_(use_service<io_service_impl>(io_service)),
     mutex_(),
     event_(),
@@ -38,7 +38,7 @@ winrt_timer_scheduler::winrt_timer_scheduler(
     stop_thread_(false),
     shutdown_(false)
 {
-  thread_ = new asio::detail::thread(
+  thread_ = new clmdep_asio::detail::thread(
       bind_handler(&winrt_timer_scheduler::call_run_thread, this));
 }
 
@@ -49,7 +49,7 @@ winrt_timer_scheduler::~winrt_timer_scheduler()
 
 void winrt_timer_scheduler::shutdown_service()
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
   shutdown_ = true;
   stop_thread_ = true;
   event_.signal(lock);
@@ -67,7 +67,7 @@ void winrt_timer_scheduler::shutdown_service()
   io_service_.abandon_operations(ops);
 }
 
-void winrt_timer_scheduler::fork_service(asio::io_service::fork_event)
+void winrt_timer_scheduler::fork_service(clmdep_asio::io_service::fork_event)
 {
 }
 
@@ -77,7 +77,7 @@ void winrt_timer_scheduler::init_task()
 
 void winrt_timer_scheduler::run_thread()
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
   while (!stop_thread_)
   {
     const long max_wait_duration = 5 * 60 * 1000000;
@@ -113,7 +113,7 @@ void winrt_timer_scheduler::do_remove_timer_queue(timer_queue_base& queue)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

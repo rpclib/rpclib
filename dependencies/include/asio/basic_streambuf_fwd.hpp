@@ -21,12 +21,12 @@
 
 #include <memory>
 
-namespace asio {
+namespace clmdep_asio {
 
 template <typename Allocator = std::allocator<char> >
 class basic_streambuf;
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 

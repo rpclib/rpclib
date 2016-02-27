@@ -29,12 +29,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Implements IP version 6 style addresses.
 /**
- * The asio::ip::address_v6 class provides the ability to use and
+ * The clmdep_asio::ip::address_v6 class provides the ability to use and
  * manipulate IP version 6 addresses.
  *
  * @par Thread Safety
@@ -52,7 +52,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef array<unsigned char, 16> bytes_type;
 #else
-  typedef asio::detail::array<unsigned char, 16> bytes_type;
+  typedef clmdep_asio::detail::array<unsigned char, 16> bytes_type;
 #endif
 
   /// Default constructor.
@@ -103,21 +103,21 @@ public:
   ASIO_DECL std::string to_string() const;
 
   /// Get the address as a string.
-  ASIO_DECL std::string to_string(asio::error_code& ec) const;
+  ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
 
   /// Create an address from an IP address string.
   ASIO_DECL static address_v6 from_string(const char* str);
 
   /// Create an address from an IP address string.
   ASIO_DECL static address_v6 from_string(
-      const char* str, asio::error_code& ec);
+      const char* str, clmdep_asio::error_code& ec);
 
   /// Create an address from an IP address string.
   ASIO_DECL static address_v6 from_string(const std::string& str);
 
   /// Create an address from an IP address string.
   ASIO_DECL static address_v6 from_string(
-      const std::string& str, asio::error_code& ec);
+      const std::string& str, clmdep_asio::error_code& ec);
 
   /// Converts an IPv4-mapped or IPv4-compatible address to an IPv4 address.
   ASIO_DECL address_v4 to_v4() const;
@@ -207,7 +207,7 @@ public:
 
 private:
   // The underlying IPv6 address.
-  asio::detail::in6_addr_type addr_;
+  clmdep_asio::detail::in6_addr_type addr_;
 
   // The scope ID associated with the address.
   unsigned long scope_id_;
@@ -225,7 +225,7 @@ private:
  *
  * @return The output stream.
  *
- * @relates asio::ip::address_v6
+ * @relates clmdep_asio::ip::address_v6
  */
 template <typename Elem, typename Traits>
 std::basic_ostream<Elem, Traits>& operator<<(
@@ -234,7 +234,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

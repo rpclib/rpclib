@@ -27,12 +27,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Implements version-independent IP addresses.
 /**
- * The asio::ip::address class provides the ability to use either IP
+ * The clmdep_asio::ip::address class provides the ability to use either IP
  * version 4 or version 6 addresses.
  *
  * @par Thread Safety
@@ -46,10 +46,10 @@ public:
   ASIO_DECL address();
 
   /// Construct an address from an IPv4 address.
-  ASIO_DECL address(const asio::ip::address_v4& ipv4_address);
+  ASIO_DECL address(const clmdep_asio::ip::address_v4& ipv4_address);
 
   /// Construct an address from an IPv6 address.
-  ASIO_DECL address(const asio::ip::address_v6& ipv6_address);
+  ASIO_DECL address(const clmdep_asio::ip::address_v6& ipv6_address);
 
   /// Copy constructor.
   ASIO_DECL address(const address& other);
@@ -69,11 +69,11 @@ public:
 
   /// Assign from an IPv4 address.
   ASIO_DECL address& operator=(
-      const asio::ip::address_v4& ipv4_address);
+      const clmdep_asio::ip::address_v4& ipv4_address);
 
   /// Assign from an IPv6 address.
   ASIO_DECL address& operator=(
-      const asio::ip::address_v6& ipv6_address);
+      const clmdep_asio::ip::address_v6& ipv6_address);
 
   /// Get whether the address is an IP version 4 address.
   bool is_v4() const
@@ -88,16 +88,16 @@ public:
   }
 
   /// Get the address as an IP version 4 address.
-  ASIO_DECL asio::ip::address_v4 to_v4() const;
+  ASIO_DECL clmdep_asio::ip::address_v4 to_v4() const;
 
   /// Get the address as an IP version 6 address.
-  ASIO_DECL asio::ip::address_v6 to_v6() const;
+  ASIO_DECL clmdep_asio::ip::address_v6 to_v6() const;
 
   /// Get the address as a string in dotted decimal format.
   ASIO_DECL std::string to_string() const;
 
   /// Get the address as a string in dotted decimal format.
-  ASIO_DECL std::string to_string(asio::error_code& ec) const;
+  ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
 
   /// Create an address from an IPv4 address string in dotted decimal form,
   /// or from an IPv6 address in hexadecimal notation.
@@ -106,7 +106,7 @@ public:
   /// Create an address from an IPv4 address string in dotted decimal form,
   /// or from an IPv6 address in hexadecimal notation.
   ASIO_DECL static address from_string(
-      const char* str, asio::error_code& ec);
+      const char* str, clmdep_asio::error_code& ec);
 
   /// Create an address from an IPv4 address string in dotted decimal form,
   /// or from an IPv6 address in hexadecimal notation.
@@ -115,7 +115,7 @@ public:
   /// Create an address from an IPv4 address string in dotted decimal form,
   /// or from an IPv6 address in hexadecimal notation.
   ASIO_DECL static address from_string(
-      const std::string& str, asio::error_code& ec);
+      const std::string& str, clmdep_asio::error_code& ec);
 
   /// Determine whether the address is a loopback address.
   ASIO_DECL bool is_loopback() const;
@@ -161,10 +161,10 @@ private:
   enum { ipv4, ipv6 } type_;
 
   // The underlying IPv4 address.
-  asio::ip::address_v4 ipv4_address_;
+  clmdep_asio::ip::address_v4 ipv4_address_;
 
   // The underlying IPv6 address.
-  asio::ip::address_v6 ipv6_address_;
+  clmdep_asio::ip::address_v6 ipv6_address_;
 };
 
 #if !defined(ASIO_NO_IOSTREAM)
@@ -179,7 +179,7 @@ private:
  *
  * @return The output stream.
  *
- * @relates asio::ip::address
+ * @relates clmdep_asio::ip::address
  */
 template <typename Elem, typename Traits>
 std::basic_ostream<Elem, Traits>& operator<<(
@@ -188,7 +188,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

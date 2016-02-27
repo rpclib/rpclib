@@ -23,7 +23,7 @@
 # include "asio/detail/task_io_service_operation.hpp"
 #endif
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if defined(ASIO_HAS_IOCP)
@@ -33,6 +33,6 @@ typedef task_io_service_operation operation;
 #endif
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_OPERATION_HPP

@@ -34,7 +34,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 pipe_select_interrupter::pipe_select_interrupter()
@@ -59,9 +59,9 @@ void pipe_select_interrupter::open_descriptors()
   }
   else
   {
-    asio::error_code ec(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "pipe_select_interrupter");
+    clmdep_asio::error_code ec(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "pipe_select_interrupter");
   }
 }
 
@@ -111,7 +111,7 @@ bool pipe_select_interrupter::reset()
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

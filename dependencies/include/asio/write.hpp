@@ -23,10 +23,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /**
- * @defgroup write asio::write
+ * @defgroup write clmdep_asio::write
  *
  * @brief Write a certain amount of data to a stream before returning.
  */
@@ -54,19 +54,19 @@ namespace asio {
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write(s, asio::buffer(data, size)); @endcode
+ * @code clmdep_asio::write(s, clmdep_asio::buffer(data, size)); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write(
+ * @code clmdep_asio::write(
  *     s, buffers,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncWriteStream, typename ConstBufferSequence>
 std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers);
@@ -97,19 +97,19 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers);
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write(s, asio::buffer(data, size), ec); @endcode
+ * @code clmdep_asio::write(s, clmdep_asio::buffer(data, size), ec); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write(
+ * @code clmdep_asio::write(
  *     s, buffers,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncWriteStream, typename ConstBufferSequence>
 std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Write a certain amount of data to a stream before returning.
 /**
@@ -136,7 +136,7 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -147,12 +147,12 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write(s, asio::buffer(data, size),
- *     asio::transfer_at_least(32)); @endcode
+ * @code clmdep_asio::write(s, clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32)); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
@@ -187,7 +187,7 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -204,7 +204,7 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
 template <typename SyncWriteStream, typename ConstBufferSequence,
     typename CompletionCondition>
 std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
-    CompletionCondition completion_condition, asio::error_code& ec);
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec);
 
 #if !defined(ASIO_NO_IOSTREAM)
 
@@ -227,12 +227,12 @@ std::size_t write(SyncWriteStream& s, const ConstBufferSequence& buffers,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write(
+ * @code clmdep_asio::write(
  *     s, b,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncWriteStream, typename Allocator>
 std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b);
@@ -259,13 +259,13 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b);
  * @returns The number of bytes transferred.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write(
+ * @code clmdep_asio::write(
  *     s, b,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncWriteStream, typename Allocator>
 std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Write a certain amount of data to a stream before returning.
 /**
@@ -289,7 +289,7 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -300,7 +300,7 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  */
 template <typename SyncWriteStream, typename Allocator,
     typename CompletionCondition>
@@ -329,7 +329,7 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -346,13 +346,13 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
 template <typename SyncWriteStream, typename Allocator,
     typename CompletionCondition>
 std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
-    CompletionCondition completion_condition, asio::error_code& ec);
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec);
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 /*@}*/
 /**
- * @defgroup async_write asio::async_write
+ * @defgroup async_write clmdep_asio::async_write
  *
  * @brief Start an asynchronous operation to write a certain amount of data to a
  * stream.
@@ -390,7 +390,7 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
  * Copies will be made of the handler as required. The function signature of
  * the handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes written from the
  *                                           // buffers. If an error occurred,
@@ -400,12 +400,12 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
  * @code
- * asio::async_write(s, asio::buffer(data, size), handler);
+ * clmdep_asio::async_write(s, clmdep_asio::buffer(data, size), handler);
  * @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
@@ -414,7 +414,7 @@ std::size_t write(SyncWriteStream& s, basic_streambuf<Allocator>& b,
 template <typename AsyncWriteStream, typename ConstBufferSequence,
     typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
     ASIO_MOVE_ARG(WriteHandler) handler);
 
@@ -450,7 +450,7 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -463,7 +463,7 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes written from the
  *                                           // buffers. If an error occurred,
@@ -473,13 +473,13 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::async_write(s,
- *     asio::buffer(data, size),
- *     asio::transfer_at_least(32),
+ * @code clmdep_asio::async_write(s,
+ *     clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32),
  *     handler); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
@@ -488,7 +488,7 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
 template <typename AsyncWriteStream, typename ConstBufferSequence,
     typename CompletionCondition, typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
     CompletionCondition completion_condition,
     ASIO_MOVE_ARG(WriteHandler) handler);
@@ -524,7 +524,7 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes written from the
  *                                           // buffers. If an error occurred,
@@ -534,11 +534,11 @@ async_write(AsyncWriteStream& s, const ConstBufferSequence& buffers,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  */
 template <typename AsyncWriteStream, typename Allocator, typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
     ASIO_MOVE_ARG(WriteHandler) handler);
 
@@ -572,7 +572,7 @@ async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_write_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -585,7 +585,7 @@ async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes written from the
  *                                           // buffers. If an error occurred,
@@ -595,12 +595,12 @@ async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  */
 template <typename AsyncWriteStream, typename Allocator,
     typename CompletionCondition, typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
     CompletionCondition completion_condition,
     ASIO_MOVE_ARG(WriteHandler) handler);
@@ -609,7 +609,7 @@ async_write(AsyncWriteStream& s, basic_streambuf<Allocator>& b,
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

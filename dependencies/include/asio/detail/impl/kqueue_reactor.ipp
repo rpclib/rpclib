@@ -35,11 +35,11 @@
     EV_SET(ev, ident, filt, flags, fflags, data, udata)
 #endif
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
-kqueue_reactor::kqueue_reactor(asio::io_service& io_service)
-  : asio::detail::service_base<kqueue_reactor>(io_service),
+kqueue_reactor::kqueue_reactor(clmdep_asio::io_service& io_service)
+  : clmdep_asio::detail::service_base<kqueue_reactor>(io_service),
     io_service_(use_service<io_service_impl>(io_service)),
     mutex_(),
     kqueue_fd_(do_kqueue_create()),
@@ -51,9 +51,9 @@ kqueue_reactor::kqueue_reactor(asio::io_service& io_service)
       EVFILT_READ, EV_ADD, 0, 0, &interrupter_);
   if (::kevent(kqueue_fd_, events, 1, 0, 0, 0) == -1)
   {
-    asio::error_code error(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(error);
+    clmdep_asio::error_code error(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(error);
   }
 }
 
@@ -83,9 +83,9 @@ void kqueue_reactor::shutdown_service()
   io_service_.abandon_operations(ops);
 }
 
-void kqueue_reactor::fork_service(asio::io_service::fork_event fork_ev)
+void kqueue_reactor::fork_service(clmdep_asio::io_service::fork_event fork_ev)
 {
-  if (fork_ev == asio::io_service::fork_child)
+  if (fork_ev == clmdep_asio::io_service::fork_child)
   {
     // The kqueue descriptor is automatically closed in the child.
     kqueue_fd_ = -1;
@@ -98,9 +98,9 @@ void kqueue_reactor::fork_service(asio::io_service::fork_event fork_ev)
         EVFILT_READ, EV_ADD, 0, 0, &interrupter_);
     if (::kevent(kqueue_fd_, events, 1, 0, 0, 0) == -1)
     {
-      asio::error_code ec(errno,
-          asio::error::get_system_category());
-      asio::detail::throw_error(ec, "kqueue interrupter registration");
+      clmdep_asio::error_code ec(errno,
+          clmdep_asio::error::get_system_category());
+      clmdep_asio::detail::throw_error(ec, "kqueue interrupter registration");
     }
 
     // Re-register all descriptors with kqueue.
@@ -116,9 +116,9 @@ void kqueue_reactor::fork_service(asio::io_service::fork_event fork_ev)
             EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, state);
         if (::kevent(kqueue_fd_, events, state->num_kevents_, 0, 0, 0) == -1)
         {
-          asio::error_code ec(errno,
-              asio::error::get_system_category());
-          asio::detail::throw_error(ec, "kqueue re-registration");
+          clmdep_asio::error_code ec(errno,
+              clmdep_asio::error::get_system_category());
+          clmdep_asio::detail::throw_error(ec, "kqueue re-registration");
         }
       }
     }
@@ -180,7 +180,7 @@ void kqueue_reactor::start_op(int op_type, socket_type descriptor,
 {
   if (!descriptor_data)
   {
-    op->ec_ = asio::error::bad_descriptor;
+    op->ec_ = clmdep_asio::error::bad_descriptor;
     post_immediate_completion(op, is_continuation);
     return;
   }
@@ -221,8 +221,8 @@ void kqueue_reactor::start_op(int op_type, socket_type descriptor,
         }
         else
         {
-          op->ec_ = asio::error_code(errno,
-              asio::error::get_system_category());
+          op->ec_ = clmdep_asio::error_code(errno,
+              clmdep_asio::error::get_system_category());
           io_service_.post_immediate_completion(op, is_continuation);
           return;
         }
@@ -259,7 +259,7 @@ void kqueue_reactor::cancel_ops(socket_type,
   {
     while (reactor_op* op = descriptor_data->op_queue_[i].front())
     {
-      op->ec_ = asio::error::operation_aborted;
+      op->ec_ = clmdep_asio::error::operation_aborted;
       descriptor_data->op_queue_[i].pop();
       ops.push(op);
     }
@@ -300,7 +300,7 @@ void kqueue_reactor::deregister_descriptor(socket_type descriptor,
     {
       while (reactor_op* op = descriptor_data->op_queue_[i].front())
       {
-        op->ec_ = asio::error::operation_aborted;
+        op->ec_ = clmdep_asio::error::operation_aborted;
         descriptor_data->op_queue_[i].pop();
         ops.push(op);
       }
@@ -409,9 +409,9 @@ void kqueue_reactor::run(bool block, op_queue<operation>& ops)
             {
               if (events[i].flags & EV_ERROR)
               {
-                op->ec_ = asio::error_code(
+                op->ec_ = clmdep_asio::error_code(
                     static_cast<int>(events[i].data),
-                    asio::error::get_system_category());
+                    clmdep_asio::error::get_system_category());
                 descriptor_data->op_queue_[j].pop();
                 ops.push(op);
               }
@@ -443,9 +443,9 @@ int kqueue_reactor::do_kqueue_create()
   int fd = ::kqueue();
   if (fd == -1)
   {
-    asio::error_code ec(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "kqueue");
+    clmdep_asio::error_code ec(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "kqueue");
   }
   return fd;
 }
@@ -485,7 +485,7 @@ timespec* kqueue_reactor::get_timeout(timespec& ts)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #undef ASIO_KQUEUE_EV_SET
 

@@ -26,15 +26,15 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 void win_static_mutex::init()
 {
   int error = do_init();
-  asio::error_code ec(error,
-      asio::error::get_system_category());
-  asio::detail::throw_error(ec, "static_mutex");
+  clmdep_asio::error_code ec(error,
+      clmdep_asio::error::get_system_category());
+  clmdep_asio::detail::throw_error(ec, "static_mutex");
 }
 
 int win_static_mutex::do_init()
@@ -109,7 +109,7 @@ int win_static_mutex::do_init()
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

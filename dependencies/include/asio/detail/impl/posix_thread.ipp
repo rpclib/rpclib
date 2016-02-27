@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 posix_thread::~posix_thread()
@@ -46,17 +46,17 @@ void posix_thread::join()
 void posix_thread::start_thread(func_base* arg)
 {
   int error = ::pthread_create(&thread_, 0,
-        asio_detail_posix_thread_function, arg);
+        clmdep_asio_detail_posix_thread_function, arg);
   if (error != 0)
   {
     delete arg;
-    asio::error_code ec(error,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "thread");
+    clmdep_asio::error_code ec(error,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "thread");
   }
 }
 
-void* asio_detail_posix_thread_function(void* arg)
+void* clmdep_asio_detail_posix_thread_function(void* arg)
 {
   posix_thread::auto_func_base_ptr func = {
       static_cast<posix_thread::func_base*>(arg) };
@@ -65,7 +65,7 @@ void* asio_detail_posix_thread_function(void* arg)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

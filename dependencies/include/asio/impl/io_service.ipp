@@ -30,10 +30,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 io_service::io_service()
-  : service_registry_(new asio::detail::service_registry(
+  : service_registry_(new clmdep_asio::detail::service_registry(
         *this, static_cast<impl_type*>(0),
         (std::numeric_limits<std::size_t>::max)())),
     impl_(service_registry_->first_service<impl_type>())
@@ -41,7 +41,7 @@ io_service::io_service()
 }
 
 io_service::io_service(std::size_t concurrency_hint)
-  : service_registry_(new asio::detail::service_registry(
+  : service_registry_(new clmdep_asio::detail::service_registry(
         *this, static_cast<impl_type*>(0), concurrency_hint)),
     impl_(service_registry_->first_service<impl_type>())
 {
@@ -54,52 +54,52 @@ io_service::~io_service()
 
 std::size_t io_service::run()
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t s = impl_.run(ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return s;
 }
 
-std::size_t io_service::run(asio::error_code& ec)
+std::size_t io_service::run(clmdep_asio::error_code& ec)
 {
   return impl_.run(ec);
 }
 
 std::size_t io_service::run_one()
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t s = impl_.run_one(ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return s;
 }
 
-std::size_t io_service::run_one(asio::error_code& ec)
+std::size_t io_service::run_one(clmdep_asio::error_code& ec)
 {
   return impl_.run_one(ec);
 }
 
 std::size_t io_service::poll()
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t s = impl_.poll(ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return s;
 }
 
-std::size_t io_service::poll(asio::error_code& ec)
+std::size_t io_service::poll(clmdep_asio::error_code& ec)
 {
   return impl_.poll(ec);
 }
 
 std::size_t io_service::poll_one()
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t s = impl_.poll_one(ec);
-  asio::detail::throw_error(ec);
+  clmdep_asio::detail::throw_error(ec);
   return s;
 }
 
-std::size_t io_service::poll_one(asio::error_code& ec)
+std::size_t io_service::poll_one(clmdep_asio::error_code& ec)
 {
   return impl_.poll_one(ec);
 }
@@ -119,12 +119,12 @@ void io_service::reset()
   impl_.reset();
 }
 
-void io_service::notify_fork(asio::io_service::fork_event event)
+void io_service::notify_fork(clmdep_asio::io_service::fork_event event)
 {
   service_registry_->notify_fork(event);
 }
 
-io_service::service::service(asio::io_service& owner)
+io_service::service::service(clmdep_asio::io_service& owner)
   : owner_(owner),
     next_(0)
 {
@@ -134,7 +134,7 @@ io_service::service::~service()
 {
 }
 
-void io_service::service::fork_service(asio::io_service::fork_event)
+void io_service::service::fork_service(clmdep_asio::io_service::fork_event)
 {
 }
 
@@ -148,7 +148,7 @@ invalid_service_owner::invalid_service_owner()
 {
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

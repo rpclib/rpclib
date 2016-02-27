@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class win_iocp_io_service;
@@ -39,7 +39,7 @@ class win_iocp_operation
 {
 public:
   void complete(win_iocp_io_service& owner,
-      const asio::error_code& ec,
+      const clmdep_asio::error_code& ec,
       std::size_t bytes_transferred)
   {
     func_(&owner, this, ec, bytes_transferred);
@@ -47,13 +47,13 @@ public:
 
   void destroy()
   {
-    func_(0, this, asio::error_code(), 0);
+    func_(0, this, clmdep_asio::error_code(), 0);
   }
 
 protected:
   typedef void (*func_type)(
       win_iocp_io_service*, win_iocp_operation*,
-      const asio::error_code&, std::size_t);
+      const clmdep_asio::error_code&, std::size_t);
 
   win_iocp_operation(func_type func)
     : next_(0),
@@ -86,7 +86,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

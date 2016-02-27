@@ -29,13 +29,13 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace old {
 namespace detail {
 
 class openssl_context_service
-  : public asio::detail::service_base<openssl_context_service>
+  : public clmdep_asio::detail::service_base<openssl_context_service>
 {
 public:
   // The native type of the context.
@@ -46,8 +46,8 @@ public:
       context_base::password_purpose)> password_callback_type;
 
   // Constructor.
-  openssl_context_service(asio::io_service& io_service)
-    : asio::detail::service_base<openssl_context_service>(io_service)
+  openssl_context_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<openssl_context_service>(io_service)
   {
   }
 
@@ -71,7 +71,7 @@ public:
     case context_base::sslv2:
     case context_base::sslv2_client:
     case context_base::sslv2_server:
-      asio::detail::throw_error(asio::error::invalid_argument);
+      clmdep_asio::detail::throw_error(clmdep_asio::error::invalid_argument);
       break;
 #else // defined(OPENSSL_NO_SSL2)
     case context_base::sslv2:
@@ -137,58 +137,58 @@ public:
   }
 
   // Set options on the context.
-  asio::error_code set_options(impl_type& impl,
-      context_base::options o, asio::error_code& ec)
+  clmdep_asio::error_code set_options(impl_type& impl,
+      context_base::options o, clmdep_asio::error_code& ec)
   {
     ::SSL_CTX_set_options(impl, o);
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Set peer verification mode.
-  asio::error_code set_verify_mode(impl_type& impl,
-      context_base::verify_mode v, asio::error_code& ec)
+  clmdep_asio::error_code set_verify_mode(impl_type& impl,
+      context_base::verify_mode v, clmdep_asio::error_code& ec)
   {
     ::SSL_CTX_set_verify(impl, v, 0);
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Load a certification authority file for performing verification.
-  asio::error_code load_verify_file(impl_type& impl,
-      const std::string& filename, asio::error_code& ec)
+  clmdep_asio::error_code load_verify_file(impl_type& impl,
+      const std::string& filename, clmdep_asio::error_code& ec)
   {
     if (::SSL_CTX_load_verify_locations(impl, filename.c_str(), 0) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Add a directory containing certification authority files to be used for
   // performing verification.
-  asio::error_code add_verify_path(impl_type& impl,
-      const std::string& path, asio::error_code& ec)
+  clmdep_asio::error_code add_verify_path(impl_type& impl,
+      const std::string& path, clmdep_asio::error_code& ec)
   {
     if (::SSL_CTX_load_verify_locations(impl, 0, path.c_str()) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Use a certificate from a file.
-  asio::error_code use_certificate_file(impl_type& impl,
+  clmdep_asio::error_code use_certificate_file(impl_type& impl,
       const std::string& filename, context_base::file_format format,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     int file_type;
     switch (format)
@@ -201,39 +201,39 @@ public:
       break;
     default:
       {
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
         return ec;
       }
     }
 
     if (::SSL_CTX_use_certificate_file(impl, filename.c_str(), file_type) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Use a certificate chain from a file.
-  asio::error_code use_certificate_chain_file(impl_type& impl,
-      const std::string& filename, asio::error_code& ec)
+  clmdep_asio::error_code use_certificate_chain_file(impl_type& impl,
+      const std::string& filename, clmdep_asio::error_code& ec)
   {
     if (::SSL_CTX_use_certificate_chain_file(impl, filename.c_str()) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Use a private key from a file.
-  asio::error_code use_private_key_file(impl_type& impl,
+  clmdep_asio::error_code use_private_key_file(impl_type& impl,
       const std::string& filename, context_base::file_format format,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     int file_type;
     switch (format)
@@ -246,25 +246,25 @@ public:
       break;
     default:
       {
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
         return ec;
       }
     }
 
     if (::SSL_CTX_use_PrivateKey_file(impl, filename.c_str(), file_type) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Use an RSA private key from a file.
-  asio::error_code use_rsa_private_key_file(impl_type& impl,
+  clmdep_asio::error_code use_rsa_private_key_file(impl_type& impl,
       const std::string& filename, context_base::file_format format,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     int file_type;
     switch (format)
@@ -277,7 +277,7 @@ public:
       break;
     default:
       {
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
         return ec;
       }
     }
@@ -285,22 +285,22 @@ public:
     if (::SSL_CTX_use_RSAPrivateKey_file(
           impl, filename.c_str(), file_type) != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
   // Use the specified file to obtain the temporary Diffie-Hellman parameters.
-  asio::error_code use_tmp_dh_file(impl_type& impl,
-      const std::string& filename, asio::error_code& ec)
+  clmdep_asio::error_code use_tmp_dh_file(impl_type& impl,
+      const std::string& filename, clmdep_asio::error_code& ec)
   {
     ::BIO* bio = ::BIO_new_file(filename.c_str(), "r");
     if (!bio)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
@@ -308,7 +308,7 @@ public:
     if (!dh)
     {
       ::BIO_free(bio);
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
@@ -317,11 +317,11 @@ public:
     ::DH_free(dh);
     if (result != 1)
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
@@ -345,8 +345,8 @@ public:
 
   // Set the password callback.
   template <typename Password_Callback>
-  asio::error_code set_password_callback(impl_type& impl,
-      Password_Callback callback, asio::error_code& ec)
+  clmdep_asio::error_code set_password_callback(impl_type& impl,
+      Password_Callback callback, clmdep_asio::error_code& ec)
   {
     // Allocate callback function object if not already present.
     if (impl->default_passwd_callback_userdata)
@@ -367,19 +367,19 @@ public:
     SSL_CTX_set_default_passwd_cb(impl,
         &openssl_context_service::password_callback);
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
 private:
   // Ensure openssl is initialised.
-  asio::ssl::detail::openssl_init<> init_;
+  clmdep_asio::ssl::detail::openssl_init<> init_;
 };
 
 } // namespace detail
 } // namespace old
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default allocation function for handlers.
 /**
@@ -28,7 +28,7 @@ namespace asio {
  * asynchronous operations have a handler function object, these temporary
  * objects can be said to be associated with the handler.
  *
- * Implement asio_handler_allocate and asio_handler_deallocate for your own
+ * Implement clmdep_asio_handler_allocate and clmdep_asio_handler_deallocate for your own
  * handlers to provide custom allocation for these temporary objects.
  *
  * The default implementation of these allocation hooks uses <tt>::operator
@@ -42,35 +42,35 @@ namespace asio {
  * @code
  * class my_handler;
  *
- * void* asio_handler_allocate(std::size_t size, my_handler* context)
+ * void* clmdep_asio_handler_allocate(std::size_t size, my_handler* context)
  * {
  *   return ::operator new(size);
  * }
  *
- * void asio_handler_deallocate(void* pointer, std::size_t size,
+ * void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
  *     my_handler* context)
  * {
  *   ::operator delete(pointer);
  * }
  * @endcode
  */
-ASIO_DECL void* asio_handler_allocate(
+ASIO_DECL void* clmdep_asio_handler_allocate(
     std::size_t size, ...);
 
 /// Default deallocation function for handlers.
 /**
- * Implement asio_handler_allocate and asio_handler_deallocate for your own
+ * Implement clmdep_asio_handler_allocate and clmdep_asio_handler_deallocate for your own
  * handlers to provide custom allocation for the associated temporary objects.
  *
  * The default implementation of these allocation hooks uses <tt>::operator
  * new</tt> and <tt>::operator delete</tt>.
  *
- * @sa asio_handler_allocate.
+ * @sa clmdep_asio_handler_allocate.
  */
-ASIO_DECL void asio_handler_deallocate(
+ASIO_DECL void clmdep_asio_handler_deallocate(
     void* pointer, std::size_t size, ...);
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

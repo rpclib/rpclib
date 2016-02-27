@@ -22,7 +22,7 @@
 
 #if defined(ASIO_HAS_BOOST_DATE_TIME)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct forwarding_posix_time_traits : time_traits<boost::posix_time::ptime> {};
@@ -80,7 +80,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 

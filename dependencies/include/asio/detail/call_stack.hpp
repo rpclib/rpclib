@@ -21,7 +21,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 // Helper class to determine whether or not the current thread is inside an
@@ -118,7 +118,7 @@ tss_ptr<typename call_stack<Key, Value>::context>
 call_stack<Key, Value>::top_;
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

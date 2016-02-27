@@ -42,7 +42,7 @@
 # include "asio/detail/null_fenced_block.hpp"
 #endif
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if !defined(ASIO_HAS_THREADS) \
@@ -71,6 +71,6 @@ typedef null_fenced_block fenced_block;
 #endif
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_FENCED_BLOCK_HPP

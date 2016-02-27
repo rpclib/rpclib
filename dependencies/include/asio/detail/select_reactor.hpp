@@ -43,11 +43,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class select_reactor
-  : public asio::detail::service_base<select_reactor>
+  : public clmdep_asio::detail::service_base<select_reactor>
 {
 public:
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -64,7 +64,7 @@ public:
   };
 
   // Constructor.
-  ASIO_DECL select_reactor(asio::io_service& io_service);
+  ASIO_DECL select_reactor(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~select_reactor();
@@ -74,7 +74,7 @@ public:
 
   // Recreate internal descriptors following a fork.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Initialise the task, but only if the reactor is not in its own thread.
   ASIO_DECL void init_task();
@@ -168,13 +168,13 @@ private:
   // Cancel all operations associated with the given descriptor. This function
   // does not acquire the select_reactor's mutex.
   ASIO_DECL void cancel_ops_unlocked(socket_type descriptor,
-      const asio::error_code& ec);
+      const clmdep_asio::error_code& ec);
 
   // The io_service implementation used to post completions.
   io_service_impl& io_service_;
 
   // Mutex to protect access to internal data.
-  asio::detail::mutex mutex_;
+  clmdep_asio::detail::mutex mutex_;
 
   // The interrupter is used to break a blocking select call.
   select_interrupter interrupter_;
@@ -193,7 +193,7 @@ private:
   bool stop_thread_;
 
   // The thread that is running the reactor loop.
-  asio::detail::thread* thread_;
+  clmdep_asio::detail::thread* thread_;
 #endif // defined(ASIO_HAS_IOCP)
 
   // Whether the service has been shut down.
@@ -201,7 +201,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

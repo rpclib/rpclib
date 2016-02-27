@@ -41,7 +41,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct handler_tracking_timestamp
@@ -57,12 +57,12 @@ struct handler_tracking_timestamp
       boost::posix_time::microsec_clock::universal_time() - epoch;
 #elif defined(ASIO_HAS_STD_CHRONO)
     typedef chrono_time_traits<std::chrono::system_clock,
-        asio::wait_traits<std::chrono::system_clock> > traits_helper;
+        clmdep_asio::wait_traits<std::chrono::system_clock> > traits_helper;
     traits_helper::posix_time_duration now(
         std::chrono::system_clock::now().time_since_epoch());
 #elif defined(ASIO_HAS_BOOST_CHRONO)
     typedef chrono_time_traits<boost::chrono::system_clock,
-        asio::wait_traits<boost::chrono::system_clock> > traits_helper;
+        clmdep_asio::wait_traits<boost::chrono::system_clock> > traits_helper;
     traits_helper::posix_time_duration now(
         boost::chrono::system_clock::now().time_since_epoch());
 #endif
@@ -163,7 +163,7 @@ void handler_tracking::completion::invocation_begin()
 }
 
 void handler_tracking::completion::invocation_begin(
-    const asio::error_code& ec)
+    const clmdep_asio::error_code& ec)
 {
   handler_tracking_timestamp timestamp;
 
@@ -180,7 +180,7 @@ void handler_tracking::completion::invocation_begin(
 }
 
 void handler_tracking::completion::invocation_begin(
-    const asio::error_code& ec, std::size_t bytes_transferred)
+    const clmdep_asio::error_code& ec, std::size_t bytes_transferred)
 {
   handler_tracking_timestamp timestamp;
 
@@ -198,7 +198,7 @@ void handler_tracking::completion::invocation_begin(
 }
 
 void handler_tracking::completion::invocation_begin(
-    const asio::error_code& ec, int signal_number)
+    const clmdep_asio::error_code& ec, int signal_number)
 {
   handler_tracking_timestamp timestamp;
 
@@ -215,7 +215,7 @@ void handler_tracking::completion::invocation_begin(
 }
 
 void handler_tracking::completion::invocation_begin(
-    const asio::error_code& ec, const char* arg)
+    const clmdep_asio::error_code& ec, const char* arg)
 {
   handler_tracking_timestamp timestamp;
 
@@ -296,7 +296,7 @@ void handler_tracking::write_line(const char* format, ...)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

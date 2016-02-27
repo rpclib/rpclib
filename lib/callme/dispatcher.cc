@@ -48,7 +48,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                 throw;
             }
             return response(id,
-                            fmt::format("callme: function '{0}' (taking {1} "
+                            CALLME_FMT::format("callme: function '{0}' (taking {1} "
                                         "arg(s)) "
                                         "threw an exception. The exception "
                                         "contained this information: {2}.",
@@ -58,14 +58,14 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                 throw;
             }
             return response(
-                id, fmt::format("callme: function '{0}' (taking {1} "
+                id, CALLME_FMT::format("callme: function '{0}' (taking {1} "
                                 "arg(s)) threw an exception. The exception "
                                 "is not derived from std::exception. No "
                                 "further information available.",
                                 name, args.via.array.size));
         }
     }
-    return response(id, fmt::format("callme: server could not find "
+    return response(id, CALLME_FMT::format("callme: server could not find "
                                     "function '{0}' with argument count {1}.",
                                     name, args.via.array.size));
 }
@@ -105,7 +105,7 @@ void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
                                    std::size_t expected) {
     if (found != expected) {
         throw std::runtime_error(
-            fmt::format("Function '{0}' was called with an invalid number of "
+            CALLME_FMT::format("Function '{0}' was called with an invalid number of "
                         "arguments. Expected: {1}, got: {2}",
                         func, expected, found));
     }

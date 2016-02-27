@@ -23,7 +23,7 @@
 # include <boost/cstdint.hpp>
 #endif // defined(ASIO_HAS_CSTDINT)
 
-namespace asio {
+namespace clmdep_asio {
 
 #if defined(ASIO_HAS_CSTDINT)
 using std::int16_t;
@@ -41,6 +41,6 @@ using boost::int64_t;
 using boost::uint64_t;
 #endif // defined(ASIO_HAS_CSTDINT)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_CSTDINT_HPP

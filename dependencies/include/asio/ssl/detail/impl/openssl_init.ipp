@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace detail {
 
@@ -41,7 +41,7 @@ public:
 
     mutexes_.resize(::CRYPTO_num_locks());
     for (size_t i = 0; i < mutexes_.size(); ++i)
-      mutexes_[i].reset(new asio::detail::mutex);
+      mutexes_[i].reset(new clmdep_asio::detail::mutex);
     ::CRYPTO_set_locking_callback(&do_init::openssl_locking_func);
     ::CRYPTO_set_id_callback(&do_init::openssl_id_func);
 
@@ -109,12 +109,12 @@ private:
   }
 
   // Mutexes to be used in locking callbacks.
-  std::vector<asio::detail::shared_ptr<
-        asio::detail::mutex> > mutexes_;
+  std::vector<clmdep_asio::detail::shared_ptr<
+        clmdep_asio::detail::mutex> > mutexes_;
 
 #if !defined(ASIO_WINDOWS) && !defined(__CYGWIN__)
   // The thread identifiers to be used by openssl.
-  asio::detail::tss_ptr<void> thread_id_;
+  clmdep_asio::detail::tss_ptr<void> thread_id_;
 #endif // !defined(ASIO_WINDOWS) && !defined(__CYGWIN__)
 
 #if !defined(SSL_OP_NO_COMPRESSION) \
@@ -124,10 +124,10 @@ private:
        // && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
 };
 
-asio::detail::shared_ptr<openssl_init_base::do_init>
+clmdep_asio::detail::shared_ptr<openssl_init_base::do_init>
 openssl_init_base::instance()
 {
-  static asio::detail::shared_ptr<do_init> init(new do_init);
+  static clmdep_asio::detail::shared_ptr<do_init> init(new do_init);
   return init;
 }
 
@@ -142,7 +142,7 @@ STACK_OF(SSL_COMP)* openssl_init_base::get_null_compression_methods()
 
 } // namespace detail
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -30,7 +30,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Adds buffering to the write-related operations of a stream.
 /**
@@ -97,7 +97,7 @@ public:
   }
 
   /// Get the io_service associated with the object.
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return next_layer_.get_io_service();
   }
@@ -109,7 +109,7 @@ public:
   }
 
   /// Close the stream.
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return next_layer_.close(ec);
   }
@@ -122,12 +122,12 @@ public:
   /// Flush all data from the buffer to the next layer. Returns the number of
   /// bytes written to the next layer on the last write operation, or 0 if an
   /// error occurred.
-  std::size_t flush(asio::error_code& ec);
+  std::size_t flush(clmdep_asio::error_code& ec);
 
   /// Start an asynchronous flush.
   template <typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_flush(ASIO_MOVE_ARG(WriteHandler) handler);
 
   /// Write the given data to the stream. Returns the number of bytes written.
@@ -139,13 +139,13 @@ public:
   /// or 0 if an error occurred and the error handler did not throw.
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Start an asynchronous write. The data being written must be valid for the
   /// lifetime of the asynchronous operation.
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some(const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler);
 
@@ -161,7 +161,7 @@ public:
   /// an error occurred.
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return next_layer_.read_some(buffers, ec);
   }
@@ -170,17 +170,17 @@ public:
   /// must be valid for the lifetime of the asynchronous operation.
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some(const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
     detail::async_result_init<
-      ReadHandler, void (asio::error_code, std::size_t)> init(
+      ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(ReadHandler)(handler));
 
     next_layer_.async_read_some(buffers,
         ASIO_MOVE_CAST(ASIO_HANDLER_TYPE(ReadHandler,
-            void (asio::error_code, std::size_t)))(init.handler));
+            void (clmdep_asio::error_code, std::size_t)))(init.handler));
 
     return init.result.get();
   }
@@ -197,7 +197,7 @@ public:
   /// or 0 if an error occurred.
   template <typename MutableBufferSequence>
   std::size_t peek(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return next_layer_.peek(buffers, ec);
   }
@@ -209,7 +209,7 @@ public:
   }
 
   /// Determine the amount of data that may be read without blocking.
-  std::size_t in_avail(asio::error_code& ec)
+  std::size_t in_avail(clmdep_asio::error_code& ec)
   {
     return next_layer_.in_avail(ec);
   }
@@ -227,7 +227,7 @@ private:
   detail::buffered_stream_storage storage_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

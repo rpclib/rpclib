@@ -32,12 +32,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// An iterator over the entries produced by a resolver.
 /**
- * The asio::ip::basic_resolver_iterator class template is used to define
+ * The clmdep_asio::ip::basic_resolver_iterator class template is used to define
  * iterators over the results returned by a resolver.
  *
  * The iterator's value_type, obtained when the iterator is dereferenced, is:
@@ -74,7 +74,7 @@ public:
 
   /// Create an iterator from an addrinfo list returned by getaddrinfo.
   static basic_resolver_iterator create(
-      asio::detail::addrinfo_type* address_info,
+      clmdep_asio::detail::addrinfo_type* address_info,
       const std::string& host_name, const std::string& service_name)
   {
     basic_resolver_iterator iter;
@@ -145,7 +145,7 @@ public:
   static basic_resolver_iterator create(
       Windows::Foundation::Collections::IVectorView<
         Windows::Networking::EndpointPair^>^ endpoints,
-      const asio::detail::addrinfo_type& hints,
+      const clmdep_asio::detail::addrinfo_type& hints,
       const std::string& host_name, const std::string& service_name)
   {
     basic_resolver_iterator iter;
@@ -170,9 +170,9 @@ public:
             basic_resolver_entry<InternetProtocol>(
               typename InternetProtocol::endpoint(
                 ip::address::from_string(
-                  asio::detail::winrt_utils::string(
+                  clmdep_asio::detail::winrt_utils::string(
                     pair->RemoteHostName->CanonicalName)),
-                asio::detail::winrt_utils::integer(
+                clmdep_asio::detail::winrt_utils::integer(
                   pair->RemoteServiceName)),
               host_name, service_name));
       }
@@ -248,12 +248,12 @@ private:
   }
 
   typedef std::vector<basic_resolver_entry<InternetProtocol> > values_type;
-  asio::detail::shared_ptr<values_type> values_;
+  clmdep_asio::detail::shared_ptr<values_type> values_;
   std::size_t index_;
 };
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

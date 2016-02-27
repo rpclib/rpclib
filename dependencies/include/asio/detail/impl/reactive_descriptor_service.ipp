@@ -26,12 +26,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 reactive_descriptor_service::reactive_descriptor_service(
-    asio::io_service& io_service)
-  : reactor_(asio::use_service<reactor>(io_service))
+    clmdep_asio::io_service& io_service)
+  : reactor_(clmdep_asio::use_service<reactor>(io_service))
 {
   reactor_.init_task();
 }
@@ -89,37 +89,37 @@ void reactive_descriptor_service::destroy(
         (impl.state_ & descriptor_ops::possible_dup) == 0);
   }
 
-  asio::error_code ignored_ec;
+  clmdep_asio::error_code ignored_ec;
   descriptor_ops::close(impl.descriptor_, impl.state_, ignored_ec);
 }
 
-asio::error_code reactive_descriptor_service::assign(
+clmdep_asio::error_code reactive_descriptor_service::assign(
     reactive_descriptor_service::implementation_type& impl,
-    const native_handle_type& native_descriptor, asio::error_code& ec)
+    const native_handle_type& native_descriptor, clmdep_asio::error_code& ec)
 {
   if (is_open(impl))
   {
-    ec = asio::error::already_open;
+    ec = clmdep_asio::error::already_open;
     return ec;
   }
 
   if (int err = reactor_.register_descriptor(
         native_descriptor, impl.reactor_data_))
   {
-    ec = asio::error_code(err,
-        asio::error::get_system_category());
+    ec = clmdep_asio::error_code(err,
+        clmdep_asio::error::get_system_category());
     return ec;
   }
 
   impl.descriptor_ = native_descriptor;
   impl.state_ = descriptor_ops::possible_dup;
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code reactive_descriptor_service::close(
+clmdep_asio::error_code reactive_descriptor_service::close(
     reactive_descriptor_service::implementation_type& impl,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   if (is_open(impl))
   {
@@ -159,20 +159,20 @@ reactive_descriptor_service::release(
   return descriptor;
 }
 
-asio::error_code reactive_descriptor_service::cancel(
+clmdep_asio::error_code reactive_descriptor_service::cancel(
     reactive_descriptor_service::implementation_type& impl,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   if (!is_open(impl))
   {
-    ec = asio::error::bad_descriptor;
+    ec = clmdep_asio::error::bad_descriptor;
     return ec;
   }
 
   ASIO_HANDLER_OPERATION(("descriptor", &impl, "cancel"));
 
   reactor_.cancel_ops(impl.descriptor_, impl.reactor_data_);
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
@@ -197,7 +197,7 @@ void reactive_descriptor_service::start_op(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

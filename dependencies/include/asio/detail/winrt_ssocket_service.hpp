@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Protocol>
@@ -60,7 +60,7 @@ public:
   };
 
   // Constructor.
-  winrt_ssocket_service(asio::io_service& io_service)
+  winrt_ssocket_service(clmdep_asio::io_service& io_service)
     : winrt_ssocket_service_base(io_service)
   {
   }
@@ -99,12 +99,12 @@ public:
   }
 
   // Open a new socket implementation.
-  asio::error_code open(implementation_type& impl,
-      const protocol_type& protocol, asio::error_code& ec)
+  clmdep_asio::error_code open(implementation_type& impl,
+      const protocol_type& protocol, clmdep_asio::error_code& ec)
   {
     if (is_open(impl))
     {
-      ec = asio::error::already_open;
+      ec = clmdep_asio::error::already_open;
       return ec;
     }
 
@@ -112,46 +112,46 @@ public:
     {
       impl.socket_ = ref new Windows::Networking::Sockets::StreamSocket;
       impl.protocol_ = protocol;
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
     }
     catch (Platform::Exception^ e)
     {
-      ec = asio::error_code(e->HResult,
-            asio::system_category());
+      ec = clmdep_asio::error_code(e->HResult,
+            clmdep_asio::system_category());
     }
 
     return ec;
   }
 
   // Assign a native socket to a socket implementation.
-  asio::error_code assign(implementation_type& impl,
+  clmdep_asio::error_code assign(implementation_type& impl,
       const protocol_type& protocol, const native_handle_type& native_socket,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     if (is_open(impl))
     {
-      ec = asio::error::already_open;
+      ec = clmdep_asio::error::already_open;
       return ec;
     }
 
     impl.socket_ = native_socket;
     impl.protocol_ = protocol;
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
 
     return ec;
   }
 
   // Bind the socket to the specified local endpoint.
-  asio::error_code bind(implementation_type&,
-      const endpoint_type&, asio::error_code& ec)
+  clmdep_asio::error_code bind(implementation_type&,
+      const endpoint_type&, clmdep_asio::error_code& ec)
   {
-    ec = asio::error::operation_not_supported;
+    ec = clmdep_asio::error::operation_not_supported;
     return ec;
   }
 
   // Get the local endpoint.
   endpoint_type local_endpoint(const implementation_type& impl,
-      asio::error_code& ec) const
+      clmdep_asio::error_code& ec) const
   {
     endpoint_type endpoint;
     endpoint.resize(do_get_endpoint(impl, true,
@@ -161,7 +161,7 @@ public:
 
   // Get the remote endpoint.
   endpoint_type remote_endpoint(const implementation_type& impl,
-      asio::error_code& ec) const
+      clmdep_asio::error_code& ec) const
   {
     endpoint_type endpoint;
     endpoint.resize(do_get_endpoint(impl, false,
@@ -171,8 +171,8 @@ public:
 
   // Set a socket option.
   template <typename Option>
-  asio::error_code set_option(implementation_type& impl,
-      const Option& option, asio::error_code& ec)
+  clmdep_asio::error_code set_option(implementation_type& impl,
+      const Option& option, clmdep_asio::error_code& ec)
   {
     return do_set_option(impl, option.level(impl.protocol_),
         option.name(impl.protocol_), option.data(impl.protocol_),
@@ -181,8 +181,8 @@ public:
 
   // Get a socket option.
   template <typename Option>
-  asio::error_code get_option(const implementation_type& impl,
-      Option& option, asio::error_code& ec) const
+  clmdep_asio::error_code get_option(const implementation_type& impl,
+      Option& option, clmdep_asio::error_code& ec) const
   {
     std::size_t size = option.size(impl.protocol_);
     do_get_option(impl, option.level(impl.protocol_),
@@ -194,8 +194,8 @@ public:
   }
 
   // Connect the socket to the specified endpoint.
-  asio::error_code connect(implementation_type& impl,
-      const endpoint_type& peer_endpoint, asio::error_code& ec)
+  clmdep_asio::error_code connect(implementation_type& impl,
+      const endpoint_type& peer_endpoint, clmdep_asio::error_code& ec)
   {
     return do_connect(impl, peer_endpoint.data(), ec);
   }
@@ -206,12 +206,12 @@ public:
       const endpoint_type& peer_endpoint, Handler& handler)
   {
     bool is_continuation =
-      asio_handler_cont_helpers::is_continuation(handler);
+      clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
     // Allocate and construct an operation to wrap the handler.
     typedef winrt_socket_connect_op<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -223,7 +223,7 @@ public:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

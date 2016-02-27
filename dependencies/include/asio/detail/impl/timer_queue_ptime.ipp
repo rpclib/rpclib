@@ -22,7 +22,7 @@
 
 #if defined(ASIO_HAS_BOOST_DATE_TIME)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 timer_queue<time_traits<boost::posix_time::ptime> >::timer_queue()
@@ -75,7 +75,7 @@ std::size_t timer_queue<time_traits<boost::posix_time::ptime> >::cancel_timer(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 

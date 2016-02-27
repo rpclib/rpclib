@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 DWORD WINAPI wince_thread_function(LPVOID arg);
@@ -47,9 +47,9 @@ public:
     if (!thread_)
     {
       DWORD last_error = ::GetLastError();
-      asio::error_code ec(last_error,
-          asio::error::get_system_category());
-      asio::detail::throw_error(ec, "thread");
+      clmdep_asio::error_code ec(last_error,
+          clmdep_asio::error::get_system_category());
+      clmdep_asio::detail::throw_error(ec, "thread");
     }
     arg.release();
   }
@@ -107,7 +107,7 @@ inline DWORD WINAPI wince_thread_function(LPVOID arg)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

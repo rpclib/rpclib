@@ -21,10 +21,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-// Calls to asio_handler_invoke must be made from a namespace that does not
-// contain overloads of this function. The asio_handler_invoke_helpers
+// Calls to clmdep_asio_handler_invoke must be made from a namespace that does not
+// contain overloads of this function. The clmdep_asio_handler_invoke_helpers
 // namespace is defined here for that purpose.
-namespace asio_handler_invoke_helpers {
+namespace clmdep_asio_handler_invoke_helpers {
 
 template <typename Function, typename Context>
 inline void invoke(Function& function, Context& context)
@@ -33,8 +33,8 @@ inline void invoke(Function& function, Context& context)
   Function tmp(function);
   tmp();
 #else
-  using asio::asio_handler_invoke;
-  asio_handler_invoke(function, asio::detail::addressof(context));
+  using clmdep_asio::clmdep_asio_handler_invoke;
+  clmdep_asio_handler_invoke(function, clmdep_asio::detail::addressof(context));
 #endif
 }
 
@@ -45,12 +45,12 @@ inline void invoke(const Function& function, Context& context)
   Function tmp(function);
   tmp();
 #else
-  using asio::asio_handler_invoke;
-  asio_handler_invoke(function, asio::detail::addressof(context));
+  using clmdep_asio::clmdep_asio_handler_invoke;
+  clmdep_asio_handler_invoke(function, clmdep_asio::detail::addressof(context));
 #endif
 }
 
-} // namespace asio_handler_invoke_helpers
+} // namespace clmdep_asio_handler_invoke_helpers
 
 #include "asio/detail/pop_options.hpp"
 

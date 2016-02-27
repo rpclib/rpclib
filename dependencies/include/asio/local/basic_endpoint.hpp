@@ -29,12 +29,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace local {
 
 /// Describes an endpoint for a UNIX socket.
 /**
- * The asio::local::basic_endpoint class template describes an endpoint
+ * The clmdep_asio::local::basic_endpoint class template describes an endpoint
  * that may be associated with a particular UNIX socket.
  *
  * @par Thread Safety
@@ -56,7 +56,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined data_type;
 #else
-  typedef asio::detail::socket_addr_type data_type;
+  typedef clmdep_asio::detail::socket_addr_type data_type;
 #endif
 
   /// Default constructor.
@@ -204,7 +204,7 @@ public:
 
 private:
   // The underlying UNIX domain endpoint.
-  asio::local::detail::endpoint impl_;
+  clmdep_asio::local::detail::endpoint impl_;
 };
 
 /// Output an endpoint as a string.
@@ -217,7 +217,7 @@ private:
  *
  * @return The output stream.
  *
- * @relates asio::local::basic_endpoint
+ * @relates clmdep_asio::local::basic_endpoint
  */
 template <typename Elem, typename Traits, typename Protocol>
 std::basic_ostream<Elem, Traits>& operator<<(
@@ -229,7 +229,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 }
 
 } // namespace local
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

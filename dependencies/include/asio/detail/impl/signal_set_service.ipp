@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct signal_state
@@ -56,7 +56,7 @@ signal_state* get_signal_state()
   return &state;
 }
 
-void asio_signal_handler(int signal_number)
+void clmdep_asio_signal_handler(int signal_number)
 {
 #if defined(ASIO_WINDOWS) \
   || defined(ASIO_WINDOWS_RUNTIME) \
@@ -76,7 +76,7 @@ void asio_signal_handler(int signal_number)
        //   || defined(__CYGWIN__)
 
 #if defined(ASIO_HAS_SIGNAL) && !defined(ASIO_HAS_SIGACTION)
-  ::signal(signal_number, asio_signal_handler);
+  ::signal(signal_number, clmdep_asio_signal_handler);
 #endif // defined(ASIO_HAS_SIGNAL) && !defined(ASIO_HAS_SIGACTION)
 }
 
@@ -105,7 +105,7 @@ public:
   }
 
   static void do_complete(io_service_impl* /*owner*/, operation* base,
-      const asio::error_code& /*ec*/,
+      const clmdep_asio::error_code& /*ec*/,
       std::size_t /*bytes_transferred*/)
   {
     pipe_read_op* o(static_cast<pipe_read_op*>(base));
@@ -117,12 +117,12 @@ public:
        //   && !defined(__CYGWIN__)
 
 signal_set_service::signal_set_service(
-    asio::io_service& io_service)
-  : io_service_(asio::use_service<io_service_impl>(io_service)),
+    clmdep_asio::io_service& io_service)
+  : io_service_(clmdep_asio::use_service<io_service_impl>(io_service)),
 #if !defined(ASIO_WINDOWS) \
   && !defined(ASIO_WINDOWS_RUNTIME) \
   && !defined(__CYGWIN__)
-    reactor_(asio::use_service<reactor>(io_service)),
+    reactor_(clmdep_asio::use_service<reactor>(io_service)),
 #endif // !defined(ASIO_WINDOWS)
        //   && !defined(ASIO_WINDOWS_RUNTIME)
        //   && !defined(__CYGWIN__)
@@ -170,7 +170,7 @@ void signal_set_service::shutdown_service()
 }
 
 void signal_set_service::fork_service(
-    asio::io_service::fork_event fork_ev)
+    clmdep_asio::io_service::fork_event fork_ev)
 {
 #if !defined(ASIO_WINDOWS) \
   && !defined(ASIO_WINDOWS_RUNTIME) \
@@ -180,7 +180,7 @@ void signal_set_service::fork_service(
 
   switch (fork_ev)
   {
-  case asio::io_service::fork_prepare:
+  case clmdep_asio::io_service::fork_prepare:
     {
       int read_descriptor = state->read_descriptor_;
       state->fork_prepared_ = true;
@@ -188,7 +188,7 @@ void signal_set_service::fork_service(
       reactor_.deregister_internal_descriptor(read_descriptor, reactor_data_);
     }
     break;
-  case asio::io_service::fork_parent:
+  case clmdep_asio::io_service::fork_parent:
     if (state->fork_prepared_)
     {
       int read_descriptor = state->read_descriptor_;
@@ -198,10 +198,10 @@ void signal_set_service::fork_service(
           read_descriptor, reactor_data_, new pipe_read_op);
     }
     break;
-  case asio::io_service::fork_child:
+  case clmdep_asio::io_service::fork_child:
     if (state->fork_prepared_)
     {
-      asio::detail::signal_blocker blocker;
+      clmdep_asio::detail::signal_blocker blocker;
       close_descriptors();
       open_descriptors();
       int read_descriptor = state->read_descriptor_;
@@ -232,19 +232,19 @@ void signal_set_service::construct(
 void signal_set_service::destroy(
     signal_set_service::implementation_type& impl)
 {
-  asio::error_code ignored_ec;
+  clmdep_asio::error_code ignored_ec;
   clear(impl, ignored_ec);
   cancel(impl, ignored_ec);
 }
 
-asio::error_code signal_set_service::add(
+clmdep_asio::error_code signal_set_service::add(
     signal_set_service::implementation_type& impl,
-    int signal_number, asio::error_code& ec)
+    int signal_number, clmdep_asio::error_code& ec)
 {
   // Check that the signal number is valid.
   if (signal_number < 0 || signal_number >= max_signal_number)
   {
-    ec = asio::error::invalid_argument;
+    ec = clmdep_asio::error::invalid_argument;
     return ec;
   }
 
@@ -273,18 +273,18 @@ asio::error_code signal_set_service::add(
       using namespace std; // For memset.
       struct sigaction sa;
       memset(&sa, 0, sizeof(sa));
-      sa.sa_handler = asio_signal_handler;
+      sa.sa_handler = clmdep_asio_signal_handler;
       sigfillset(&sa.sa_mask);
       if (::sigaction(signal_number, &sa, 0) == -1)
 # else // defined(ASIO_HAS_SIGACTION)
-      if (::signal(signal_number, asio_signal_handler) == SIG_ERR)
+      if (::signal(signal_number, clmdep_asio_signal_handler) == SIG_ERR)
 # endif // defined(ASIO_HAS_SIGACTION)
       {
 # if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
 # else // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error_code(errno,
-            asio::error::get_system_category());
+        ec = clmdep_asio::error_code(errno,
+            clmdep_asio::error::get_system_category());
 # endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
         delete new_registration;
         return ec;
@@ -307,18 +307,18 @@ asio::error_code signal_set_service::add(
     ++state->registration_count_[signal_number];
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code signal_set_service::remove(
+clmdep_asio::error_code signal_set_service::remove(
     signal_set_service::implementation_type& impl,
-    int signal_number, asio::error_code& ec)
+    int signal_number, clmdep_asio::error_code& ec)
 {
   // Check that the signal number is valid.
   if (signal_number < 0 || signal_number >= max_signal_number)
   {
-    ec = asio::error::invalid_argument;
+    ec = clmdep_asio::error::invalid_argument;
     return ec;
   }
 
@@ -351,10 +351,10 @@ asio::error_code signal_set_service::remove(
 # endif // defined(ASIO_HAS_SIGACTION)
       {
 # if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
 # else // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error_code(errno,
-            asio::error::get_system_category());
+        ec = clmdep_asio::error_code(errno,
+            clmdep_asio::error::get_system_category());
 # endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
         return ec;
       }
@@ -377,13 +377,13 @@ asio::error_code signal_set_service::remove(
     delete reg;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code signal_set_service::clear(
+clmdep_asio::error_code signal_set_service::clear(
     signal_set_service::implementation_type& impl,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   signal_state* state = get_signal_state();
   static_mutex::scoped_lock lock(state->mutex_);
@@ -405,10 +405,10 @@ asio::error_code signal_set_service::clear(
 # endif // defined(ASIO_HAS_SIGACTION)
       {
 # if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
 # else // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-        ec = asio::error_code(errno,
-            asio::error::get_system_category());
+        ec = clmdep_asio::error_code(errno,
+            clmdep_asio::error::get_system_category());
 # endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
         return ec;
       }
@@ -429,13 +429,13 @@ asio::error_code signal_set_service::clear(
     delete reg;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code signal_set_service::cancel(
+clmdep_asio::error_code signal_set_service::cancel(
     signal_set_service::implementation_type& impl,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   ASIO_HANDLER_OPERATION(("signal_set", &impl, "cancel"));
 
@@ -446,7 +446,7 @@ asio::error_code signal_set_service::cancel(
 
     while (signal_op* op = impl.queue_.front())
     {
-      op->ec_ = asio::error::operation_aborted;
+      op->ec_ = clmdep_asio::error::operation_aborted;
       impl.queue_.pop();
       ops.push(op);
     }
@@ -454,7 +454,7 @@ asio::error_code signal_set_service::cancel(
 
   io_service_.post_deferred_completions(ops);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
@@ -586,9 +586,9 @@ void signal_set_service::open_descriptors()
   }
   else
   {
-    asio::error_code ec(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "signal_set_service pipe");
+    clmdep_asio::error_code ec(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "signal_set_service pipe");
   }
 #endif // !defined(ASIO_WINDOWS)
        //   && !defined(ASIO_WINDOWS_RUNTIME)
@@ -640,7 +640,7 @@ void signal_set_service::start_wait_op(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

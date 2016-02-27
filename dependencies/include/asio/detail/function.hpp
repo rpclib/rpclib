@@ -23,7 +23,7 @@
 # include <boost/function.hpp>
 #endif // defined(ASIO_HAS_STD_FUNCTION)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if defined(ASIO_HAS_STD_FUNCTION)
@@ -33,6 +33,6 @@ using boost::function;
 #endif // defined(ASIO_HAS_STD_FUNCTION)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_FUNCTION_HPP

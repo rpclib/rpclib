@@ -23,17 +23,17 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 
 #if defined(ASIO_ENABLE_OLD_SSL)
 
-using asio::ssl::old::basic_context;
+using clmdep_asio::ssl::old::basic_context;
 
 #endif // defined(ASIO_ENABLE_OLD_SSL)
 
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -27,16 +27,16 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class winrt_async_manager
-  : public asio::detail::service_base<winrt_async_manager>
+  : public clmdep_asio::detail::service_base<winrt_async_manager>
 {
 public:
   // Constructor.
-  winrt_async_manager(asio::io_service& io_service)
-    : asio::detail::service_base<winrt_async_manager>(io_service),
+  winrt_async_manager(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<winrt_async_manager>(io_service),
       io_service_(use_service<io_service_impl>(io_service)),
       outstanding_ops_(1)
   {
@@ -59,12 +59,12 @@ public:
   }
 
   void sync(Windows::Foundation::IAsyncAction^ action,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     using namespace Windows::Foundation;
     using Windows::Foundation::AsyncStatus;
 
-    auto promise = std::make_shared<std::promise<asio::error_code>>();
+    auto promise = std::make_shared<std::promise<clmdep_asio::error_code>>();
     auto future = promise->get_future();
 
     action->Completed = ref new AsyncActionCompletedHandler(
@@ -73,14 +73,14 @@ public:
         switch (status)
         {
         case AsyncStatus::Canceled:
-          promise->set_value(asio::error::operation_aborted);
+          promise->set_value(clmdep_asio::error::operation_aborted);
           break;
         case AsyncStatus::Error:
         case AsyncStatus::Completed:
         default:
-          asio::error_code ec(
+          clmdep_asio::error_code ec(
               action->ErrorCode.Value,
-              asio::system_category());
+              clmdep_asio::system_category());
           promise->set_value(ec);
           break;
         }
@@ -91,12 +91,12 @@ public:
 
   template <typename TResult>
   TResult sync(Windows::Foundation::IAsyncOperation<TResult>^ operation,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     using namespace Windows::Foundation;
     using Windows::Foundation::AsyncStatus;
 
-    auto promise = std::make_shared<std::promise<asio::error_code>>();
+    auto promise = std::make_shared<std::promise<clmdep_asio::error_code>>();
     auto future = promise->get_future();
 
     operation->Completed = ref new AsyncOperationCompletedHandler<TResult>(
@@ -105,14 +105,14 @@ public:
         switch (status)
         {
         case AsyncStatus::Canceled:
-          promise->set_value(asio::error::operation_aborted);
+          promise->set_value(clmdep_asio::error::operation_aborted);
           break;
         case AsyncStatus::Error:
         case AsyncStatus::Completed:
         default:
-          asio::error_code ec(
+          clmdep_asio::error_code ec(
               operation->ErrorCode.Value,
-              asio::system_category());
+              clmdep_asio::system_category());
           promise->set_value(ec);
           break;
         }
@@ -126,12 +126,12 @@ public:
   TResult sync(
       Windows::Foundation::IAsyncOperationWithProgress<
         TResult, TProgress>^ operation,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     using namespace Windows::Foundation;
     using Windows::Foundation::AsyncStatus;
 
-    auto promise = std::make_shared<std::promise<asio::error_code>>();
+    auto promise = std::make_shared<std::promise<clmdep_asio::error_code>>();
     auto future = promise->get_future();
 
     operation->Completed
@@ -142,16 +142,16 @@ public:
           switch (status)
           {
           case AsyncStatus::Canceled:
-            promise->set_value(asio::error::operation_aborted);
+            promise->set_value(clmdep_asio::error::operation_aborted);
             break;
           case AsyncStatus::Started:
             break;
           case AsyncStatus::Error:
           case AsyncStatus::Completed:
           default:
-            asio::error_code ec(
+            clmdep_asio::error_code ec(
                 operation->ErrorCode.Value,
-                asio::system_category());
+                clmdep_asio::system_category());
             promise->set_value(ec);
             break;
           }
@@ -173,16 +173,16 @@ public:
         switch (status)
         {
         case AsyncStatus::Canceled:
-          handler->ec_ = asio::error::operation_aborted;
+          handler->ec_ = clmdep_asio::error::operation_aborted;
           break;
         case AsyncStatus::Started:
           return;
         case AsyncStatus::Completed:
         case AsyncStatus::Error:
         default:
-          handler->ec_ = asio::error_code(
+          handler->ec_ = clmdep_asio::error_code(
               action->ErrorCode.Value,
-              asio::system_category());
+              clmdep_asio::system_category());
           break;
         }
         io_service_.post_deferred_completion(handler);
@@ -208,7 +208,7 @@ public:
         switch (status)
         {
         case AsyncStatus::Canceled:
-          handler->ec_ = asio::error::operation_aborted;
+          handler->ec_ = clmdep_asio::error::operation_aborted;
           break;
         case AsyncStatus::Started:
           return;
@@ -217,9 +217,9 @@ public:
           // Fall through.
         case AsyncStatus::Error:
         default:
-          handler->ec_ = asio::error_code(
+          handler->ec_ = clmdep_asio::error_code(
               operation->ErrorCode.Value,
-              asio::system_category());
+              clmdep_asio::system_category());
           break;
         }
         io_service_.post_deferred_completion(handler);
@@ -249,7 +249,7 @@ public:
           switch (status)
           {
           case AsyncStatus::Canceled:
-            handler->ec_ = asio::error::operation_aborted;
+            handler->ec_ = clmdep_asio::error::operation_aborted;
             break;
           case AsyncStatus::Started:
             return;
@@ -258,9 +258,9 @@ public:
             // Fall through.
           case AsyncStatus::Error:
           default:
-            handler->ec_ = asio::error_code(
+            handler->ec_ = clmdep_asio::error_code(
                 operation->ErrorCode.Value,
-                asio::system_category());
+                clmdep_asio::system_category());
             break;
           }
           io_service_.post_deferred_completion(handler);
@@ -285,7 +285,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

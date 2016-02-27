@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 // Wraps a handler to create an OVERLAPPED object for use with overlapped I/O.
@@ -46,7 +46,7 @@ public:
   // Construct an win_iocp_overlapped_ptr to contain the specified handler.
   template <typename Handler>
   explicit win_iocp_overlapped_ptr(
-      asio::io_service& io_service, ASIO_MOVE_ARG(Handler) handler)
+      clmdep_asio::io_service& io_service, ASIO_MOVE_ARG(Handler) handler)
     : ptr_(0),
       iocp_service_(0)
   {
@@ -74,11 +74,11 @@ public:
   // Reset to contain the specified handler, freeing any current OVERLAPPED
   // object.
   template <typename Handler>
-  void reset(asio::io_service& io_service, Handler handler)
+  void reset(clmdep_asio::io_service& io_service, Handler handler)
   {
     typedef win_iocp_overlapped_op<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -117,7 +117,7 @@ public:
   }
 
   // Post completion notification for overlapped operation. Releases ownership.
-  void complete(const asio::error_code& ec,
+  void complete(const clmdep_asio::error_code& ec,
       std::size_t bytes_transferred)
   {
     if (ptr_)
@@ -135,7 +135,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

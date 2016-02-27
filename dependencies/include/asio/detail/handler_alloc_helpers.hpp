@@ -22,10 +22,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-// Calls to asio_handler_allocate and asio_handler_deallocate must be made from
+// Calls to clmdep_asio_handler_allocate and clmdep_asio_handler_deallocate must be made from
 // a namespace that does not contain any overloads of these functions. The
-// asio_handler_alloc_helpers namespace is defined here for that purpose.
-namespace asio_handler_alloc_helpers {
+// clmdep_asio_handler_alloc_helpers namespace is defined here for that purpose.
+namespace clmdep_asio_handler_alloc_helpers {
 
 template <typename Handler>
 inline void* allocate(std::size_t s, Handler& h)
@@ -33,8 +33,8 @@ inline void* allocate(std::size_t s, Handler& h)
 #if !defined(ASIO_HAS_HANDLER_HOOKS)
   return ::operator new(s);
 #else
-  using asio::asio_handler_allocate;
-  return asio_handler_allocate(s, asio::detail::addressof(h));
+  using clmdep_asio::clmdep_asio_handler_allocate;
+  return clmdep_asio_handler_allocate(s, clmdep_asio::detail::addressof(h));
 #endif
 }
 
@@ -44,12 +44,12 @@ inline void deallocate(void* p, std::size_t s, Handler& h)
 #if !defined(ASIO_HAS_HANDLER_HOOKS)
   ::operator delete(p);
 #else
-  using asio::asio_handler_deallocate;
-  asio_handler_deallocate(p, s, asio::detail::addressof(h));
+  using clmdep_asio::clmdep_asio_handler_deallocate;
+  clmdep_asio_handler_deallocate(p, s, clmdep_asio::detail::addressof(h));
 #endif
 }
 
-} // namespace asio_handler_alloc_helpers
+} // namespace clmdep_asio_handler_alloc_helpers
 
 #define ASIO_DEFINE_HANDLER_PTR(op) \
   struct ptr \
@@ -70,7 +70,7 @@ inline void deallocate(void* p, std::size_t s, Handler& h)
       } \
       if (v) \
       { \
-        asio_handler_alloc_helpers::deallocate(v, sizeof(op), *h); \
+        clmdep_asio_handler_alloc_helpers::deallocate(v, sizeof(op), *h); \
         v = 0; \
       } \
     } \

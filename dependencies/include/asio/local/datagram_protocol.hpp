@@ -26,12 +26,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace local {
 
 /// Encapsulates the flags needed for datagram-oriented UNIX sockets.
 /**
- * The asio::local::datagram_protocol class contains flags necessary for
+ * The clmdep_asio::local::datagram_protocol class contains flags necessary for
  * datagram-oriented UNIX domain sockets.
  *
  * @par Thread Safety
@@ -70,7 +70,7 @@ public:
 };
 
 } // namespace local
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

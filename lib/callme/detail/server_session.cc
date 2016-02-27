@@ -4,8 +4,8 @@
 namespace callme {
 namespace detail {
 
-server_session::server_session(asio::io_service *io,
-                               asio::ip::tcp::socket socket,
+server_session::server_session(CALLME_ASIO::io_service *io,
+                               CALLME_ASIO::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp,
                                bool suppress_exceptions)
     : async_writer(io, std::move(socket)),
@@ -23,7 +23,7 @@ void server_session::start() { do_read(); }
 void server_session::do_read() {
     auto self(shared_from_this());
     socket_.async_read_some(
-        asio::buffer(pac_.buffer(), default_buffer_size),
+        CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
                 pac_.buffer_consumed(length);

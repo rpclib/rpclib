@@ -13,14 +13,14 @@ namespace detail {
 //! \brief Common logic for classes that have a write queue with async writing.
 class async_writer {
 public:
-    async_writer(asio::io_service *io, asio::ip::tcp::socket socket)
+    async_writer(CALLME_ASIO::io_service *io, CALLME_ASIO::ip::tcp::socket socket)
         : socket_(std::move(socket)), write_strand_(*io) {}
 
     void do_write() {
         auto &item = write_queue_.front();
         // the data in item remains valid until the handler is called
         // since it will still be in the queue physically until then.
-        asio::async_write(socket_, asio::buffer(item.data(), item.size()),
+        CALLME_ASIO::async_write(socket_, CALLME_ASIO::buffer(item.data(), item.size()),
                           write_strand_.wrap([this](std::error_code ec,
                                                     std::size_t transferred) {
                               write_queue_.pop_front();
@@ -39,8 +39,8 @@ public:
         do_write();
     }
 
-    asio::ip::tcp::socket socket_;
-    asio::strand write_strand_;
+    CALLME_ASIO::ip::tcp::socket socket_;
+    CALLME_ASIO::strand write_strand_;
 
 private:
     std::deque<msgpack::sbuffer> write_queue_;

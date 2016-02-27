@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace generic {
 namespace detail {
 
@@ -44,10 +44,10 @@ endpoint::endpoint(const void* sock_addr,
 
 void endpoint::resize(std::size_t new_size)
 {
-  if (new_size > sizeof(asio::detail::sockaddr_storage_type))
+  if (new_size > sizeof(clmdep_asio::detail::sockaddr_storage_type))
   {
-    asio::error_code ec(asio::error::invalid_argument);
-    asio::detail::throw_error(ec);
+    clmdep_asio::error_code ec(clmdep_asio::error::invalid_argument);
+    clmdep_asio::detail::throw_error(ec);
   }
   else
   {
@@ -86,14 +86,14 @@ bool operator<(const endpoint& e1, const endpoint& e2)
 void endpoint::init(const void* sock_addr,
     std::size_t sock_addr_size, int sock_protocol)
 {
-  if (sock_addr_size > sizeof(asio::detail::sockaddr_storage_type))
+  if (sock_addr_size > sizeof(clmdep_asio::detail::sockaddr_storage_type))
   {
-    asio::error_code ec(asio::error::invalid_argument);
-    asio::detail::throw_error(ec);
+    clmdep_asio::error_code ec(clmdep_asio::error::invalid_argument);
+    clmdep_asio::detail::throw_error(ec);
   }
 
   using namespace std; // For memset and memcpy.
-  memset(&data_.generic, 0, sizeof(asio::detail::sockaddr_storage_type));
+  memset(&data_.generic, 0, sizeof(clmdep_asio::detail::sockaddr_storage_type));
   memcpy(&data_.generic, sock_addr, sock_addr_size);
 
   size_ = sock_addr_size;
@@ -102,7 +102,7 @@ void endpoint::init(const void* sock_addr,
 
 } // namespace detail
 } // namespace generic
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

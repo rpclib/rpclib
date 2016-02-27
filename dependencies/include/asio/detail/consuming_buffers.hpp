@@ -23,7 +23,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 // A proxy iterator for a sub-range in a list of buffers.
@@ -264,11 +264,11 @@ private:
 // Specialisation for null_buffers to ensure that the null_buffers type is
 // always passed through to the underlying read or write operation.
 template <typename Buffer>
-class consuming_buffers<Buffer, asio::null_buffers>
-  : public asio::null_buffers
+class consuming_buffers<Buffer, clmdep_asio::null_buffers>
+  : public clmdep_asio::null_buffers
 {
 public:
-  consuming_buffers(const asio::null_buffers&)
+  consuming_buffers(const clmdep_asio::null_buffers&)
   {
     // No-op.
   }
@@ -285,7 +285,7 @@ public:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

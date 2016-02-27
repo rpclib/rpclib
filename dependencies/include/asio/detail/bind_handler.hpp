@@ -22,7 +22,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Handler, typename Arg1>
@@ -57,42 +57,42 @@ public:
 };
 
 template <typename Handler, typename Arg1>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     binder1<Handler, Arg1>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     binder1<Handler, Arg1>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     binder1<Handler, Arg1>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     binder1<Handler, Arg1>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     binder1<Handler, Arg1>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
@@ -139,42 +139,42 @@ public:
 };
 
 template <typename Handler, typename Arg1, typename Arg2>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     binder2<Handler, Arg1, Arg2>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     binder2<Handler, Arg1, Arg2>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     binder2<Handler, Arg1, Arg2>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     binder2<Handler, Arg1, Arg2>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     binder2<Handler, Arg1, Arg2>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
@@ -227,44 +227,44 @@ public:
 };
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     binder3<Handler, Arg1, Arg2, Arg3>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     binder3<Handler, Arg1, Arg2, Arg3>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     binder3<Handler, Arg1, Arg2, Arg3>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     binder3<Handler, Arg1, Arg2, Arg3>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     binder3<Handler, Arg1, Arg2, Arg3>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
@@ -323,46 +323,46 @@ public:
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     binder4<Handler, Arg1, Arg2, Arg3, Arg4>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     binder4<Handler, Arg1, Arg2, Arg3, Arg4>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     binder4<Handler, Arg1, Arg2, Arg3, Arg4>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3, typename Arg4>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     binder4<Handler, Arg1, Arg2, Arg3, Arg4>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3, typename Arg4>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     binder4<Handler, Arg1, Arg2, Arg3, Arg4>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
@@ -428,46 +428,46 @@ public:
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4, typename Arg5>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4, typename Arg5>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Handler, typename Arg1, typename Arg2, typename Arg3,
     typename Arg4, typename Arg5>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3, typename Arg4, typename Arg5>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
 template <typename Function, typename Handler, typename Arg1, typename Arg2,
     typename Arg3, typename Arg4, typename Arg5>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->handler_);
 }
 
@@ -482,7 +482,7 @@ inline binder5<Handler, Arg1, Arg2, Arg3, Arg4, Arg5> bind_handler(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

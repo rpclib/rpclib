@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct task_io_service::task_cleanup
@@ -36,7 +36,7 @@ struct task_io_service::task_cleanup
   {
     if (this_thread_->private_outstanding_work > 0)
     {
-      asio::detail::increment(
+      clmdep_asio::detail::increment(
           task_io_service_->outstanding_work_,
           this_thread_->private_outstanding_work);
     }
@@ -61,7 +61,7 @@ struct task_io_service::work_cleanup
   {
     if (this_thread_->private_outstanding_work > 1)
     {
-      asio::detail::increment(
+      clmdep_asio::detail::increment(
           task_io_service_->outstanding_work_,
           this_thread_->private_outstanding_work - 1);
     }
@@ -86,8 +86,8 @@ struct task_io_service::work_cleanup
 };
 
 task_io_service::task_io_service(
-    asio::io_service& io_service, std::size_t concurrency_hint)
-  : asio::detail::service_base<task_io_service>(io_service),
+    clmdep_asio::io_service& io_service, std::size_t concurrency_hint)
+  : clmdep_asio::detail::service_base<task_io_service>(io_service),
     one_thread_(concurrency_hint == 1),
     mutex_(),
     task_(0),
@@ -129,9 +129,9 @@ void task_io_service::init_task()
   }
 }
 
-std::size_t task_io_service::run(asio::error_code& ec)
+std::size_t task_io_service::run(clmdep_asio::error_code& ec)
 {
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   if (outstanding_work_ == 0)
   {
     stop();
@@ -151,9 +151,9 @@ std::size_t task_io_service::run(asio::error_code& ec)
   return n;
 }
 
-std::size_t task_io_service::run_one(asio::error_code& ec)
+std::size_t task_io_service::run_one(clmdep_asio::error_code& ec)
 {
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   if (outstanding_work_ == 0)
   {
     stop();
@@ -169,9 +169,9 @@ std::size_t task_io_service::run_one(asio::error_code& ec)
   return do_run_one(lock, this_thread, ec);
 }
 
-std::size_t task_io_service::poll(asio::error_code& ec)
+std::size_t task_io_service::poll(clmdep_asio::error_code& ec)
 {
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   if (outstanding_work_ == 0)
   {
     stop();
@@ -200,9 +200,9 @@ std::size_t task_io_service::poll(asio::error_code& ec)
   return n;
 }
 
-std::size_t task_io_service::poll_one(asio::error_code& ec)
+std::size_t task_io_service::poll_one(clmdep_asio::error_code& ec)
 {
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   if (outstanding_work_ == 0)
   {
     stop();
@@ -326,7 +326,7 @@ void task_io_service::abandon_operations(
 
 std::size_t task_io_service::do_run_one(mutex::scoped_lock& lock,
     task_io_service::thread_info& this_thread,
-    const asio::error_code& ec)
+    const clmdep_asio::error_code& ec)
 {
   while (!stopped_)
   {
@@ -385,7 +385,7 @@ std::size_t task_io_service::do_run_one(mutex::scoped_lock& lock,
 
 std::size_t task_io_service::do_poll_one(mutex::scoped_lock& lock,
     task_io_service::thread_info& this_thread,
-    const asio::error_code& ec)
+    const clmdep_asio::error_code& ec)
 {
   if (stopped_)
     return 0;
@@ -465,7 +465,7 @@ void task_io_service::wake_one_thread_and_unlock(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

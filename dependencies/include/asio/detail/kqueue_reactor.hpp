@@ -44,11 +44,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class kqueue_reactor
-  : public asio::detail::service_base<kqueue_reactor>
+  : public clmdep_asio::detail::service_base<kqueue_reactor>
 {
 public:
   enum op_types { read_op = 0, write_op = 1,
@@ -74,7 +74,7 @@ public:
   typedef descriptor_state* per_descriptor_data;
 
   // Constructor.
-  ASIO_DECL kqueue_reactor(asio::io_service& io_service);
+  ASIO_DECL kqueue_reactor(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~kqueue_reactor();
@@ -84,7 +84,7 @@ public:
 
   // Recreate internal descriptors following a fork.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Initialise the task.
   ASIO_DECL void init_task();
@@ -206,7 +206,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

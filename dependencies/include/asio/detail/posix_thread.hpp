@@ -24,12 +24,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 extern "C"
 {
-  ASIO_DECL void* asio_detail_posix_thread_function(void* arg);
+  ASIO_DECL void* clmdep_asio_detail_posix_thread_function(void* arg);
 }
 
 class posix_thread
@@ -51,7 +51,7 @@ public:
   ASIO_DECL void join();
 
 private:
-  friend void* asio_detail_posix_thread_function(void* arg);
+  friend void* clmdep_asio_detail_posix_thread_function(void* arg);
 
   class func_base
   {
@@ -92,7 +92,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

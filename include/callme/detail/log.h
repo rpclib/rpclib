@@ -35,7 +35,7 @@ public:
                std::size_t line, const char *msg, Args... args) {
         basic_log(
             "TRACE", channel,
-            fmt::format("{} ({}:{})", fmt::format(msg, args...), file, line));
+            CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
     }
 
     template <typename... Args>
@@ -43,22 +43,22 @@ public:
                std::size_t line, const char *msg, Args... args) {
         basic_log(
             "DEBUG", channel,
-            fmt::format("{} ({}:{})", fmt::format(msg, args...), file, line));
+            CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
     }
 
     template <typename... Args>
     void warn(const char *channel, const char *msg, Args... args) {
-        basic_log("WARN", channel, fmt::format(msg, args...));
+        basic_log("WARN", channel, CALLME_FMT::format(msg, args...));
     }
 
     template <typename... Args>
     void error(const char *channel, const char *msg, Args... args) {
-        basic_log("ERROR", channel, fmt::format(msg, args...));
+        basic_log("ERROR", channel, CALLME_FMT::format(msg, args...));
     }
 
     template <typename... Args>
     void info(const char *channel, const char *msg, Args... args) {
-        basic_log("INFO", channel, fmt::format(msg, args...));
+        basic_log("INFO", channel, CALLME_FMT::format(msg, args...));
     }
 
 private:
@@ -69,7 +69,7 @@ private:
         std::stringstream ss;
         SYSTEMTIME t;
         GetSystemTime(&t);
-        ss << fmt::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay,
+        ss << CALLME_FMT::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay,
                           t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
         return ss.str();
     }
@@ -81,7 +81,7 @@ private:
         ss << std::put_time(
                   std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),
                   "%F %T")
-           << fmt::format(".{:03}",
+           << CALLME_FMT::format(".{:03}",
                           round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
         return ss.str();
     }
@@ -89,9 +89,9 @@ private:
 
     void basic_log(const char *severity, const char *channel,
                    std::string const &msg) {
-        using fmt::arg;
+        using CALLME_FMT::arg;
         std::lock_guard<std::mutex> lock(mut_print_);
-        fmt::print("{time:16}  {severity:6}  {channel:12}    {msg:40}\n",
+        CALLME_FMT::print("{time:16}  {severity:6}  {channel:12}    {msg:40}\n",
                    arg("severity", severity), arg("channel", channel),
                    arg("time", now()), arg("msg", msg));
     }

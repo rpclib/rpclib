@@ -31,20 +31,20 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct task_io_service_thread_info;
 
 class task_io_service
-  : public asio::detail::service_base<task_io_service>
+  : public clmdep_asio::detail::service_base<task_io_service>
 {
 public:
   typedef task_io_service_operation operation;
 
   // Constructor. Specifies the number of concurrent threads that are likely to
   // run the io_service. If set to 1 certain optimisation are performed.
-  ASIO_DECL task_io_service(asio::io_service& io_service,
+  ASIO_DECL task_io_service(clmdep_asio::io_service& io_service,
       std::size_t concurrency_hint = 0);
 
   // Destroy all user-defined handler objects owned by the service.
@@ -54,16 +54,16 @@ public:
   ASIO_DECL void init_task();
 
   // Run the event loop until interrupted or no more work.
-  ASIO_DECL std::size_t run(asio::error_code& ec);
+  ASIO_DECL std::size_t run(clmdep_asio::error_code& ec);
 
   // Run until interrupted or one operation is performed.
-  ASIO_DECL std::size_t run_one(asio::error_code& ec);
+  ASIO_DECL std::size_t run_one(clmdep_asio::error_code& ec);
 
   // Poll for operations without blocking.
-  ASIO_DECL std::size_t poll(asio::error_code& ec);
+  ASIO_DECL std::size_t poll(clmdep_asio::error_code& ec);
 
   // Poll for one operation without blocking.
-  ASIO_DECL std::size_t poll_one(asio::error_code& ec);
+  ASIO_DECL std::size_t poll_one(clmdep_asio::error_code& ec);
 
   // Interrupt the event processing loop.
   ASIO_DECL void stop();
@@ -128,11 +128,11 @@ private:
 
   // Run at most one operation. May block.
   ASIO_DECL std::size_t do_run_one(mutex::scoped_lock& lock,
-      thread_info& this_thread, const asio::error_code& ec);
+      thread_info& this_thread, const clmdep_asio::error_code& ec);
 
   // Poll for at most one operation.
   ASIO_DECL std::size_t do_poll_one(mutex::scoped_lock& lock,
-      thread_info& this_thread, const asio::error_code& ec);
+      thread_info& this_thread, const clmdep_asio::error_code& ec);
 
   // Stop the task and all idle threads.
   ASIO_DECL void stop_all_threads(mutex::scoped_lock& lock);
@@ -187,7 +187,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

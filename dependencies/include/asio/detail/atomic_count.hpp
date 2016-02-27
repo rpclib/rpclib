@@ -25,7 +25,7 @@
 # include <boost/detail/atomic_count.hpp>
 #endif // defined(ASIO_HAS_STD_ATOMIC)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if !defined(ASIO_HAS_THREADS)
@@ -40,6 +40,6 @@ inline void increment(atomic_count& a, long b) { while (b > 0) ++a, --b; }
 #endif // defined(ASIO_HAS_STD_ATOMIC)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_ATOMIC_COUNT_HPP

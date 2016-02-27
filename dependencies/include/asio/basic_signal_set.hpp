@@ -25,14 +25,14 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Provides signal functionality.
 /**
  * The basic_signal_set class template provides the ability to perform an
  * asynchronous wait for one or more signals to occur.
  *
- * Most applications will use the asio::signal_set typedef.
+ * Most applications will use the clmdep_asio::signal_set typedef.
  *
  * @par Thread Safety
  * @e Distinct @e objects: Safe.@n
@@ -42,7 +42,7 @@ namespace asio {
  * Performing an asynchronous wait:
  * @code
  * void handler(
- *     const asio::error_code& error,
+ *     const clmdep_asio::error_code& error,
  *     int signal_number)
  * {
  *   if (!error)
@@ -54,7 +54,7 @@ namespace asio {
  * ...
  *
  * // Construct a signal set registered for process termination.
- * asio::signal_set signals(io_service, SIGINT, SIGTERM);
+ * clmdep_asio::signal_set signals(io_service, SIGINT, SIGTERM);
  *
  * // Start an asynchronous wait for one of the signals to occur.
  * signals.async_wait(handler);
@@ -101,7 +101,7 @@ public:
    * @param io_service The io_service object that the signal set will use to
    * dispatch handlers for any asynchronous operations performed on the set.
    */
-  explicit basic_signal_set(asio::io_service& io_service)
+  explicit basic_signal_set(clmdep_asio::io_service& io_service)
     : basic_io_object<SignalSetService>(io_service)
   {
   }
@@ -116,15 +116,15 @@ public:
    * @param signal_number_1 The signal number to be added.
    *
    * @note This constructor is equivalent to performing:
-   * @code asio::signal_set signals(io_service);
+   * @code clmdep_asio::signal_set signals(io_service);
    * signals.add(signal_number_1); @endcode
    */
-  basic_signal_set(asio::io_service& io_service, int signal_number_1)
+  basic_signal_set(clmdep_asio::io_service& io_service, int signal_number_1)
     : basic_io_object<SignalSetService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.add(this->implementation, signal_number_1, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
   }
 
   /// Construct a signal set and add two signals.
@@ -139,19 +139,19 @@ public:
    * @param signal_number_2 The second signal number to be added.
    *
    * @note This constructor is equivalent to performing:
-   * @code asio::signal_set signals(io_service);
+   * @code clmdep_asio::signal_set signals(io_service);
    * signals.add(signal_number_1);
    * signals.add(signal_number_2); @endcode
    */
-  basic_signal_set(asio::io_service& io_service, int signal_number_1,
+  basic_signal_set(clmdep_asio::io_service& io_service, int signal_number_1,
       int signal_number_2)
     : basic_io_object<SignalSetService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.add(this->implementation, signal_number_1, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
     this->service.add(this->implementation, signal_number_2, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
   }
 
   /// Construct a signal set and add three signals.
@@ -168,22 +168,22 @@ public:
    * @param signal_number_3 The third signal number to be added.
    *
    * @note This constructor is equivalent to performing:
-   * @code asio::signal_set signals(io_service);
+   * @code clmdep_asio::signal_set signals(io_service);
    * signals.add(signal_number_1);
    * signals.add(signal_number_2);
    * signals.add(signal_number_3); @endcode
    */
-  basic_signal_set(asio::io_service& io_service, int signal_number_1,
+  basic_signal_set(clmdep_asio::io_service& io_service, int signal_number_1,
       int signal_number_2, int signal_number_3)
     : basic_io_object<SignalSetService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.add(this->implementation, signal_number_1, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
     this->service.add(this->implementation, signal_number_2, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
     this->service.add(this->implementation, signal_number_3, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
   }
 
   /// Add a signal to a signal_set.
@@ -193,13 +193,13 @@ public:
    *
    * @param signal_number The signal to be added to the set.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void add(int signal_number)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.add(this->implementation, signal_number, ec);
-    asio::detail::throw_error(ec, "add");
+    clmdep_asio::detail::throw_error(ec, "add");
   }
 
   /// Add a signal to a signal_set.
@@ -211,8 +211,8 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code add(int signal_number,
-      asio::error_code& ec)
+  clmdep_asio::error_code add(int signal_number,
+      clmdep_asio::error_code& ec)
   {
     return this->service.add(this->implementation, signal_number, ec);
   }
@@ -224,16 +224,16 @@ public:
    *
    * @param signal_number The signal to be removed from the set.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Removes any notifications that have been queued for the specified
    * signal number.
    */
   void remove(int signal_number)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.remove(this->implementation, signal_number, ec);
-    asio::detail::throw_error(ec, "remove");
+    clmdep_asio::detail::throw_error(ec, "remove");
   }
 
   /// Remove a signal from a signal_set.
@@ -248,8 +248,8 @@ public:
    * @note Removes any notifications that have been queued for the specified
    * signal number.
    */
-  asio::error_code remove(int signal_number,
-      asio::error_code& ec)
+  clmdep_asio::error_code remove(int signal_number,
+      clmdep_asio::error_code& ec)
   {
     return this->service.remove(this->implementation, signal_number, ec);
   }
@@ -259,15 +259,15 @@ public:
    * This function removes all signals from the set. It has no effect if the set
    * is already empty.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Removes all queued notifications.
    */
   void clear()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.clear(this->implementation, ec);
-    asio::detail::throw_error(ec, "clear");
+    clmdep_asio::detail::throw_error(ec, "clear");
   }
 
   /// Remove all signals from a signal_set.
@@ -279,7 +279,7 @@ public:
    *
    * @note Removes all queued notifications.
    */
-  asio::error_code clear(asio::error_code& ec)
+  clmdep_asio::error_code clear(clmdep_asio::error_code& ec)
   {
     return this->service.clear(this->implementation, ec);
   }
@@ -288,12 +288,12 @@ public:
   /**
    * This function forces the completion of any pending asynchronous wait
    * operations against the signal set. The handler for each cancelled
-   * operation will be invoked with the asio::error::operation_aborted
+   * operation will be invoked with the clmdep_asio::error::operation_aborted
    * error code.
    *
    * Cancellation does not alter the set of registered signals.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note If a registered signal occurred before cancel() is called, then the
    * handlers for asynchronous wait operations will:
@@ -307,16 +307,16 @@ public:
    */
   void cancel()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->service.cancel(this->implementation, ec);
-    asio::detail::throw_error(ec, "cancel");
+    clmdep_asio::detail::throw_error(ec, "cancel");
   }
 
   /// Cancel all operations associated with the signal set.
   /**
    * This function forces the completion of any pending asynchronous wait
    * operations against the signal set. The handler for each cancelled
-   * operation will be invoked with the asio::error::operation_aborted
+   * operation will be invoked with the clmdep_asio::error::operation_aborted
    * error code.
    *
    * Cancellation does not alter the set of registered signals.
@@ -333,7 +333,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  asio::error_code cancel(asio::error_code& ec)
+  clmdep_asio::error_code cancel(clmdep_asio::error_code& ec)
   {
     return this->service.cancel(this->implementation, ec);
   }
@@ -349,23 +349,23 @@ public:
    * @li One of the registered signals in the signal set occurs; or
    *
    * @li The signal set was cancelled, in which case the handler is passed the
-   * error code asio::error::operation_aborted.
+   * error code clmdep_asio::error::operation_aborted.
    *
    * @param handler The handler to be called when the signal occurs. Copies
    * will be made of the handler as required. The function signature of the
    * handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   int signal_number // Indicates which signal occurred.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    */
   template <typename SignalHandler>
   ASIO_INITFN_RESULT_TYPE(SignalHandler,
-      void (asio::error_code, int))
+      void (clmdep_asio::error_code, int))
   async_wait(ASIO_MOVE_ARG(SignalHandler) handler)
   {
     // If you get an error on the following line it means that your handler does
@@ -377,7 +377,7 @@ public:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

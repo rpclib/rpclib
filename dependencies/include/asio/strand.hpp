@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Provides serialised handler execution.
 /**
@@ -60,8 +60,8 @@ namespace asio {
  * @li @c s.dispatch(a) happens-before @c s.dispatch(b), where both are
  * performed outside the strand
  *   
- * then @c asio_handler_invoke(a1, &a1) happens-before
- * @c asio_handler_invoke(b1, &b1).
+ * then @c clmdep_asio_handler_invoke(a1, &a1) happens-before
+ * @c clmdep_asio_handler_invoke(b1, &b1).
  * 
  * Note that in the following case:
  * @code async_op_1(..., s.wrap(a));
@@ -92,9 +92,9 @@ public:
    * @param io_service The io_service object that the strand will use to
    * dispatch handlers that are ready to be run.
    */
-  explicit strand(asio::io_service& io_service)
-    : service_(asio::use_service<
-        asio::detail::strand_service>(io_service))
+  explicit strand(clmdep_asio::io_service& io_service)
+    : service_(clmdep_asio::use_service<
+        clmdep_asio::detail::strand_service>(io_service))
   {
     service_.construct(impl_);
   }
@@ -118,7 +118,7 @@ public:
    * @return A reference to the io_service object that the strand will use to
    * dispatch handlers. Ownership is not transferred to the caller.
    */
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return service_.get_io_service();
   }
@@ -237,15 +237,15 @@ public:
   }
 
 private:
-  asio::detail::strand_service& service_;
-  asio::detail::strand_service::implementation_type impl_;
+  clmdep_asio::detail::strand_service& service_;
+  clmdep_asio::detail::strand_service::implementation_type impl_;
 };
 
-/// (Deprecated: Use asio::io_service::strand.) Typedef for backwards
+/// (Deprecated: Use clmdep_asio::io_service::strand.) Typedef for backwards
 /// compatibility.
-typedef asio::io_service::strand strand;
+typedef clmdep_asio::io_service::strand strand;
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

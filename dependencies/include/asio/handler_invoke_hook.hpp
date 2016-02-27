@@ -19,9 +19,9 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
-/** @defgroup asio_handler_invoke asio::asio_handler_invoke
+/** @defgroup clmdep_asio_handler_invoke clmdep_asio::clmdep_asio_handler_invoke
  *
  * @brief Default invoke function for handlers.
  *
@@ -40,7 +40,7 @@ namespace asio {
  * hooking function ensures that the invoked method used for the final handler
  * is accessible at each intermediate step.
  *
- * Implement asio_handler_invoke for your own handlers to specify a custom
+ * Implement clmdep_asio_handler_invoke for your own handlers to specify a custom
  * invocation strategy.
  *
  * This default implementation invokes the function object like so:
@@ -53,7 +53,7 @@ namespace asio {
  * class my_handler;
  *
  * template <typename Function>
- * void asio_handler_invoke(Function function, my_handler* context)
+ * void clmdep_asio_handler_invoke(Function function, my_handler* context)
  * {
  *   context->strand_.dispatch(function);
  * }
@@ -63,14 +63,14 @@ namespace asio {
 
 /// Default handler invocation hook used for non-const function objects.
 template <typename Function>
-inline void asio_handler_invoke(Function& function, ...)
+inline void clmdep_asio_handler_invoke(Function& function, ...)
 {
   function();
 }
 
 /// Default handler invocation hook used for const function objects.
 template <typename Function>
-inline void asio_handler_invoke(const Function& function, ...)
+inline void clmdep_asio_handler_invoke(const Function& function, ...)
 {
   Function tmp(function);
   tmp();
@@ -78,7 +78,7 @@ inline void asio_handler_invoke(const Function& function, ...)
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

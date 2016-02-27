@@ -29,7 +29,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Protocol, typename Handler>
@@ -39,7 +39,7 @@ public:
   ASIO_DEFINE_HANDLER_PTR(resolve_endpoint_op);
 
   typedef typename Protocol::endpoint endpoint_type;
-  typedef asio::ip::basic_resolver_iterator<Protocol> iterator_type;
+  typedef clmdep_asio::ip::basic_resolver_iterator<Protocol> iterator_type;
 
   resolve_endpoint_op(socket_ops::weak_cancel_token_type cancel_token,
       const endpoint_type& endpoint, io_service_impl& ios, Handler& handler)
@@ -52,12 +52,12 @@ public:
   }
 
   static void do_complete(io_service_impl* owner, operation* base,
-      const asio::error_code& /*ec*/,
+      const clmdep_asio::error_code& /*ec*/,
       std::size_t /*bytes_transferred*/)
   {
     // Take ownership of the operation object.
     resolve_endpoint_op* o(static_cast<resolve_endpoint_op*>(base));
-    ptr p = { asio::detail::addressof(o->handler_), o, o };
+    ptr p = { clmdep_asio::detail::addressof(o->handler_), o, o };
 
     if (owner && owner != &o->io_service_impl_)
     {
@@ -89,16 +89,16 @@ public:
       // associated with the handler. Consequently, a local copy of the handler
       // is required to ensure that any owning sub-object remains valid until
       // after we have deallocated the memory here.
-      detail::binder2<Handler, asio::error_code, iterator_type>
+      detail::binder2<Handler, clmdep_asio::error_code, iterator_type>
         handler(o->handler_, o->ec_, o->iter_);
-      p.h = asio::detail::addressof(handler.handler_);
+      p.h = clmdep_asio::detail::addressof(handler.handler_);
       p.reset();
 
       if (owner)
       {
         fenced_block b(fenced_block::half);
         ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_, "..."));
-        asio_handler_invoke_helpers::invoke(handler, handler.handler_);
+        clmdep_asio_handler_invoke_helpers::invoke(handler, handler.handler_);
         ASIO_HANDLER_INVOCATION_END;
       }
     }
@@ -109,12 +109,12 @@ private:
   endpoint_type endpoint_;
   io_service_impl& io_service_impl_;
   Handler handler_;
-  asio::error_code ec_;
+  clmdep_asio::error_code ec_;
   iterator_type iter_;
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

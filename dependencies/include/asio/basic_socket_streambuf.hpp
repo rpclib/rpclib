@@ -72,7 +72,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 // A separate base class is used to ensure that the io_service is initialised
@@ -91,7 +91,7 @@ template <typename Protocol,
 #if defined(ASIO_HAS_BOOST_DATE_TIME) \
   || defined(GENERATING_DOCUMENTATION)
     typename Time = boost::posix_time::ptime,
-    typename TimeTraits = asio::time_traits<Time>,
+    typename TimeTraits = clmdep_asio::time_traits<Time>,
     typename TimerService = deadline_timer_service<Time, TimeTraits> >
 #else
     typename Time = steady_timer::clock_type,
@@ -164,7 +164,7 @@ public:
 
     if (timer_state_ == timer_has_expired)
     {
-      ec_ = asio::error::operation_aborted;
+      ec_ = clmdep_asio::error::operation_aborted;
       return 0;
     }
 
@@ -172,10 +172,10 @@ public:
     this->basic_socket<Protocol, StreamSocketService>::async_connect(
         endpoint, handler);
 
-    ec_ = asio::error::would_block;
+    ec_ = clmdep_asio::error::would_block;
     this->get_service().get_io_service().reset();
     do this->get_service().get_io_service().run_one();
-    while (ec_ == asio::error::would_block);
+    while (ec_ == clmdep_asio::error::would_block);
 
     return !ec_ ? this : 0;
   }
@@ -230,7 +230,7 @@ public:
    * @return An \c error_code corresponding to the last error from the stream
    * buffer.
    */
-  const asio::error_code& puberror() const
+  const clmdep_asio::error_code& puberror() const
   {
     return error();
   }
@@ -252,7 +252,7 @@ public:
    * This function sets the expiry time associated with the stream. Stream
    * operations performed after this time (where the operations cannot be
    * completed using the internal buffers) will fail with the error
-   * asio::error::operation_aborted.
+   * clmdep_asio::error::operation_aborted.
    *
    * @param expiry_time The expiry time to be used for the stream.
    */
@@ -260,9 +260,9 @@ public:
   {
     construct_timer();
 
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     timer_service_->expires_at(timer_implementation_, expiry_time, ec);
-    asio::detail::throw_error(ec, "expires_at");
+    clmdep_asio::detail::throw_error(ec, "expires_at");
 
     start_timer();
   }
@@ -281,7 +281,7 @@ public:
    * This function sets the expiry time associated with the stream. Stream
    * operations performed after this time (where the operations cannot be
    * completed using the internal buffers) will fail with the error
-   * asio::error::operation_aborted.
+   * clmdep_asio::error::operation_aborted.
    *
    * @param expiry_time The expiry time to be used for the timer.
    */
@@ -289,9 +289,9 @@ public:
   {
     construct_timer();
 
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     timer_service_->expires_from_now(timer_implementation_, expiry_time, ec);
-    asio::detail::throw_error(ec, "expires_from_now");
+    clmdep_asio::detail::throw_error(ec, "expires_from_now");
 
     start_timer();
   }
@@ -303,19 +303,19 @@ protected:
     {
       if (timer_state_ == timer_has_expired)
       {
-        ec_ = asio::error::operation_aborted;
+        ec_ = clmdep_asio::error::operation_aborted;
         return traits_type::eof();
       }
 
       io_handler handler = { this };
       this->get_service().async_receive(this->get_implementation(),
-          asio::buffer(asio::buffer(get_buffer_) + putback_max),
+          clmdep_asio::buffer(clmdep_asio::buffer(get_buffer_) + putback_max),
           0, handler);
 
-      ec_ = asio::error::would_block;
+      ec_ = clmdep_asio::error::would_block;
       this->get_service().get_io_service().reset();
       do this->get_service().get_io_service().run_one();
-      while (ec_ == asio::error::would_block);
+      while (ec_ == clmdep_asio::error::would_block);
       if (ec_)
         return traits_type::eof();
 
@@ -342,7 +342,7 @@ protected:
       {
         if (timer_state_ == timer_has_expired)
         {
-          ec_ = asio::error::operation_aborted;
+          ec_ = clmdep_asio::error::operation_aborted;
           return traits_type::eof();
         }
 
@@ -350,12 +350,12 @@ protected:
         char_type ch = traits_type::to_char_type(c);
         io_handler handler = { this };
         this->get_service().async_send(this->get_implementation(),
-            asio::buffer(&ch, sizeof(char_type)), 0, handler);
+            clmdep_asio::buffer(&ch, sizeof(char_type)), 0, handler);
 
-        ec_ = asio::error::would_block;
+        ec_ = clmdep_asio::error::would_block;
         this->get_service().get_io_service().reset();
         do this->get_service().get_io_service().run_one();
-        while (ec_ == asio::error::would_block);
+        while (ec_ == clmdep_asio::error::would_block);
         if (ec_)
           return traits_type::eof();
 
@@ -365,24 +365,24 @@ protected:
     else
     {
       // Send all data in the output buffer.
-      asio::const_buffer buffer =
-        asio::buffer(pbase(), pptr() - pbase());
-      while (asio::buffer_size(buffer) > 0)
+      clmdep_asio::const_buffer buffer =
+        clmdep_asio::buffer(pbase(), pptr() - pbase());
+      while (clmdep_asio::buffer_size(buffer) > 0)
       {
         if (timer_state_ == timer_has_expired)
         {
-          ec_ = asio::error::operation_aborted;
+          ec_ = clmdep_asio::error::operation_aborted;
           return traits_type::eof();
         }
 
         io_handler handler = { this };
         this->get_service().async_send(this->get_implementation(),
-            asio::buffer(buffer), 0, handler);
+            clmdep_asio::buffer(buffer), 0, handler);
 
-        ec_ = asio::error::would_block;
+        ec_ = clmdep_asio::error::would_block;
         this->get_service().get_io_service().reset();
         do this->get_service().get_io_service().run_one();
-        while (ec_ == asio::error::would_block);
+        while (ec_ == clmdep_asio::error::would_block);
         if (ec_)
           return traits_type::eof();
 
@@ -423,7 +423,7 @@ protected:
    * @return An \c error_code corresponding to the last error from the stream
    * buffer.
    */
-  virtual const asio::error_code& error() const
+  virtual const clmdep_asio::error_code& error() const
   {
     return ec_;
   }
@@ -450,14 +450,14 @@ private:
     if (!ec_)
     {
       iterator_type end;
-      ec_ = asio::error::host_not_found;
+      ec_ = clmdep_asio::error::host_not_found;
       while (ec_ && i != end)
       {
         this->basic_socket<Protocol, StreamSocketService>::close(ec_);
 
         if (timer_state_ == timer_has_expired)
         {
-          ec_ = asio::error::operation_aborted;
+          ec_ = clmdep_asio::error::operation_aborted;
           return;
         }
 
@@ -465,10 +465,10 @@ private:
         this->basic_socket<Protocol, StreamSocketService>::async_connect(
             *i, handler);
 
-        ec_ = asio::error::would_block;
+        ec_ = clmdep_asio::error::would_block;
         this->get_service().get_io_service().reset();
         do this->get_service().get_io_service().run_one();
-        while (ec_ == asio::error::would_block);
+        while (ec_ == clmdep_asio::error::would_block);
 
         ++i;
       }
@@ -481,7 +481,7 @@ private:
   {
     basic_socket_streambuf* this_;
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred = 0)
     {
       this_->ec_ = ec;
@@ -495,7 +495,7 @@ private:
   {
     basic_socket_streambuf* this_;
 
-    void operator()(const asio::error_code&)
+    void operator()(const clmdep_asio::error_code&)
     {
       time_type now = traits_helper::now();
 
@@ -510,7 +510,7 @@ private:
       else
       {
         this_->timer_state_ = timer_has_expired;
-        asio::error_code ec;
+        clmdep_asio::error_code ec;
         this_->basic_socket<Protocol, StreamSocketService>::close(ec);
       }
     }
@@ -538,23 +538,23 @@ private:
     if (timer_state_ != timer_is_pending)
     {
       timer_handler handler = { this };
-      handler(asio::error_code());
+      handler(clmdep_asio::error_code());
     }
   }
 
   enum { putback_max = 8 };
   enum { buffer_size = 512 };
-  asio::detail::array<char, buffer_size> get_buffer_;
-  asio::detail::array<char, buffer_size> put_buffer_;
+  clmdep_asio::detail::array<char, buffer_size> get_buffer_;
+  clmdep_asio::detail::array<char, buffer_size> put_buffer_;
   bool unbuffered_;
-  asio::error_code ec_;
+  clmdep_asio::error_code ec_;
   std::size_t bytes_transferred_;
   TimerService* timer_service_;
   typename TimerService::implementation_type timer_implementation_;
   enum state { no_timer, timer_is_pending, timer_has_expired } timer_state_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

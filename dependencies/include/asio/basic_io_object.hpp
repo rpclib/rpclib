@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 #if defined(ASIO_HAS_MOVE)
 namespace detail
@@ -74,7 +74,7 @@ public:
    * @return A reference to the io_service object that the I/O object will use
    * to dispatch handlers. Ownership is not transferred to the caller.
    */
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return service.get_io_service();
   }
@@ -85,8 +85,8 @@ protected:
    * Performs:
    * @code get_service().construct(get_implementation()); @endcode
    */
-  explicit basic_io_object(asio::io_service& io_service)
-    : service(asio::use_service<IoObjectService>(io_service))
+  explicit basic_io_object(clmdep_asio::io_service& io_service)
+    : service(clmdep_asio::use_service<IoObjectService>(io_service))
   {
     service.construct(implementation);
   }
@@ -172,14 +172,14 @@ public:
   typedef IoObjectService service_type;
   typedef typename service_type::implementation_type implementation_type;
 
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return service_->get_io_service();
   }
 
 protected:
-  explicit basic_io_object(asio::io_service& io_service)
-    : service_(&asio::use_service<IoObjectService>(io_service))
+  explicit basic_io_object(clmdep_asio::io_service& io_service)
+    : service_(&clmdep_asio::use_service<IoObjectService>(io_service))
   {
     service_->construct(implementation);
   }
@@ -233,7 +233,7 @@ private:
 };
 #endif // defined(ASIO_HAS_MOVE)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

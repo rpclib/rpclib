@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Descriptor>
@@ -71,8 +71,8 @@ public:
   // the reactor's event demultiplexing function may need to be interrupted and
   // restarted.
   bool cancel_operations(iterator i, op_queue<operation>& ops,
-      const asio::error_code& ec =
-        asio::error::operation_aborted)
+      const clmdep_asio::error_code& ec =
+        clmdep_asio::error::operation_aborted)
   {
     if (i != operations_.end())
     {
@@ -94,8 +94,8 @@ public:
   // operations were cancelled, in which case the reactor's event
   // demultiplexing function may need to be interrupted and restarted.
   bool cancel_operations(Descriptor descriptor, op_queue<operation>& ops,
-      const asio::error_code& ec =
-        asio::error::operation_aborted)
+      const clmdep_asio::error_code& ec =
+        clmdep_asio::error::operation_aborted)
   {
     return this->cancel_operations(operations_.find(descriptor), ops, ec);
   }
@@ -161,7 +161,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -23,7 +23,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename T>
@@ -35,14 +35,14 @@ class service_registry
 public:
   // Constructor. Adds the initial service.
   template <typename Service, typename Arg>
-  service_registry(asio::io_service& o,
+  service_registry(clmdep_asio::io_service& o,
       Service* initial_service, Arg arg);
 
   // Destructor.
   ASIO_DECL ~service_registry();
 
   // Notify all services of a fork event.
-  ASIO_DECL void notify_fork(asio::io_service::fork_event fork_ev);
+  ASIO_DECL void notify_fork(clmdep_asio::io_service::fork_event fork_ev);
 
   // Get the first service object cast to the specified type. Called during
   // io_service construction and so performs no locking or type checking.
@@ -67,72 +67,72 @@ public:
 private:
   // Initialise a service's key based on its id.
   ASIO_DECL static void init_key(
-      asio::io_service::service::key& key,
-      const asio::io_service::id& id);
+      clmdep_asio::io_service::service::key& key,
+      const clmdep_asio::io_service::id& id);
 
 #if !defined(ASIO_NO_TYPEID)
   // Initialise a service's key based on its id.
   template <typename Service>
-  static void init_key(asio::io_service::service::key& key,
-      const asio::detail::service_id<Service>& /*id*/);
+  static void init_key(clmdep_asio::io_service::service::key& key,
+      const clmdep_asio::detail::service_id<Service>& /*id*/);
 #endif // !defined(ASIO_NO_TYPEID)
 
   // Check if a service matches the given id.
   ASIO_DECL static bool keys_match(
-      const asio::io_service::service::key& key1,
-      const asio::io_service::service::key& key2);
+      const clmdep_asio::io_service::service::key& key1,
+      const clmdep_asio::io_service::service::key& key2);
 
   // The type of a factory function used for creating a service instance.
-  typedef asio::io_service::service*
-    (*factory_type)(asio::io_service&);
+  typedef clmdep_asio::io_service::service*
+    (*factory_type)(clmdep_asio::io_service&);
 
   // Factory function for creating a service instance.
   template <typename Service>
-  static asio::io_service::service* create(
-      asio::io_service& owner);
+  static clmdep_asio::io_service::service* create(
+      clmdep_asio::io_service& owner);
 
   // Destroy a service instance.
   ASIO_DECL static void destroy(
-      asio::io_service::service* service);
+      clmdep_asio::io_service::service* service);
 
   // Helper class to manage service pointers.
   struct auto_service_ptr;
   friend struct auto_service_ptr;
   struct auto_service_ptr
   {
-    asio::io_service::service* ptr_;
+    clmdep_asio::io_service::service* ptr_;
     ~auto_service_ptr() { destroy(ptr_); }
   };
 
   // Get the service object corresponding to the specified service key. Will
   // create a new service object automatically if no such object already
   // exists. Ownership of the service object is not transferred to the caller.
-  ASIO_DECL asio::io_service::service* do_use_service(
-      const asio::io_service::service::key& key,
+  ASIO_DECL clmdep_asio::io_service::service* do_use_service(
+      const clmdep_asio::io_service::service::key& key,
       factory_type factory);
 
   // Add a service object. Throws on error, in which case ownership of the
   // object is retained by the caller.
   ASIO_DECL void do_add_service(
-      const asio::io_service::service::key& key,
-      asio::io_service::service* new_service);
+      const clmdep_asio::io_service::service::key& key,
+      clmdep_asio::io_service::service* new_service);
 
   // Check whether a service object with the specified key already exists.
   ASIO_DECL bool do_has_service(
-      const asio::io_service::service::key& key) const;
+      const clmdep_asio::io_service::service::key& key) const;
 
   // Mutex to protect access to internal data.
-  mutable asio::detail::mutex mutex_;
+  mutable clmdep_asio::detail::mutex mutex_;
 
   // The owner of this service registry and the services it contains.
-  asio::io_service& owner_;
+  clmdep_asio::io_service& owner_;
 
   // The first service in the list of contained services.
-  asio::io_service::service* first_service_;
+  clmdep_asio::io_service::service* first_service_;
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

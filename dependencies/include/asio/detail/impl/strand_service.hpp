@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 inline strand_service::strand_impl::strand_impl()
@@ -58,14 +58,14 @@ void strand_service::dispatch(strand_service::implementation_type& impl,
   if (call_stack<strand_impl>::contains(impl))
   {
     fenced_block b(fenced_block::full);
-    asio_handler_invoke_helpers::invoke(handler, handler);
+    clmdep_asio_handler_invoke_helpers::invoke(handler, handler);
     return;
   }
 
   // Allocate and construct an operation to wrap the handler.
   typedef completion_handler<Handler> op;
-  typename op::ptr p = { asio::detail::addressof(handler),
-    asio_handler_alloc_helpers::allocate(
+  typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+    clmdep_asio_handler_alloc_helpers::allocate(
       sizeof(op), handler), 0 };
   p.p = new (p.v) op(handler);
 
@@ -85,7 +85,7 @@ void strand_service::dispatch(strand_service::implementation_type& impl,
     (void)on_exit;
 
     completion_handler<Handler>::do_complete(
-        &io_service_, o, asio::error_code(), 0);
+        &io_service_, o, clmdep_asio::error_code(), 0);
   }
 }
 
@@ -95,12 +95,12 @@ void strand_service::post(strand_service::implementation_type& impl,
     Handler& handler)
 {
   bool is_continuation =
-    asio_handler_cont_helpers::is_continuation(handler);
+    clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
   // Allocate and construct an operation to wrap the handler.
   typedef completion_handler<Handler> op;
-  typename op::ptr p = { asio::detail::addressof(handler),
-    asio_handler_alloc_helpers::allocate(
+  typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+    clmdep_asio_handler_alloc_helpers::allocate(
       sizeof(op), handler), 0 };
   p.p = new (p.v) op(handler);
 
@@ -111,7 +111,7 @@ void strand_service::post(strand_service::implementation_type& impl,
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

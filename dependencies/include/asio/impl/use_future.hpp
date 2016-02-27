@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
   // Completion handler to adapt a promise as a completion handler.
@@ -45,12 +45,12 @@ namespace detail {
       promise_->set_value(t);
     }
 
-    void operator()(const asio::error_code& ec, T t)
+    void operator()(const clmdep_asio::error_code& ec, T t)
     {
       if (ec)
         promise_->set_exception(
             std::make_exception_ptr(
-              asio::system_error(ec)));
+              clmdep_asio::system_error(ec)));
       else
         promise_->set_value(t);
     }
@@ -77,12 +77,12 @@ namespace detail {
       promise_->set_value();
     }
 
-    void operator()(const asio::error_code& ec)
+    void operator()(const clmdep_asio::error_code& ec)
     {
       if (ec)
         promise_->set_exception(
             std::make_exception_ptr(
-              asio::system_error(ec)));
+              clmdep_asio::system_error(ec)));
       else
         promise_->set_value();
     }
@@ -94,7 +94,7 @@ namespace detail {
   // Ensure any exceptions thrown from the handler are propagated back to the
   // caller via the future.
   template <typename Function, typename T>
-  void asio_handler_invoke(Function f, promise_handler<T>* h)
+  void clmdep_asio_handler_invoke(Function f, promise_handler<T>* h)
   {
     std::shared_ptr<std::promise<T> > p(h->promise_);
     try
@@ -150,7 +150,7 @@ struct handler_type<use_future_t<Allocator>, ReturnType(Arg1)>
 // Handler type specialisation for use_future.
 template <typename Allocator, typename ReturnType>
 struct handler_type<use_future_t<Allocator>,
-    ReturnType(asio::error_code)>
+    ReturnType(clmdep_asio::error_code)>
 {
   typedef detail::promise_handler<void> type;
 };
@@ -158,14 +158,14 @@ struct handler_type<use_future_t<Allocator>,
 // Handler type specialisation for use_future.
 template <typename Allocator, typename ReturnType, typename Arg2>
 struct handler_type<use_future_t<Allocator>,
-    ReturnType(asio::error_code, Arg2)>
+    ReturnType(clmdep_asio::error_code, Arg2)>
 {
   typedef detail::promise_handler<Arg2> type;
 };
 
 #endif // !defined(GENERATING_DOCUMENTATION)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

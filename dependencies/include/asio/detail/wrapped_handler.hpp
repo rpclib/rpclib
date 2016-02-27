@@ -22,7 +22,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct is_continuation_delegated
@@ -30,7 +30,7 @@ struct is_continuation_delegated
   template <typename Dispatcher, typename Handler>
   bool operator()(Dispatcher&, Handler& handler) const
   {
-    return asio_handler_cont_helpers::is_continuation(handler);
+    return clmdep_asio_handler_cont_helpers::is_continuation(handler);
   }
 };
 
@@ -201,23 +201,23 @@ public:
 };
 
 template <typename Dispatcher, typename Handler, typename IsContinuation>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     wrapped_handler<Dispatcher, Handler, IsContinuation>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->handler_);
 }
 
 template <typename Dispatcher, typename Handler, typename IsContinuation>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     wrapped_handler<Dispatcher, Handler, IsContinuation>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->handler_);
 }
 
 template <typename Dispatcher, typename Handler, typename IsContinuation>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     wrapped_handler<Dispatcher, Handler, IsContinuation>* this_handler)
 {
   return IsContinuation()(this_handler->dispatcher_, this_handler->handler_);
@@ -225,7 +225,7 @@ inline bool asio_handler_is_continuation(
 
 template <typename Function, typename Dispatcher,
     typename Handler, typename IsContinuation>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     wrapped_handler<Dispatcher, Handler, IsContinuation>* this_handler)
 {
   this_handler->dispatcher_.dispatch(
@@ -235,7 +235,7 @@ inline void asio_handler_invoke(Function& function,
 
 template <typename Function, typename Dispatcher,
     typename Handler, typename IsContinuation>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     wrapped_handler<Dispatcher, Handler, IsContinuation>* this_handler)
 {
   this_handler->dispatcher_.dispatch(
@@ -244,47 +244,47 @@ inline void asio_handler_invoke(const Function& function,
 }
 
 template <typename Handler, typename Context>
-inline void* asio_handler_allocate(std::size_t size,
+inline void* clmdep_asio_handler_allocate(std::size_t size,
     rewrapped_handler<Handler, Context>* this_handler)
 {
-  return asio_handler_alloc_helpers::allocate(
+  return clmdep_asio_handler_alloc_helpers::allocate(
       size, this_handler->context_);
 }
 
 template <typename Handler, typename Context>
-inline void asio_handler_deallocate(void* pointer, std::size_t size,
+inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
     rewrapped_handler<Handler, Context>* this_handler)
 {
-  asio_handler_alloc_helpers::deallocate(
+  clmdep_asio_handler_alloc_helpers::deallocate(
       pointer, size, this_handler->context_);
 }
 
 template <typename Dispatcher, typename Context>
-inline bool asio_handler_is_continuation(
+inline bool clmdep_asio_handler_is_continuation(
     rewrapped_handler<Dispatcher, Context>* this_handler)
 {
-  return asio_handler_cont_helpers::is_continuation(
+  return clmdep_asio_handler_cont_helpers::is_continuation(
       this_handler->context_);
 }
 
 template <typename Function, typename Handler, typename Context>
-inline void asio_handler_invoke(Function& function,
+inline void clmdep_asio_handler_invoke(Function& function,
     rewrapped_handler<Handler, Context>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->context_);
 }
 
 template <typename Function, typename Handler, typename Context>
-inline void asio_handler_invoke(const Function& function,
+inline void clmdep_asio_handler_invoke(const Function& function,
     rewrapped_handler<Handler, Context>* this_handler)
 {
-  asio_handler_invoke_helpers::invoke(
+  clmdep_asio_handler_invoke_helpers::invoke(
       function, this_handler->context_);
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

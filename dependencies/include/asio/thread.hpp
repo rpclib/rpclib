@@ -21,11 +21,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// A simple abstraction for starting threads.
 /**
- * The asio::thread class implements the smallest possible subset of the
+ * The clmdep_asio::thread class implements the smallest possible subset of the
  * functionality of boost::thread. It is intended to be used only for starting
  * a thread and waiting for it to exit. If more extensive threading
  * capabilities are required, you are strongly advised to use something else.
@@ -35,13 +35,13 @@ namespace asio {
  * @e Shared @e objects: Unsafe.
  *
  * @par Example
- * A typical use of asio::thread would be to launch a thread to run an
+ * A typical use of clmdep_asio::thread would be to launch a thread to run an
  * io_service's event processing loop:
  *
  * @par
- * @code asio::io_service io_service;
+ * @code clmdep_asio::io_service io_service;
  * // ...
- * asio::thread t(boost::bind(&asio::io_service::run, &io_service));
+ * clmdep_asio::thread t(boost::bind(&clmdep_asio::io_service::run, &io_service));
  * // ...
  * t.join(); @endcode
  */
@@ -85,7 +85,7 @@ private:
   detail::thread impl_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 namespace detail
 {
@@ -136,7 +136,7 @@ public:
     while (new_iter.current_ != new_iter.end_)
     {
       new_iter.current_buffer_ = *new_iter.current_;
-      if (asio::buffer_size(new_iter.current_buffer_) > 0)
+      if (clmdep_asio::buffer_size(new_iter.current_buffer_) > 0)
         break;
       ++new_iter.current_;
     }
@@ -156,7 +156,7 @@ public:
     while (new_iter.current_ != new_iter.end_)
     {
       buffer_type buffer = *new_iter.current_;
-      new_iter.position_ += asio::buffer_size(buffer);
+      new_iter.position_ += clmdep_asio::buffer_size(buffer);
       ++new_iter.current_;
     }
     return new_iter;
@@ -317,7 +317,7 @@ private:
 
     // Check if the increment can be satisfied by the current buffer.
     ++current_buffer_position_;
-    if (current_buffer_position_ != asio::buffer_size(current_buffer_))
+    if (current_buffer_position_ != clmdep_asio::buffer_size(current_buffer_))
       return;
 
     // Find the next non-empty buffer.
@@ -326,7 +326,7 @@ private:
     while (current_ != end_)
     {
       current_buffer_ = *current_;
-      if (asio::buffer_size(current_buffer_) > 0)
+      if (clmdep_asio::buffer_size(current_buffer_) > 0)
         return;
       ++current_;
     }
@@ -351,7 +351,7 @@ private:
     {
       --iter;
       buffer_type buffer = *iter;
-      std::size_t buffer_size = asio::buffer_size(buffer);
+      std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
       if (buffer_size > 0)
       {
         current_ = iter;
@@ -371,7 +371,7 @@ private:
       for (;;)
       {
         std::ptrdiff_t current_buffer_balance
-          = asio::buffer_size(current_buffer_)
+          = clmdep_asio::buffer_size(current_buffer_)
           - current_buffer_position_;
 
         // Check if the advance can be satisfied by the current buffer.
@@ -431,7 +431,7 @@ private:
         {
           --iter;
           buffer_type buffer = *iter;
-          std::size_t buffer_size = asio::buffer_size(buffer);
+          std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
           if (buffer_size > 0)
           {
             current_ = iter;
@@ -474,7 +474,7 @@ inline buffers_iterator<BufferSequence> buffers_end(
   return buffers_iterator<BufferSequence>::end(buffers);
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

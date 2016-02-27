@@ -17,7 +17,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Wait traits suitable for use with the basic_waitable_timer class template.
 template <typename Clock>
@@ -34,7 +34,7 @@ struct wait_traits
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

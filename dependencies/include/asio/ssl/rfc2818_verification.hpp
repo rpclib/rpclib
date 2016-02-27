@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 
 #if !defined(ASIO_ENABLE_OLD_SSL)
@@ -37,8 +37,8 @@ namespace ssl {
  * The following example shows how to synchronously open a secure connection to
  * a given host name:
  * @code
- * using asio::ip::tcp;
- * namespace ssl = asio::ssl;
+ * using clmdep_asio::ip::tcp;
+ * namespace ssl = clmdep_asio::ssl;
  * typedef ssl::stream<tcp::socket> ssl_socket;
  *
  * // Create a context that uses the default paths for finding CA certificates.
@@ -46,11 +46,11 @@ namespace ssl {
  * ctx.set_default_verify_paths();
  *
  * // Open a socket and connect it to the remote host.
- * asio::io_service io_service;
+ * clmdep_asio::io_service io_service;
  * ssl_socket sock(io_service, ctx);
  * tcp::resolver resolver(io_service);
  * tcp::resolver::query query("host.name", "https");
- * asio::connect(sock.lowest_layer(), resolver.resolve(query));
+ * clmdep_asio::connect(sock.lowest_layer(), resolver.resolve(query));
  * sock.lowest_layer().set_option(tcp::no_delay(true));
  *
  * // Perform SSL handshake and verify the remote host's certificate.
@@ -89,7 +89,7 @@ private:
 #endif // defined(ASIO_ENABLE_OLD_SSL)
 
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

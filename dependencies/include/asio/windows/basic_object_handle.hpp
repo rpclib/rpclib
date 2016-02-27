@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace windows {
 
 /// Provides object-oriented handle functionality.
@@ -55,7 +55,7 @@ public:
    * @param io_service The io_service object that the object handle will use to
    * dispatch handlers for any asynchronous operations performed on the handle.
    */
-  explicit basic_object_handle(asio::io_service& io_service)
+  explicit basic_object_handle(clmdep_asio::io_service& io_service)
     : basic_handle<ObjectHandleService>(io_service)
   {
   }
@@ -70,9 +70,9 @@ public:
    *
    * @param native_handle The new underlying handle implementation.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_object_handle(asio::io_service& io_service,
+  basic_object_handle(clmdep_asio::io_service& io_service,
       const native_handle_type& native_handle)
     : basic_handle<ObjectHandleService>(io_service, native_handle)
   {
@@ -119,13 +119,13 @@ public:
    * signalled state. This function blocks and does not return until the object
    * handle has been set to the signalled state.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void wait()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().wait(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "wait");
+    clmdep_asio::detail::throw_error(ec, "wait");
   }
 
   /// Perform a blocking wait on the object handle.
@@ -136,7 +136,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  void wait(asio::error_code& ec)
+  void wait(clmdep_asio::error_code& ec)
   {
     this->get_service().wait(this->get_implementation(), ec);
   }
@@ -150,16 +150,16 @@ public:
    * the signalled state. Copies will be made of the handler as required. The
    * function signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error // Result of operation.
+   *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    */
   template <typename WaitHandler>
   ASIO_INITFN_RESULT_TYPE(WaitHandler,
-      void (asio::error_code))
+      void (clmdep_asio::error_code))
   async_wait(ASIO_MOVE_ARG(WaitHandler) handler)
   {
     return this->get_service().async_wait(this->get_implementation(),
@@ -168,7 +168,7 @@ public:
 };
 
 } // namespace windows
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

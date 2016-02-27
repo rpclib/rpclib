@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace error {
 
 enum ssl_errors
@@ -28,18 +28,18 @@ enum ssl_errors
 };
 
 extern ASIO_DECL
-const asio::error_category& get_ssl_category();
+const clmdep_asio::error_category& get_ssl_category();
 
-static const asio::error_category& ssl_category
-  = asio::error::get_ssl_category();
+static const clmdep_asio::error_category& ssl_category
+  = clmdep_asio::error::get_ssl_category();
 
 } // namespace error
-} // namespace asio
+} // namespace clmdep_asio
 
 #if defined(ASIO_HAS_STD_SYSTEM_ERROR)
 namespace std {
 
-template<> struct is_error_code_enum<asio::error::ssl_errors>
+template<> struct is_error_code_enum<clmdep_asio::error::ssl_errors>
 {
   static const bool value = true;
 };
@@ -47,17 +47,17 @@ template<> struct is_error_code_enum<asio::error::ssl_errors>
 } // namespace std
 #endif // defined(ASIO_HAS_STD_SYSTEM_ERROR)
 
-namespace asio {
+namespace clmdep_asio {
 namespace error {
 
-inline asio::error_code make_error_code(ssl_errors e)
+inline clmdep_asio::error_code make_error_code(ssl_errors e)
 {
-  return asio::error_code(
+  return clmdep_asio::error_code(
       static_cast<int>(e), get_ssl_category());
 }
 
 } // namespace error
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -20,17 +20,17 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Class used to specify that an asynchronous operation should return a future.
 /**
  * The use_future_t class is used to indicate that an asynchronous operation
  * should return a std::future object. A use_future_t object may be passed as a
  * handler to an asynchronous operation, typically using the special value @c
- * asio::use_future. For example:
+ * clmdep_asio::use_future. For example:
  *
  * @code std::future<std::size_t> my_future
- *   = my_socket.async_read_some(my_buffer, asio::use_future); @endcode
+ *   = my_socket.async_read_some(my_buffer, clmdep_asio::use_future); @endcode
  *
  * The initiating function (async_read_some in the above example) returns a
  * future that will receive the result of the operation. If the operation
@@ -75,7 +75,7 @@ private:
 
 /// A special value, similar to std::nothrow.
 /**
- * See the documentation for asio::use_future_t for a usage example.
+ * See the documentation for clmdep_asio::use_future_t for a usage example.
  */
 #if defined(ASIO_HAS_CONSTEXPR) || defined(GENERATING_DOCUMENTATION)
 constexpr use_future_t<> use_future;
@@ -83,7 +83,7 @@ constexpr use_future_t<> use_future;
 __declspec(selectany) use_future_t<> use_future;
 #endif
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

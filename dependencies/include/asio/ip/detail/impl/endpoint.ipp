@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 namespace detail {
 
@@ -47,14 +47,14 @@ endpoint::endpoint(int family, unsigned short port_num)
   {
     data_.v4.sin_family = ASIO_OS_DEF(AF_INET);
     data_.v4.sin_port =
-      asio::detail::socket_ops::host_to_network_short(port_num);
+      clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
     data_.v4.sin_addr.s_addr = ASIO_OS_DEF(INADDR_ANY);
   }
   else
   {
     data_.v6.sin6_family = ASIO_OS_DEF(AF_INET6);
     data_.v6.sin6_port =
-      asio::detail::socket_ops::host_to_network_short(port_num);
+      clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
     data_.v6.sin6_flowinfo = 0;
     data_.v6.sin6_addr.s6_addr[0] = 0; data_.v6.sin6_addr.s6_addr[1] = 0;
     data_.v6.sin6_addr.s6_addr[2] = 0, data_.v6.sin6_addr.s6_addr[3] = 0;
@@ -68,7 +68,7 @@ endpoint::endpoint(int family, unsigned short port_num)
   }
 }
 
-endpoint::endpoint(const asio::ip::address& addr,
+endpoint::endpoint(const clmdep_asio::ip::address& addr,
     unsigned short port_num)
   : data_()
 {
@@ -77,33 +77,33 @@ endpoint::endpoint(const asio::ip::address& addr,
   {
     data_.v4.sin_family = ASIO_OS_DEF(AF_INET);
     data_.v4.sin_port =
-      asio::detail::socket_ops::host_to_network_short(port_num);
+      clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
     data_.v4.sin_addr.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
-          static_cast<asio::detail::u_long_type>(
+      clmdep_asio::detail::socket_ops::host_to_network_long(
+          static_cast<clmdep_asio::detail::u_long_type>(
             addr.to_v4().to_ulong()));
   }
   else
   {
     data_.v6.sin6_family = ASIO_OS_DEF(AF_INET6);
     data_.v6.sin6_port =
-      asio::detail::socket_ops::host_to_network_short(port_num);
+      clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
     data_.v6.sin6_flowinfo = 0;
-    asio::ip::address_v6 v6_addr = addr.to_v6();
-    asio::ip::address_v6::bytes_type bytes = v6_addr.to_bytes();
+    clmdep_asio::ip::address_v6 v6_addr = addr.to_v6();
+    clmdep_asio::ip::address_v6::bytes_type bytes = v6_addr.to_bytes();
     memcpy(data_.v6.sin6_addr.s6_addr, bytes.data(), 16);
     data_.v6.sin6_scope_id =
-      static_cast<asio::detail::u_long_type>(
+      static_cast<clmdep_asio::detail::u_long_type>(
         v6_addr.scope_id());
   }
 }
 
 void endpoint::resize(std::size_t new_size)
 {
-  if (new_size > sizeof(asio::detail::sockaddr_storage_type))
+  if (new_size > sizeof(clmdep_asio::detail::sockaddr_storage_type))
   {
-    asio::error_code ec(asio::error::invalid_argument);
-    asio::detail::throw_error(ec);
+    clmdep_asio::error_code ec(clmdep_asio::error::invalid_argument);
+    clmdep_asio::detail::throw_error(ec);
   }
 }
 
@@ -111,12 +111,12 @@ unsigned short endpoint::port() const
 {
   if (is_v4())
   {
-    return asio::detail::socket_ops::network_to_host_short(
+    return clmdep_asio::detail::socket_ops::network_to_host_short(
         data_.v4.sin_port);
   }
   else
   {
-    return asio::detail::socket_ops::network_to_host_short(
+    return clmdep_asio::detail::socket_ops::network_to_host_short(
         data_.v6.sin6_port);
   }
 }
@@ -126,37 +126,37 @@ void endpoint::port(unsigned short port_num)
   if (is_v4())
   {
     data_.v4.sin_port
-      = asio::detail::socket_ops::host_to_network_short(port_num);
+      = clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
   }
   else
   {
     data_.v6.sin6_port
-      = asio::detail::socket_ops::host_to_network_short(port_num);
+      = clmdep_asio::detail::socket_ops::host_to_network_short(port_num);
   }
 }
 
-asio::ip::address endpoint::address() const
+clmdep_asio::ip::address endpoint::address() const
 {
   using namespace std; // For memcpy.
   if (is_v4())
   {
-    return asio::ip::address_v4(
-        asio::detail::socket_ops::network_to_host_long(
+    return clmdep_asio::ip::address_v4(
+        clmdep_asio::detail::socket_ops::network_to_host_long(
           data_.v4.sin_addr.s_addr));
   }
   else
   {
-    asio::ip::address_v6::bytes_type bytes;
+    clmdep_asio::ip::address_v6::bytes_type bytes;
 #if defined(ASIO_HAS_STD_ARRAY)
     memcpy(bytes.data(), data_.v6.sin6_addr.s6_addr, 16);
 #else // defined(ASIO_HAS_STD_ARRAY)
     memcpy(bytes.elems, data_.v6.sin6_addr.s6_addr, 16);
 #endif // defined(ASIO_HAS_STD_ARRAY)
-    return asio::ip::address_v6(bytes, data_.v6.sin6_scope_id);
+    return clmdep_asio::ip::address_v6(bytes, data_.v6.sin6_scope_id);
   }
 }
 
-void endpoint::address(const asio::ip::address& addr)
+void endpoint::address(const clmdep_asio::ip::address& addr)
 {
   endpoint tmp_endpoint(addr, port());
   data_ = tmp_endpoint.data_;
@@ -177,7 +177,7 @@ bool operator<(const endpoint& e1, const endpoint& e2)
 }
 
 #if !defined(ASIO_NO_IOSTREAM)
-std::string endpoint::to_string(asio::error_code& ec) const
+std::string endpoint::to_string(clmdep_asio::error_code& ec) const
 {
   std::string a = address().to_string(ec);
   if (ec)
@@ -197,7 +197,7 @@ std::string endpoint::to_string(asio::error_code& ec) const
 
 } // namespace detail
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

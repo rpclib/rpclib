@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 
 #if !defined(ASIO_ENABLE_OLD_SSL)
@@ -74,8 +74,8 @@ context::context(context::method m)
   case context::sslv2:
   case context::sslv2_client:
   case context::sslv2_server:
-    asio::detail::throw_error(
-        asio::error::invalid_argument, "context");
+    clmdep_asio::detail::throw_error(
+        clmdep_asio::error::invalid_argument, "context");
     break;
 #else // defined(OPENSSL_NO_SSL2)
   case context::sslv2:
@@ -129,8 +129,8 @@ context::context(context::method m)
   case context::tlsv11:
   case context::tlsv11_client:
   case context::tlsv11_server:
-    asio::detail::throw_error(
-        asio::error::invalid_argument, "context");
+    clmdep_asio::detail::throw_error(
+        clmdep_asio::error::invalid_argument, "context");
     break;
 #endif // defined(SSL_TXT_TLSV1_1)
 #if defined(SSL_TXT_TLSV1_2)
@@ -147,8 +147,8 @@ context::context(context::method m)
   case context::tlsv12:
   case context::tlsv12_client:
   case context::tlsv12_server:
-    asio::detail::throw_error(
-        asio::error::invalid_argument, "context");
+    clmdep_asio::detail::throw_error(
+        clmdep_asio::error::invalid_argument, "context");
     break;
 #endif // defined(SSL_TXT_TLSV1_2) 
   default:
@@ -158,16 +158,16 @@ context::context(context::method m)
 
   if (handle_ == 0)
   {
-    asio::error_code ec(
+    clmdep_asio::error_code ec(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
-    asio::detail::throw_error(ec, "context");
+        clmdep_asio::error::get_ssl_category());
+    clmdep_asio::detail::throw_error(ec, "context");
   }
 
   set_options(no_compression);
 }
 
-context::context(asio::io_service&, context::method m)
+context::context(clmdep_asio::io_service&, context::method m)
   : handle_(0)
 {
   context tmp(m);
@@ -229,13 +229,13 @@ context::impl_type context::impl()
 
 void context::clear_options(context::options o)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   clear_options(o, ec);
-  asio::detail::throw_error(ec, "clear_options");
+  clmdep_asio::detail::throw_error(ec, "clear_options");
 }
 
-asio::error_code context::clear_options(
-    context::options o, asio::error_code& ec)
+clmdep_asio::error_code context::clear_options(
+    context::options o, clmdep_asio::error_code& ec)
 {
 #if (OPENSSL_VERSION_NUMBER >= 0x009080DFL) \
   && (OPENSSL_VERSION_NUMBER != 0x00909000L)
@@ -251,11 +251,11 @@ asio::error_code context::clear_options(
 
   ::SSL_CTX_clear_options(handle_, o);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
 #else // (OPENSSL_VERSION_NUMBER >= 0x009080DFL)
       //   && (OPENSSL_VERSION_NUMBER != 0x00909000L)
   (void)o;
-  ec = asio::error::operation_not_supported;
+  ec = clmdep_asio::error::operation_not_supported;
 #endif // (OPENSSL_VERSION_NUMBER >= 0x009080DFL)
        //   && (OPENSSL_VERSION_NUMBER != 0x00909000L)
   return ec;
@@ -263,20 +263,20 @@ asio::error_code context::clear_options(
 
 void context::set_options(context::options o)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   set_options(o, ec);
-  asio::detail::throw_error(ec, "set_options");
+  clmdep_asio::detail::throw_error(ec, "set_options");
 }
 
-asio::error_code context::set_options(
-    context::options o, asio::error_code& ec)
+clmdep_asio::error_code context::set_options(
+    context::options o, clmdep_asio::error_code& ec)
 {
 #if !defined(SSL_OP_NO_COMPRESSION)
   if ((o & context::no_compression) != 0)
   {
 #if (OPENSSL_VERSION_NUMBER >= 0x00908000L)
     handle_->comp_methods =
-      asio::ssl::detail::openssl_init<>::get_null_compression_methods();
+      clmdep_asio::ssl::detail::openssl_init<>::get_null_compression_methods();
 #endif // (OPENSSL_VERSION_NUMBER >= 0x00908000L)
     o ^= context::no_compression;
   }
@@ -284,75 +284,75 @@ asio::error_code context::set_options(
 
   ::SSL_CTX_set_options(handle_, o);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::set_verify_mode(verify_mode v)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   set_verify_mode(v, ec);
-  asio::detail::throw_error(ec, "set_verify_mode");
+  clmdep_asio::detail::throw_error(ec, "set_verify_mode");
 }
 
-asio::error_code context::set_verify_mode(
-    verify_mode v, asio::error_code& ec)
+clmdep_asio::error_code context::set_verify_mode(
+    verify_mode v, clmdep_asio::error_code& ec)
 {
   ::SSL_CTX_set_verify(handle_, v, ::SSL_CTX_get_verify_callback(handle_));
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::set_verify_depth(int depth)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   set_verify_depth(depth, ec);
-  asio::detail::throw_error(ec, "set_verify_depth");
+  clmdep_asio::detail::throw_error(ec, "set_verify_depth");
 }
 
-asio::error_code context::set_verify_depth(
-    int depth, asio::error_code& ec)
+clmdep_asio::error_code context::set_verify_depth(
+    int depth, clmdep_asio::error_code& ec)
 {
   ::SSL_CTX_set_verify_depth(handle_, depth);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::load_verify_file(const std::string& filename)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   load_verify_file(filename, ec);
-  asio::detail::throw_error(ec, "load_verify_file");
+  clmdep_asio::detail::throw_error(ec, "load_verify_file");
 }
 
-asio::error_code context::load_verify_file(
-    const std::string& filename, asio::error_code& ec)
+clmdep_asio::error_code context::load_verify_file(
+    const std::string& filename, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
   if (::SSL_CTX_load_verify_locations(handle_, filename.c_str(), 0) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::add_certificate_authority(const const_buffer& ca)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   add_certificate_authority(ca, ec);
-  asio::detail::throw_error(ec, "add_certificate_authority");
+  clmdep_asio::detail::throw_error(ec, "add_certificate_authority");
 }
 
-asio::error_code context::add_certificate_authority(
-    const const_buffer& ca, asio::error_code& ec)
+clmdep_asio::error_code context::add_certificate_authority(
+    const const_buffer& ca, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -366,78 +366,78 @@ asio::error_code context::add_certificate_authority(
       {
         if (::X509_STORE_add_cert(store, cert.p) == 1)
         {
-          ec = asio::error_code();
+          ec = clmdep_asio::error_code();
           return ec;
         }
       }
     }
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
 void context::set_default_verify_paths()
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   set_default_verify_paths(ec);
-  asio::detail::throw_error(ec, "set_default_verify_paths");
+  clmdep_asio::detail::throw_error(ec, "set_default_verify_paths");
 }
 
-asio::error_code context::set_default_verify_paths(
-    asio::error_code& ec)
+clmdep_asio::error_code context::set_default_verify_paths(
+    clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
   if (::SSL_CTX_set_default_verify_paths(handle_) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::add_verify_path(const std::string& path)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   add_verify_path(path, ec);
-  asio::detail::throw_error(ec, "add_verify_path");
+  clmdep_asio::detail::throw_error(ec, "add_verify_path");
 }
 
-asio::error_code context::add_verify_path(
-    const std::string& path, asio::error_code& ec)
+clmdep_asio::error_code context::add_verify_path(
+    const std::string& path, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
   if (::SSL_CTX_load_verify_locations(handle_, 0, path.c_str()) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::use_certificate(
     const const_buffer& certificate, file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_certificate(certificate, format, ec);
-  asio::detail::throw_error(ec, "use_certificate");
+  clmdep_asio::detail::throw_error(ec, "use_certificate");
 }
 
-asio::error_code context::use_certificate(
+clmdep_asio::error_code context::use_certificate(
     const const_buffer& certificate, file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -447,7 +447,7 @@ asio::error_code context::use_certificate(
           static_cast<int>(buffer_size(certificate)),
           buffer_cast<const unsigned char*>(certificate)) == 1)
     {
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return ec;
     }
   }
@@ -461,7 +461,7 @@ asio::error_code context::use_certificate(
       {
         if (::SSL_CTX_use_certificate(handle_, cert.p) == 1)
         {
-          ec = asio::error_code();
+          ec = clmdep_asio::error_code();
           return ec;
         }
       }
@@ -469,27 +469,27 @@ asio::error_code context::use_certificate(
   }
   else
   {
-    ec = asio::error::invalid_argument;
+    ec = clmdep_asio::error::invalid_argument;
     return ec;
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
 void context::use_certificate_file(
     const std::string& filename, file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_certificate_file(filename, format, ec);
-  asio::detail::throw_error(ec, "use_certificate_file");
+  clmdep_asio::detail::throw_error(ec, "use_certificate_file");
 }
 
-asio::error_code context::use_certificate_file(
+clmdep_asio::error_code context::use_certificate_file(
     const std::string& filename, file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   int file_type;
   switch (format)
@@ -502,7 +502,7 @@ asio::error_code context::use_certificate_file(
     break;
   default:
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
   }
@@ -511,25 +511,25 @@ asio::error_code context::use_certificate_file(
 
   if (::SSL_CTX_use_certificate_file(handle_, filename.c_str(), file_type) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::use_certificate_chain(const const_buffer& chain)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_certificate_chain(chain, ec);
-  asio::detail::throw_error(ec, "use_certificate_chain");
+  clmdep_asio::detail::throw_error(ec, "use_certificate_chain");
 }
 
-asio::error_code context::use_certificate_chain(
-    const const_buffer& chain, asio::error_code& ec)
+clmdep_asio::error_code context::use_certificate_chain(
+    const const_buffer& chain, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -542,17 +542,17 @@ asio::error_code context::use_certificate_chain(
           handle_->default_passwd_callback_userdata) };
     if (!cert.p)
     {
-      ec = asio::error_code(ERR_R_PEM_LIB,
-          asio::error::get_ssl_category());
+      ec = clmdep_asio::error_code(ERR_R_PEM_LIB,
+          clmdep_asio::error::get_ssl_category());
       return ec;
     }
 
     int result = ::SSL_CTX_use_certificate(handle_, cert.p);
     if (result == 0 || ::ERR_peek_error() != 0)
     {
-      ec = asio::error_code(
+      ec = clmdep_asio::error_code(
           static_cast<int>(::ERR_get_error()),
-          asio::error::get_ssl_category());
+          clmdep_asio::error::get_ssl_category());
       return ec;
     }
 
@@ -568,9 +568,9 @@ asio::error_code context::use_certificate_chain(
     {
       if (!::SSL_CTX_add_extra_chain_cert(handle_, cacert))
       {
-        ec = asio::error_code(
+        ec = clmdep_asio::error_code(
             static_cast<int>(::ERR_get_error()),
-            asio::error::get_ssl_category());
+            clmdep_asio::error::get_ssl_category());
         return ec;
       }
     }
@@ -580,52 +580,52 @@ asio::error_code context::use_certificate_chain(
         && (ERR_GET_REASON(result) == PEM_R_NO_START_LINE))
     {
       ::ERR_clear_error();
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return ec;
     }
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
 void context::use_certificate_chain_file(const std::string& filename)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_certificate_chain_file(filename, ec);
-  asio::detail::throw_error(ec, "use_certificate_chain_file");
+  clmdep_asio::detail::throw_error(ec, "use_certificate_chain_file");
 }
 
-asio::error_code context::use_certificate_chain_file(
-    const std::string& filename, asio::error_code& ec)
+clmdep_asio::error_code context::use_certificate_chain_file(
+    const std::string& filename, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
   if (::SSL_CTX_use_certificate_chain_file(handle_, filename.c_str()) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::use_private_key(
     const const_buffer& private_key, context::file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_private_key(private_key, format, ec);
-  asio::detail::throw_error(ec, "use_private_key");
+  clmdep_asio::detail::throw_error(ec, "use_private_key");
 }
 
-asio::error_code context::use_private_key(
+clmdep_asio::error_code context::use_private_key(
     const const_buffer& private_key, context::file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -645,7 +645,7 @@ asio::error_code context::use_private_key(
       break;
     default:
       {
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
         return ec;
       }
     }
@@ -654,37 +654,37 @@ asio::error_code context::use_private_key(
     {
       if (::SSL_CTX_use_PrivateKey(handle_, evp_private_key.p) == 1)
       {
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return ec;
       }
     }
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
 void context::use_private_key_file(
     const std::string& filename, context::file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_private_key_file(filename, format, ec);
-  asio::detail::throw_error(ec, "use_private_key_file");
+  clmdep_asio::detail::throw_error(ec, "use_private_key_file");
 }
 
 void context::use_rsa_private_key(
     const const_buffer& private_key, context::file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_rsa_private_key(private_key, format, ec);
-  asio::detail::throw_error(ec, "use_rsa_private_key");
+  clmdep_asio::detail::throw_error(ec, "use_rsa_private_key");
 }
 
-asio::error_code context::use_rsa_private_key(
+clmdep_asio::error_code context::use_rsa_private_key(
     const const_buffer& private_key, context::file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -704,7 +704,7 @@ asio::error_code context::use_rsa_private_key(
       break;
     default:
       {
-        ec = asio::error::invalid_argument;
+        ec = clmdep_asio::error::invalid_argument;
         return ec;
       }
     }
@@ -713,21 +713,21 @@ asio::error_code context::use_rsa_private_key(
     {
       if (::SSL_CTX_use_RSAPrivateKey(handle_, rsa_private_key.p) == 1)
       {
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return ec;
       }
     }
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
-asio::error_code context::use_private_key_file(
+clmdep_asio::error_code context::use_private_key_file(
     const std::string& filename, context::file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   int file_type;
   switch (format)
@@ -740,7 +740,7 @@ asio::error_code context::use_private_key_file(
     break;
   default:
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
   }
@@ -749,27 +749,27 @@ asio::error_code context::use_private_key_file(
 
   if (::SSL_CTX_use_PrivateKey_file(handle_, filename.c_str(), file_type) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::use_rsa_private_key_file(
     const std::string& filename, context::file_format format)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_rsa_private_key_file(filename, format, ec);
-  asio::detail::throw_error(ec, "use_rsa_private_key_file");
+  clmdep_asio::detail::throw_error(ec, "use_rsa_private_key_file");
 }
 
-asio::error_code context::use_rsa_private_key_file(
+clmdep_asio::error_code context::use_rsa_private_key_file(
     const std::string& filename, context::file_format format,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   int file_type;
   switch (format)
@@ -782,7 +782,7 @@ asio::error_code context::use_rsa_private_key_file(
     break;
   default:
     {
-      ec = asio::error::invalid_argument;
+      ec = clmdep_asio::error::invalid_argument;
       return ec;
     }
   }
@@ -792,25 +792,25 @@ asio::error_code context::use_rsa_private_key_file(
   if (::SSL_CTX_use_RSAPrivateKey_file(
         handle_, filename.c_str(), file_type) != 1)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
 void context::use_tmp_dh(const const_buffer& dh)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_tmp_dh(dh, ec);
-  asio::detail::throw_error(ec, "use_tmp_dh");
+  clmdep_asio::detail::throw_error(ec, "use_tmp_dh");
 }
 
-asio::error_code context::use_tmp_dh(
-    const const_buffer& dh, asio::error_code& ec)
+clmdep_asio::error_code context::use_tmp_dh(
+    const const_buffer& dh, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -820,21 +820,21 @@ asio::error_code context::use_tmp_dh(
     return do_use_tmp_dh(bio.p, ec);
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
 void context::use_tmp_dh_file(const std::string& filename)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   use_tmp_dh_file(filename, ec);
-  asio::detail::throw_error(ec, "use_tmp_dh_file");
+  clmdep_asio::detail::throw_error(ec, "use_tmp_dh_file");
 }
 
-asio::error_code context::use_tmp_dh_file(
-    const std::string& filename, asio::error_code& ec)
+clmdep_asio::error_code context::use_tmp_dh_file(
+    const std::string& filename, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -844,14 +844,14 @@ asio::error_code context::use_tmp_dh_file(
     return do_use_tmp_dh(bio.p, ec);
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
-asio::error_code context::do_use_tmp_dh(
-    BIO* bio, asio::error_code& ec)
+clmdep_asio::error_code context::do_use_tmp_dh(
+    BIO* bio, clmdep_asio::error_code& ec)
 {
   ::ERR_clear_error();
 
@@ -860,19 +860,19 @@ asio::error_code context::do_use_tmp_dh(
   {
     if (::SSL_CTX_set_tmp_dh(handle_, dh.p) == 1)
     {
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return ec;
     }
   }
 
-  ec = asio::error_code(
+  ec = clmdep_asio::error_code(
       static_cast<int>(::ERR_get_error()),
-      asio::error::get_ssl_category());
+      clmdep_asio::error::get_ssl_category());
   return ec;
 }
 
-asio::error_code context::do_set_verify_callback(
-    detail::verify_callback_base* callback, asio::error_code& ec)
+clmdep_asio::error_code context::do_set_verify_callback(
+    detail::verify_callback_base* callback, clmdep_asio::error_code& ec)
 {
   if (SSL_CTX_get_app_data(handle_))
   {
@@ -886,7 +886,7 @@ asio::error_code context::do_set_verify_callback(
       ::SSL_CTX_get_verify_mode(handle_),
       &context::verify_callback_function);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
@@ -916,8 +916,8 @@ int context::verify_callback_function(int preverified, X509_STORE_CTX* ctx)
   return 0;
 }
 
-asio::error_code context::do_set_password_callback(
-    detail::password_callback_base* callback, asio::error_code& ec)
+clmdep_asio::error_code context::do_set_password_callback(
+    detail::password_callback_base* callback, clmdep_asio::error_code& ec)
 {
   if (handle_->default_passwd_callback_userdata)
     delete static_cast<detail::password_callback_base*>(
@@ -927,7 +927,7 @@ asio::error_code context::do_set_password_callback(
 
   SSL_CTX_set_default_passwd_cb(handle_, &context::password_callback_function);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
@@ -967,7 +967,7 @@ BIO* context::make_buffer_bio(const const_buffer& b)
 #endif // !defined(ASIO_ENABLE_OLD_SSL)
 
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

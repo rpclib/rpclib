@@ -31,7 +31,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Provides serial port functionality.
 /**
@@ -65,7 +65,7 @@ public:
    * @param io_service The io_service object that the serial port will use to
    * dispatch handlers for any asynchronous operations performed on the port.
    */
-  explicit basic_serial_port(asio::io_service& io_service)
+  explicit basic_serial_port(clmdep_asio::io_service& io_service)
     : basic_io_object<SerialPortService>(io_service)
   {
   }
@@ -81,13 +81,13 @@ public:
    * @param device The platform-specific device name for this serial
    * port.
    */
-  explicit basic_serial_port(asio::io_service& io_service,
+  explicit basic_serial_port(clmdep_asio::io_service& io_service,
       const char* device)
     : basic_io_object<SerialPortService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().open(this->get_implementation(), device, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
   }
 
   /// Construct and open a basic_serial_port.
@@ -101,13 +101,13 @@ public:
    * @param device The platform-specific device name for this serial
    * port.
    */
-  explicit basic_serial_port(asio::io_service& io_service,
+  explicit basic_serial_port(clmdep_asio::io_service& io_service,
       const std::string& device)
     : basic_io_object<SerialPortService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().open(this->get_implementation(), device, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
   }
 
   /// Construct a basic_serial_port on an existing native serial port.
@@ -120,16 +120,16 @@ public:
    *
    * @param native_serial_port A native serial port.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_serial_port(asio::io_service& io_service,
+  basic_serial_port(clmdep_asio::io_service& io_service,
       const native_handle_type& native_serial_port)
     : basic_io_object<SerialPortService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         native_serial_port, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
 #if defined(ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
@@ -201,13 +201,13 @@ public:
    *
    * @param device The platform-specific device name.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void open(const std::string& device)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().open(this->get_implementation(), device, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
   }
 
   /// Open the serial port using the specified device name.
@@ -219,8 +219,8 @@ public:
    *
    * @param ec Set the indicate what error occurred, if any.
    */
-  asio::error_code open(const std::string& device,
-      asio::error_code& ec)
+  clmdep_asio::error_code open(const std::string& device,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().open(this->get_implementation(), device, ec);
   }
@@ -231,14 +231,14 @@ public:
    *
    * @param native_serial_port A native serial port.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void assign(const native_handle_type& native_serial_port)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         native_serial_port, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
   /// Assign an existing native serial port to the serial port.
@@ -249,8 +249,8 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code assign(const native_handle_type& native_serial_port,
-      asio::error_code& ec)
+  clmdep_asio::error_code assign(const native_handle_type& native_serial_port,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().assign(this->get_implementation(),
         native_serial_port, ec);
@@ -266,26 +266,26 @@ public:
   /**
    * This function is used to close the serial port. Any asynchronous read or
    * write operations will be cancelled immediately, and will complete with the
-   * asio::error::operation_aborted error.
+   * clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void close()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().close(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "close");
+    clmdep_asio::detail::throw_error(ec, "close");
   }
 
   /// Close the serial port.
   /**
    * This function is used to close the serial port. Any asynchronous read or
    * write operations will be cancelled immediately, and will complete with the
-   * asio::error::operation_aborted error.
+   * clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return this->get_service().close(this->get_implementation(), ec);
   }
@@ -317,26 +317,26 @@ public:
   /**
    * This function causes all outstanding asynchronous read or write operations
    * to finish immediately, and the handlers for cancelled operations will be
-   * passed the asio::error::operation_aborted error.
+   * passed the clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void cancel()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().cancel(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "cancel");
+    clmdep_asio::detail::throw_error(ec, "cancel");
   }
 
   /// Cancel all asynchronous operations associated with the serial port.
   /**
    * This function causes all outstanding asynchronous read or write operations
    * to finish immediately, and the handlers for cancelled operations will be
-   * passed the asio::error::operation_aborted error.
+   * passed the clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code cancel(asio::error_code& ec)
+  clmdep_asio::error_code cancel(clmdep_asio::error_code& ec)
   {
     return this->get_service().cancel(this->get_implementation(), ec);
   }
@@ -346,13 +346,13 @@ public:
    * This function causes a break sequence of platform-specific duration to be
    * sent out the serial port.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void send_break()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().send_break(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "send_break");
+    clmdep_asio::detail::throw_error(ec, "send_break");
   }
 
   /// Send a break sequence to the serial port.
@@ -362,7 +362,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code send_break(asio::error_code& ec)
+  clmdep_asio::error_code send_break(clmdep_asio::error_code& ec)
   {
     return this->get_service().send_break(this->get_implementation(), ec);
   }
@@ -373,21 +373,21 @@ public:
    *
    * @param option The option value to be set on the serial port.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa SettableSerialPortOption @n
-   * asio::serial_port_base::baud_rate @n
-   * asio::serial_port_base::flow_control @n
-   * asio::serial_port_base::parity @n
-   * asio::serial_port_base::stop_bits @n
-   * asio::serial_port_base::character_size
+   * clmdep_asio::serial_port_base::baud_rate @n
+   * clmdep_asio::serial_port_base::flow_control @n
+   * clmdep_asio::serial_port_base::parity @n
+   * clmdep_asio::serial_port_base::stop_bits @n
+   * clmdep_asio::serial_port_base::character_size
    */
   template <typename SettableSerialPortOption>
   void set_option(const SettableSerialPortOption& option)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().set_option(this->get_implementation(), option, ec);
-    asio::detail::throw_error(ec, "set_option");
+    clmdep_asio::detail::throw_error(ec, "set_option");
   }
 
   /// Set an option on the serial port.
@@ -399,15 +399,15 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    *
    * @sa SettableSerialPortOption @n
-   * asio::serial_port_base::baud_rate @n
-   * asio::serial_port_base::flow_control @n
-   * asio::serial_port_base::parity @n
-   * asio::serial_port_base::stop_bits @n
-   * asio::serial_port_base::character_size
+   * clmdep_asio::serial_port_base::baud_rate @n
+   * clmdep_asio::serial_port_base::flow_control @n
+   * clmdep_asio::serial_port_base::parity @n
+   * clmdep_asio::serial_port_base::stop_bits @n
+   * clmdep_asio::serial_port_base::character_size
    */
   template <typename SettableSerialPortOption>
-  asio::error_code set_option(const SettableSerialPortOption& option,
-      asio::error_code& ec)
+  clmdep_asio::error_code set_option(const SettableSerialPortOption& option,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().set_option(
         this->get_implementation(), option, ec);
@@ -420,21 +420,21 @@ public:
    *
    * @param option The option value to be obtained from the serial port.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa GettableSerialPortOption @n
-   * asio::serial_port_base::baud_rate @n
-   * asio::serial_port_base::flow_control @n
-   * asio::serial_port_base::parity @n
-   * asio::serial_port_base::stop_bits @n
-   * asio::serial_port_base::character_size
+   * clmdep_asio::serial_port_base::baud_rate @n
+   * clmdep_asio::serial_port_base::flow_control @n
+   * clmdep_asio::serial_port_base::parity @n
+   * clmdep_asio::serial_port_base::stop_bits @n
+   * clmdep_asio::serial_port_base::character_size
    */
   template <typename GettableSerialPortOption>
   void get_option(GettableSerialPortOption& option)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().get_option(this->get_implementation(), option, ec);
-    asio::detail::throw_error(ec, "get_option");
+    clmdep_asio::detail::throw_error(ec, "get_option");
   }
 
   /// Get an option from the serial port.
@@ -447,15 +447,15 @@ public:
    * @param ec Set to indicate what error occured, if any.
    *
    * @sa GettableSerialPortOption @n
-   * asio::serial_port_base::baud_rate @n
-   * asio::serial_port_base::flow_control @n
-   * asio::serial_port_base::parity @n
-   * asio::serial_port_base::stop_bits @n
-   * asio::serial_port_base::character_size
+   * clmdep_asio::serial_port_base::baud_rate @n
+   * clmdep_asio::serial_port_base::flow_control @n
+   * clmdep_asio::serial_port_base::parity @n
+   * clmdep_asio::serial_port_base::stop_bits @n
+   * clmdep_asio::serial_port_base::character_size
    */
   template <typename GettableSerialPortOption>
-  asio::error_code get_option(GettableSerialPortOption& option,
-      asio::error_code& ec)
+  clmdep_asio::error_code get_option(GettableSerialPortOption& option,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().get_option(
         this->get_implementation(), option, ec);
@@ -471,8 +471,8 @@ public:
    *
    * @returns The number of bytes written.
    *
-   * @throws asio::system_error Thrown on failure. An error code of
-   * asio::error::eof indicates that the connection was closed by the
+   * @throws clmdep_asio::system_error Thrown on failure. An error code of
+   * clmdep_asio::error::eof indicates that the connection was closed by the
    * peer.
    *
    * @note The write_some operation may not transmit all of the data to the
@@ -482,7 +482,7 @@ public:
    * @par Example
    * To write a single data buffer use the @ref buffer function as follows:
    * @code
-   * serial_port.write_some(asio::buffer(data, size));
+   * serial_port.write_some(clmdep_asio::buffer(data, size));
    * @endcode
    * See the @ref buffer documentation for information on writing multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -491,10 +491,10 @@ public:
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().write_some(
         this->get_implementation(), buffers, ec);
-    asio::detail::throw_error(ec, "write_some");
+    clmdep_asio::detail::throw_error(ec, "write_some");
     return s;
   }
 
@@ -516,7 +516,7 @@ public:
    */
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().write_some(
         this->get_implementation(), buffers, ec);
@@ -536,13 +536,13 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes written.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The write operation may not transmit all of the data to the peer.
    * Consider using the @ref async_write function if you need to ensure that all
@@ -551,7 +551,7 @@ public:
    * @par Example
    * To write a single data buffer use the @ref buffer function as follows:
    * @code
-   * serial_port.async_write_some(asio::buffer(data, size), handler);
+   * serial_port.async_write_some(clmdep_asio::buffer(data, size), handler);
    * @endcode
    * See the @ref buffer documentation for information on writing multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -559,7 +559,7 @@ public:
    */
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some(const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
@@ -581,8 +581,8 @@ public:
    *
    * @returns The number of bytes read.
    *
-   * @throws asio::system_error Thrown on failure. An error code of
-   * asio::error::eof indicates that the connection was closed by the
+   * @throws clmdep_asio::system_error Thrown on failure. An error code of
+   * clmdep_asio::error::eof indicates that the connection was closed by the
    * peer.
    *
    * @note The read_some operation may not read all of the requested number of
@@ -593,7 +593,7 @@ public:
    * @par Example
    * To read into a single data buffer use the @ref buffer function as follows:
    * @code
-   * serial_port.read_some(asio::buffer(data, size));
+   * serial_port.read_some(clmdep_asio::buffer(data, size));
    * @endcode
    * See the @ref buffer documentation for information on reading into multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -602,10 +602,10 @@ public:
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().read_some(
         this->get_implementation(), buffers, ec);
-    asio::detail::throw_error(ec, "read_some");
+    clmdep_asio::detail::throw_error(ec, "read_some");
     return s;
   }
 
@@ -628,7 +628,7 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().read_some(
         this->get_implementation(), buffers, ec);
@@ -648,13 +648,13 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes read.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The read operation may not read all of the requested number of bytes.
    * Consider using the @ref async_read function if you need to ensure that the
@@ -664,7 +664,7 @@ public:
    * @par Example
    * To read into a single data buffer use the @ref buffer function as follows:
    * @code
-   * serial_port.async_read_some(asio::buffer(data, size), handler);
+   * serial_port.async_read_some(clmdep_asio::buffer(data, size), handler);
    * @endcode
    * See the @ref buffer documentation for information on reading into multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -672,7 +672,7 @@ public:
    */
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some(const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
@@ -685,7 +685,7 @@ public:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

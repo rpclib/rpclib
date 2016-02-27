@@ -22,7 +22,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class buffer_sequence_adapter_base
@@ -36,11 +36,11 @@ protected:
 
   ASIO_DECL static void init_native_buffer(
       native_buffer_type& buf,
-      const asio::mutable_buffer& buffer);
+      const clmdep_asio::mutable_buffer& buffer);
 
   ASIO_DECL static void init_native_buffer(
       native_buffer_type& buf,
-      const asio::const_buffer& buffer);
+      const clmdep_asio::const_buffer& buffer);
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)
   // The maximum number of buffers to support in a single operation.
   enum { max_buffers = 64 < max_iov_len ? 64 : max_iov_len };
@@ -48,17 +48,17 @@ protected:
   typedef WSABUF native_buffer_type;
 
   static void init_native_buffer(WSABUF& buf,
-      const asio::mutable_buffer& buffer)
+      const clmdep_asio::mutable_buffer& buffer)
   {
-    buf.buf = asio::buffer_cast<char*>(buffer);
-    buf.len = static_cast<ULONG>(asio::buffer_size(buffer));
+    buf.buf = clmdep_asio::buffer_cast<char*>(buffer);
+    buf.len = static_cast<ULONG>(clmdep_asio::buffer_size(buffer));
   }
 
   static void init_native_buffer(WSABUF& buf,
-      const asio::const_buffer& buffer)
+      const clmdep_asio::const_buffer& buffer)
   {
-    buf.buf = const_cast<char*>(asio::buffer_cast<const char*>(buffer));
-    buf.len = static_cast<ULONG>(asio::buffer_size(buffer));
+    buf.buf = const_cast<char*>(clmdep_asio::buffer_cast<const char*>(buffer));
+    buf.len = static_cast<ULONG>(clmdep_asio::buffer_size(buffer));
   }
 #else // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
   // The maximum number of buffers to support in a single operation.
@@ -78,18 +78,18 @@ protected:
   }
 
   static void init_native_buffer(iovec& iov,
-      const asio::mutable_buffer& buffer)
+      const clmdep_asio::mutable_buffer& buffer)
   {
-    init_iov_base(iov.iov_base, asio::buffer_cast<void*>(buffer));
-    iov.iov_len = asio::buffer_size(buffer);
+    init_iov_base(iov.iov_base, clmdep_asio::buffer_cast<void*>(buffer));
+    iov.iov_len = clmdep_asio::buffer_size(buffer);
   }
 
   static void init_native_buffer(iovec& iov,
-      const asio::const_buffer& buffer)
+      const clmdep_asio::const_buffer& buffer)
   {
     init_iov_base(iov.iov_base, const_cast<void*>(
-          asio::buffer_cast<const void*>(buffer)));
-    iov.iov_len = asio::buffer_size(buffer);
+          clmdep_asio::buffer_cast<const void*>(buffer)));
+    iov.iov_len = clmdep_asio::buffer_size(buffer);
   }
 #endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
 };
@@ -109,7 +109,7 @@ public:
     {
       Buffer buffer(*iter);
       init_native_buffer(buffers_[count_], buffer);
-      total_buffer_size_ += asio::buffer_size(buffer);
+      total_buffer_size_ += clmdep_asio::buffer_size(buffer);
     }
   }
 
@@ -134,7 +134,7 @@ public:
     typename Buffers::const_iterator end = buffer_sequence.end();
     std::size_t i = 0;
     for (; iter != end && i < max_buffers; ++iter, ++i)
-      if (asio::buffer_size(Buffer(*iter)) > 0)
+      if (clmdep_asio::buffer_size(Buffer(*iter)) > 0)
         return false;
     return true;
   }
@@ -146,7 +146,7 @@ public:
     for (; iter != end; ++iter)
     {
       Buffer buffer(*iter);
-      asio::buffer_cast<const void*>(buffer);
+      clmdep_asio::buffer_cast<const void*>(buffer);
     }
   }
 
@@ -157,7 +157,7 @@ public:
     for (; iter != end; ++iter)
     {
       Buffer buffer(*iter);
-      if (asio::buffer_size(buffer) != 0)
+      if (clmdep_asio::buffer_size(buffer) != 0)
         return buffer;
     }
     return Buffer();
@@ -170,15 +170,15 @@ private:
 };
 
 template <typename Buffer>
-class buffer_sequence_adapter<Buffer, asio::mutable_buffers_1>
+class buffer_sequence_adapter<Buffer, clmdep_asio::mutable_buffers_1>
   : buffer_sequence_adapter_base
 {
 public:
   explicit buffer_sequence_adapter(
-      const asio::mutable_buffers_1& buffer_sequence)
+      const clmdep_asio::mutable_buffers_1& buffer_sequence)
   {
     init_native_buffer(buffer_, Buffer(buffer_sequence));
-    total_buffer_size_ = asio::buffer_size(buffer_sequence);
+    total_buffer_size_ = clmdep_asio::buffer_size(buffer_sequence);
   }
 
   native_buffer_type* buffers()
@@ -196,17 +196,17 @@ public:
     return total_buffer_size_ == 0;
   }
 
-  static bool all_empty(const asio::mutable_buffers_1& buffer_sequence)
+  static bool all_empty(const clmdep_asio::mutable_buffers_1& buffer_sequence)
   {
-    return asio::buffer_size(buffer_sequence) == 0;
+    return clmdep_asio::buffer_size(buffer_sequence) == 0;
   }
 
-  static void validate(const asio::mutable_buffers_1& buffer_sequence)
+  static void validate(const clmdep_asio::mutable_buffers_1& buffer_sequence)
   {
-    asio::buffer_cast<const void*>(buffer_sequence);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence);
   }
 
-  static Buffer first(const asio::mutable_buffers_1& buffer_sequence)
+  static Buffer first(const clmdep_asio::mutable_buffers_1& buffer_sequence)
   {
     return Buffer(buffer_sequence);
   }
@@ -217,15 +217,15 @@ private:
 };
 
 template <typename Buffer>
-class buffer_sequence_adapter<Buffer, asio::const_buffers_1>
+class buffer_sequence_adapter<Buffer, clmdep_asio::const_buffers_1>
   : buffer_sequence_adapter_base
 {
 public:
   explicit buffer_sequence_adapter(
-      const asio::const_buffers_1& buffer_sequence)
+      const clmdep_asio::const_buffers_1& buffer_sequence)
   {
     init_native_buffer(buffer_, Buffer(buffer_sequence));
-    total_buffer_size_ = asio::buffer_size(buffer_sequence);
+    total_buffer_size_ = clmdep_asio::buffer_size(buffer_sequence);
   }
 
   native_buffer_type* buffers()
@@ -243,17 +243,17 @@ public:
     return total_buffer_size_ == 0;
   }
 
-  static bool all_empty(const asio::const_buffers_1& buffer_sequence)
+  static bool all_empty(const clmdep_asio::const_buffers_1& buffer_sequence)
   {
-    return asio::buffer_size(buffer_sequence) == 0;
+    return clmdep_asio::buffer_size(buffer_sequence) == 0;
   }
 
-  static void validate(const asio::const_buffers_1& buffer_sequence)
+  static void validate(const clmdep_asio::const_buffers_1& buffer_sequence)
   {
-    asio::buffer_cast<const void*>(buffer_sequence);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence);
   }
 
-  static Buffer first(const asio::const_buffers_1& buffer_sequence)
+  static Buffer first(const clmdep_asio::const_buffers_1& buffer_sequence)
   {
     return Buffer(buffer_sequence);
   }
@@ -273,8 +273,8 @@ public:
   {
     init_native_buffer(buffers_[0], Buffer(buffer_sequence[0]));
     init_native_buffer(buffers_[1], Buffer(buffer_sequence[1]));
-    total_buffer_size_ = asio::buffer_size(buffer_sequence[0])
-      + asio::buffer_size(buffer_sequence[1]);
+    total_buffer_size_ = clmdep_asio::buffer_size(buffer_sequence[0])
+      + clmdep_asio::buffer_size(buffer_sequence[1]);
   }
 
   native_buffer_type* buffers()
@@ -294,19 +294,19 @@ public:
 
   static bool all_empty(const boost::array<Elem, 2>& buffer_sequence)
   {
-    return asio::buffer_size(buffer_sequence[0]) == 0
-      && asio::buffer_size(buffer_sequence[1]) == 0;
+    return clmdep_asio::buffer_size(buffer_sequence[0]) == 0
+      && clmdep_asio::buffer_size(buffer_sequence[1]) == 0;
   }
 
   static void validate(const boost::array<Elem, 2>& buffer_sequence)
   {
-    asio::buffer_cast<const void*>(buffer_sequence[0]);
-    asio::buffer_cast<const void*>(buffer_sequence[1]);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence[0]);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence[1]);
   }
 
   static Buffer first(const boost::array<Elem, 2>& buffer_sequence)
   {
-    return Buffer(asio::buffer_size(buffer_sequence[0]) != 0
+    return Buffer(clmdep_asio::buffer_size(buffer_sequence[0]) != 0
         ? buffer_sequence[0] : buffer_sequence[1]);
   }
 
@@ -327,8 +327,8 @@ public:
   {
     init_native_buffer(buffers_[0], Buffer(buffer_sequence[0]));
     init_native_buffer(buffers_[1], Buffer(buffer_sequence[1]));
-    total_buffer_size_ = asio::buffer_size(buffer_sequence[0])
-      + asio::buffer_size(buffer_sequence[1]);
+    total_buffer_size_ = clmdep_asio::buffer_size(buffer_sequence[0])
+      + clmdep_asio::buffer_size(buffer_sequence[1]);
   }
 
   native_buffer_type* buffers()
@@ -348,19 +348,19 @@ public:
 
   static bool all_empty(const std::array<Elem, 2>& buffer_sequence)
   {
-    return asio::buffer_size(buffer_sequence[0]) == 0
-      && asio::buffer_size(buffer_sequence[1]) == 0;
+    return clmdep_asio::buffer_size(buffer_sequence[0]) == 0
+      && clmdep_asio::buffer_size(buffer_sequence[1]) == 0;
   }
 
   static void validate(const std::array<Elem, 2>& buffer_sequence)
   {
-    asio::buffer_cast<const void*>(buffer_sequence[0]);
-    asio::buffer_cast<const void*>(buffer_sequence[1]);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence[0]);
+    clmdep_asio::buffer_cast<const void*>(buffer_sequence[1]);
   }
 
   static Buffer first(const std::array<Elem, 2>& buffer_sequence)
   {
-    return Buffer(asio::buffer_size(buffer_sequence[0]) != 0
+    return Buffer(clmdep_asio::buffer_size(buffer_sequence[0]) != 0
         ? buffer_sequence[0] : buffer_sequence[1]);
   }
 
@@ -372,7 +372,7 @@ private:
 #endif // defined(ASIO_HAS_STD_ARRAY)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

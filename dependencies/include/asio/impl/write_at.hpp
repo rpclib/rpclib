@@ -30,16 +30,16 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename CompletionCondition>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
-    CompletionCondition completion_condition, asio::error_code& ec)
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec)
 {
-  ec = asio::error_code();
-  asio::detail::consuming_buffers<
+  ec = clmdep_asio::error_code();
+  clmdep_asio::detail::consuming_buffers<
     const_buffer, ConstBufferSequence> tmp(buffers);
   std::size_t total_transferred = 0;
   tmp.prepare(detail::adapt_completion_condition_result(
@@ -60,17 +60,17 @@ template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence>
 inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = write_at(
       d, offset, buffers, transfer_all(), ec);
-  asio::detail::throw_error(ec, "write_at");
+  clmdep_asio::detail::throw_error(ec, "write_at");
   return bytes_transferred;
 }
 
 template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence>
 inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
-    asio::error_code& ec)
+    clmdep_asio::error_code& ec)
 {
   return write_at(d, offset, buffers, transfer_all(), ec);
 }
@@ -81,10 +81,10 @@ inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
     CompletionCondition completion_condition)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = write_at(
       d, offset, buffers, completion_condition, ec);
-  asio::detail::throw_error(ec, "write_at");
+  clmdep_asio::detail::throw_error(ec, "write_at");
   return bytes_transferred;
 }
 
@@ -93,8 +93,8 @@ inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
 template <typename SyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b,
-    CompletionCondition completion_condition, asio::error_code& ec)
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b,
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec)
 {
   std::size_t bytes_transferred = write_at(
       d, offset, b.data(), completion_condition, ec);
@@ -104,18 +104,18 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
 
 template <typename SyncRandomAccessWriteDevice, typename Allocator>
 inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b)
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = write_at(d, offset, b, transfer_all(), ec);
-  asio::detail::throw_error(ec, "write_at");
+  clmdep_asio::detail::throw_error(ec, "write_at");
   return bytes_transferred;
 }
 
 template <typename SyncRandomAccessWriteDevice, typename Allocator>
 inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b,
-    asio::error_code& ec)
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b,
+    clmdep_asio::error_code& ec)
 {
   return write_at(d, offset, b, transfer_all(), ec);
 }
@@ -123,13 +123,13 @@ inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
 template <typename SyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition>
 inline std::size_t write_at(SyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b,
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b,
     CompletionCondition completion_condition)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = write_at(
       d, offset, b, completion_condition, ec);
-  asio::detail::throw_error(ec, "write_at");
+  clmdep_asio::detail::throw_error(ec, "write_at");
   return bytes_transferred;
 }
 
@@ -181,7 +181,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       switch (start_ = start)
@@ -209,7 +209,7 @@ namespace detail
   //private:
     AsyncRandomAccessWriteDevice& device_;
     uint64_t offset_;
-    asio::detail::consuming_buffers<
+    clmdep_asio::detail::consuming_buffers<
       const_buffer, ConstBufferSequence> buffers_;
     int start_;
     std::size_t total_transferred_;
@@ -219,12 +219,12 @@ namespace detail
   template <typename AsyncRandomAccessWriteDevice,
       typename CompletionCondition, typename WriteHandler>
   class write_at_op<AsyncRandomAccessWriteDevice,
-      asio::mutable_buffers_1, CompletionCondition, WriteHandler>
+      clmdep_asio::mutable_buffers_1, CompletionCondition, WriteHandler>
     : detail::base_from_completion_cond<CompletionCondition>
   {
   public:
     write_at_op(AsyncRandomAccessWriteDevice& device,
-        uint64_t offset, const asio::mutable_buffers_1& buffers,
+        uint64_t offset, const clmdep_asio::mutable_buffers_1& buffers,
         CompletionCondition completion_condition,
         WriteHandler& handler)
       : detail::base_from_completion_cond<
@@ -262,7 +262,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       std::size_t n = 0;
@@ -273,13 +273,13 @@ namespace detail
         for (;;)
         {
           device_.async_write_some_at(offset_ + total_transferred_,
-              asio::buffer(buffer_ + total_transferred_, n),
+              clmdep_asio::buffer(buffer_ + total_transferred_, n),
               ASIO_MOVE_CAST(write_at_op)(*this));
           return; default:
           total_transferred_ += bytes_transferred;
           if ((!ec && bytes_transferred == 0)
               || (n = this->check_for_completion(ec, total_transferred_)) == 0
-              || total_transferred_ == asio::buffer_size(buffer_))
+              || total_transferred_ == clmdep_asio::buffer_size(buffer_))
             break;
         }
 
@@ -290,7 +290,7 @@ namespace detail
   //private:
     AsyncRandomAccessWriteDevice& device_;
     uint64_t offset_;
-    asio::mutable_buffer buffer_;
+    clmdep_asio::mutable_buffer buffer_;
     int start_;
     std::size_t total_transferred_;
     WriteHandler handler_;
@@ -298,13 +298,13 @@ namespace detail
 
   template <typename AsyncRandomAccessWriteDevice,
       typename CompletionCondition, typename WriteHandler>
-  class write_at_op<AsyncRandomAccessWriteDevice, asio::const_buffers_1,
+  class write_at_op<AsyncRandomAccessWriteDevice, clmdep_asio::const_buffers_1,
       CompletionCondition, WriteHandler>
     : detail::base_from_completion_cond<CompletionCondition>
   {
   public:
     write_at_op(AsyncRandomAccessWriteDevice& device,
-        uint64_t offset, const asio::const_buffers_1& buffers,
+        uint64_t offset, const clmdep_asio::const_buffers_1& buffers,
         CompletionCondition completion_condition,
         WriteHandler& handler)
       : detail::base_from_completion_cond<
@@ -342,7 +342,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       std::size_t n = 0;
@@ -353,13 +353,13 @@ namespace detail
         for (;;)
         {
           device_.async_write_some_at(offset_ + total_transferred_,
-              asio::buffer(buffer_ + total_transferred_, n),
+              clmdep_asio::buffer(buffer_ + total_transferred_, n),
               ASIO_MOVE_CAST(write_at_op)(*this));
           return; default:
           total_transferred_ += bytes_transferred;
           if ((!ec && bytes_transferred == 0)
               || (n = this->check_for_completion(ec, total_transferred_)) == 0
-              || total_transferred_ == asio::buffer_size(buffer_))
+              || total_transferred_ == clmdep_asio::buffer_size(buffer_))
             break;
         }
 
@@ -370,7 +370,7 @@ namespace detail
   //private:
     AsyncRandomAccessWriteDevice& device_;
     uint64_t offset_;
-    asio::const_buffer buffer_;
+    clmdep_asio::const_buffer buffer_;
     int start_;
     std::size_t total_transferred_;
     WriteHandler handler_;
@@ -421,15 +421,15 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
-      typename asio::detail::dependent_type<Elem,
-          boost::array<asio::const_buffer, 2> >::type bufs = {{
-        asio::const_buffer(buffers_[0]),
-        asio::const_buffer(buffers_[1]) }};
-      std::size_t buffer_size0 = asio::buffer_size(bufs[0]);
-      std::size_t buffer_size1 = asio::buffer_size(bufs[1]);
+      typename clmdep_asio::detail::dependent_type<Elem,
+          boost::array<clmdep_asio::const_buffer, 2> >::type bufs = {{
+        clmdep_asio::const_buffer(buffers_[0]),
+        clmdep_asio::const_buffer(buffers_[1]) }};
+      std::size_t buffer_size0 = clmdep_asio::buffer_size(bufs[0]);
+      std::size_t buffer_size1 = clmdep_asio::buffer_size(bufs[1]);
       std::size_t n = 0;
       switch (start_ = start)
       {
@@ -437,11 +437,11 @@ namespace detail
         n = this->check_for_completion(ec, total_transferred_);
         for (;;)
         {
-          bufs[0] = asio::buffer(bufs[0] + total_transferred_, n);
-          bufs[1] = asio::buffer(
+          bufs[0] = clmdep_asio::buffer(bufs[0] + total_transferred_, n);
+          bufs[1] = clmdep_asio::buffer(
               bufs[1] + (total_transferred_ < buffer_size0
                 ? 0 : total_transferred_ - buffer_size0),
-              n - asio::buffer_size(bufs[0]));
+              n - clmdep_asio::buffer_size(bufs[0]));
           device_.async_write_some_at(offset_ + total_transferred_,
               bufs, ASIO_MOVE_CAST(write_at_op)(*this));
           return; default:
@@ -512,15 +512,15 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
-      typename asio::detail::dependent_type<Elem,
-          std::array<asio::const_buffer, 2> >::type bufs = {{
-        asio::const_buffer(buffers_[0]),
-        asio::const_buffer(buffers_[1]) }};
-      std::size_t buffer_size0 = asio::buffer_size(bufs[0]);
-      std::size_t buffer_size1 = asio::buffer_size(bufs[1]);
+      typename clmdep_asio::detail::dependent_type<Elem,
+          std::array<clmdep_asio::const_buffer, 2> >::type bufs = {{
+        clmdep_asio::const_buffer(buffers_[0]),
+        clmdep_asio::const_buffer(buffers_[1]) }};
+      std::size_t buffer_size0 = clmdep_asio::buffer_size(bufs[0]);
+      std::size_t buffer_size1 = clmdep_asio::buffer_size(bufs[1]);
       std::size_t n = 0;
       switch (start_ = start)
       {
@@ -528,11 +528,11 @@ namespace detail
         n = this->check_for_completion(ec, total_transferred_);
         for (;;)
         {
-          bufs[0] = asio::buffer(bufs[0] + total_transferred_, n);
-          bufs[1] = asio::buffer(
+          bufs[0] = clmdep_asio::buffer(bufs[0] + total_transferred_, n);
+          bufs[1] = clmdep_asio::buffer(
               bufs[1] + (total_transferred_ < buffer_size0
                 ? 0 : total_transferred_ - buffer_size0),
-              n - asio::buffer_size(bufs[0]));
+              n - clmdep_asio::buffer_size(bufs[0]));
           device_.async_write_some_at(offset_ + total_transferred_,
               bufs, ASIO_MOVE_CAST(write_at_op)(*this));
           return; default:
@@ -560,54 +560,54 @@ namespace detail
 
   template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
       typename CompletionCondition, typename WriteHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
         CompletionCondition, WriteHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
       typename CompletionCondition, typename WriteHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
         CompletionCondition, WriteHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
       typename CompletionCondition, typename WriteHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
         CompletionCondition, WriteHandler>* this_handler)
   {
     return this_handler->start_ == 0 ? true
-      : asio_handler_cont_helpers::is_continuation(
+      : clmdep_asio_handler_cont_helpers::is_continuation(
           this_handler->handler_);
   }
 
   template <typename Function, typename AsyncRandomAccessWriteDevice,
       typename ConstBufferSequence, typename CompletionCondition,
       typename WriteHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
         CompletionCondition, WriteHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename AsyncRandomAccessWriteDevice,
       typename ConstBufferSequence, typename CompletionCondition,
       typename WriteHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
         CompletionCondition, WriteHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
@@ -628,7 +628,7 @@ namespace detail
 template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename CompletionCondition, typename WriteHandler>
 inline ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
     CompletionCondition completion_condition,
@@ -639,14 +639,14 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
   ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
   detail::async_result_init<
-    WriteHandler, void (asio::error_code, std::size_t)> init(
+    WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(WriteHandler)(handler));
 
   detail::write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
     CompletionCondition, ASIO_HANDLER_TYPE(
-      WriteHandler, void (asio::error_code, std::size_t))>(
+      WriteHandler, void (clmdep_asio::error_code, std::size_t))>(
         d, offset, buffers, completion_condition, init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
@@ -654,7 +654,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
 template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename WriteHandler>
 inline ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
     ASIO_MOVE_ARG(WriteHandler) handler)
@@ -664,14 +664,14 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
   ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
   detail::async_result_init<
-    WriteHandler, void (asio::error_code, std::size_t)> init(
+    WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(WriteHandler)(handler));
 
   detail::write_at_op<AsyncRandomAccessWriteDevice, ConstBufferSequence,
     detail::transfer_all_t, ASIO_HANDLER_TYPE(
-      WriteHandler, void (asio::error_code, std::size_t))>(
+      WriteHandler, void (clmdep_asio::error_code, std::size_t))>(
         d, offset, buffers, transfer_all(), init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
@@ -685,7 +685,7 @@ namespace detail
   {
   public:
     write_at_streambuf_op(
-        asio::basic_streambuf<Allocator>& streambuf,
+        clmdep_asio::basic_streambuf<Allocator>& streambuf,
         WriteHandler& handler)
       : streambuf_(streambuf),
         handler_(ASIO_MOVE_CAST(WriteHandler)(handler))
@@ -706,7 +706,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         const std::size_t bytes_transferred)
     {
       streambuf_.consume(bytes_transferred);
@@ -714,54 +714,54 @@ namespace detail
     }
 
   //private:
-    asio::basic_streambuf<Allocator>& streambuf_;
+    clmdep_asio::basic_streambuf<Allocator>& streambuf_;
     WriteHandler handler_;
   };
 
   template <typename Allocator, typename WriteHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       write_at_streambuf_op<Allocator, WriteHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename Allocator, typename WriteHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       write_at_streambuf_op<Allocator, WriteHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename Allocator, typename WriteHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       write_at_streambuf_op<Allocator, WriteHandler>* this_handler)
   {
-    return asio_handler_cont_helpers::is_continuation(
+    return clmdep_asio_handler_cont_helpers::is_continuation(
         this_handler->handler_);
   }
 
   template <typename Function, typename Allocator, typename WriteHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       write_at_streambuf_op<Allocator, WriteHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename Allocator, typename WriteHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       write_at_streambuf_op<Allocator, WriteHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Allocator, typename WriteHandler>
   inline write_at_streambuf_op<Allocator, WriteHandler>
   make_write_at_streambuf_op(
-      asio::basic_streambuf<Allocator>& b, WriteHandler handler)
+      clmdep_asio::basic_streambuf<Allocator>& b, WriteHandler handler)
   {
     return write_at_streambuf_op<Allocator, WriteHandler>(b, handler);
   }
@@ -770,9 +770,9 @@ namespace detail
 template <typename AsyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition, typename WriteHandler>
 inline ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b,
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b,
     CompletionCondition completion_condition,
     ASIO_MOVE_ARG(WriteHandler) handler)
 {
@@ -781,12 +781,12 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
   ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
   detail::async_result_init<
-    WriteHandler, void (asio::error_code, std::size_t)> init(
+    WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(WriteHandler)(handler));
 
   async_write_at(d, offset, b.data(), completion_condition,
     detail::write_at_streambuf_op<Allocator, ASIO_HANDLER_TYPE(
-      WriteHandler, void (asio::error_code, std::size_t))>(
+      WriteHandler, void (clmdep_asio::error_code, std::size_t))>(
         b, init.handler));
 
   return init.result.get();
@@ -795,9 +795,9 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
 template <typename AsyncRandomAccessWriteDevice, typename Allocator,
     typename WriteHandler>
 inline ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
-    uint64_t offset, asio::basic_streambuf<Allocator>& b,
+    uint64_t offset, clmdep_asio::basic_streambuf<Allocator>& b,
     ASIO_MOVE_ARG(WriteHandler) handler)
 {
   // If you get an error on the following line it means that your handler does
@@ -805,12 +805,12 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
   ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
   detail::async_result_init<
-    WriteHandler, void (asio::error_code, std::size_t)> init(
+    WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(WriteHandler)(handler));
 
   async_write_at(d, offset, b.data(), transfer_all(),
     detail::write_at_streambuf_op<Allocator, ASIO_HANDLER_TYPE(
-      WriteHandler, void (asio::error_code, std::size_t))>(
+      WriteHandler, void (clmdep_asio::error_code, std::size_t))>(
         b, init.handler));
 
   return init.result.get();
@@ -818,7 +818,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

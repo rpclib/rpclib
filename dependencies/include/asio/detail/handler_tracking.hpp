@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if defined(ASIO_ENABLE_HANDLER_TRACKING)
@@ -74,19 +74,19 @@ public:
     ASIO_DECL void invocation_begin();
 
     // Records that handler is to be invoked with one arguments.
-    ASIO_DECL void invocation_begin(const asio::error_code& ec);
+    ASIO_DECL void invocation_begin(const clmdep_asio::error_code& ec);
 
     // Constructor records that handler is to be invoked with two arguments.
     ASIO_DECL void invocation_begin(
-        const asio::error_code& ec, std::size_t bytes_transferred);
+        const clmdep_asio::error_code& ec, std::size_t bytes_transferred);
 
     // Constructor records that handler is to be invoked with two arguments.
     ASIO_DECL void invocation_begin(
-        const asio::error_code& ec, int signal_number);
+        const clmdep_asio::error_code& ec, int signal_number);
 
     // Constructor records that handler is to be invoked with two arguments.
     ASIO_DECL void invocation_begin(
-        const asio::error_code& ec, const char* arg);
+        const clmdep_asio::error_code& ec, const char* arg);
 
     // Record that handler invocation has ended.
     ASIO_DECL void invocation_end();
@@ -111,19 +111,19 @@ private:
 };
 
 # define ASIO_INHERIT_TRACKED_HANDLER \
-  : public asio::detail::handler_tracking::tracked_handler
+  : public clmdep_asio::detail::handler_tracking::tracked_handler
 
 # define ASIO_ALSO_INHERIT_TRACKED_HANDLER \
-  , public asio::detail::handler_tracking::tracked_handler
+  , public clmdep_asio::detail::handler_tracking::tracked_handler
 
 # define ASIO_HANDLER_TRACKING_INIT \
-  asio::detail::handler_tracking::init()
+  clmdep_asio::detail::handler_tracking::init()
 
 # define ASIO_HANDLER_CREATION(args) \
-  asio::detail::handler_tracking::creation args
+  clmdep_asio::detail::handler_tracking::creation args
 
 # define ASIO_HANDLER_COMPLETION(args) \
-  asio::detail::handler_tracking::completion tracked_completion args
+  clmdep_asio::detail::handler_tracking::completion tracked_completion args
 
 # define ASIO_HANDLER_INVOCATION_BEGIN(args) \
   tracked_completion.invocation_begin args
@@ -132,7 +132,7 @@ private:
   tracked_completion.invocation_end()
 
 # define ASIO_HANDLER_OPERATION(args) \
-  asio::detail::handler_tracking::operation args
+  clmdep_asio::detail::handler_tracking::operation args
 
 #else // defined(ASIO_ENABLE_HANDLER_TRACKING)
 
@@ -148,7 +148,7 @@ private:
 #endif // defined(ASIO_ENABLE_HANDLER_TRACKING)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

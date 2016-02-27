@@ -31,30 +31,30 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 template <typename SyncReadStream, typename Allocator>
 inline std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, char delim)
+    clmdep_asio::basic_streambuf<Allocator>& b, char delim)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = read_until(s, b, delim, ec);
-  asio::detail::throw_error(ec, "read_until");
+  clmdep_asio::detail::throw_error(ec, "read_until");
   return bytes_transferred;
 }
 
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, char delim,
-    asio::error_code& ec)
+    clmdep_asio::basic_streambuf<Allocator>& b, char delim,
+    clmdep_asio::error_code& ec)
 {
   std::size_t search_position = 0;
   for (;;)
   {
     // Determine the range of the data to be searched.
-    typedef typename asio::basic_streambuf<
+    typedef typename clmdep_asio::basic_streambuf<
       Allocator>::const_buffers_type const_buffers_type;
-    typedef asio::buffers_iterator<const_buffers_type> iterator;
+    typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
     const_buffers_type buffers = b.data();
     iterator begin = iterator::begin(buffers);
     iterator start_pos = begin + search_position;
@@ -65,7 +65,7 @@ std::size_t read_until(SyncReadStream& s,
     if (iter != end)
     {
       // Found a match. We're done.
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return iter - begin + 1;
     }
     else
@@ -91,11 +91,11 @@ std::size_t read_until(SyncReadStream& s,
 
 template <typename SyncReadStream, typename Allocator>
 inline std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim)
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = read_until(s, b, delim, ec);
-  asio::detail::throw_error(ec, "read_until");
+  clmdep_asio::detail::throw_error(ec, "read_until");
   return bytes_transferred;
 }
 
@@ -136,16 +136,16 @@ namespace detail
 
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim,
-    asio::error_code& ec)
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim,
+    clmdep_asio::error_code& ec)
 {
   std::size_t search_position = 0;
   for (;;)
   {
     // Determine the range of the data to be searched.
-    typedef typename asio::basic_streambuf<
+    typedef typename clmdep_asio::basic_streambuf<
       Allocator>::const_buffers_type const_buffers_type;
-    typedef asio::buffers_iterator<const_buffers_type> iterator;
+    typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
     const_buffers_type buffers = b.data();
     iterator begin = iterator::begin(buffers);
     iterator start_pos = begin + search_position;
@@ -159,7 +159,7 @@ std::size_t read_until(SyncReadStream& s,
       if (result.second)
       {
         // Full match. We're done.
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return result.first - begin + delim.length();
       }
       else
@@ -193,26 +193,26 @@ std::size_t read_until(SyncReadStream& s,
 
 template <typename SyncReadStream, typename Allocator>
 inline std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr)
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = read_until(s, b, expr, ec);
-  asio::detail::throw_error(ec, "read_until");
+  clmdep_asio::detail::throw_error(ec, "read_until");
   return bytes_transferred;
 }
 
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
-    asio::error_code& ec)
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
+    clmdep_asio::error_code& ec)
 {
   std::size_t search_position = 0;
   for (;;)
   {
     // Determine the range of the data to be searched.
-    typedef typename asio::basic_streambuf<
+    typedef typename clmdep_asio::basic_streambuf<
       Allocator>::const_buffers_type const_buffers_type;
-    typedef asio::buffers_iterator<const_buffers_type> iterator;
+    typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
     const_buffers_type buffers = b.data();
     iterator begin = iterator::begin(buffers);
     iterator start_pos = begin + search_position;
@@ -228,7 +228,7 @@ std::size_t read_until(SyncReadStream& s,
       if (match_results[0].matched)
       {
         // Full match. We're done.
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return match_results[0].second - begin;
       }
       else
@@ -262,17 +262,17 @@ std::size_t read_until(SyncReadStream& s,
 
 template <typename SyncReadStream, typename Allocator, typename MatchCondition>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b,
-    MatchCondition match_condition, asio::error_code& ec,
+    clmdep_asio::basic_streambuf<Allocator>& b,
+    MatchCondition match_condition, clmdep_asio::error_code& ec,
     typename enable_if<is_match_condition<MatchCondition>::value>::type*)
 {
   std::size_t search_position = 0;
   for (;;)
   {
     // Determine the range of the data to be searched.
-    typedef typename asio::basic_streambuf<
+    typedef typename clmdep_asio::basic_streambuf<
       Allocator>::const_buffers_type const_buffers_type;
-    typedef asio::buffers_iterator<const_buffers_type> iterator;
+    typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
     const_buffers_type buffers = b.data();
     iterator begin = iterator::begin(buffers);
     iterator start_pos = begin + search_position;
@@ -283,7 +283,7 @@ std::size_t read_until(SyncReadStream& s,
     if (result.second)
     {
       // Full match. We're done.
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return result.first - begin;
     }
     else if (result.first != end)
@@ -314,12 +314,12 @@ std::size_t read_until(SyncReadStream& s,
 
 template <typename SyncReadStream, typename Allocator, typename MatchCondition>
 inline std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, MatchCondition match_condition,
+    clmdep_asio::basic_streambuf<Allocator>& b, MatchCondition match_condition,
     typename enable_if<is_match_condition<MatchCondition>::value>::type*)
 {
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   std::size_t bytes_transferred = read_until(s, b, match_condition, ec);
-  asio::detail::throw_error(ec, "read_until");
+  clmdep_asio::detail::throw_error(ec, "read_until");
   return bytes_transferred;
 }
 
@@ -330,7 +330,7 @@ namespace detail
   {
   public:
     read_until_delim_op(AsyncReadStream& stream,
-        asio::basic_streambuf<Allocator>& streambuf,
+        clmdep_asio::basic_streambuf<Allocator>& streambuf,
         char delim, ReadHandler& handler)
       : stream_(stream),
         streambuf_(streambuf),
@@ -363,7 +363,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       const std::size_t not_found = (std::numeric_limits<std::size_t>::max)();
@@ -375,9 +375,9 @@ namespace detail
         {
           {
             // Determine the range of the data to be searched.
-            typedef typename asio::basic_streambuf<
+            typedef typename clmdep_asio::basic_streambuf<
               Allocator>::const_buffers_type const_buffers_type;
-            typedef asio::buffers_iterator<const_buffers_type> iterator;
+            typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
             const_buffers_type buffers = streambuf_.data();
             iterator begin = iterator::begin(buffers);
             iterator start_pos = begin + search_position_;
@@ -421,7 +421,7 @@ namespace detail
             break;
         }
 
-        const asio::error_code result_ec =
+        const clmdep_asio::error_code result_ec =
           (search_position_ == not_found)
           ? error::not_found : ec;
 
@@ -435,7 +435,7 @@ namespace detail
 
   //private:
     AsyncReadStream& stream_;
-    asio::basic_streambuf<Allocator>& streambuf_;
+    clmdep_asio::basic_streambuf<Allocator>& streambuf_;
     char delim_;
     int start_;
     std::size_t search_position_;
@@ -443,59 +443,59 @@ namespace detail
   };
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       read_until_delim_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       read_until_delim_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       read_until_delim_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
     return this_handler->start_ == 0 ? true
-      : asio_handler_cont_helpers::is_continuation(
+      : clmdep_asio_handler_cont_helpers::is_continuation(
           this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename ReadHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       read_until_delim_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename ReadHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       read_until_delim_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 } // namespace detail
 
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, char delim,
+    clmdep_asio::basic_streambuf<Allocator>& b, char delim,
     ASIO_MOVE_ARG(ReadHandler) handler)
 {
   // If you get an error on the following line it means that your handler does
@@ -503,14 +503,14 @@ async_read_until(AsyncReadStream& s,
   ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
   detail::async_result_init<
-    ReadHandler, void (asio::error_code, std::size_t)> init(
+    ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(ReadHandler)(handler));
 
   detail::read_until_delim_op<AsyncReadStream,
     Allocator, ASIO_HANDLER_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))>(
+      void (clmdep_asio::error_code, std::size_t))>(
         s, b, delim, init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
@@ -522,7 +522,7 @@ namespace detail
   {
   public:
     read_until_delim_string_op(AsyncReadStream& stream,
-        asio::basic_streambuf<Allocator>& streambuf,
+        clmdep_asio::basic_streambuf<Allocator>& streambuf,
         const std::string& delim, ReadHandler& handler)
       : stream_(stream),
         streambuf_(streambuf),
@@ -555,7 +555,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       const std::size_t not_found = (std::numeric_limits<std::size_t>::max)();
@@ -567,9 +567,9 @@ namespace detail
         {
           {
             // Determine the range of the data to be searched.
-            typedef typename asio::basic_streambuf<
+            typedef typename clmdep_asio::basic_streambuf<
               Allocator>::const_buffers_type const_buffers_type;
-            typedef asio::buffers_iterator<const_buffers_type> iterator;
+            typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
             const_buffers_type buffers = streambuf_.data();
             iterator begin = iterator::begin(buffers);
             iterator start_pos = begin + search_position_;
@@ -624,7 +624,7 @@ namespace detail
             break;
         }
 
-        const asio::error_code result_ec =
+        const clmdep_asio::error_code result_ec =
           (search_position_ == not_found)
           ? error::not_found : ec;
 
@@ -638,7 +638,7 @@ namespace detail
 
   //private:
     AsyncReadStream& stream_;
-    asio::basic_streambuf<Allocator>& streambuf_;
+    clmdep_asio::basic_streambuf<Allocator>& streambuf_;
     std::string delim_;
     int start_;
     std::size_t search_position_;
@@ -646,59 +646,59 @@ namespace detail
   };
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       read_until_delim_string_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       read_until_delim_string_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       read_until_delim_string_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
     return this_handler->start_ == 0 ? true
-      : asio_handler_cont_helpers::is_continuation(
+      : clmdep_asio_handler_cont_helpers::is_continuation(
           this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream,
       typename Allocator, typename ReadHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       read_until_delim_string_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream,
       typename Allocator, typename ReadHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       read_until_delim_string_op<AsyncReadStream,
         Allocator, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 } // namespace detail
 
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim,
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim,
     ASIO_MOVE_ARG(ReadHandler) handler)
 {
   // If you get an error on the following line it means that your handler does
@@ -706,14 +706,14 @@ async_read_until(AsyncReadStream& s,
   ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
   detail::async_result_init<
-    ReadHandler, void (asio::error_code, std::size_t)> init(
+    ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(ReadHandler)(handler));
 
   detail::read_until_delim_string_op<AsyncReadStream,
     Allocator, ASIO_HANDLER_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))>(
+      void (clmdep_asio::error_code, std::size_t))>(
         s, b, delim, init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
@@ -728,7 +728,7 @@ namespace detail
   {
   public:
     read_until_expr_op(AsyncReadStream& stream,
-        asio::basic_streambuf<Allocator>& streambuf,
+        clmdep_asio::basic_streambuf<Allocator>& streambuf,
         const boost::regex& expr, ReadHandler& handler)
       : stream_(stream),
         streambuf_(streambuf),
@@ -761,7 +761,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       const std::size_t not_found = (std::numeric_limits<std::size_t>::max)();
@@ -773,9 +773,9 @@ namespace detail
         {
           {
             // Determine the range of the data to be searched.
-            typedef typename asio::basic_streambuf<
+            typedef typename clmdep_asio::basic_streambuf<
               Allocator>::const_buffers_type const_buffers_type;
-            typedef asio::buffers_iterator<const_buffers_type> iterator;
+            typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
             const_buffers_type buffers = streambuf_.data();
             iterator begin = iterator::begin(buffers);
             iterator start_pos = begin + search_position_;
@@ -833,7 +833,7 @@ namespace detail
             break;
         }
 
-        const asio::error_code result_ec =
+        const clmdep_asio::error_code result_ec =
           (search_position_ == not_found)
           ? error::not_found : ec;
 
@@ -847,7 +847,7 @@ namespace detail
 
   //private:
     AsyncReadStream& stream_;
-    asio::basic_streambuf<Allocator>& streambuf_;
+    clmdep_asio::basic_streambuf<Allocator>& streambuf_;
     RegEx expr_;
     int start_;
     std::size_t search_position_;
@@ -856,61 +856,61 @@ namespace detail
 
   template <typename AsyncReadStream, typename Allocator,
       typename RegEx, typename ReadHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       read_until_expr_op<AsyncReadStream,
         Allocator, RegEx, ReadHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator,
       typename RegEx, typename ReadHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       read_until_expr_op<AsyncReadStream,
         Allocator, RegEx, ReadHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator,
       typename RegEx, typename ReadHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       read_until_expr_op<AsyncReadStream,
         Allocator, RegEx, ReadHandler>* this_handler)
   {
     return this_handler->start_ == 0 ? true
-      : asio_handler_cont_helpers::is_continuation(
+      : clmdep_asio_handler_cont_helpers::is_continuation(
           this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename RegEx, typename ReadHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       read_until_expr_op<AsyncReadStream,
         Allocator, RegEx, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename RegEx, typename ReadHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       read_until_expr_op<AsyncReadStream,
         Allocator, RegEx, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 } // namespace detail
 
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
     ASIO_MOVE_ARG(ReadHandler) handler)
 {
   // If you get an error on the following line it means that your handler does
@@ -918,14 +918,14 @@ async_read_until(AsyncReadStream& s,
   ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
   detail::async_result_init<
-    ReadHandler, void (asio::error_code, std::size_t)> init(
+    ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(ReadHandler)(handler));
 
   detail::read_until_expr_op<AsyncReadStream, Allocator,
     boost::regex, ASIO_HANDLER_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))>(
+      void (clmdep_asio::error_code, std::size_t))>(
         s, b, expr, init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
@@ -940,7 +940,7 @@ namespace detail
   {
   public:
     read_until_match_op(AsyncReadStream& stream,
-        asio::basic_streambuf<Allocator>& streambuf,
+        clmdep_asio::basic_streambuf<Allocator>& streambuf,
         MatchCondition match_condition, ReadHandler& handler)
       : stream_(stream),
         streambuf_(streambuf),
@@ -973,7 +973,7 @@ namespace detail
     }
 #endif // defined(ASIO_HAS_MOVE)
 
-    void operator()(const asio::error_code& ec,
+    void operator()(const clmdep_asio::error_code& ec,
         std::size_t bytes_transferred, int start = 0)
     {
       const std::size_t not_found = (std::numeric_limits<std::size_t>::max)();
@@ -985,9 +985,9 @@ namespace detail
         {
           {
             // Determine the range of the data to be searched.
-            typedef typename asio::basic_streambuf<
+            typedef typename clmdep_asio::basic_streambuf<
               Allocator>::const_buffers_type const_buffers_type;
-            typedef asio::buffers_iterator<const_buffers_type> iterator;
+            typedef clmdep_asio::buffers_iterator<const_buffers_type> iterator;
             const_buffers_type buffers = streambuf_.data();
             iterator begin = iterator::begin(buffers);
             iterator start_pos = begin + search_position_;
@@ -1041,7 +1041,7 @@ namespace detail
             break;
         }
 
-        const asio::error_code result_ec =
+        const clmdep_asio::error_code result_ec =
           (search_position_ == not_found)
           ? error::not_found : ec;
 
@@ -1055,7 +1055,7 @@ namespace detail
 
   //private:
     AsyncReadStream& stream_;
-    asio::basic_streambuf<Allocator>& streambuf_;
+    clmdep_asio::basic_streambuf<Allocator>& streambuf_;
     MatchCondition match_condition_;
     int start_;
     std::size_t search_position_;
@@ -1064,52 +1064,52 @@ namespace detail
 
   template <typename AsyncReadStream, typename Allocator,
       typename MatchCondition, typename ReadHandler>
-  inline void* asio_handler_allocate(std::size_t size,
+  inline void* clmdep_asio_handler_allocate(std::size_t size,
       read_until_match_op<AsyncReadStream,
         Allocator, MatchCondition, ReadHandler>* this_handler)
   {
-    return asio_handler_alloc_helpers::allocate(
+    return clmdep_asio_handler_alloc_helpers::allocate(
         size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator,
       typename MatchCondition, typename ReadHandler>
-  inline void asio_handler_deallocate(void* pointer, std::size_t size,
+  inline void clmdep_asio_handler_deallocate(void* pointer, std::size_t size,
       read_until_match_op<AsyncReadStream,
         Allocator, MatchCondition, ReadHandler>* this_handler)
   {
-    asio_handler_alloc_helpers::deallocate(
+    clmdep_asio_handler_alloc_helpers::deallocate(
         pointer, size, this_handler->handler_);
   }
 
   template <typename AsyncReadStream, typename Allocator,
       typename MatchCondition, typename ReadHandler>
-  inline bool asio_handler_is_continuation(
+  inline bool clmdep_asio_handler_is_continuation(
       read_until_match_op<AsyncReadStream,
         Allocator, MatchCondition, ReadHandler>* this_handler)
   {
     return this_handler->start_ == 0 ? true
-      : asio_handler_cont_helpers::is_continuation(
+      : clmdep_asio_handler_cont_helpers::is_continuation(
           this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename MatchCondition, typename ReadHandler>
-  inline void asio_handler_invoke(Function& function,
+  inline void clmdep_asio_handler_invoke(Function& function,
       read_until_match_op<AsyncReadStream,
         Allocator, MatchCondition, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 
   template <typename Function, typename AsyncReadStream, typename Allocator,
       typename MatchCondition, typename ReadHandler>
-  inline void asio_handler_invoke(const Function& function,
+  inline void clmdep_asio_handler_invoke(const Function& function,
       read_until_match_op<AsyncReadStream,
         Allocator, MatchCondition, ReadHandler>* this_handler)
   {
-    asio_handler_invoke_helpers::invoke(
+    clmdep_asio_handler_invoke_helpers::invoke(
         function, this_handler->handler_);
   }
 } // namespace detail
@@ -1117,9 +1117,9 @@ namespace detail
 template <typename AsyncReadStream, typename Allocator,
     typename MatchCondition, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b,
+    clmdep_asio::basic_streambuf<Allocator>& b,
     MatchCondition match_condition, ASIO_MOVE_ARG(ReadHandler) handler,
     typename enable_if<is_match_condition<MatchCondition>::value>::type*)
 {
@@ -1128,19 +1128,19 @@ async_read_until(AsyncReadStream& s,
   ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
   detail::async_result_init<
-    ReadHandler, void (asio::error_code, std::size_t)> init(
+    ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
       ASIO_MOVE_CAST(ReadHandler)(handler));
 
   detail::read_until_match_op<AsyncReadStream, Allocator,
     MatchCondition, ASIO_HANDLER_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))>(
+      void (clmdep_asio::error_code, std::size_t))>(
         s, b, match_condition, init.handler)(
-          asio::error_code(), 0, 1);
+          clmdep_asio::error_code(), 0, 1);
 
   return init.result.get();
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

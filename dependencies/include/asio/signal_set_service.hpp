@@ -23,20 +23,20 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default service implementation for a signal set.
 class signal_set_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<signal_set_service>
+  : public clmdep_asio::detail::service_base<signal_set_service>
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
 public:
@@ -48,8 +48,8 @@ public:
 #endif
 
   /// Construct a new signal set service for the specified io_service.
-  explicit signal_set_service(asio::io_service& io_service)
-    : asio::detail::service_base<signal_set_service>(io_service),
+  explicit signal_set_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<signal_set_service>(io_service),
       service_impl_(io_service)
   {
   }
@@ -67,29 +67,29 @@ public:
   }
 
   /// Add a signal to a signal_set.
-  asio::error_code add(implementation_type& impl,
-      int signal_number, asio::error_code& ec)
+  clmdep_asio::error_code add(implementation_type& impl,
+      int signal_number, clmdep_asio::error_code& ec)
   {
     return service_impl_.add(impl, signal_number, ec);
   }
 
   /// Remove a signal to a signal_set.
-  asio::error_code remove(implementation_type& impl,
-      int signal_number, asio::error_code& ec)
+  clmdep_asio::error_code remove(implementation_type& impl,
+      int signal_number, clmdep_asio::error_code& ec)
   {
     return service_impl_.remove(impl, signal_number, ec);
   }
 
   /// Remove all signals from a signal_set.
-  asio::error_code clear(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code clear(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.clear(impl, ec);
   }
 
   /// Cancel all operations associated with the signal set.
-  asio::error_code cancel(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code cancel(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
@@ -97,12 +97,12 @@ public:
   // Start an asynchronous operation to wait for a signal to be delivered.
   template <typename SignalHandler>
   ASIO_INITFN_RESULT_TYPE(SignalHandler,
-      void (asio::error_code, int))
+      void (clmdep_asio::error_code, int))
   async_wait(implementation_type& impl,
       ASIO_MOVE_ARG(SignalHandler) handler)
   {
     detail::async_result_init<
-      SignalHandler, void (asio::error_code, int)> init(
+      SignalHandler, void (clmdep_asio::error_code, int)> init(
         ASIO_MOVE_CAST(SignalHandler)(handler));
 
     service_impl_.async_wait(impl, init.handler);
@@ -118,7 +118,7 @@ private:
   }
 
   // Perform any fork-related housekeeping.
-  void fork_service(asio::io_service::fork_event event)
+  void fork_service(clmdep_asio::io_service::fork_event event)
   {
     service_impl_.fork_service(event);
   }
@@ -127,7 +127,7 @@ private:
   detail::signal_set_service service_impl_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

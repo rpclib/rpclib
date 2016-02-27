@@ -30,7 +30,7 @@
 # include <boost/utility/enable_if.hpp>
 #endif // defined(ASIO_HAS_TYPE_TRAITS)
 
-namespace asio {
+namespace clmdep_asio {
 
 #if defined(ASIO_HAS_STD_TYPE_TRAITS)
 using std::add_const;
@@ -53,6 +53,6 @@ using boost::remove_pointer;
 using boost::remove_reference;
 #endif // defined(ASIO_HAS_STD_TYPE_TRAITS)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_TYPE_TRAITS_HPP

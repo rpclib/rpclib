@@ -31,11 +31,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
-epoll_reactor::epoll_reactor(asio::io_service& io_service)
-  : asio::detail::service_base<epoll_reactor>(io_service),
+epoll_reactor::epoll_reactor(clmdep_asio::io_service& io_service)
+  : clmdep_asio::detail::service_base<epoll_reactor>(io_service),
     io_service_(use_service<io_service_impl>(io_service)),
     mutex_(),
     interrupter_(),
@@ -88,9 +88,9 @@ void epoll_reactor::shutdown_service()
   io_service_.abandon_operations(ops);
 }
 
-void epoll_reactor::fork_service(asio::io_service::fork_event fork_ev)
+void epoll_reactor::fork_service(clmdep_asio::io_service::fork_event fork_ev)
 {
-  if (fork_ev == asio::io_service::fork_child)
+  if (fork_ev == clmdep_asio::io_service::fork_child)
   {
     if (epoll_fd_ != -1)
       ::close(epoll_fd_);
@@ -131,9 +131,9 @@ void epoll_reactor::fork_service(asio::io_service::fork_event fork_ev)
       int result = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, state->descriptor_, &ev);
       if (result != 0)
       {
-        asio::error_code ec(errno,
-            asio::error::get_system_category());
-        asio::detail::throw_error(ec, "epoll re-registration");
+        clmdep_asio::error_code ec(errno,
+            clmdep_asio::error::get_system_category());
+        clmdep_asio::detail::throw_error(ec, "epoll re-registration");
       }
     }
   }
@@ -208,7 +208,7 @@ void epoll_reactor::start_op(int op_type, socket_type descriptor,
 {
   if (!descriptor_data)
   {
-    op->ec_ = asio::error::bad_descriptor;
+    op->ec_ = clmdep_asio::error::bad_descriptor;
     post_immediate_completion(op, is_continuation);
     return;
   }
@@ -247,8 +247,8 @@ void epoll_reactor::start_op(int op_type, socket_type descriptor,
           }
           else
           {
-            op->ec_ = asio::error_code(errno,
-                asio::error::get_system_category());
+            op->ec_ = clmdep_asio::error_code(errno,
+                clmdep_asio::error::get_system_category());
             io_service_.post_immediate_completion(op, is_continuation);
             return;
           }
@@ -286,7 +286,7 @@ void epoll_reactor::cancel_ops(socket_type,
   {
     while (reactor_op* op = descriptor_data->op_queue_[i].front())
     {
-      op->ec_ = asio::error::operation_aborted;
+      op->ec_ = clmdep_asio::error::operation_aborted;
       descriptor_data->op_queue_[i].pop();
       ops.push(op);
     }
@@ -323,7 +323,7 @@ void epoll_reactor::deregister_descriptor(socket_type descriptor,
     {
       while (reactor_op* op = descriptor_data->op_queue_[i].front())
       {
-        op->ec_ = asio::error::operation_aborted;
+        op->ec_ = clmdep_asio::error::operation_aborted;
         descriptor_data->op_queue_[i].pop();
         ops.push(op);
       }
@@ -474,9 +474,9 @@ int epoll_reactor::do_epoll_create()
 
   if (fd == -1)
   {
-    asio::error_code ec(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "epoll");
+    clmdep_asio::error_code ec(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "epoll");
   }
 
   return fd;
@@ -639,7 +639,7 @@ operation* epoll_reactor::descriptor_state::perform_io(uint32_t events)
 
 void epoll_reactor::descriptor_state::do_complete(
     io_service_impl* owner, operation* base,
-    const asio::error_code& ec, std::size_t bytes_transferred)
+    const clmdep_asio::error_code& ec, std::size_t bytes_transferred)
 {
   if (owner)
   {
@@ -653,7 +653,7 @@ void epoll_reactor::descriptor_state::do_complete(
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

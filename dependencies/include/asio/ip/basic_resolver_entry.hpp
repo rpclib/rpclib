@@ -20,12 +20,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// An entry produced by a resolver.
 /**
- * The asio::ip::basic_resolver_entry class template describes an entry
+ * The clmdep_asio::ip::basic_resolver_entry class template describes an entry
  * as returned by a resolver.
  *
  * @par Thread Safety
@@ -87,7 +87,7 @@ private:
 };
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 template <typename Service>
 inline Service& use_service(io_service& ios)
@@ -59,7 +59,7 @@ inline bool has_service(io_service& ios)
   return ios.service_registry_->template has_service<Service>();
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 
@@ -71,7 +71,7 @@ inline bool has_service(io_service& ios)
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 template <typename CompletionHandler>
 inline ASIO_INITFN_RESULT_TYPE(CompletionHandler, void ())
@@ -118,7 +118,7 @@ io_service::wrap(Handler handler)
   return detail::wrapped_handler<io_service&, Handler>(*this, handler);
 }
 
-inline io_service::work::work(asio::io_service& io_service)
+inline io_service::work::work(clmdep_asio::io_service& io_service)
   : io_service_impl_(io_service.impl_)
 {
   io_service_impl_.work_started();
@@ -135,17 +135,17 @@ inline io_service::work::~work()
   io_service_impl_.work_finished();
 }
 
-inline asio::io_service& io_service::work::get_io_service()
+inline clmdep_asio::io_service& io_service::work::get_io_service()
 {
   return io_service_impl_.get_io_service();
 }
 
-inline asio::io_service& io_service::service::get_io_service()
+inline clmdep_asio::io_service& io_service::service::get_io_service()
 {
   return owner_;
 }
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

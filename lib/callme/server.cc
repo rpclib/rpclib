@@ -16,7 +16,7 @@
 #include "callme/detail/server_session.h"
 
 using namespace callme::detail;
-using asio::ip::tcp;
+using CALLME_ASIO::ip::tcp;
 
 namespace callme {
 
@@ -45,9 +45,9 @@ struct server::impl {
     }
 
     server *parent_;
-    asio::io_service io_;
-    asio::ip::tcp::acceptor acceptor_;
-    asio::ip::tcp::socket socket_;
+    CALLME_ASIO::io_service io_;
+    CALLME_ASIO::ip::tcp::acceptor acceptor_;
+    CALLME_ASIO::ip::tcp::socket socket_;
     callme::detail::thread_group loop_workers_;
     std::atomic_bool suppress_exceptions_;
     CALLME_CREATE_LOG_CHANNEL(server)

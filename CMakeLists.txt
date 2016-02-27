@@ -22,6 +22,8 @@ endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 add_definitions(-DASIO_STANDALONE)
+add_definitions(-DCALLME_ASIO=clmdep_asio)
+add_definitions(-DCALLME_FMT=clmdep_fmt)
 
 include_directories(include
     dependencies/include)

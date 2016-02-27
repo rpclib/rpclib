@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Protocol>
@@ -43,22 +43,22 @@ public:
   typedef typename Protocol::endpoint endpoint_type;
 
   // The query type.
-  typedef asio::ip::basic_resolver_query<Protocol> query_type;
+  typedef clmdep_asio::ip::basic_resolver_query<Protocol> query_type;
 
   // The iterator type.
-  typedef asio::ip::basic_resolver_iterator<Protocol> iterator_type;
+  typedef clmdep_asio::ip::basic_resolver_iterator<Protocol> iterator_type;
 
   // Constructor.
-  resolver_service(asio::io_service& io_service)
+  resolver_service(clmdep_asio::io_service& io_service)
     : resolver_service_base(io_service)
   {
   }
 
   // Resolve a query to a list of entries.
   iterator_type resolve(implementation_type&, const query_type& query,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
-    asio::detail::addrinfo_type* address_info = 0;
+    clmdep_asio::detail::addrinfo_type* address_info = 0;
 
     socket_ops::getaddrinfo(query.host_name().c_str(),
         query.service_name().c_str(), query.hints(), &address_info, ec);
@@ -75,8 +75,8 @@ public:
   {
     // Allocate and construct an operation to wrap the handler.
     typedef resolve_op<Protocol, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(impl, query, io_service_impl_, handler);
 
@@ -88,7 +88,7 @@ public:
 
   // Resolve an endpoint to a list of entries.
   iterator_type resolve(implementation_type&,
-      const endpoint_type& endpoint, asio::error_code& ec)
+      const endpoint_type& endpoint, clmdep_asio::error_code& ec)
   {
     char host_name[NI_MAXHOST];
     char service_name[NI_MAXSERV];
@@ -107,8 +107,8 @@ public:
   {
     // Allocate and construct an operation to wrap the handler.
     typedef resolve_endpoint_op<Protocol, Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(impl, endpoint, io_service_impl_, handler);
 
@@ -120,7 +120,7 @@ public:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

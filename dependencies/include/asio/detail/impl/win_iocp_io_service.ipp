@@ -30,7 +30,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 struct win_iocp_io_service::work_finished_on_block_exit
@@ -63,8 +63,8 @@ struct win_iocp_io_service::timer_thread_function
 };
 
 win_iocp_io_service::win_iocp_io_service(
-    asio::io_service& io_service, size_t concurrency_hint)
-  : asio::detail::service_base<win_iocp_io_service>(io_service),
+    clmdep_asio::io_service& io_service, size_t concurrency_hint)
+  : clmdep_asio::detail::service_base<win_iocp_io_service>(io_service),
     iocp_(),
     outstanding_work_(0),
     stopped_(0),
@@ -81,9 +81,9 @@ win_iocp_io_service::win_iocp_io_service(
   if (!iocp_.handle)
   {
     DWORD last_error = ::GetLastError();
-    asio::error_code ec(last_error,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "iocp");
+    clmdep_asio::error_code ec(last_error,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "iocp");
   }
 }
 
@@ -131,28 +131,28 @@ void win_iocp_io_service::shutdown_service()
     timer_thread_->join();
 }
 
-asio::error_code win_iocp_io_service::register_handle(
-    HANDLE handle, asio::error_code& ec)
+clmdep_asio::error_code win_iocp_io_service::register_handle(
+    HANDLE handle, clmdep_asio::error_code& ec)
 {
   if (::CreateIoCompletionPort(handle, iocp_.handle, 0, 0) == 0)
   {
     DWORD last_error = ::GetLastError();
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = clmdep_asio::error_code(last_error,
+        clmdep_asio::error::get_system_category());
   }
   else
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
   }
   return ec;
 }
 
-size_t win_iocp_io_service::run(asio::error_code& ec)
+size_t win_iocp_io_service::run(clmdep_asio::error_code& ec)
 {
   if (::InterlockedExchangeAdd(&outstanding_work_, 0) == 0)
   {
     stop();
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -166,12 +166,12 @@ size_t win_iocp_io_service::run(asio::error_code& ec)
   return n;
 }
 
-size_t win_iocp_io_service::run_one(asio::error_code& ec)
+size_t win_iocp_io_service::run_one(clmdep_asio::error_code& ec)
 {
   if (::InterlockedExchangeAdd(&outstanding_work_, 0) == 0)
   {
     stop();
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -181,12 +181,12 @@ size_t win_iocp_io_service::run_one(asio::error_code& ec)
   return do_one(true, ec);
 }
 
-size_t win_iocp_io_service::poll(asio::error_code& ec)
+size_t win_iocp_io_service::poll(clmdep_asio::error_code& ec)
 {
   if (::InterlockedExchangeAdd(&outstanding_work_, 0) == 0)
   {
     stop();
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -200,12 +200,12 @@ size_t win_iocp_io_service::poll(asio::error_code& ec)
   return n;
 }
 
-size_t win_iocp_io_service::poll_one(asio::error_code& ec)
+size_t win_iocp_io_service::poll_one(clmdep_asio::error_code& ec)
 {
   if (::InterlockedExchangeAdd(&outstanding_work_, 0) == 0)
   {
     stop();
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
@@ -224,9 +224,9 @@ void win_iocp_io_service::stop()
       if (!::PostQueuedCompletionStatus(iocp_.handle, 0, 0, 0))
       {
         DWORD last_error = ::GetLastError();
-        asio::error_code ec(last_error,
-            asio::error::get_system_category());
-        asio::detail::throw_error(ec, "pqcs");
+        clmdep_asio::error_code ec(last_error,
+            clmdep_asio::error::get_system_category());
+        clmdep_asio::detail::throw_error(ec, "pqcs");
       }
     }
   }
@@ -304,7 +304,7 @@ void win_iocp_io_service::on_completion(win_iocp_operation* op,
 
   // Store results in the OVERLAPPED structure.
   op->Internal = reinterpret_cast<ulong_ptr_t>(
-      &asio::error::get_system_category());
+      &clmdep_asio::error::get_system_category());
   op->Offset = last_error;
   op->OffsetHigh = bytes_transferred;
 
@@ -320,7 +320,7 @@ void win_iocp_io_service::on_completion(win_iocp_operation* op,
 }
 
 void win_iocp_io_service::on_completion(win_iocp_operation* op,
-    const asio::error_code& ec, DWORD bytes_transferred)
+    const clmdep_asio::error_code& ec, DWORD bytes_transferred)
 {
   // Flag that the operation is ready for invocation.
   op->ready_ = 1;
@@ -341,7 +341,7 @@ void win_iocp_io_service::on_completion(win_iocp_operation* op,
   }
 }
 
-size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
+size_t win_iocp_io_service::do_one(bool block, clmdep_asio::error_code& ec)
 {
   for (;;)
   {
@@ -370,15 +370,15 @@ size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
     if (overlapped)
     {
       win_iocp_operation* op = static_cast<win_iocp_operation*>(overlapped);
-      asio::error_code result_ec(last_error,
-          asio::error::get_system_category());
+      clmdep_asio::error_code result_ec(last_error,
+          clmdep_asio::error::get_system_category());
 
       // We may have been passed the last_error and bytes_transferred in the
       // OVERLAPPED structure itself.
       if (completion_key == overlapped_contains_result)
       {
-        result_ec = asio::error_code(static_cast<int>(op->Offset),
-            *reinterpret_cast<asio::error_category*>(op->Internal));
+        result_ec = clmdep_asio::error_code(static_cast<int>(op->Offset),
+            *reinterpret_cast<clmdep_asio::error_category*>(op->Internal));
         bytes_transferred = op->OffsetHigh;
       }
 
@@ -402,7 +402,7 @@ size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
         (void)on_exit;
 
         op->complete(*this, result_ec, bytes_transferred);
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return 1;
       }
     }
@@ -410,8 +410,8 @@ size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
     {
       if (last_error != WAIT_TIMEOUT)
       {
-        ec = asio::error_code(last_error,
-            asio::error::get_system_category());
+        ec = clmdep_asio::error_code(last_error,
+            clmdep_asio::error::get_system_category());
         return 0;
       }
 
@@ -419,7 +419,7 @@ size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
       if (block)
         continue;
 
-      ec = asio::error_code();
+      ec = clmdep_asio::error_code();
       return 0;
     }
     else if (completion_key == wake_for_dispatch)
@@ -442,13 +442,13 @@ size_t win_iocp_io_service::do_one(bool block, asio::error_code& ec)
           if (!::PostQueuedCompletionStatus(iocp_.handle, 0, 0, 0))
           {
             last_error = ::GetLastError();
-            ec = asio::error_code(last_error,
-                asio::error::get_system_category());
+            ec = clmdep_asio::error_code(last_error,
+                clmdep_asio::error::get_system_category());
             return 0;
           }
         }
 
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return 0;
       }
     }
@@ -483,9 +483,9 @@ void win_iocp_io_service::do_add_timer_queue(timer_queue_base& queue)
     if (waitable_timer_.handle == 0)
     {
       DWORD last_error = ::GetLastError();
-      asio::error_code ec(last_error,
-          asio::error::get_system_category());
-      asio::detail::throw_error(ec, "timer");
+      clmdep_asio::error_code ec(last_error,
+          clmdep_asio::error::get_system_category());
+      clmdep_asio::detail::throw_error(ec, "timer");
     }
 
     LARGE_INTEGER timeout;
@@ -529,7 +529,7 @@ void win_iocp_io_service::update_timeout()
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -26,11 +26,11 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
-dev_poll_reactor::dev_poll_reactor(asio::io_service& io_service)
-  : asio::detail::service_base<dev_poll_reactor>(io_service),
+dev_poll_reactor::dev_poll_reactor(clmdep_asio::io_service& io_service)
+  : clmdep_asio::detail::service_base<dev_poll_reactor>(io_service),
     io_service_(use_service<io_service_impl>(io_service)),
     mutex_(),
     dev_poll_fd_(do_dev_poll_create()),
@@ -53,7 +53,7 @@ dev_poll_reactor::~dev_poll_reactor()
 
 void dev_poll_reactor::shutdown_service()
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
   shutdown_ = true;
   lock.unlock();
 
@@ -67,9 +67,9 @@ void dev_poll_reactor::shutdown_service()
   io_service_.abandon_operations(ops);
 } 
 
-void dev_poll_reactor::fork_service(asio::io_service::fork_event fork_ev)
+void dev_poll_reactor::fork_service(clmdep_asio::io_service::fork_event fork_ev)
 {
-  if (fork_ev == asio::io_service::fork_child)
+  if (fork_ev == clmdep_asio::io_service::fork_child)
   {
     detail::mutex::scoped_lock lock(mutex_);
 
@@ -123,7 +123,7 @@ int dev_poll_reactor::register_descriptor(socket_type, per_descriptor_data&)
 int dev_poll_reactor::register_internal_descriptor(int op_type,
     socket_type descriptor, per_descriptor_data&, reactor_op* op)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   op_queue_[op_type].enqueue_operation(descriptor, op);
   ::pollfd& ev = add_pending_event_change(descriptor);
@@ -150,7 +150,7 @@ void dev_poll_reactor::start_op(int op_type, socket_type descriptor,
     dev_poll_reactor::per_descriptor_data&, reactor_op* op,
     bool is_continuation, bool allow_speculative)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   if (shutdown_)
   {
@@ -196,14 +196,14 @@ void dev_poll_reactor::start_op(int op_type, socket_type descriptor,
 void dev_poll_reactor::cancel_ops(socket_type descriptor,
     dev_poll_reactor::per_descriptor_data&)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
-  cancel_ops_unlocked(descriptor, asio::error::operation_aborted);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
+  cancel_ops_unlocked(descriptor, clmdep_asio::error::operation_aborted);
 }
 
 void dev_poll_reactor::deregister_descriptor(socket_type descriptor,
     dev_poll_reactor::per_descriptor_data&, bool)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   // Remove the descriptor from /dev/poll.
   ::pollfd& ev = add_pending_event_change(descriptor);
@@ -211,13 +211,13 @@ void dev_poll_reactor::deregister_descriptor(socket_type descriptor,
   interrupter_.interrupt();
 
   // Cancel any outstanding operations associated with the descriptor.
-  cancel_ops_unlocked(descriptor, asio::error::operation_aborted);
+  cancel_ops_unlocked(descriptor, clmdep_asio::error::operation_aborted);
 }
 
 void dev_poll_reactor::deregister_internal_descriptor(
     socket_type descriptor, dev_poll_reactor::per_descriptor_data&)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   // Remove the descriptor from /dev/poll. Since this function is only called
   // during a fork, we can apply the change immediately.
@@ -229,14 +229,14 @@ void dev_poll_reactor::deregister_internal_descriptor(
 
   // Destroy all operations associated with the descriptor.
   op_queue<operation> ops;
-  asio::error_code ec;
+  clmdep_asio::error_code ec;
   for (int i = 0; i < max_ops; ++i)
     op_queue_[i].cancel_operations(descriptor, ops, ec);
 }
 
 void dev_poll_reactor::run(bool block, op_queue<operation>& ops)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   // We can return immediately if there's no work to do and the reactor is
   // not supposed to block.
@@ -253,8 +253,8 @@ void dev_poll_reactor::run(bool block, op_queue<operation>& ops)
         &pending_event_changes_[0], events_size);
     if (result != static_cast<int>(events_size))
     {
-      asio::error_code ec = asio::error_code(
-          errno, asio::error::get_system_category());
+      clmdep_asio::error_code ec = clmdep_asio::error_code(
+          errno, clmdep_asio::error::get_system_category());
       for (std::size_t i = 0; i < pending_event_changes_.size(); ++i)
       {
         int descriptor = pending_event_changes_[i].fd;
@@ -340,8 +340,8 @@ void dev_poll_reactor::run(bool block, op_queue<operation>& ops)
         int result = ::write(dev_poll_fd_, &ev, sizeof(ev));
         if (result != sizeof(ev))
         {
-          asio::error_code ec(errno,
-              asio::error::get_system_category());
+          clmdep_asio::error_code ec(errno,
+              clmdep_asio::error::get_system_category());
           for (int j = 0; j < max_ops; ++j)
             op_queue_[j].cancel_operations(descriptor, ops, ec);
         }
@@ -361,9 +361,9 @@ int dev_poll_reactor::do_dev_poll_create()
   int fd = ::open("/dev/poll", O_RDWR);
   if (fd == -1)
   {
-    asio::error_code ec(errno,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "/dev/poll");
+    clmdep_asio::error_code ec(errno,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "/dev/poll");
   }
   return fd;
 }
@@ -388,7 +388,7 @@ int dev_poll_reactor::get_timeout()
 }
 
 void dev_poll_reactor::cancel_ops_unlocked(socket_type descriptor,
-    const asio::error_code& ec)
+    const clmdep_asio::error_code& ec)
 {
   bool need_interrupt = false;
   op_queue<operation> ops;
@@ -421,7 +421,7 @@ void dev_poll_reactor::cancel_ops_unlocked(socket_type descriptor,
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

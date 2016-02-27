@@ -28,12 +28,12 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Encapsulates the flags needed for TCP.
 /**
- * The asio::ip::tcp class contains flags necessary for TCP sockets.
+ * The clmdep_asio::ip::tcp class contains flags necessary for TCP sockets.
  *
  * @par Thread Safety
  * @e Distinct @e objects: Safe.@n
@@ -99,18 +99,18 @@ public:
    * @par Examples
    * Setting the option:
    * @code
-   * asio::ip::tcp::socket socket(io_service); 
+   * clmdep_asio::ip::tcp::socket socket(io_service); 
    * ...
-   * asio::ip::tcp::no_delay option(true);
+   * clmdep_asio::ip::tcp::no_delay option(true);
    * socket.set_option(option);
    * @endcode
    *
    * @par
    * Getting the current option value:
    * @code
-   * asio::ip::tcp::socket socket(io_service); 
+   * clmdep_asio::ip::tcp::socket socket(io_service); 
    * ...
-   * asio::ip::tcp::no_delay option;
+   * clmdep_asio::ip::tcp::no_delay option;
    * socket.get_option(option);
    * bool is_set = option.value();
    * @endcode
@@ -121,7 +121,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined no_delay;
 #else
-  typedef asio::detail::socket_option::boolean<
+  typedef clmdep_asio::detail::socket_option::boolean<
     ASIO_OS_DEF(IPPROTO_TCP), ASIO_OS_DEF(TCP_NODELAY)> no_delay;
 #endif
 
@@ -148,7 +148,7 @@ private:
 };
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

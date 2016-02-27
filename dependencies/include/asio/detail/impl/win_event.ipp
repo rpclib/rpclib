@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 win_event::win_event()
@@ -35,9 +35,9 @@ win_event::win_event()
   if (!events_[0])
   {
     DWORD last_error = ::GetLastError();
-    asio::error_code ec(last_error,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "event");
+    clmdep_asio::error_code ec(last_error,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "event");
   }
 
   events_[1] = ::CreateEvent(0, false, false, 0);
@@ -45,9 +45,9 @@ win_event::win_event()
   {
     DWORD last_error = ::GetLastError();
     ::CloseHandle(events_[0]);
-    asio::error_code ec(last_error,
-        asio::error::get_system_category());
-    asio::detail::throw_error(ec, "event");
+    clmdep_asio::error_code ec(last_error,
+        clmdep_asio::error::get_system_category());
+    clmdep_asio::detail::throw_error(ec, "event");
   }
 }
 
@@ -58,7 +58,7 @@ win_event::~win_event()
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

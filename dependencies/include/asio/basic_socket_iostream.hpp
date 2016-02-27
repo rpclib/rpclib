@@ -77,7 +77,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 // A separate base class is used to ensure that the streambuf is initialised
@@ -99,7 +99,7 @@ template <typename Protocol,
 #if defined(ASIO_HAS_BOOST_DATE_TIME) \
   || defined(GENERATING_DOCUMENTATION)
     typename Time = boost::posix_time::ptime,
-    typename TimeTraits = asio::time_traits<Time>,
+    typename TimeTraits = clmdep_asio::time_traits<Time>,
     typename TimerService = deadline_timer_service<Time, TimeTraits> >
 #else
     typename Time = steady_timer::clock_type,
@@ -220,7 +220,7 @@ public:
    *   std::cout << "Error: " << s.error().message() << std::endl;
    * } @endcode
    */
-  const asio::error_code& error() const
+  const clmdep_asio::error_code& error() const
   {
     return rdbuf()->puberror();
   }
@@ -239,7 +239,7 @@ public:
    * This function sets the expiry time associated with the stream. Stream
    * operations performed after this time (where the operations cannot be
    * completed using the internal buffers) will fail with the error
-   * asio::error::operation_aborted.
+   * clmdep_asio::error::operation_aborted.
    *
    * @param expiry_time The expiry time to be used for the stream.
    */
@@ -262,7 +262,7 @@ public:
    * This function sets the expiry time associated with the stream. Stream
    * operations performed after this time (where the operations cannot be
    * completed using the internal buffers) will fail with the error
-   * asio::error::operation_aborted.
+   * clmdep_asio::error::operation_aborted.
    *
    * @param expiry_time The expiry time to be used for the timer.
    */
@@ -272,7 +272,7 @@ public:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

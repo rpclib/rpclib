@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace posix {
 
 /// Provides POSIX descriptor functionality.
@@ -63,7 +63,7 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * descriptor.
    */
-  explicit basic_descriptor(asio::io_service& io_service)
+  explicit basic_descriptor(clmdep_asio::io_service& io_service)
     : basic_io_object<DescriptorService>(io_service)
   {
   }
@@ -79,16 +79,16 @@ public:
    *
    * @param native_descriptor A native descriptor.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_descriptor(asio::io_service& io_service,
+  basic_descriptor(clmdep_asio::io_service& io_service,
       const native_handle_type& native_descriptor)
     : basic_io_object<DescriptorService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         native_descriptor, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
 #if defined(ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
@@ -160,14 +160,14 @@ public:
    *
    * @param native_descriptor A native descriptor.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void assign(const native_handle_type& native_descriptor)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         native_descriptor, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
   /// Assign an existing native descriptor to the descriptor.
@@ -178,8 +178,8 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code assign(const native_handle_type& native_descriptor,
-      asio::error_code& ec)
+  clmdep_asio::error_code assign(const native_handle_type& native_descriptor,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().assign(
         this->get_implementation(), native_descriptor, ec);
@@ -195,28 +195,28 @@ public:
   /**
    * This function is used to close the descriptor. Any asynchronous read or
    * write operations will be cancelled immediately, and will complete with the
-   * asio::error::operation_aborted error.
+   * clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure. Note that, even if
+   * @throws clmdep_asio::system_error Thrown on failure. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    */
   void close()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().close(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "close");
+    clmdep_asio::detail::throw_error(ec, "close");
   }
 
   /// Close the descriptor.
   /**
    * This function is used to close the descriptor. Any asynchronous read or
    * write operations will be cancelled immediately, and will complete with the
-   * asio::error::operation_aborted error.
+   * clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    */
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return this->get_service().close(this->get_implementation(), ec);
   }
@@ -252,7 +252,7 @@ public:
    *
    * All outstanding asynchronous read or write operations will finish
    * immediately, and the handlers for cancelled operations will be passed the
-   * asio::error::operation_aborted error.
+   * clmdep_asio::error::operation_aborted error.
    */
   native_handle_type release()
   {
@@ -263,26 +263,26 @@ public:
   /**
    * This function causes all outstanding asynchronous read or write operations
    * to finish immediately, and the handlers for cancelled operations will be
-   * passed the asio::error::operation_aborted error.
+   * passed the clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void cancel()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().cancel(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "cancel");
+    clmdep_asio::detail::throw_error(ec, "cancel");
   }
 
   /// Cancel all asynchronous operations associated with the descriptor.
   /**
    * This function causes all outstanding asynchronous read or write operations
    * to finish immediately, and the handlers for cancelled operations will be
-   * passed the asio::error::operation_aborted error.
+   * passed the clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code cancel(asio::error_code& ec)
+  clmdep_asio::error_code cancel(clmdep_asio::error_code& ec)
   {
     return this->get_service().cancel(this->get_implementation(), ec);
   }
@@ -293,18 +293,18 @@ public:
    *
    * @param command The IO control command to be performed on the descriptor.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa IoControlCommand @n
-   * asio::posix::descriptor_base::bytes_readable @n
-   * asio::posix::descriptor_base::non_blocking_io
+   * clmdep_asio::posix::descriptor_base::bytes_readable @n
+   * clmdep_asio::posix::descriptor_base::non_blocking_io
    *
    * @par Example
    * Getting the number of bytes ready to read:
    * @code
-   * asio::posix::stream_descriptor descriptor(io_service);
+   * clmdep_asio::posix::stream_descriptor descriptor(io_service);
    * ...
-   * asio::posix::stream_descriptor::bytes_readable command;
+   * clmdep_asio::posix::stream_descriptor::bytes_readable command;
    * descriptor.io_control(command);
    * std::size_t bytes_readable = command.get();
    * @endcode
@@ -312,9 +312,9 @@ public:
   template <typename IoControlCommand>
   void io_control(IoControlCommand& command)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().io_control(this->get_implementation(), command, ec);
-    asio::detail::throw_error(ec, "io_control");
+    clmdep_asio::detail::throw_error(ec, "io_control");
   }
 
   /// Perform an IO control command on the descriptor.
@@ -326,16 +326,16 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    *
    * @sa IoControlCommand @n
-   * asio::posix::descriptor_base::bytes_readable @n
-   * asio::posix::descriptor_base::non_blocking_io
+   * clmdep_asio::posix::descriptor_base::bytes_readable @n
+   * clmdep_asio::posix::descriptor_base::non_blocking_io
    *
    * @par Example
    * Getting the number of bytes ready to read:
    * @code
-   * asio::posix::stream_descriptor descriptor(io_service);
+   * clmdep_asio::posix::stream_descriptor descriptor(io_service);
    * ...
-   * asio::posix::stream_descriptor::bytes_readable command;
-   * asio::error_code ec;
+   * clmdep_asio::posix::stream_descriptor::bytes_readable command;
+   * clmdep_asio::error_code ec;
    * descriptor.io_control(command, ec);
    * if (ec)
    * {
@@ -345,8 +345,8 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  asio::error_code io_control(IoControlCommand& command,
-      asio::error_code& ec)
+  clmdep_asio::error_code io_control(IoControlCommand& command,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().io_control(
         this->get_implementation(), command, ec);
@@ -355,13 +355,13 @@ public:
   /// Gets the non-blocking mode of the descriptor.
   /**
    * @returns @c true if the descriptor's synchronous operations will fail with
-   * asio::error::would_block if they are unable to perform the requested
+   * clmdep_asio::error::would_block if they are unable to perform the requested
    * operation immediately. If @c false, synchronous operations will block
    * until complete.
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
   bool non_blocking() const
   {
@@ -371,27 +371,27 @@ public:
   /// Sets the non-blocking mode of the descriptor.
   /**
    * @param mode If @c true, the descriptor's synchronous operations will fail
-   * with asio::error::would_block if they are unable to perform the
+   * with clmdep_asio::error::would_block if they are unable to perform the
    * requested operation immediately. If @c false, synchronous operations will
    * block until complete.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
   void non_blocking(bool mode)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().non_blocking(this->get_implementation(), mode, ec);
-    asio::detail::throw_error(ec, "non_blocking");
+    clmdep_asio::detail::throw_error(ec, "non_blocking");
   }
 
   /// Sets the non-blocking mode of the descriptor.
   /**
    * @param mode If @c true, the descriptor's synchronous operations will fail
-   * with asio::error::would_block if they are unable to perform the
+   * with clmdep_asio::error::would_block if they are unable to perform the
    * requested operation immediately. If @c false, synchronous operations will
    * block until complete.
    *
@@ -399,10 +399,10 @@ public:
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
-  asio::error_code non_blocking(
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code non_blocking(
+      bool mode, clmdep_asio::error_code& ec)
   {
     return this->get_service().non_blocking(
         this->get_implementation(), mode, ec);
@@ -415,7 +415,7 @@ public:
    * descriptor object's synchronous operations.
    *
    * @returns @c true if the underlying descriptor is in non-blocking mode and
-   * direct system calls may fail with asio::error::would_block (or the
+   * direct system calls may fail with clmdep_asio::error::would_block (or the
    * equivalent system error).
    *
    * @note The current non-blocking mode is cached by the descriptor object.
@@ -434,20 +434,20 @@ public:
    * object's synchronous operations.
    *
    * @param mode If @c true, the underlying descriptor is put into non-blocking
-   * mode and direct system calls may fail with asio::error::would_block
+   * mode and direct system calls may fail with clmdep_asio::error::would_block
    * (or the equivalent system error).
    *
-   * @throws asio::system_error Thrown on failure. If the @c mode is
+   * @throws clmdep_asio::system_error Thrown on failure. If the @c mode is
    * @c false, but the current value of @c non_blocking() is @c true, this
-   * function fails with asio::error::invalid_argument, as the
+   * function fails with clmdep_asio::error::invalid_argument, as the
    * combination does not make sense.
    */
   void native_non_blocking(bool mode)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().native_non_blocking(
         this->get_implementation(), mode, ec);
-    asio::detail::throw_error(ec, "native_non_blocking");
+    clmdep_asio::detail::throw_error(ec, "native_non_blocking");
   }
 
   /// Sets the non-blocking mode of the native descriptor implementation.
@@ -457,16 +457,16 @@ public:
    * object's synchronous operations.
    *
    * @param mode If @c true, the underlying descriptor is put into non-blocking
-   * mode and direct system calls may fail with asio::error::would_block
+   * mode and direct system calls may fail with clmdep_asio::error::would_block
    * (or the equivalent system error).
    *
    * @param ec Set to indicate what error occurred, if any. If the @c mode is
    * @c false, but the current value of @c non_blocking() is @c true, this
-   * function fails with asio::error::invalid_argument, as the
+   * function fails with clmdep_asio::error::invalid_argument, as the
    * combination does not make sense.
    */
-  asio::error_code native_non_blocking(
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code native_non_blocking(
+      bool mode, clmdep_asio::error_code& ec)
   {
     return this->get_service().native_non_blocking(
         this->get_implementation(), mode, ec);
@@ -480,7 +480,7 @@ protected:
 };
 
 } // namespace posix
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

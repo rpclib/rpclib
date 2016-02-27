@@ -19,7 +19,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Time_Traits>
@@ -67,7 +67,7 @@ std::size_t epoll_reactor::cancel_timer(timer_queue<Time_Traits>& queue,
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

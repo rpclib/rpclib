@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Provides socket functionality.
 /**
@@ -66,7 +66,7 @@ public:
    * @param io_service The io_service object that the socket will use to
    * dispatch handlers for any asynchronous operations performed on the socket.
    */
-  explicit basic_socket(asio::io_service& io_service)
+  explicit basic_socket(clmdep_asio::io_service& io_service)
     : basic_io_object<SocketService>(io_service)
   {
   }
@@ -80,15 +80,15 @@ public:
    *
    * @param protocol An object specifying protocol parameters to be used.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_socket(asio::io_service& io_service,
+  basic_socket(clmdep_asio::io_service& io_service,
       const protocol_type& protocol)
     : basic_io_object<SocketService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().open(this->get_implementation(), protocol, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
   }
 
   /// Construct a basic_socket, opening it and binding it to the given local
@@ -104,18 +104,18 @@ public:
    * @param endpoint An endpoint on the local machine to which the socket will
    * be bound.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_socket(asio::io_service& io_service,
+  basic_socket(clmdep_asio::io_service& io_service,
       const endpoint_type& endpoint)
     : basic_io_object<SocketService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     const protocol_type protocol = endpoint.protocol();
     this->get_service().open(this->get_implementation(), protocol, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
     this->get_service().bind(this->get_implementation(), endpoint, ec);
-    asio::detail::throw_error(ec, "bind");
+    clmdep_asio::detail::throw_error(ec, "bind");
   }
 
   /// Construct a basic_socket on an existing native socket.
@@ -129,16 +129,16 @@ public:
    *
    * @param native_socket A native socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_socket(asio::io_service& io_service,
+  basic_socket(clmdep_asio::io_service& io_service,
       const protocol_type& protocol, const native_handle_type& native_socket)
     : basic_io_object<SocketService>(io_service)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         protocol, native_socket, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
 #if defined(ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
@@ -255,19 +255,19 @@ public:
    *
    * @param protocol An object specifying protocol parameters to be used.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * socket.open(asio::ip::tcp::v4());
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * socket.open(clmdep_asio::ip::tcp::v4());
    * @endcode
    */
   void open(const protocol_type& protocol = protocol_type())
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().open(this->get_implementation(), protocol, ec);
-    asio::detail::throw_error(ec, "open");
+    clmdep_asio::detail::throw_error(ec, "open");
   }
 
   /// Open the socket using the specified protocol.
@@ -280,17 +280,17 @@ public:
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * asio::error_code ec;
-   * socket.open(asio::ip::tcp::v4(), ec);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::error_code ec;
+   * socket.open(clmdep_asio::ip::tcp::v4(), ec);
    * if (ec)
    * {
    *   // An error occurred.
    * }
    * @endcode
    */
-  asio::error_code open(const protocol_type& protocol,
-      asio::error_code& ec)
+  clmdep_asio::error_code open(const protocol_type& protocol,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().open(this->get_implementation(), protocol, ec);
   }
@@ -303,15 +303,15 @@ public:
    *
    * @param native_socket A native socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void assign(const protocol_type& protocol,
       const native_handle_type& native_socket)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().assign(this->get_implementation(),
         protocol, native_socket, ec);
-    asio::detail::throw_error(ec, "assign");
+    clmdep_asio::detail::throw_error(ec, "assign");
   }
 
   /// Assign an existing native socket to the socket.
@@ -324,8 +324,8 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code assign(const protocol_type& protocol,
-      const native_handle_type& native_socket, asio::error_code& ec)
+  clmdep_asio::error_code assign(const protocol_type& protocol,
+      const native_handle_type& native_socket, clmdep_asio::error_code& ec)
   {
     return this->get_service().assign(this->get_implementation(),
         protocol, native_socket, ec);
@@ -341,9 +341,9 @@ public:
   /**
    * This function is used to close the socket. Any asynchronous send, receive
    * or connect operations will be cancelled immediately, and will complete
-   * with the asio::error::operation_aborted error.
+   * with the clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure. Note that, even if
+   * @throws clmdep_asio::system_error Thrown on failure. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    *
    * @note For portable behaviour with respect to graceful closure of a
@@ -351,25 +351,25 @@ public:
    */
   void close()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().close(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "close");
+    clmdep_asio::detail::throw_error(ec, "close");
   }
 
   /// Close the socket.
   /**
    * This function is used to close the socket. Any asynchronous send, receive
    * or connect operations will be cancelled immediately, and will complete
-   * with the asio::error::operation_aborted error.
+   * with the clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::error_code ec;
+   * clmdep_asio::error_code ec;
    * socket.close(ec);
    * if (ec)
    * {
@@ -380,7 +380,7 @@ public:
    * @note For portable behaviour with respect to graceful closure of a
    * connected socket, call shutdown() before closing the socket.
    */
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return this->get_service().close(this->get_implementation(), ec);
   }
@@ -411,12 +411,12 @@ public:
   /**
    * This function causes all outstanding asynchronous connect, send and receive
    * operations to finish immediately, and the handlers for cancelled operations
-   * will be passed the asio::error::operation_aborted error.
+   * will be passed the clmdep_asio::error::operation_aborted error.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls to cancel() will always fail with
-   * asio::error::operation_not_supported when run on Windows XP, Windows
+   * clmdep_asio::error::operation_not_supported when run on Windows XP, Windows
    * Server 2003, and earlier versions of Windows, unless
    * ASIO_ENABLE_CANCELIO is defined. However, the CancelIo function has
    * two issues that should be considered before enabling its use:
@@ -450,21 +450,21 @@ public:
 #endif
   void cancel()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().cancel(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "cancel");
+    clmdep_asio::detail::throw_error(ec, "cancel");
   }
 
   /// Cancel all asynchronous operations associated with the socket.
   /**
    * This function causes all outstanding asynchronous connect, send and receive
    * operations to finish immediately, and the handlers for cancelled operations
-   * will be passed the asio::error::operation_aborted error.
+   * will be passed the clmdep_asio::error::operation_aborted error.
    *
    * @param ec Set to indicate what error occurred, if any.
    *
    * @note Calls to cancel() will always fail with
-   * asio::error::operation_not_supported when run on Windows XP, Windows
+   * clmdep_asio::error::operation_not_supported when run on Windows XP, Windows
    * Server 2003, and earlier versions of Windows, unless
    * ASIO_ENABLE_CANCELIO is defined. However, the CancelIo function has
    * two issues that should be considered before enabling its use:
@@ -496,7 +496,7 @@ public:
         "operation_not_supported when used on Windows XP, Windows Server 2003, "
         "or earlier. Consult documentation for details."))
 #endif
-  asio::error_code cancel(asio::error_code& ec)
+  clmdep_asio::error_code cancel(clmdep_asio::error_code& ec)
   {
     return this->get_service().cancel(this->get_implementation(), ec);
   }
@@ -509,13 +509,13 @@ public:
    * @return A bool indicating whether the socket is at the out-of-band data
    * mark.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   bool at_mark() const
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     bool b = this->get_service().at_mark(this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "at_mark");
+    clmdep_asio::detail::throw_error(ec, "at_mark");
     return b;
   }
 
@@ -529,7 +529,7 @@ public:
    * @return A bool indicating whether the socket is at the out-of-band data
    * mark.
    */
-  bool at_mark(asio::error_code& ec) const
+  bool at_mark(clmdep_asio::error_code& ec) const
   {
     return this->get_service().at_mark(this->get_implementation(), ec);
   }
@@ -542,14 +542,14 @@ public:
    * @return The number of bytes that may be read without blocking, or 0 if an
    * error occurs.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   std::size_t available() const
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().available(
         this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "available");
+    clmdep_asio::detail::throw_error(ec, "available");
     return s;
   }
 
@@ -563,7 +563,7 @@ public:
    * @return The number of bytes that may be read without blocking, or 0 if an
    * error occurs.
    */
-  std::size_t available(asio::error_code& ec) const
+  std::size_t available(clmdep_asio::error_code& ec) const
   {
     return this->get_service().available(this->get_implementation(), ec);
   }
@@ -576,21 +576,21 @@ public:
    * @param endpoint An endpoint on the local machine to which the socket will
    * be bound.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * socket.open(asio::ip::tcp::v4());
-   * socket.bind(asio::ip::tcp::endpoint(
-   *       asio::ip::tcp::v4(), 12345));
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * socket.open(clmdep_asio::ip::tcp::v4());
+   * socket.bind(clmdep_asio::ip::tcp::endpoint(
+   *       clmdep_asio::ip::tcp::v4(), 12345));
    * @endcode
    */
   void bind(const endpoint_type& endpoint)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().bind(this->get_implementation(), endpoint, ec);
-    asio::detail::throw_error(ec, "bind");
+    clmdep_asio::detail::throw_error(ec, "bind");
   }
 
   /// Bind the socket to the given local endpoint.
@@ -605,19 +605,19 @@ public:
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * socket.open(asio::ip::tcp::v4());
-   * asio::error_code ec;
-   * socket.bind(asio::ip::tcp::endpoint(
-   *       asio::ip::tcp::v4(), 12345), ec);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * socket.open(clmdep_asio::ip::tcp::v4());
+   * clmdep_asio::error_code ec;
+   * socket.bind(clmdep_asio::ip::tcp::endpoint(
+   *       clmdep_asio::ip::tcp::v4(), 12345), ec);
    * if (ec)
    * {
    *   // An error occurred.
    * }
    * @endcode
    */
-  asio::error_code bind(const endpoint_type& endpoint,
-      asio::error_code& ec)
+  clmdep_asio::error_code bind(const endpoint_type& endpoint,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().bind(this->get_implementation(), endpoint, ec);
   }
@@ -635,27 +635,27 @@ public:
    * @param peer_endpoint The remote endpoint to which the socket will be
    * connected.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * asio::ip::tcp::endpoint endpoint(
-   *     asio::ip::address::from_string("1.2.3.4"), 12345);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::endpoint endpoint(
+   *     clmdep_asio::ip::address::from_string("1.2.3.4"), 12345);
    * socket.connect(endpoint);
    * @endcode
    */
   void connect(const endpoint_type& peer_endpoint)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     if (!is_open())
     {
       this->get_service().open(this->get_implementation(),
           peer_endpoint.protocol(), ec);
-      asio::detail::throw_error(ec, "connect");
+      clmdep_asio::detail::throw_error(ec, "connect");
     }
     this->get_service().connect(this->get_implementation(), peer_endpoint, ec);
-    asio::detail::throw_error(ec, "connect");
+    clmdep_asio::detail::throw_error(ec, "connect");
   }
 
   /// Connect the socket to the specified endpoint.
@@ -675,10 +675,10 @@ public:
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
-   * asio::ip::tcp::endpoint endpoint(
-   *     asio::ip::address::from_string("1.2.3.4"), 12345);
-   * asio::error_code ec;
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::endpoint endpoint(
+   *     clmdep_asio::ip::address::from_string("1.2.3.4"), 12345);
+   * clmdep_asio::error_code ec;
    * socket.connect(endpoint, ec);
    * if (ec)
    * {
@@ -686,8 +686,8 @@ public:
    * }
    * @endcode
    */
-  asio::error_code connect(const endpoint_type& peer_endpoint,
-      asio::error_code& ec)
+  clmdep_asio::error_code connect(const endpoint_type& peer_endpoint,
+      clmdep_asio::error_code& ec)
   {
     if (!is_open())
     {
@@ -718,16 +718,16 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error // Result of operation
+   *   const clmdep_asio::error_code& error // Result of operation
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @par Example
    * @code
-   * void connect_handler(const asio::error_code& error)
+   * void connect_handler(const clmdep_asio::error_code& error)
    * {
    *   if (!error)
    *   {
@@ -737,15 +737,15 @@ public:
    *
    * ...
    *
-   * asio::ip::tcp::socket socket(io_service);
-   * asio::ip::tcp::endpoint endpoint(
-   *     asio::ip::address::from_string("1.2.3.4"), 12345);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::endpoint endpoint(
+   *     clmdep_asio::ip::address::from_string("1.2.3.4"), 12345);
    * socket.async_connect(endpoint, connect_handler);
    * @endcode
    */
   template <typename ConnectHandler>
   ASIO_INITFN_RESULT_TYPE(ConnectHandler,
-      void (asio::error_code))
+      void (clmdep_asio::error_code))
   async_connect(const endpoint_type& peer_endpoint,
       ASIO_MOVE_ARG(ConnectHandler) handler)
   {
@@ -755,18 +755,18 @@ public:
 
     if (!is_open())
     {
-      asio::error_code ec;
+      clmdep_asio::error_code ec;
       const protocol_type protocol = peer_endpoint.protocol();
       if (this->get_service().open(this->get_implementation(), protocol, ec))
       {
         detail::async_result_init<
-          ConnectHandler, void (asio::error_code)> init(
+          ConnectHandler, void (clmdep_asio::error_code)> init(
             ASIO_MOVE_CAST(ConnectHandler)(handler));
 
         this->get_io_service().post(
-            asio::detail::bind_handler(
+            clmdep_asio::detail::bind_handler(
               ASIO_MOVE_CAST(ASIO_HANDLER_TYPE(
-                ConnectHandler, void (asio::error_code)))(
+                ConnectHandler, void (clmdep_asio::error_code)))(
                   init.handler), ec));
 
         return init.result.get();
@@ -783,40 +783,40 @@ public:
    *
    * @param option The new option value to be set on the socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa SettableSocketOption @n
-   * asio::socket_base::broadcast @n
-   * asio::socket_base::do_not_route @n
-   * asio::socket_base::keep_alive @n
-   * asio::socket_base::linger @n
-   * asio::socket_base::receive_buffer_size @n
-   * asio::socket_base::receive_low_watermark @n
-   * asio::socket_base::reuse_address @n
-   * asio::socket_base::send_buffer_size @n
-   * asio::socket_base::send_low_watermark @n
-   * asio::ip::multicast::join_group @n
-   * asio::ip::multicast::leave_group @n
-   * asio::ip::multicast::enable_loopback @n
-   * asio::ip::multicast::outbound_interface @n
-   * asio::ip::multicast::hops @n
-   * asio::ip::tcp::no_delay
+   * clmdep_asio::socket_base::broadcast @n
+   * clmdep_asio::socket_base::do_not_route @n
+   * clmdep_asio::socket_base::keep_alive @n
+   * clmdep_asio::socket_base::linger @n
+   * clmdep_asio::socket_base::receive_buffer_size @n
+   * clmdep_asio::socket_base::receive_low_watermark @n
+   * clmdep_asio::socket_base::reuse_address @n
+   * clmdep_asio::socket_base::send_buffer_size @n
+   * clmdep_asio::socket_base::send_low_watermark @n
+   * clmdep_asio::ip::multicast::join_group @n
+   * clmdep_asio::ip::multicast::leave_group @n
+   * clmdep_asio::ip::multicast::enable_loopback @n
+   * clmdep_asio::ip::multicast::outbound_interface @n
+   * clmdep_asio::ip::multicast::hops @n
+   * clmdep_asio::ip::tcp::no_delay
    *
    * @par Example
    * Setting the IPPROTO_TCP/TCP_NODELAY option:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::no_delay option(true);
+   * clmdep_asio::ip::tcp::no_delay option(true);
    * socket.set_option(option);
    * @endcode
    */
   template <typename SettableSocketOption>
   void set_option(const SettableSocketOption& option)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().set_option(this->get_implementation(), option, ec);
-    asio::detail::throw_error(ec, "set_option");
+    clmdep_asio::detail::throw_error(ec, "set_option");
   }
 
   /// Set an option on the socket.
@@ -828,29 +828,29 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    *
    * @sa SettableSocketOption @n
-   * asio::socket_base::broadcast @n
-   * asio::socket_base::do_not_route @n
-   * asio::socket_base::keep_alive @n
-   * asio::socket_base::linger @n
-   * asio::socket_base::receive_buffer_size @n
-   * asio::socket_base::receive_low_watermark @n
-   * asio::socket_base::reuse_address @n
-   * asio::socket_base::send_buffer_size @n
-   * asio::socket_base::send_low_watermark @n
-   * asio::ip::multicast::join_group @n
-   * asio::ip::multicast::leave_group @n
-   * asio::ip::multicast::enable_loopback @n
-   * asio::ip::multicast::outbound_interface @n
-   * asio::ip::multicast::hops @n
-   * asio::ip::tcp::no_delay
+   * clmdep_asio::socket_base::broadcast @n
+   * clmdep_asio::socket_base::do_not_route @n
+   * clmdep_asio::socket_base::keep_alive @n
+   * clmdep_asio::socket_base::linger @n
+   * clmdep_asio::socket_base::receive_buffer_size @n
+   * clmdep_asio::socket_base::receive_low_watermark @n
+   * clmdep_asio::socket_base::reuse_address @n
+   * clmdep_asio::socket_base::send_buffer_size @n
+   * clmdep_asio::socket_base::send_low_watermark @n
+   * clmdep_asio::ip::multicast::join_group @n
+   * clmdep_asio::ip::multicast::leave_group @n
+   * clmdep_asio::ip::multicast::enable_loopback @n
+   * clmdep_asio::ip::multicast::outbound_interface @n
+   * clmdep_asio::ip::multicast::hops @n
+   * clmdep_asio::ip::tcp::no_delay
    *
    * @par Example
    * Setting the IPPROTO_TCP/TCP_NODELAY option:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::no_delay option(true);
-   * asio::error_code ec;
+   * clmdep_asio::ip::tcp::no_delay option(true);
+   * clmdep_asio::error_code ec;
    * socket.set_option(option, ec);
    * if (ec)
    * {
@@ -859,8 +859,8 @@ public:
    * @endcode
    */
   template <typename SettableSocketOption>
-  asio::error_code set_option(const SettableSocketOption& option,
-      asio::error_code& ec)
+  clmdep_asio::error_code set_option(const SettableSocketOption& option,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().set_option(
         this->get_implementation(), option, ec);
@@ -872,31 +872,31 @@ public:
    *
    * @param option The option value to be obtained from the socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa GettableSocketOption @n
-   * asio::socket_base::broadcast @n
-   * asio::socket_base::do_not_route @n
-   * asio::socket_base::keep_alive @n
-   * asio::socket_base::linger @n
-   * asio::socket_base::receive_buffer_size @n
-   * asio::socket_base::receive_low_watermark @n
-   * asio::socket_base::reuse_address @n
-   * asio::socket_base::send_buffer_size @n
-   * asio::socket_base::send_low_watermark @n
-   * asio::ip::multicast::join_group @n
-   * asio::ip::multicast::leave_group @n
-   * asio::ip::multicast::enable_loopback @n
-   * asio::ip::multicast::outbound_interface @n
-   * asio::ip::multicast::hops @n
-   * asio::ip::tcp::no_delay
+   * clmdep_asio::socket_base::broadcast @n
+   * clmdep_asio::socket_base::do_not_route @n
+   * clmdep_asio::socket_base::keep_alive @n
+   * clmdep_asio::socket_base::linger @n
+   * clmdep_asio::socket_base::receive_buffer_size @n
+   * clmdep_asio::socket_base::receive_low_watermark @n
+   * clmdep_asio::socket_base::reuse_address @n
+   * clmdep_asio::socket_base::send_buffer_size @n
+   * clmdep_asio::socket_base::send_low_watermark @n
+   * clmdep_asio::ip::multicast::join_group @n
+   * clmdep_asio::ip::multicast::leave_group @n
+   * clmdep_asio::ip::multicast::enable_loopback @n
+   * clmdep_asio::ip::multicast::outbound_interface @n
+   * clmdep_asio::ip::multicast::hops @n
+   * clmdep_asio::ip::tcp::no_delay
    *
    * @par Example
    * Getting the value of the SOL_SOCKET/SO_KEEPALIVE option:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::socket::keep_alive option;
+   * clmdep_asio::ip::tcp::socket::keep_alive option;
    * socket.get_option(option);
    * bool is_set = option.value();
    * @endcode
@@ -904,9 +904,9 @@ public:
   template <typename GettableSocketOption>
   void get_option(GettableSocketOption& option) const
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().get_option(this->get_implementation(), option, ec);
-    asio::detail::throw_error(ec, "get_option");
+    clmdep_asio::detail::throw_error(ec, "get_option");
   }
 
   /// Get an option from the socket.
@@ -918,29 +918,29 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    *
    * @sa GettableSocketOption @n
-   * asio::socket_base::broadcast @n
-   * asio::socket_base::do_not_route @n
-   * asio::socket_base::keep_alive @n
-   * asio::socket_base::linger @n
-   * asio::socket_base::receive_buffer_size @n
-   * asio::socket_base::receive_low_watermark @n
-   * asio::socket_base::reuse_address @n
-   * asio::socket_base::send_buffer_size @n
-   * asio::socket_base::send_low_watermark @n
-   * asio::ip::multicast::join_group @n
-   * asio::ip::multicast::leave_group @n
-   * asio::ip::multicast::enable_loopback @n
-   * asio::ip::multicast::outbound_interface @n
-   * asio::ip::multicast::hops @n
-   * asio::ip::tcp::no_delay
+   * clmdep_asio::socket_base::broadcast @n
+   * clmdep_asio::socket_base::do_not_route @n
+   * clmdep_asio::socket_base::keep_alive @n
+   * clmdep_asio::socket_base::linger @n
+   * clmdep_asio::socket_base::receive_buffer_size @n
+   * clmdep_asio::socket_base::receive_low_watermark @n
+   * clmdep_asio::socket_base::reuse_address @n
+   * clmdep_asio::socket_base::send_buffer_size @n
+   * clmdep_asio::socket_base::send_low_watermark @n
+   * clmdep_asio::ip::multicast::join_group @n
+   * clmdep_asio::ip::multicast::leave_group @n
+   * clmdep_asio::ip::multicast::enable_loopback @n
+   * clmdep_asio::ip::multicast::outbound_interface @n
+   * clmdep_asio::ip::multicast::hops @n
+   * clmdep_asio::ip::tcp::no_delay
    *
    * @par Example
    * Getting the value of the SOL_SOCKET/SO_KEEPALIVE option:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::socket::keep_alive option;
-   * asio::error_code ec;
+   * clmdep_asio::ip::tcp::socket::keep_alive option;
+   * clmdep_asio::error_code ec;
    * socket.get_option(option, ec);
    * if (ec)
    * {
@@ -950,8 +950,8 @@ public:
    * @endcode
    */
   template <typename GettableSocketOption>
-  asio::error_code get_option(GettableSocketOption& option,
-      asio::error_code& ec) const
+  clmdep_asio::error_code get_option(GettableSocketOption& option,
+      clmdep_asio::error_code& ec) const
   {
     return this->get_service().get_option(
         this->get_implementation(), option, ec);
@@ -963,18 +963,18 @@ public:
    *
    * @param command The IO control command to be performed on the socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @sa IoControlCommand @n
-   * asio::socket_base::bytes_readable @n
-   * asio::socket_base::non_blocking_io
+   * clmdep_asio::socket_base::bytes_readable @n
+   * clmdep_asio::socket_base::non_blocking_io
    *
    * @par Example
    * Getting the number of bytes ready to read:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::socket::bytes_readable command;
+   * clmdep_asio::ip::tcp::socket::bytes_readable command;
    * socket.io_control(command);
    * std::size_t bytes_readable = command.get();
    * @endcode
@@ -982,9 +982,9 @@ public:
   template <typename IoControlCommand>
   void io_control(IoControlCommand& command)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().io_control(this->get_implementation(), command, ec);
-    asio::detail::throw_error(ec, "io_control");
+    clmdep_asio::detail::throw_error(ec, "io_control");
   }
 
   /// Perform an IO control command on the socket.
@@ -996,16 +996,16 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    *
    * @sa IoControlCommand @n
-   * asio::socket_base::bytes_readable @n
-   * asio::socket_base::non_blocking_io
+   * clmdep_asio::socket_base::bytes_readable @n
+   * clmdep_asio::socket_base::non_blocking_io
    *
    * @par Example
    * Getting the number of bytes ready to read:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::socket::bytes_readable command;
-   * asio::error_code ec;
+   * clmdep_asio::ip::tcp::socket::bytes_readable command;
+   * clmdep_asio::error_code ec;
    * socket.io_control(command, ec);
    * if (ec)
    * {
@@ -1015,8 +1015,8 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  asio::error_code io_control(IoControlCommand& command,
-      asio::error_code& ec)
+  clmdep_asio::error_code io_control(IoControlCommand& command,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().io_control(
         this->get_implementation(), command, ec);
@@ -1025,13 +1025,13 @@ public:
   /// Gets the non-blocking mode of the socket.
   /**
    * @returns @c true if the socket's synchronous operations will fail with
-   * asio::error::would_block if they are unable to perform the requested
+   * clmdep_asio::error::would_block if they are unable to perform the requested
    * operation immediately. If @c false, synchronous operations will block
    * until complete.
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
   bool non_blocking() const
   {
@@ -1041,27 +1041,27 @@ public:
   /// Sets the non-blocking mode of the socket.
   /**
    * @param mode If @c true, the socket's synchronous operations will fail with
-   * asio::error::would_block if they are unable to perform the requested
+   * clmdep_asio::error::would_block if they are unable to perform the requested
    * operation immediately. If @c false, synchronous operations will block
    * until complete.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
   void non_blocking(bool mode)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().non_blocking(this->get_implementation(), mode, ec);
-    asio::detail::throw_error(ec, "non_blocking");
+    clmdep_asio::detail::throw_error(ec, "non_blocking");
   }
 
   /// Sets the non-blocking mode of the socket.
   /**
    * @param mode If @c true, the socket's synchronous operations will fail with
-   * asio::error::would_block if they are unable to perform the requested
+   * clmdep_asio::error::would_block if they are unable to perform the requested
    * operation immediately. If @c false, synchronous operations will block
    * until complete.
    *
@@ -1069,10 +1069,10 @@ public:
    *
    * @note The non-blocking mode has no effect on the behaviour of asynchronous
    * operations. Asynchronous operations will never fail with the error
-   * asio::error::would_block.
+   * clmdep_asio::error::would_block.
    */
-  asio::error_code non_blocking(
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code non_blocking(
+      bool mode, clmdep_asio::error_code& ec)
   {
     return this->get_service().non_blocking(
         this->get_implementation(), mode, ec);
@@ -1085,7 +1085,7 @@ public:
    * object's synchronous operations.
    *
    * @returns @c true if the underlying socket is in non-blocking mode and
-   * direct system calls may fail with asio::error::would_block (or the
+   * direct system calls may fail with clmdep_asio::error::would_block (or the
    * equivalent system error).
    *
    * @note The current non-blocking mode is cached by the socket object.
@@ -1108,7 +1108,7 @@ public:
    *
    *   // Function call operator meeting WriteHandler requirements.
    *   // Used as the handler for the async_write_some operation.
-   *   void operator()(asio::error_code ec, std::size_t)
+   *   void operator()(clmdep_asio::error_code ec, std::size_t)
    *   {
    *     // Put the underlying socket into non-blocking mode.
    *     if (!ec)
@@ -1122,20 +1122,20 @@ public:
    *         // Try the system call.
    *         errno = 0;
    *         int n = ::sendfile(sock_.native_handle(), fd_, &offset_, 65536);
-   *         ec = asio::error_code(n < 0 ? errno : 0,
-   *             asio::error::get_system_category());
+   *         ec = clmdep_asio::error_code(n < 0 ? errno : 0,
+   *             clmdep_asio::error::get_system_category());
    *         total_bytes_transferred_ += ec ? 0 : n;
    *
    *         // Retry operation immediately if interrupted by signal.
-   *         if (ec == asio::error::interrupted)
+   *         if (ec == clmdep_asio::error::interrupted)
    *           continue;
    *
    *         // Check if we need to run the operation again.
-   *         if (ec == asio::error::would_block
-   *             || ec == asio::error::try_again)
+   *         if (ec == clmdep_asio::error::would_block
+   *             || ec == clmdep_asio::error::try_again)
    *         {
    *           // We have to wait for the socket to become ready again.
-   *           sock_.async_write_some(asio::null_buffers(), *this);
+   *           sock_.async_write_some(clmdep_asio::null_buffers(), *this);
    *           return;
    *         }
    *
@@ -1159,7 +1159,7 @@ public:
    * void async_sendfile(tcp::socket& sock, int fd, Handler h)
    * {
    *   sendfile_op<Handler> op = { sock, fd, h, 0, 0 };
-   *   sock.async_write_some(asio::null_buffers(), op);
+   *   sock.async_write_some(clmdep_asio::null_buffers(), op);
    * } @endcode
    */
   bool native_non_blocking() const
@@ -1174,12 +1174,12 @@ public:
    * synchronous operations.
    *
    * @param mode If @c true, the underlying socket is put into non-blocking
-   * mode and direct system calls may fail with asio::error::would_block
+   * mode and direct system calls may fail with clmdep_asio::error::would_block
    * (or the equivalent system error).
    *
-   * @throws asio::system_error Thrown on failure. If the @c mode is
+   * @throws clmdep_asio::system_error Thrown on failure. If the @c mode is
    * @c false, but the current value of @c non_blocking() is @c true, this
-   * function fails with asio::error::invalid_argument, as the
+   * function fails with clmdep_asio::error::invalid_argument, as the
    * combination does not make sense.
    *
    * @par Example
@@ -1198,7 +1198,7 @@ public:
    *
    *   // Function call operator meeting WriteHandler requirements.
    *   // Used as the handler for the async_write_some operation.
-   *   void operator()(asio::error_code ec, std::size_t)
+   *   void operator()(clmdep_asio::error_code ec, std::size_t)
    *   {
    *     // Put the underlying socket into non-blocking mode.
    *     if (!ec)
@@ -1212,20 +1212,20 @@ public:
    *         // Try the system call.
    *         errno = 0;
    *         int n = ::sendfile(sock_.native_handle(), fd_, &offset_, 65536);
-   *         ec = asio::error_code(n < 0 ? errno : 0,
-   *             asio::error::get_system_category());
+   *         ec = clmdep_asio::error_code(n < 0 ? errno : 0,
+   *             clmdep_asio::error::get_system_category());
    *         total_bytes_transferred_ += ec ? 0 : n;
    *
    *         // Retry operation immediately if interrupted by signal.
-   *         if (ec == asio::error::interrupted)
+   *         if (ec == clmdep_asio::error::interrupted)
    *           continue;
    *
    *         // Check if we need to run the operation again.
-   *         if (ec == asio::error::would_block
-   *             || ec == asio::error::try_again)
+   *         if (ec == clmdep_asio::error::would_block
+   *             || ec == clmdep_asio::error::try_again)
    *         {
    *           // We have to wait for the socket to become ready again.
-   *           sock_.async_write_some(asio::null_buffers(), *this);
+   *           sock_.async_write_some(clmdep_asio::null_buffers(), *this);
    *           return;
    *         }
    *
@@ -1249,15 +1249,15 @@ public:
    * void async_sendfile(tcp::socket& sock, int fd, Handler h)
    * {
    *   sendfile_op<Handler> op = { sock, fd, h, 0, 0 };
-   *   sock.async_write_some(asio::null_buffers(), op);
+   *   sock.async_write_some(clmdep_asio::null_buffers(), op);
    * } @endcode
    */
   void native_non_blocking(bool mode)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().native_non_blocking(
         this->get_implementation(), mode, ec);
-    asio::detail::throw_error(ec, "native_non_blocking");
+    clmdep_asio::detail::throw_error(ec, "native_non_blocking");
   }
 
   /// Sets the non-blocking mode of the native socket implementation.
@@ -1267,12 +1267,12 @@ public:
    * synchronous operations.
    *
    * @param mode If @c true, the underlying socket is put into non-blocking
-   * mode and direct system calls may fail with asio::error::would_block
+   * mode and direct system calls may fail with clmdep_asio::error::would_block
    * (or the equivalent system error).
    *
    * @param ec Set to indicate what error occurred, if any. If the @c mode is
    * @c false, but the current value of @c non_blocking() is @c true, this
-   * function fails with asio::error::invalid_argument, as the
+   * function fails with clmdep_asio::error::invalid_argument, as the
    * combination does not make sense.
    *
    * @par Example
@@ -1291,7 +1291,7 @@ public:
    *
    *   // Function call operator meeting WriteHandler requirements.
    *   // Used as the handler for the async_write_some operation.
-   *   void operator()(asio::error_code ec, std::size_t)
+   *   void operator()(clmdep_asio::error_code ec, std::size_t)
    *   {
    *     // Put the underlying socket into non-blocking mode.
    *     if (!ec)
@@ -1305,20 +1305,20 @@ public:
    *         // Try the system call.
    *         errno = 0;
    *         int n = ::sendfile(sock_.native_handle(), fd_, &offset_, 65536);
-   *         ec = asio::error_code(n < 0 ? errno : 0,
-   *             asio::error::get_system_category());
+   *         ec = clmdep_asio::error_code(n < 0 ? errno : 0,
+   *             clmdep_asio::error::get_system_category());
    *         total_bytes_transferred_ += ec ? 0 : n;
    *
    *         // Retry operation immediately if interrupted by signal.
-   *         if (ec == asio::error::interrupted)
+   *         if (ec == clmdep_asio::error::interrupted)
    *           continue;
    *
    *         // Check if we need to run the operation again.
-   *         if (ec == asio::error::would_block
-   *             || ec == asio::error::try_again)
+   *         if (ec == clmdep_asio::error::would_block
+   *             || ec == clmdep_asio::error::try_again)
    *         {
    *           // We have to wait for the socket to become ready again.
-   *           sock_.async_write_some(asio::null_buffers(), *this);
+   *           sock_.async_write_some(clmdep_asio::null_buffers(), *this);
    *           return;
    *         }
    *
@@ -1342,11 +1342,11 @@ public:
    * void async_sendfile(tcp::socket& sock, int fd, Handler h)
    * {
    *   sendfile_op<Handler> op = { sock, fd, h, 0, 0 };
-   *   sock.async_write_some(asio::null_buffers(), op);
+   *   sock.async_write_some(clmdep_asio::null_buffers(), op);
    * } @endcode
    */
-  asio::error_code native_non_blocking(
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code native_non_blocking(
+      bool mode, clmdep_asio::error_code& ec)
   {
     return this->get_service().native_non_blocking(
         this->get_implementation(), mode, ec);
@@ -1358,21 +1358,21 @@ public:
    *
    * @returns An object that represents the local endpoint of the socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::endpoint endpoint = socket.local_endpoint();
+   * clmdep_asio::ip::tcp::endpoint endpoint = socket.local_endpoint();
    * @endcode
    */
   endpoint_type local_endpoint() const
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     endpoint_type ep = this->get_service().local_endpoint(
         this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "local_endpoint");
+    clmdep_asio::detail::throw_error(ec, "local_endpoint");
     return ep;
   }
 
@@ -1387,17 +1387,17 @@ public:
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::error_code ec;
-   * asio::ip::tcp::endpoint endpoint = socket.local_endpoint(ec);
+   * clmdep_asio::error_code ec;
+   * clmdep_asio::ip::tcp::endpoint endpoint = socket.local_endpoint(ec);
    * if (ec)
    * {
    *   // An error occurred.
    * }
    * @endcode
    */
-  endpoint_type local_endpoint(asio::error_code& ec) const
+  endpoint_type local_endpoint(clmdep_asio::error_code& ec) const
   {
     return this->get_service().local_endpoint(this->get_implementation(), ec);
   }
@@ -1408,21 +1408,21 @@ public:
    *
    * @returns An object that represents the remote endpoint of the socket.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::ip::tcp::endpoint endpoint = socket.remote_endpoint();
+   * clmdep_asio::ip::tcp::endpoint endpoint = socket.remote_endpoint();
    * @endcode
    */
   endpoint_type remote_endpoint() const
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     endpoint_type ep = this->get_service().remote_endpoint(
         this->get_implementation(), ec);
-    asio::detail::throw_error(ec, "remote_endpoint");
+    clmdep_asio::detail::throw_error(ec, "remote_endpoint");
     return ep;
   }
 
@@ -1437,17 +1437,17 @@ public:
    *
    * @par Example
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::error_code ec;
-   * asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(ec);
+   * clmdep_asio::error_code ec;
+   * clmdep_asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(ec);
    * if (ec)
    * {
    *   // An error occurred.
    * }
    * @endcode
    */
-  endpoint_type remote_endpoint(asio::error_code& ec) const
+  endpoint_type remote_endpoint(clmdep_asio::error_code& ec) const
   {
     return this->get_service().remote_endpoint(this->get_implementation(), ec);
   }
@@ -1459,21 +1459,21 @@ public:
    *
    * @param what Determines what types of operation will no longer be allowed.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * Shutting down the send side of the socket:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * socket.shutdown(asio::ip::tcp::socket::shutdown_send);
+   * socket.shutdown(clmdep_asio::ip::tcp::socket::shutdown_send);
    * @endcode
    */
   void shutdown(shutdown_type what)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     this->get_service().shutdown(this->get_implementation(), what, ec);
-    asio::detail::throw_error(ec, "shutdown");
+    clmdep_asio::detail::throw_error(ec, "shutdown");
   }
 
   /// Disable sends or receives on the socket.
@@ -1488,18 +1488,18 @@ public:
    * @par Example
    * Shutting down the send side of the socket:
    * @code
-   * asio::ip::tcp::socket socket(io_service);
+   * clmdep_asio::ip::tcp::socket socket(io_service);
    * ...
-   * asio::error_code ec;
-   * socket.shutdown(asio::ip::tcp::socket::shutdown_send, ec);
+   * clmdep_asio::error_code ec;
+   * socket.shutdown(clmdep_asio::ip::tcp::socket::shutdown_send, ec);
    * if (ec)
    * {
    *   // An error occurred.
    * }
    * @endcode
    */
-  asio::error_code shutdown(shutdown_type what,
-      asio::error_code& ec)
+  clmdep_asio::error_code shutdown(shutdown_type what,
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().shutdown(this->get_implementation(), what, ec);
   }
@@ -1511,7 +1511,7 @@ protected:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -38,7 +38,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// The serial_port_base class is used as a base for the basic_serial_port class
 /// template so that we have a common place to define the serial port options.
@@ -54,12 +54,12 @@ public:
   public:
     explicit baud_rate(unsigned int rate = 0);
     unsigned int value() const;
-    ASIO_DECL asio::error_code store(
+    ASIO_DECL clmdep_asio::error_code store(
         ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec) const;
-    ASIO_DECL asio::error_code load(
+        clmdep_asio::error_code& ec) const;
+    ASIO_DECL clmdep_asio::error_code load(
         const ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec);
+        clmdep_asio::error_code& ec);
   private:
     unsigned int value_;
   };
@@ -74,12 +74,12 @@ public:
     enum type { none, software, hardware };
     ASIO_DECL explicit flow_control(type t = none);
     type value() const;
-    ASIO_DECL asio::error_code store(
+    ASIO_DECL clmdep_asio::error_code store(
         ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec) const;
-    ASIO_DECL asio::error_code load(
+        clmdep_asio::error_code& ec) const;
+    ASIO_DECL clmdep_asio::error_code load(
         const ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec);
+        clmdep_asio::error_code& ec);
   private:
     type value_;
   };
@@ -94,12 +94,12 @@ public:
     enum type { none, odd, even };
     ASIO_DECL explicit parity(type t = none);
     type value() const;
-    ASIO_DECL asio::error_code store(
+    ASIO_DECL clmdep_asio::error_code store(
         ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec) const;
-    ASIO_DECL asio::error_code load(
+        clmdep_asio::error_code& ec) const;
+    ASIO_DECL clmdep_asio::error_code load(
         const ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec);
+        clmdep_asio::error_code& ec);
   private:
     type value_;
   };
@@ -114,12 +114,12 @@ public:
     enum type { one, onepointfive, two };
     ASIO_DECL explicit stop_bits(type t = one);
     type value() const;
-    ASIO_DECL asio::error_code store(
+    ASIO_DECL clmdep_asio::error_code store(
         ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec) const;
-    ASIO_DECL asio::error_code load(
+        clmdep_asio::error_code& ec) const;
+    ASIO_DECL clmdep_asio::error_code load(
         const ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec);
+        clmdep_asio::error_code& ec);
   private:
     type value_;
   };
@@ -133,12 +133,12 @@ public:
   public:
     ASIO_DECL explicit character_size(unsigned int t = 8);
     unsigned int value() const;
-    ASIO_DECL asio::error_code store(
+    ASIO_DECL clmdep_asio::error_code store(
         ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec) const;
-    ASIO_DECL asio::error_code load(
+        clmdep_asio::error_code& ec) const;
+    ASIO_DECL clmdep_asio::error_code load(
         const ASIO_OPTION_STORAGE& storage,
-        asio::error_code& ec);
+        clmdep_asio::error_code& ec);
   private:
     unsigned int value_;
   };
@@ -150,7 +150,7 @@ protected:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -29,7 +29,7 @@
 
 #include "asio/basic_waitable_timer.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 #if defined(GENERATING_DOCUMENTATION)
 /// Typedef for a timer based on the high resolution clock.
@@ -54,7 +54,7 @@ typedef basic_waitable_timer<
   high_resolution_timer;
 #endif
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // defined(ASIO_HAS_STD_CHRONO) 
        //   || defined(ASIO_HAS_BOOST_CHRONO)

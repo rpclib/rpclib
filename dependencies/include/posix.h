@@ -95,7 +95,7 @@
 
 #define FMT_RETRY(result, expression) FMT_RETRY_VAL(result, expression, -1)
 
-namespace fmt {
+namespace clmdep_fmt {
 
 // An error code.
 class ErrorCode {
@@ -198,14 +198,14 @@ public:
   int (fileno)() const;
 
   void print(CStringRef format_str, const ArgList &args) {
-    fmt::print(file_, format_str, args);
+    clmdep_fmt::print(file_, format_str, args);
   }
   FMT_VARIADIC(void, print, CStringRef)
 };
 
 // A file. Closed file is represented by a File object with descriptor -1.
 // Methods that are not declared with FMT_NOEXCEPT may throw
-// fmt::SystemError in case of failure. Note that some errors such as
+// clmdep_fmt::SystemError in case of failure. Note that some errors such as
 // closing the file multiple times will cause a crash on Windows rather
 // than an exception. You can get standard behavior by overriding the
 // invalid parameter handler with _set_invalid_parameter_handler.
@@ -331,13 +331,13 @@ class File {
 
 // Returns the memory page size.
 long getpagesize();
-}  // namespace fmt
+}  // namespace clmdep_fmt
 
 #if !FMT_USE_RVALUE_REFERENCES
 namespace std {
 // For compatibility with C++98.
-inline fmt::BufferedFile &move(fmt::BufferedFile &f) { return f; }
-inline fmt::File &move(fmt::File &f) { return f; }
+inline clmdep_fmt::BufferedFile &move(clmdep_fmt::BufferedFile &f) { return f; }
+inline clmdep_fmt::File &move(clmdep_fmt::File &f) { return f; }
 }
 #endif
 

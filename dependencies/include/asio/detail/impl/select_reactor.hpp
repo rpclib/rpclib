@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Time_Traits>
@@ -46,7 +46,7 @@ void select_reactor::schedule_timer(timer_queue<Time_Traits>& queue,
     const typename Time_Traits::time_type& time,
     typename timer_queue<Time_Traits>::per_timer_data& timer, wait_op* op)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
 
   if (shutdown_)
   {
@@ -65,7 +65,7 @@ std::size_t select_reactor::cancel_timer(timer_queue<Time_Traits>& queue,
     typename timer_queue<Time_Traits>::per_timer_data& timer,
     std::size_t max_cancelled)
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   std::size_t n = queue.cancel_timer(timer, ops, max_cancelled);
   lock.unlock();
@@ -74,7 +74,7 @@ std::size_t select_reactor::cancel_timer(timer_queue<Time_Traits>& queue,
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

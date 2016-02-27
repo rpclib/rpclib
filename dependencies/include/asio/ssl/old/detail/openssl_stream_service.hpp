@@ -36,13 +36,13 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace old {
 namespace detail {
 
 class openssl_stream_service
-  : public asio::detail::service_base<openssl_stream_service>
+  : public clmdep_asio::detail::service_base<openssl_stream_service>
 {
 private:
   enum { max_buffer_size = INT_MAX };
@@ -53,15 +53,15 @@ private:
   {
   public:
     typedef boost::function<
-      void (const asio::error_code&, size_t)> func_t;
+      void (const clmdep_asio::error_code&, size_t)> func_t;
 
-    base_handler(asio::io_service& io_service)
+    base_handler(clmdep_asio::io_service& io_service)
       : op_(NULL)
       , io_service_(io_service)
       , work_(io_service)
     {}
     
-    void do_func(const asio::error_code& error, size_t size)
+    void do_func(const clmdep_asio::error_code& error, size_t size)
     {
       func_(error, size);
     }
@@ -77,8 +77,8 @@ private:
   private:
     func_t func_;
     openssl_operation<Stream>* op_;
-    asio::io_service& io_service_;
-    asio::io_service::work work_;
+    clmdep_asio::io_service& io_service_;
+    clmdep_asio::io_service::work work_;
   };  // class base_handler
 
   // Handler for asynchronous IO (write/read) operations
@@ -87,7 +87,7 @@ private:
     : public base_handler<Stream>
   {
   public:
-    io_handler(Handler handler, asio::io_service& io_service)
+    io_handler(Handler handler, clmdep_asio::io_service& io_service)
       : base_handler<Stream>(io_service)
       , handler_(handler)
     {
@@ -98,7 +98,7 @@ private:
 
   private:
     Handler handler_;
-    void handler_impl(const asio::error_code& error, size_t size)
+    void handler_impl(const clmdep_asio::error_code& error, size_t size)
     {
       std::auto_ptr<io_handler<Stream, Handler> > this_ptr(this);
       handler_(error, size);
@@ -111,7 +111,7 @@ private:
     : public base_handler<Stream>
   {
   public:
-    handshake_handler(Handler handler, asio::io_service& io_service)
+    handshake_handler(Handler handler, clmdep_asio::io_service& io_service)
       : base_handler<Stream>(io_service)
       , handler_(handler)
     {
@@ -122,7 +122,7 @@ private:
 
   private:
     Handler handler_;
-    void handler_impl(const asio::error_code& error, size_t)
+    void handler_impl(const clmdep_asio::error_code& error, size_t)
     {
       std::auto_ptr<handshake_handler<Stream, Handler> > this_ptr(this);
       handler_(error);
@@ -136,7 +136,7 @@ private:
     : public base_handler<Stream>
   {
   public:
-    shutdown_handler(Handler handler, asio::io_service& io_service)
+    shutdown_handler(Handler handler, clmdep_asio::io_service& io_service)
       : base_handler<Stream>(io_service),
         handler_(handler)
     { 
@@ -147,7 +147,7 @@ private:
 
   private:
     Handler handler_;
-    void handler_impl(const asio::error_code& error, size_t)
+    void handler_impl(const clmdep_asio::error_code& error, size_t)
     {
       std::auto_ptr<shutdown_handler<Stream, Handler> > this_ptr(this);
       handler_(error);
@@ -164,8 +164,8 @@ public:
   } * impl_type;
 
   // Construct a new stream socket service for the specified io_service.
-  explicit openssl_stream_service(asio::io_service& io_service)
-    : asio::detail::service_base<openssl_stream_service>(io_service),
+  explicit openssl_stream_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<openssl_stream_service>(io_service),
       strand_(io_service)
   {
   }
@@ -211,8 +211,8 @@ public:
 
   // Perform SSL handshaking.
   template <typename Stream>
-  asio::error_code handshake(impl_type& impl, Stream& next_layer,
-      stream_base::handshake_type type, asio::error_code& ec)
+  clmdep_asio::error_code handshake(impl_type& impl, Stream& next_layer,
+      stream_base::handshake_type type, clmdep_asio::error_code& ec)
   {
     try
     {
@@ -226,13 +226,13 @@ public:
         impl->ext_bio);
       op.start();
     }
-    catch (asio::system_error& e)
+    catch (clmdep_asio::system_error& e)
     {
       ec = e.code();
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
@@ -271,8 +271,8 @@ public:
 
   // Shut down SSL on the stream.
   template <typename Stream>
-  asio::error_code shutdown(impl_type& impl, Stream& next_layer,
-      asio::error_code& ec)
+  clmdep_asio::error_code shutdown(impl_type& impl, Stream& next_layer,
+      clmdep_asio::error_code& ec)
   {
     try
     {
@@ -284,13 +284,13 @@ public:
         impl->ext_bio);
       op.start();
     }
-    catch (asio::system_error& e)
+    catch (clmdep_asio::system_error& e)
     {
       ec = e.code();
       return ec;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return ec;
   }
 
@@ -327,27 +327,27 @@ public:
   // Write some data to the stream.
   template <typename Stream, typename Const_Buffers>
   std::size_t write_some(impl_type& impl, Stream& next_layer,
-      const Const_Buffers& buffers, asio::error_code& ec)
+      const Const_Buffers& buffers, clmdep_asio::error_code& ec)
   {
     size_t bytes_transferred = 0;
     try
     {
-      asio::const_buffer buffer =
-        asio::detail::buffer_sequence_adapter<
-          asio::const_buffer, Const_Buffers>::first(buffers);
+      clmdep_asio::const_buffer buffer =
+        clmdep_asio::detail::buffer_sequence_adapter<
+          clmdep_asio::const_buffer, Const_Buffers>::first(buffers);
 
-      std::size_t buffer_size = asio::buffer_size(buffer);
+      std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
       if (buffer_size > max_buffer_size)
         buffer_size = max_buffer_size;
       else if (buffer_size == 0)
       {
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return 0;
       }
 
       boost::function<int (SSL*)> send_func =
         boost::bind(boost::type<int>(), &::SSL_write, boost::arg<1>(),  
-            asio::buffer_cast<const void*>(buffer),
+            clmdep_asio::buffer_cast<const void*>(buffer),
             static_cast<int>(buffer_size));
       openssl_operation<Stream> op(
         send_func,
@@ -358,13 +358,13 @@ public:
       );
       bytes_transferred = static_cast<size_t>(op.start());
     }
-    catch (asio::system_error& e)
+    catch (clmdep_asio::system_error& e)
     {
       ec = e.code();
       return 0;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return bytes_transferred;
   }
 
@@ -375,17 +375,17 @@ public:
   {
     typedef io_handler<Stream, Handler> send_handler;
 
-    asio::const_buffer buffer =
-      asio::detail::buffer_sequence_adapter<
-        asio::const_buffer, Const_Buffers>::first(buffers);
+    clmdep_asio::const_buffer buffer =
+      clmdep_asio::detail::buffer_sequence_adapter<
+        clmdep_asio::const_buffer, Const_Buffers>::first(buffers);
 
-    std::size_t buffer_size = asio::buffer_size(buffer);
+    std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
     if (buffer_size > max_buffer_size)
       buffer_size = max_buffer_size;
     else if (buffer_size == 0)
     {
-      get_io_service().post(asio::detail::bind_handler(
-            handler, asio::error_code(), 0));
+      get_io_service().post(clmdep_asio::detail::bind_handler(
+            handler, clmdep_asio::error_code(), 0));
       return;
     }
 
@@ -393,7 +393,7 @@ public:
 
     boost::function<int (SSL*)> send_func =
       boost::bind(boost::type<int>(), &::SSL_write, boost::arg<1>(),
-          asio::buffer_cast<const void*>(buffer),
+          clmdep_asio::buffer_cast<const void*>(buffer),
           static_cast<int>(buffer_size));
 
     openssl_operation<Stream>* op = new openssl_operation<Stream>
@@ -420,27 +420,27 @@ public:
   // Read some data from the stream.
   template <typename Stream, typename Mutable_Buffers>
   std::size_t read_some(impl_type& impl, Stream& next_layer,
-      const Mutable_Buffers& buffers, asio::error_code& ec)
+      const Mutable_Buffers& buffers, clmdep_asio::error_code& ec)
   {
     size_t bytes_transferred = 0;
     try
     {
-      asio::mutable_buffer buffer =
-        asio::detail::buffer_sequence_adapter<
-          asio::mutable_buffer, Mutable_Buffers>::first(buffers);
+      clmdep_asio::mutable_buffer buffer =
+        clmdep_asio::detail::buffer_sequence_adapter<
+          clmdep_asio::mutable_buffer, Mutable_Buffers>::first(buffers);
 
-      std::size_t buffer_size = asio::buffer_size(buffer);
+      std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
       if (buffer_size > max_buffer_size)
         buffer_size = max_buffer_size;
       else if (buffer_size == 0)
       {
-        ec = asio::error_code();
+        ec = clmdep_asio::error_code();
         return 0;
       }
 
       boost::function<int (SSL*)> recv_func =
         boost::bind(boost::type<int>(), &::SSL_read, boost::arg<1>(),
-            asio::buffer_cast<void*>(buffer),
+            clmdep_asio::buffer_cast<void*>(buffer),
             static_cast<int>(buffer_size));
       openssl_operation<Stream> op(recv_func,
         next_layer,
@@ -451,13 +451,13 @@ public:
 
       bytes_transferred = static_cast<size_t>(op.start());
     }
-    catch (asio::system_error& e)
+    catch (clmdep_asio::system_error& e)
     {
       ec = e.code();
       return 0;
     }
 
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return bytes_transferred;
   }
 
@@ -468,17 +468,17 @@ public:
   {
     typedef io_handler<Stream, Handler> recv_handler;
 
-    asio::mutable_buffer buffer =
-      asio::detail::buffer_sequence_adapter<
-        asio::mutable_buffer, Mutable_Buffers>::first(buffers);
+    clmdep_asio::mutable_buffer buffer =
+      clmdep_asio::detail::buffer_sequence_adapter<
+        clmdep_asio::mutable_buffer, Mutable_Buffers>::first(buffers);
 
-    std::size_t buffer_size = asio::buffer_size(buffer);
+    std::size_t buffer_size = clmdep_asio::buffer_size(buffer);
     if (buffer_size > max_buffer_size)
       buffer_size = max_buffer_size;
     else if (buffer_size == 0)
     {
-      get_io_service().post(asio::detail::bind_handler(
-            handler, asio::error_code(), 0));
+      get_io_service().post(clmdep_asio::detail::bind_handler(
+            handler, clmdep_asio::error_code(), 0));
       return;
     }
 
@@ -486,7 +486,7 @@ public:
 
     boost::function<int (SSL*)> recv_func =
       boost::bind(boost::type<int>(), &::SSL_read, boost::arg<1>(),
-          asio::buffer_cast<void*>(buffer),
+          clmdep_asio::buffer_cast<void*>(buffer),
           static_cast<int>(buffer_size));
 
     openssl_operation<Stream>* op = new openssl_operation<Stream>
@@ -513,25 +513,25 @@ public:
   // Peek at the incoming data on the stream.
   template <typename Stream, typename Mutable_Buffers>
   std::size_t peek(impl_type& /*impl*/, Stream& /*next_layer*/,
-      const Mutable_Buffers& /*buffers*/, asio::error_code& ec)
+      const Mutable_Buffers& /*buffers*/, clmdep_asio::error_code& ec)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
   // Determine the amount of data that may be read without blocking.
   template <typename Stream>
   std::size_t in_avail(impl_type& /*impl*/, Stream& /*next_layer*/,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return 0;
   }
 
 private:  
-  asio::io_service::strand strand_;
+  clmdep_asio::io_service::strand strand_;
 
-  typedef asio::detail::mutex mutex_type;
+  typedef clmdep_asio::detail::mutex mutex_type;
   
   template<typename Mutex>
   struct ssl_wrap
@@ -564,7 +564,7 @@ Mutex openssl_stream_service::ssl_wrap<Mutex>::ssl_mutex_;
 } // namespace detail
 } // namespace old
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

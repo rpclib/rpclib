@@ -29,7 +29,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 namespace detail
 {
@@ -56,15 +56,15 @@ struct is_match_condition
 #else
   enum
   {
-    value = asio::is_function<
-        typename asio::remove_pointer<T>::type>::value
+    value = clmdep_asio::is_function<
+        typename clmdep_asio::remove_pointer<T>::type>::value
       || detail::has_result_type<T>::value
   };
 #endif
 };
 
 /**
- * @defgroup read_until asio::read_until
+ * @defgroup read_until clmdep_asio::read_until
  *
  * @brief Read data into a streambuf until it contains a delimiter, matches a
  * regular expression, or a function object indicates a match.
@@ -95,7 +95,7 @@ struct is_match_condition
  * @returns The number of bytes in the streambuf's get area up to and including
  * the delimiter.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note After a successful read_until operation, the streambuf may contain
  * additional data beyond the delimiter. An application will typically leave
@@ -103,8 +103,8 @@ struct is_match_condition
  *
  * @par Example
  * To read data into a streambuf until a newline is encountered:
- * @code asio::streambuf b;
- * asio::read_until(s, b, '\n');
+ * @code clmdep_asio::streambuf b;
+ * clmdep_asio::read_until(s, b, '\n');
  * std::istream is(&b);
  * std::string line;
  * std::getline(is, line); @endcode
@@ -121,7 +121,7 @@ struct is_match_condition
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, char delim);
+    clmdep_asio::basic_streambuf<Allocator>& b, char delim);
 
 /// Read data into a streambuf until it contains a specified delimiter.
 /**
@@ -155,8 +155,8 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, char delim,
-    asio::error_code& ec);
+    clmdep_asio::basic_streambuf<Allocator>& b, char delim,
+    clmdep_asio::error_code& ec);
 
 /// Read data into a streambuf until it contains a specified delimiter.
 /**
@@ -182,7 +182,7 @@ std::size_t read_until(SyncReadStream& s,
  * @returns The number of bytes in the streambuf's get area up to and including
  * the delimiter.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note After a successful read_until operation, the streambuf may contain
  * additional data beyond the delimiter. An application will typically leave
@@ -190,8 +190,8 @@ std::size_t read_until(SyncReadStream& s,
  *
  * @par Example
  * To read data into a streambuf until a newline is encountered:
- * @code asio::streambuf b;
- * asio::read_until(s, b, "\r\n");
+ * @code clmdep_asio::streambuf b;
+ * clmdep_asio::read_until(s, b, "\r\n");
  * std::istream is(&b);
  * std::string line;
  * std::getline(is, line); @endcode
@@ -208,7 +208,7 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim);
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim);
 
 /// Read data into a streambuf until it contains a specified delimiter.
 /**
@@ -242,8 +242,8 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim,
-    asio::error_code& ec);
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim,
+    clmdep_asio::error_code& ec);
 
 #if defined(ASIO_HAS_BOOST_REGEX) \
   || defined(GENERATING_DOCUMENTATION)
@@ -273,7 +273,7 @@ std::size_t read_until(SyncReadStream& s,
  * @returns The number of bytes in the streambuf's get area up to and including
  * the substring that matches the regular expression.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note After a successful read_until operation, the streambuf may contain
  * additional data beyond that which matched the regular expression. An
@@ -282,8 +282,8 @@ std::size_t read_until(SyncReadStream& s,
  *
  * @par Example
  * To read data into a streambuf until a CR-LF sequence is encountered:
- * @code asio::streambuf b;
- * asio::read_until(s, b, boost::regex("\r\n"));
+ * @code clmdep_asio::streambuf b;
+ * clmdep_asio::read_until(s, b, boost::regex("\r\n"));
  * std::istream is(&b);
  * std::string line;
  * std::getline(is, line); @endcode
@@ -300,7 +300,7 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr);
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr);
 
 /// Read data into a streambuf until some part of the data it contains matches
 /// a regular expression.
@@ -337,8 +337,8 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
-    asio::error_code& ec);
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
+    clmdep_asio::error_code& ec);
 
 #endif // defined(ASIO_HAS_BOOST_REGEX)
        // || defined(GENERATING_DOCUMENTATION)
@@ -382,7 +382,7 @@ std::size_t read_until(SyncReadStream& s,
  * @returns The number of bytes in the streambuf's get area that have been fully
  * consumed by the match function.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note After a successful read_until operation, the streambuf may contain
  * additional data beyond that which matched the function object. An application
@@ -395,8 +395,8 @@ std::size_t read_until(SyncReadStream& s,
  *
  * @par Examples
  * To read data into a streambuf until whitespace is encountered:
- * @code typedef asio::buffers_iterator<
- *     asio::streambuf::const_buffers_type> iterator;
+ * @code typedef clmdep_asio::buffers_iterator<
+ *     clmdep_asio::streambuf::const_buffers_type> iterator;
  *
  * std::pair<iterator, bool>
  * match_whitespace(iterator begin, iterator end)
@@ -408,8 +408,8 @@ std::size_t read_until(SyncReadStream& s,
  *   return std::make_pair(i, false);
  * }
  * ...
- * asio::streambuf b;
- * asio::read_until(s, b, match_whitespace);
+ * clmdep_asio::streambuf b;
+ * clmdep_asio::read_until(s, b, match_whitespace);
  * @endcode
  *
  * To read data into a streambuf until a matching character is found:
@@ -433,18 +433,18 @@ std::size_t read_until(SyncReadStream& s,
  *   char c_;
  * };
  *
- * namespace asio {
+ * namespace clmdep_asio {
  *   template <> struct is_match_condition<match_char>
  *     : public boost::true_type {};
- * } // namespace asio
+ * } // namespace clmdep_asio
  * ...
- * asio::streambuf b;
- * asio::read_until(s, b, match_char('a'));
+ * clmdep_asio::streambuf b;
+ * clmdep_asio::read_until(s, b, match_char('a'));
  * @endcode
  */
 template <typename SyncReadStream, typename Allocator, typename MatchCondition>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, MatchCondition match_condition,
+    clmdep_asio::basic_streambuf<Allocator>& b, MatchCondition match_condition,
     typename enable_if<is_match_condition<MatchCondition>::value>::type* = 0);
 
 /// Read data into a streambuf until a function object indicates a match.
@@ -499,13 +499,13 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename SyncReadStream, typename Allocator, typename MatchCondition>
 std::size_t read_until(SyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b,
-    MatchCondition match_condition, asio::error_code& ec,
+    clmdep_asio::basic_streambuf<Allocator>& b,
+    MatchCondition match_condition, clmdep_asio::error_code& ec,
     typename enable_if<is_match_condition<MatchCondition>::value>::type* = 0);
 
 /*@}*/
 /**
- * @defgroup async_read_until asio::async_read_until
+ * @defgroup async_read_until clmdep_asio::async_read_until
  *
  * @brief Start an asynchronous operation to read data into a streambuf until it
  * contains a delimiter, matches a regular expression, or a function object
@@ -547,7 +547,7 @@ std::size_t read_until(SyncReadStream& s,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // The number of bytes in the streambuf's get
  *   // area up to and including the delimiter.
@@ -557,7 +557,7 @@ std::size_t read_until(SyncReadStream& s,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @note After a successful async_read_until operation, the streambuf may
  * contain additional data beyond the delimiter. An application will typically
@@ -566,9 +566,9 @@ std::size_t read_until(SyncReadStream& s,
  *
  * @par Example
  * To asynchronously read data into a streambuf until a newline is encountered:
- * @code asio::streambuf b;
+ * @code clmdep_asio::streambuf b;
  * ...
- * void handler(const asio::error_code& e, std::size_t size)
+ * void handler(const clmdep_asio::error_code& e, std::size_t size)
  * {
  *   if (!e)
  *   {
@@ -579,7 +579,7 @@ std::size_t read_until(SyncReadStream& s,
  *   }
  * }
  * ...
- * asio::async_read_until(s, b, '\n', handler); @endcode
+ * clmdep_asio::async_read_until(s, b, '\n', handler); @endcode
  * After the @c async_read_until operation completes successfully, the buffer
  * @c b contains the delimiter:
  * @code { 'a', 'b', ..., 'c', '\n', 'd', 'e', ... } @endcode
@@ -593,9 +593,9 @@ std::size_t read_until(SyncReadStream& s,
  */
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b,
+    clmdep_asio::basic_streambuf<Allocator>& b,
     char delim, ASIO_MOVE_ARG(ReadHandler) handler);
 
 /// Start an asynchronous operation to read data into a streambuf until it
@@ -632,7 +632,7 @@ async_read_until(AsyncReadStream& s,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // The number of bytes in the streambuf's get
  *   // area up to and including the delimiter.
@@ -642,7 +642,7 @@ async_read_until(AsyncReadStream& s,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @note After a successful async_read_until operation, the streambuf may
  * contain additional data beyond the delimiter. An application will typically
@@ -651,9 +651,9 @@ async_read_until(AsyncReadStream& s,
  *
  * @par Example
  * To asynchronously read data into a streambuf until a newline is encountered:
- * @code asio::streambuf b;
+ * @code clmdep_asio::streambuf b;
  * ...
- * void handler(const asio::error_code& e, std::size_t size)
+ * void handler(const clmdep_asio::error_code& e, std::size_t size)
  * {
  *   if (!e)
  *   {
@@ -664,7 +664,7 @@ async_read_until(AsyncReadStream& s,
  *   }
  * }
  * ...
- * asio::async_read_until(s, b, "\r\n", handler); @endcode
+ * clmdep_asio::async_read_until(s, b, "\r\n", handler); @endcode
  * After the @c async_read_until operation completes successfully, the buffer
  * @c b contains the delimiter:
  * @code { 'a', 'b', ..., 'c', '\r', '\n', 'd', 'e', ... } @endcode
@@ -678,9 +678,9 @@ async_read_until(AsyncReadStream& s,
  */
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const std::string& delim,
+    clmdep_asio::basic_streambuf<Allocator>& b, const std::string& delim,
     ASIO_MOVE_ARG(ReadHandler) handler);
 
 #if defined(ASIO_HAS_BOOST_REGEX) \
@@ -722,7 +722,7 @@ async_read_until(AsyncReadStream& s,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // The number of bytes in the streambuf's get
  *   // area up to and including the substring
@@ -733,7 +733,7 @@ async_read_until(AsyncReadStream& s,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @note After a successful async_read_until operation, the streambuf may
  * contain additional data beyond that which matched the regular expression. An
@@ -743,9 +743,9 @@ async_read_until(AsyncReadStream& s,
  * @par Example
  * To asynchronously read data into a streambuf until a CR-LF sequence is
  * encountered:
- * @code asio::streambuf b;
+ * @code clmdep_asio::streambuf b;
  * ...
- * void handler(const asio::error_code& e, std::size_t size)
+ * void handler(const clmdep_asio::error_code& e, std::size_t size)
  * {
  *   if (!e)
  *   {
@@ -756,7 +756,7 @@ async_read_until(AsyncReadStream& s,
  *   }
  * }
  * ...
- * asio::async_read_until(s, b, boost::regex("\r\n"), handler); @endcode
+ * clmdep_asio::async_read_until(s, b, boost::regex("\r\n"), handler); @endcode
  * After the @c async_read_until operation completes successfully, the buffer
  * @c b contains the data which matched the regular expression:
  * @code { 'a', 'b', ..., 'c', '\r', '\n', 'd', 'e', ... } @endcode
@@ -770,9 +770,9 @@ async_read_until(AsyncReadStream& s,
  */
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
+    clmdep_asio::basic_streambuf<Allocator>& b, const boost::regex& expr,
     ASIO_MOVE_ARG(ReadHandler) handler);
 
 #endif // defined(ASIO_HAS_BOOST_REGEX)
@@ -825,7 +825,7 @@ async_read_until(AsyncReadStream& s,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // The number of bytes in the streambuf's get
  *   // area that have been fully consumed by the
@@ -835,7 +835,7 @@ async_read_until(AsyncReadStream& s,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @note After a successful async_read_until operation, the streambuf may
  * contain additional data beyond that which matched the function object. An
@@ -849,8 +849,8 @@ async_read_until(AsyncReadStream& s,
  *
  * @par Examples
  * To asynchronously read data into a streambuf until whitespace is encountered:
- * @code typedef asio::buffers_iterator<
- *     asio::streambuf::const_buffers_type> iterator;
+ * @code typedef clmdep_asio::buffers_iterator<
+ *     clmdep_asio::streambuf::const_buffers_type> iterator;
  *
  * std::pair<iterator, bool>
  * match_whitespace(iterator begin, iterator end)
@@ -862,10 +862,10 @@ async_read_until(AsyncReadStream& s,
  *   return std::make_pair(i, false);
  * }
  * ...
- * void handler(const asio::error_code& e, std::size_t size);
+ * void handler(const clmdep_asio::error_code& e, std::size_t size);
  * ...
- * asio::streambuf b;
- * asio::async_read_until(s, b, match_whitespace, handler);
+ * clmdep_asio::streambuf b;
+ * clmdep_asio::async_read_until(s, b, match_whitespace, handler);
  * @endcode
  *
  * To asynchronously read data into a streambuf until a matching character is
@@ -890,29 +890,29 @@ async_read_until(AsyncReadStream& s,
  *   char c_;
  * };
  *
- * namespace asio {
+ * namespace clmdep_asio {
  *   template <> struct is_match_condition<match_char>
  *     : public boost::true_type {};
- * } // namespace asio
+ * } // namespace clmdep_asio
  * ...
- * void handler(const asio::error_code& e, std::size_t size);
+ * void handler(const clmdep_asio::error_code& e, std::size_t size);
  * ...
- * asio::streambuf b;
- * asio::async_read_until(s, b, match_char('a'), handler);
+ * clmdep_asio::streambuf b;
+ * clmdep_asio::async_read_until(s, b, match_char('a'), handler);
  * @endcode
  */
 template <typename AsyncReadStream, typename Allocator,
     typename MatchCondition, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read_until(AsyncReadStream& s,
-    asio::basic_streambuf<Allocator>& b,
+    clmdep_asio::basic_streambuf<Allocator>& b,
     MatchCondition match_condition, ASIO_MOVE_ARG(ReadHandler) handler,
     typename enable_if<is_match_condition<MatchCondition>::value>::type* = 0);
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

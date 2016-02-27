@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Time_Traits>
@@ -177,7 +177,7 @@ public:
       while (wait_op* op = (num_cancelled != max_cancelled)
           ? timer.op_queue_.front() : 0)
       {
-        op->ec_ = asio::error::operation_aborted;
+        op->ec_ = clmdep_asio::error::operation_aborted;
         timer.op_queue_.pop();
         ops.push(op);
         ++num_cancelled;
@@ -324,7 +324,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

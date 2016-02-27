@@ -34,7 +34,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 
 #if defined(ASIO_ENABLE_OLD_SSL)
@@ -59,7 +59,7 @@ public:
   ASIO_DECL explicit context(method m);
 
   /// Deprecated constructor taking a reference to an io_service object.
-  ASIO_DECL context(asio::io_service&, method m);
+  ASIO_DECL context(clmdep_asio::io_service&, method m);
 
 #if defined(ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
   /// Move-construct a context from another.
@@ -117,7 +117,7 @@ public:
    * the context_base class. The specified options, if currently enabled on the
    * context, are cleared.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_clear_options.
    */
@@ -135,8 +135,8 @@ public:
    *
    * @note Calls @c SSL_CTX_clear_options.
    */
-  ASIO_DECL asio::error_code clear_options(options o,
-      asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code clear_options(options o,
+      clmdep_asio::error_code& ec);
 
   /// Set options on the context.
   /**
@@ -146,7 +146,7 @@ public:
    * the context_base class. The options are bitwise-ored with any existing
    * value for the options.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_options.
    */
@@ -164,8 +164,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_options.
    */
-  ASIO_DECL asio::error_code set_options(options o,
-      asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code set_options(options o,
+      clmdep_asio::error_code& ec);
 
   /// Set the peer verification mode.
   /**
@@ -175,7 +175,7 @@ public:
    * @param v A bitmask of peer verification modes. See @ref verify_mode for
    * available values.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_verify.
    */
@@ -193,8 +193,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_verify.
    */
-  ASIO_DECL asio::error_code set_verify_mode(
-      verify_mode v, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code set_verify_mode(
+      verify_mode v, clmdep_asio::error_code& ec);
 
   /// Set the peer verification depth.
   /**
@@ -204,7 +204,7 @@ public:
    * @param depth Maximum depth for the certificate chain verification that
    * shall be allowed.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_verify_depth.
    */
@@ -222,8 +222,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_verify_depth.
    */
-  ASIO_DECL asio::error_code set_verify_depth(
-      int depth, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code set_verify_depth(
+      int depth, clmdep_asio::error_code& ec);
 
   /// Set the callback used to verify peer certificates.
   /**
@@ -239,7 +239,7 @@ public:
    * The return value of the callback is true if the certificate has passed
    * verification, false otherwise.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_verify.
    */
@@ -265,8 +265,8 @@ public:
    * @note Calls @c SSL_CTX_set_verify.
    */
   template <typename VerifyCallback>
-  asio::error_code set_verify_callback(VerifyCallback callback,
-      asio::error_code& ec);
+  clmdep_asio::error_code set_verify_callback(VerifyCallback callback,
+      clmdep_asio::error_code& ec);
 
   /// Load a certification authority file for performing verification.
   /**
@@ -276,7 +276,7 @@ public:
    * @param filename The name of a file containing certification authority
    * certificates in PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_load_verify_locations.
    */
@@ -294,8 +294,8 @@ public:
    *
    * @note Calls @c SSL_CTX_load_verify_locations.
    */
-  ASIO_DECL asio::error_code load_verify_file(
-      const std::string& filename, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code load_verify_file(
+      const std::string& filename, clmdep_asio::error_code& ec);
 
   /// Add certification authority for performing verification.
   /**
@@ -305,7 +305,7 @@ public:
    * @param ca The buffer containing the certification authority certificate.
    * The certificate must use the PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_get_cert_store and @c X509_STORE_add_cert.
    */
@@ -323,8 +323,8 @@ public:
    *
    * @note Calls @c SSL_CTX_get_cert_store and @c X509_STORE_add_cert.
    */
-  ASIO_DECL asio::error_code add_certificate_authority(
-      const const_buffer& ca, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code add_certificate_authority(
+      const const_buffer& ca, clmdep_asio::error_code& ec);
 
   /// Configures the context to use the default directories for finding
   /// certification authority certificates.
@@ -333,7 +333,7 @@ public:
    * system-dependent directories for locating certification authority
    * certificates.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_default_verify_paths.
    */
@@ -350,8 +350,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_default_verify_paths.
    */
-  ASIO_DECL asio::error_code set_default_verify_paths(
-      asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code set_default_verify_paths(
+      clmdep_asio::error_code& ec);
 
   /// Add a directory containing certificate authority files to be used for
   /// performing verification.
@@ -363,7 +363,7 @@ public:
    *
    * @param path The name of a directory containing the certificates.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_load_verify_locations.
    */
@@ -383,8 +383,8 @@ public:
    *
    * @note Calls @c SSL_CTX_load_verify_locations.
    */
-  ASIO_DECL asio::error_code add_verify_path(
-      const std::string& path, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code add_verify_path(
+      const std::string& path, clmdep_asio::error_code& ec);
 
   /// Use a certificate from a memory buffer.
   /**
@@ -394,7 +394,7 @@ public:
    *
    * @param format The certificate format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_certificate or SSL_CTX_use_certificate_ASN1.
    */
@@ -413,9 +413,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_certificate or SSL_CTX_use_certificate_ASN1.
    */
-  ASIO_DECL asio::error_code use_certificate(
+  ASIO_DECL clmdep_asio::error_code use_certificate(
       const const_buffer& certificate, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use a certificate from a file.
   /**
@@ -425,7 +425,7 @@ public:
    *
    * @param format The file format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_certificate_file.
    */
@@ -444,9 +444,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_certificate_file.
    */
-  ASIO_DECL asio::error_code use_certificate_file(
+  ASIO_DECL clmdep_asio::error_code use_certificate_file(
       const std::string& filename, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use a certificate chain from a memory buffer.
   /**
@@ -456,7 +456,7 @@ public:
    * @param chain The buffer containing the certificate chain. The certificate
    * chain must use the PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_certificate and SSL_CTX_add_extra_chain_cert.
    */
@@ -474,8 +474,8 @@ public:
    *
    * @note Calls @c SSL_CTX_use_certificate and SSL_CTX_add_extra_chain_cert.
    */
-  ASIO_DECL asio::error_code use_certificate_chain(
-      const const_buffer& chain, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code use_certificate_chain(
+      const const_buffer& chain, clmdep_asio::error_code& ec);
 
   /// Use a certificate chain from a file.
   /**
@@ -485,7 +485,7 @@ public:
    * @param filename The name of the file containing the certificate. The file
    * must use the PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_certificate_chain_file.
    */
@@ -503,8 +503,8 @@ public:
    *
    * @note Calls @c SSL_CTX_use_certificate_chain_file.
    */
-  ASIO_DECL asio::error_code use_certificate_chain_file(
-      const std::string& filename, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code use_certificate_chain_file(
+      const std::string& filename, clmdep_asio::error_code& ec);
 
   /// Use a private key from a memory buffer.
   /**
@@ -514,7 +514,7 @@ public:
    *
    * @param format The private key format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_PrivateKey or SSL_CTX_use_PrivateKey_ASN1.
    */
@@ -533,9 +533,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_PrivateKey or SSL_CTX_use_PrivateKey_ASN1.
    */
-  ASIO_DECL asio::error_code use_private_key(
+  ASIO_DECL clmdep_asio::error_code use_private_key(
       const const_buffer& private_key, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use a private key from a file.
   /**
@@ -545,7 +545,7 @@ public:
    *
    * @param format The file format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_PrivateKey_file.
    */
@@ -564,9 +564,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_PrivateKey_file.
    */
-  ASIO_DECL asio::error_code use_private_key_file(
+  ASIO_DECL clmdep_asio::error_code use_private_key_file(
       const std::string& filename, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use an RSA private key from a memory buffer.
   /**
@@ -577,7 +577,7 @@ public:
    *
    * @param format The private key format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_RSAPrivateKey or SSL_CTX_use_RSAPrivateKey_ASN1.
    */
@@ -597,9 +597,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_RSAPrivateKey or SSL_CTX_use_RSAPrivateKey_ASN1.
    */
-  ASIO_DECL asio::error_code use_rsa_private_key(
+  ASIO_DECL clmdep_asio::error_code use_rsa_private_key(
       const const_buffer& private_key, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use an RSA private key from a file.
   /**
@@ -610,7 +610,7 @@ public:
    *
    * @param format The file format (ASN.1 or PEM).
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_use_RSAPrivateKey_file.
    */
@@ -630,9 +630,9 @@ public:
    *
    * @note Calls @c SSL_CTX_use_RSAPrivateKey_file.
    */
-  ASIO_DECL asio::error_code use_rsa_private_key_file(
+  ASIO_DECL clmdep_asio::error_code use_rsa_private_key_file(
       const std::string& filename, file_format format,
-      asio::error_code& ec);
+      clmdep_asio::error_code& ec);
 
   /// Use the specified memory buffer to obtain the temporary Diffie-Hellman
   /// parameters.
@@ -643,7 +643,7 @@ public:
    * @param dh The memory buffer containing the Diffie-Hellman parameters. The
    * buffer must use the PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_tmp_dh.
    */
@@ -662,8 +662,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_tmp_dh.
    */
-  ASIO_DECL asio::error_code use_tmp_dh(
-      const const_buffer& dh, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code use_tmp_dh(
+      const const_buffer& dh, clmdep_asio::error_code& ec);
 
   /// Use the specified file to obtain the temporary Diffie-Hellman parameters.
   /**
@@ -673,7 +673,7 @@ public:
    * @param filename The name of the file containing the Diffie-Hellman
    * parameters. The file must use the PEM format.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_tmp_dh.
    */
@@ -691,8 +691,8 @@ public:
    *
    * @note Calls @c SSL_CTX_set_tmp_dh.
    */
-  ASIO_DECL asio::error_code use_tmp_dh_file(
-      const std::string& filename, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code use_tmp_dh_file(
+      const std::string& filename, clmdep_asio::error_code& ec);
 
   /// Set the password callback.
   /**
@@ -707,7 +707,7 @@ public:
    * ); @endcode
    * The return value of the callback is a string containing the password.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note Calls @c SSL_CTX_set_default_passwd_cb.
    */
@@ -732,8 +732,8 @@ public:
    * @note Calls @c SSL_CTX_set_default_passwd_cb.
    */
   template <typename PasswordCallback>
-  asio::error_code set_password_callback(PasswordCallback callback,
-      asio::error_code& ec);
+  clmdep_asio::error_code set_password_callback(PasswordCallback callback,
+      clmdep_asio::error_code& ec);
 
 private:
   struct bio_cleanup;
@@ -743,24 +743,24 @@ private:
   struct dh_cleanup;
 
   // Helper function used to set a peer certificate verification callback.
-  ASIO_DECL asio::error_code do_set_verify_callback(
-      detail::verify_callback_base* callback, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code do_set_verify_callback(
+      detail::verify_callback_base* callback, clmdep_asio::error_code& ec);
 
   // Callback used when the SSL implementation wants to verify a certificate.
   ASIO_DECL static int verify_callback_function(
       int preverified, X509_STORE_CTX* ctx);
 
   // Helper function used to set a password callback.
-  ASIO_DECL asio::error_code do_set_password_callback(
-      detail::password_callback_base* callback, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code do_set_password_callback(
+      detail::password_callback_base* callback, clmdep_asio::error_code& ec);
 
   // Callback used when the SSL implementation wants a password.
   ASIO_DECL static int password_callback_function(
       char* buf, int size, int purpose, void* data);
 
   // Helper function to set the temporary Diffie-Hellman parameters from a BIO.
-  ASIO_DECL asio::error_code do_use_tmp_dh(
-      BIO* bio, asio::error_code& ec);
+  ASIO_DECL clmdep_asio::error_code do_use_tmp_dh(
+      BIO* bio, clmdep_asio::error_code& ec);
 
   // Helper function to make a BIO from a memory buffer.
   ASIO_DECL BIO* make_buffer_bio(const const_buffer& b);
@@ -769,13 +769,13 @@ private:
   native_handle_type handle_;
 
   // Ensure openssl is initialised.
-  asio::ssl::detail::openssl_init<> init_;
+  clmdep_asio::ssl::detail::openssl_init<> init_;
 };
 
 #endif // defined(ASIO_ENABLE_OLD_SSL)
 
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

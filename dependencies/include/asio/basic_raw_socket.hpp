@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Provides raw-oriented socket functionality.
 /**
@@ -65,7 +65,7 @@ public:
    * to dispatch handlers for any asynchronous operations performed on the
    * socket.
    */
-  explicit basic_raw_socket(asio::io_service& io_service)
+  explicit basic_raw_socket(clmdep_asio::io_service& io_service)
     : basic_socket<Protocol, RawSocketService>(io_service)
   {
   }
@@ -80,9 +80,9 @@ public:
    *
    * @param protocol An object specifying protocol parameters to be used.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_raw_socket(asio::io_service& io_service,
+  basic_raw_socket(clmdep_asio::io_service& io_service,
       const protocol_type& protocol)
     : basic_socket<Protocol, RawSocketService>(io_service, protocol)
   {
@@ -102,9 +102,9 @@ public:
    * @param endpoint An endpoint on the local machine to which the raw
    * socket will be bound.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_raw_socket(asio::io_service& io_service,
+  basic_raw_socket(clmdep_asio::io_service& io_service,
       const endpoint_type& endpoint)
     : basic_socket<Protocol, RawSocketService>(io_service, endpoint)
   {
@@ -123,9 +123,9 @@ public:
    *
    * @param native_socket The new underlying socket implementation.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
-  basic_raw_socket(asio::io_service& io_service,
+  basic_raw_socket(clmdep_asio::io_service& io_service,
       const protocol_type& protocol, const native_handle_type& native_socket)
     : basic_socket<Protocol, RawSocketService>(
         io_service, protocol, native_socket)
@@ -216,14 +216,14 @@ public:
    *
    * @returns The number of bytes sent.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The send operation can only be used with a connected socket. Use
    * the send_to function to send data on an unconnected raw socket.
    *
    * @par Example
    * To send a single data buffer use the @ref buffer function as follows:
-   * @code socket.send(asio::buffer(data, size)); @endcode
+   * @code socket.send(clmdep_asio::buffer(data, size)); @endcode
    * See the @ref buffer documentation for information on sending multiple
    * buffers in one go, and how to use it with arrays, boost::array or
    * std::vector.
@@ -231,10 +231,10 @@ public:
   template <typename ConstBufferSequence>
   std::size_t send(const ConstBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().send(
         this->get_implementation(), buffers, 0, ec);
-    asio::detail::throw_error(ec, "send");
+    clmdep_asio::detail::throw_error(ec, "send");
     return s;
   }
 
@@ -249,7 +249,7 @@ public:
    *
    * @returns The number of bytes sent.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The send operation can only be used with a connected socket. Use
    * the send_to function to send data on an unconnected raw socket.
@@ -258,10 +258,10 @@ public:
   std::size_t send(const ConstBufferSequence& buffers,
       socket_base::message_flags flags)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().send(
         this->get_implementation(), buffers, flags, ec);
-    asio::detail::throw_error(ec, "send");
+    clmdep_asio::detail::throw_error(ec, "send");
     return s;
   }
 
@@ -283,7 +283,7 @@ public:
    */
   template <typename ConstBufferSequence>
   std::size_t send(const ConstBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
+      socket_base::message_flags flags, clmdep_asio::error_code& ec)
   {
     return this->get_service().send(
         this->get_implementation(), buffers, flags, ec);
@@ -303,13 +303,13 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes sent.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The async_send operation can only be used with a connected socket.
    * Use the async_send_to function to send data on an unconnected raw
@@ -318,7 +318,7 @@ public:
    * @par Example
    * To send a single data buffer use the @ref buffer function as follows:
    * @code
-   * socket.async_send(asio::buffer(data, size), handler);
+   * socket.async_send(clmdep_asio::buffer(data, size), handler);
    * @endcode
    * See the @ref buffer documentation for information on sending multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -326,7 +326,7 @@ public:
    */
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_send(const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
@@ -354,13 +354,13 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes sent.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The async_send operation can only be used with a connected socket.
    * Use the async_send_to function to send data on an unconnected raw
@@ -368,7 +368,7 @@ public:
    */
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_send(const ConstBufferSequence& buffers,
       socket_base::message_flags flags,
       ASIO_MOVE_ARG(WriteHandler) handler)
@@ -393,14 +393,14 @@ public:
    *
    * @returns The number of bytes sent.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * To send a single data buffer use the @ref buffer function as follows:
    * @code
-   * asio::ip::udp::endpoint destination(
-   *     asio::ip::address::from_string("1.2.3.4"), 12345);
-   * socket.send_to(asio::buffer(data, size), destination);
+   * clmdep_asio::ip::udp::endpoint destination(
+   *     clmdep_asio::ip::address::from_string("1.2.3.4"), 12345);
+   * socket.send_to(clmdep_asio::buffer(data, size), destination);
    * @endcode
    * See the @ref buffer documentation for information on sending multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -410,10 +410,10 @@ public:
   std::size_t send_to(const ConstBufferSequence& buffers,
       const endpoint_type& destination)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().send_to(
         this->get_implementation(), buffers, destination, 0, ec);
-    asio::detail::throw_error(ec, "send_to");
+    clmdep_asio::detail::throw_error(ec, "send_to");
     return s;
   }
 
@@ -431,16 +431,16 @@ public:
    *
    * @returns The number of bytes sent.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   template <typename ConstBufferSequence>
   std::size_t send_to(const ConstBufferSequence& buffers,
       const endpoint_type& destination, socket_base::message_flags flags)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().send_to(
         this->get_implementation(), buffers, destination, flags, ec);
-    asio::detail::throw_error(ec, "send_to");
+    clmdep_asio::detail::throw_error(ec, "send_to");
     return s;
   }
 
@@ -463,7 +463,7 @@ public:
   template <typename ConstBufferSequence>
   std::size_t send_to(const ConstBufferSequence& buffers,
       const endpoint_type& destination, socket_base::message_flags flags,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().send_to(this->get_implementation(),
         buffers, destination, flags, ec);
@@ -486,21 +486,21 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes sent.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @par Example
    * To send a single data buffer use the @ref buffer function as follows:
    * @code
-   * asio::ip::udp::endpoint destination(
-   *     asio::ip::address::from_string("1.2.3.4"), 12345);
+   * clmdep_asio::ip::udp::endpoint destination(
+   *     clmdep_asio::ip::address::from_string("1.2.3.4"), 12345);
    * socket.async_send_to(
-   *     asio::buffer(data, size), destination, handler);
+   *     clmdep_asio::buffer(data, size), destination, handler);
    * @endcode
    * See the @ref buffer documentation for information on sending multiple
    * buffers in one go, and how to use it with arrays, boost::array or
@@ -508,7 +508,7 @@ public:
    */
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_send_to(const ConstBufferSequence& buffers,
       const endpoint_type& destination,
       ASIO_MOVE_ARG(WriteHandler) handler)
@@ -540,17 +540,17 @@ public:
    * Copies will be made of the handler as required. The function signature of
    * the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes sent.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    */
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_send_to(const ConstBufferSequence& buffers,
       const endpoint_type& destination, socket_base::message_flags flags,
       ASIO_MOVE_ARG(WriteHandler) handler)
@@ -574,7 +574,7 @@ public:
    *
    * @returns The number of bytes received.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The receive operation can only be used with a connected socket. Use
    * the receive_from function to receive data on an unconnected raw
@@ -583,7 +583,7 @@ public:
    * @par Example
    * To receive into a single data buffer use the @ref buffer function as
    * follows:
-   * @code socket.receive(asio::buffer(data, size)); @endcode
+   * @code socket.receive(clmdep_asio::buffer(data, size)); @endcode
    * See the @ref buffer documentation for information on receiving into
    * multiple buffers in one go, and how to use it with arrays, boost::array or
    * std::vector.
@@ -591,10 +591,10 @@ public:
   template <typename MutableBufferSequence>
   std::size_t receive(const MutableBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().receive(
         this->get_implementation(), buffers, 0, ec);
-    asio::detail::throw_error(ec, "receive");
+    clmdep_asio::detail::throw_error(ec, "receive");
     return s;
   }
 
@@ -610,7 +610,7 @@ public:
    *
    * @returns The number of bytes received.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The receive operation can only be used with a connected socket. Use
    * the receive_from function to receive data on an unconnected raw
@@ -620,10 +620,10 @@ public:
   std::size_t receive(const MutableBufferSequence& buffers,
       socket_base::message_flags flags)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().receive(
         this->get_implementation(), buffers, flags, ec);
-    asio::detail::throw_error(ec, "receive");
+    clmdep_asio::detail::throw_error(ec, "receive");
     return s;
   }
 
@@ -647,7 +647,7 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t receive(const MutableBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
+      socket_base::message_flags flags, clmdep_asio::error_code& ec)
   {
     return this->get_service().receive(
         this->get_implementation(), buffers, flags, ec);
@@ -667,13 +667,13 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes received.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The async_receive operation can only be used with a connected socket.
    * Use the async_receive_from function to receive data on an unconnected
@@ -683,7 +683,7 @@ public:
    * To receive into a single data buffer use the @ref buffer function as
    * follows:
    * @code
-   * socket.async_receive(asio::buffer(data, size), handler);
+   * socket.async_receive(clmdep_asio::buffer(data, size), handler);
    * @endcode
    * See the @ref buffer documentation for information on receiving into
    * multiple buffers in one go, and how to use it with arrays, boost::array or
@@ -691,7 +691,7 @@ public:
    */
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_receive(const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
@@ -719,13 +719,13 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes received.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @note The async_receive operation can only be used with a connected socket.
    * Use the async_receive_from function to receive data on an unconnected
@@ -733,7 +733,7 @@ public:
    */
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_receive(const MutableBufferSequence& buffers,
       socket_base::message_flags flags,
       ASIO_MOVE_ARG(ReadHandler) handler)
@@ -758,15 +758,15 @@ public:
    *
    * @returns The number of bytes received.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @par Example
    * To receive into a single data buffer use the @ref buffer function as
    * follows:
    * @code
-   * asio::ip::udp::endpoint sender_endpoint;
+   * clmdep_asio::ip::udp::endpoint sender_endpoint;
    * socket.receive_from(
-   *     asio::buffer(data, size), sender_endpoint);
+   *     clmdep_asio::buffer(data, size), sender_endpoint);
    * @endcode
    * See the @ref buffer documentation for information on receiving into
    * multiple buffers in one go, and how to use it with arrays, boost::array or
@@ -776,10 +776,10 @@ public:
   std::size_t receive_from(const MutableBufferSequence& buffers,
       endpoint_type& sender_endpoint)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().receive_from(
         this->get_implementation(), buffers, sender_endpoint, 0, ec);
-    asio::detail::throw_error(ec, "receive_from");
+    clmdep_asio::detail::throw_error(ec, "receive_from");
     return s;
   }
   
@@ -797,16 +797,16 @@ public:
    *
    * @returns The number of bytes received.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   template <typename MutableBufferSequence>
   std::size_t receive_from(const MutableBufferSequence& buffers,
       endpoint_type& sender_endpoint, socket_base::message_flags flags)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = this->get_service().receive_from(
         this->get_implementation(), buffers, sender_endpoint, flags, ec);
-    asio::detail::throw_error(ec, "receive_from");
+    clmdep_asio::detail::throw_error(ec, "receive_from");
     return s;
   }
   
@@ -829,7 +829,7 @@ public:
   template <typename MutableBufferSequence>
   std::size_t receive_from(const MutableBufferSequence& buffers,
       endpoint_type& sender_endpoint, socket_base::message_flags flags,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return this->get_service().receive_from(this->get_implementation(),
         buffers, sender_endpoint, flags, ec);
@@ -854,26 +854,26 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes received.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    *
    * @par Example
    * To receive into a single data buffer use the @ref buffer function as
    * follows:
    * @code socket.async_receive_from(
-   *     asio::buffer(data, size), 0, sender_endpoint, handler); @endcode
+   *     clmdep_asio::buffer(data, size), 0, sender_endpoint, handler); @endcode
    * See the @ref buffer documentation for information on receiving into
    * multiple buffers in one go, and how to use it with arrays, boost::array or
    * std::vector.
    */
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_receive_from(const MutableBufferSequence& buffers,
       endpoint_type& sender_endpoint,
       ASIO_MOVE_ARG(ReadHandler) handler)
@@ -908,17 +908,17 @@ public:
    * completes. Copies will be made of the handler as required. The function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes received.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
    * not, the handler will not be invoked from within this function. Invocation
    * of the handler will be performed in a manner equivalent to using
-   * asio::io_service::post().
+   * clmdep_asio::io_service::post().
    */
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_receive_from(const MutableBufferSequence& buffers,
       endpoint_type& sender_endpoint, socket_base::message_flags flags,
       ASIO_MOVE_ARG(ReadHandler) handler)
@@ -933,7 +933,7 @@ public:
   }
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

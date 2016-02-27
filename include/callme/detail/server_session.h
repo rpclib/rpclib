@@ -18,7 +18,7 @@ namespace detail {
 class server_session : public async_writer,
                        public std::enable_shared_from_this<server_session> {
 public:
-    server_session(asio::io_service *io, asio::ip::tcp::socket socket,
+    server_session(CALLME_ASIO::io_service *io, CALLME_ASIO::ip::tcp::socket socket,
                    std::shared_ptr<dispatcher> disp, bool suppress_exceptions);
     void start();
 
@@ -26,8 +26,8 @@ private:
     void do_read();
 
 private:
-    asio::io_service *io_;
-    asio::strand read_strand_;
+    CALLME_ASIO::io_service *io_;
+    CALLME_ASIO::strand read_strand_;
     std::shared_ptr<dispatcher> disp_;
     msgpack::unpacker pac_;
     msgpack::sbuffer output_buf_;

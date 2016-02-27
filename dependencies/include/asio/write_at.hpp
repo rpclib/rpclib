@@ -24,10 +24,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /**
- * @defgroup write_at asio::write_at
+ * @defgroup write_at clmdep_asio::write_at
  *
  * @brief Write a certain amount of data at a specified offset before returning.
  */
@@ -58,19 +58,19 @@ namespace asio {
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write_at(d, 42, asio::buffer(data, size)); @endcode
+ * @code clmdep_asio::write_at(d, 42, clmdep_asio::buffer(data, size)); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write_at(
+ * @code clmdep_asio::write_at(
  *     d, offset, buffers,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
@@ -105,21 +105,21 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write_at(d, 42,
- *     asio::buffer(data, size), ec); @endcode
+ * @code clmdep_asio::write_at(d, 42,
+ *     clmdep_asio::buffer(data, size), ec); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write_at(
+ * @code clmdep_asio::write_at(
  *     d, offset, buffers,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Write a certain amount of data at a specified offset before returning.
 /**
@@ -149,7 +149,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -160,12 +160,12 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::write_at(d, 42, asio::buffer(data, size),
- *     asio::transfer_at_least(32)); @endcode
+ * @code clmdep_asio::write_at(d, 42, clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32)); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
@@ -204,7 +204,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -222,7 +222,7 @@ template <typename SyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename CompletionCondition>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
-    CompletionCondition completion_condition, asio::error_code& ec);
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec);
 
 #if !defined(ASIO_NO_IOSTREAM)
 
@@ -248,12 +248,12 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write_at(
+ * @code clmdep_asio::write_at(
  *     d, 42, b,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncRandomAccessWriteDevice, typename Allocator>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
@@ -284,14 +284,14 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  * @returns The number of bytes transferred.
  *
  * @note This overload is equivalent to calling:
- * @code asio::write_at(
+ * @code clmdep_asio::write_at(
  *     d, 42, b,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncRandomAccessWriteDevice, typename Allocator>
 std::size_t write_at(SyncRandomAccessWriteDevice& d,
     uint64_t offset, basic_streambuf<Allocator>& b,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Write a certain amount of data at a specified offset before returning.
 /**
@@ -318,7 +318,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -329,7 +329,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  */
 template <typename SyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition>
@@ -361,7 +361,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -379,13 +379,13 @@ template <typename SyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition>
 std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
     basic_streambuf<Allocator>& b, CompletionCondition completion_condition,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 /*@}*/
 /**
- * @defgroup async_write_at asio::async_write_at
+ * @defgroup async_write_at clmdep_asio::async_write_at
  *
  * @brief Start an asynchronous operation to write a certain amount of data at
  * the specified offset.
@@ -428,7 +428,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
  * the handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes written from the buffers. If an error
  *   // occurred, this will be less than the sum of the buffer sizes.
@@ -437,12 +437,12 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
  * @code
- * asio::async_write_at(d, 42, asio::buffer(data, size), handler);
+ * clmdep_asio::async_write_at(d, 42, clmdep_asio::buffer(data, size), handler);
  * @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
@@ -451,7 +451,7 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
 template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
     const ConstBufferSequence& buffers,
     ASIO_MOVE_ARG(WriteHandler) handler);
@@ -492,7 +492,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -506,7 +506,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes written from the buffers. If an error
  *   // occurred, this will be less than the sum of the buffer sizes.
@@ -515,13 +515,13 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To write a single data buffer use the @ref buffer function as follows:
- * @code asio::async_write_at(d, 42,
- *     asio::buffer(data, size),
- *     asio::transfer_at_least(32),
+ * @code clmdep_asio::async_write_at(d, 42,
+ *     clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32),
  *     handler); @endcode
  * See the @ref buffer documentation for information on writing multiple
  * buffers in one go, and how to use it with arrays, boost::array or
@@ -530,7 +530,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
 template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
     typename CompletionCondition, typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
     CompletionCondition completion_condition,
@@ -572,7 +572,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes written from the buffers. If an error
  *   // occurred, this will be less than the sum of the buffer sizes.
@@ -581,12 +581,12 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  */
 template <typename AsyncRandomAccessWriteDevice, typename Allocator,
     typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
     basic_streambuf<Allocator>& b, ASIO_MOVE_ARG(WriteHandler) handler);
 
@@ -624,7 +624,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_write_some_at operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -638,7 +638,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * handler must be:
  * @code void handler(
  *   // Result of operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes written from the buffers. If an error
  *   // occurred, this will be less than the sum of the buffer sizes.
@@ -647,12 +647,12 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  */
 template <typename AsyncRandomAccessWriteDevice, typename Allocator,
     typename CompletionCondition, typename WriteHandler>
 ASIO_INITFN_RESULT_TYPE(WriteHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
     basic_streambuf<Allocator>& b, CompletionCondition completion_condition,
     ASIO_MOVE_ARG(WriteHandler) handler);
@@ -661,7 +661,7 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

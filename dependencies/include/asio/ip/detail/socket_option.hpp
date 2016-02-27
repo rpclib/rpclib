@@ -26,7 +26,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 namespace detail {
 namespace socket_option {
@@ -141,7 +141,7 @@ public:
       if (s != sizeof(ipv6_value_))
       {
         std::length_error ex("multicast_enable_loopback socket option resize");
-        asio::detail::throw_exception(ex);
+        clmdep_asio::detail::throw_exception(ex);
       }
       ipv4_value_ = ipv6_value_ ? 1 : 0;
     }
@@ -150,7 +150,7 @@ public:
       if (s != sizeof(ipv4_value_))
       {
         std::length_error ex("multicast_enable_loopback socket option resize");
-        asio::detail::throw_exception(ex);
+        clmdep_asio::detail::throw_exception(ex);
       }
       ipv6_value_ = ipv4_value_ ? 1 : 0;
     }
@@ -237,7 +237,7 @@ public:
     if (s != sizeof(value_))
     {
       std::length_error ex("unicast hops socket option resize");
-      asio::detail::throw_exception(ex);
+      clmdep_asio::detail::throw_exception(ex);
     }
 #if defined(__hpux)
     if (value_ < 0)
@@ -274,7 +274,7 @@ public:
     if (v < 0 || v > 255)
     {
       std::out_of_range ex("multicast hops value out of range");
-      asio::detail::throw_exception(ex);
+      clmdep_asio::detail::throw_exception(ex);
     }
     ipv4_value_ = (ipv4_value_type)v;
     ipv6_value_ = v;
@@ -286,7 +286,7 @@ public:
     if (v < 0 || v > 255)
     {
       std::out_of_range ex("multicast hops value out of range");
-      asio::detail::throw_exception(ex);
+      clmdep_asio::detail::throw_exception(ex);
     }
     ipv4_value_ = (ipv4_value_type)v;
     ipv6_value_ = v;
@@ -353,7 +353,7 @@ public:
       if (s != sizeof(ipv6_value_))
       {
         std::length_error ex("multicast hops socket option resize");
-        asio::detail::throw_exception(ex);
+        clmdep_asio::detail::throw_exception(ex);
       }
       if (ipv6_value_ < 0)
         ipv4_value_ = 0;
@@ -367,7 +367,7 @@ public:
       if (s != sizeof(ipv4_value_))
       {
         std::length_error ex("multicast hops socket option resize");
-        asio::detail::throw_exception(ex);
+        clmdep_asio::detail::throw_exception(ex);
       }
       ipv6_value_ = ipv4_value_;
     }
@@ -391,52 +391,52 @@ public:
   }
 
   // Construct with multicast address only.
-  explicit multicast_request(const asio::ip::address& multicast_address)
+  explicit multicast_request(const clmdep_asio::ip::address& multicast_address)
     : ipv4_value_(), // Zero-initialisation gives the "any" address.
       ipv6_value_() // Zero-initialisation gives the "any" address.
   {
     if (multicast_address.is_v6())
     {
       using namespace std; // For memcpy.
-      asio::ip::address_v6 ipv6_address = multicast_address.to_v6();
-      asio::ip::address_v6::bytes_type bytes = ipv6_address.to_bytes();
+      clmdep_asio::ip::address_v6 ipv6_address = multicast_address.to_v6();
+      clmdep_asio::ip::address_v6::bytes_type bytes = ipv6_address.to_bytes();
       memcpy(ipv6_value_.ipv6mr_multiaddr.s6_addr, bytes.data(), 16);
       ipv6_value_.ipv6mr_interface = ipv6_address.scope_id();
     }
     else
     {
       ipv4_value_.imr_multiaddr.s_addr =
-        asio::detail::socket_ops::host_to_network_long(
+        clmdep_asio::detail::socket_ops::host_to_network_long(
             multicast_address.to_v4().to_ulong());
       ipv4_value_.imr_interface.s_addr =
-        asio::detail::socket_ops::host_to_network_long(
-            asio::ip::address_v4::any().to_ulong());
+        clmdep_asio::detail::socket_ops::host_to_network_long(
+            clmdep_asio::ip::address_v4::any().to_ulong());
     }
   }
 
   // Construct with multicast address and IPv4 address specifying an interface.
   explicit multicast_request(
-      const asio::ip::address_v4& multicast_address,
-      const asio::ip::address_v4& network_interface
-        = asio::ip::address_v4::any())
+      const clmdep_asio::ip::address_v4& multicast_address,
+      const clmdep_asio::ip::address_v4& network_interface
+        = clmdep_asio::ip::address_v4::any())
     : ipv6_value_() // Zero-initialisation gives the "any" address.
   {
     ipv4_value_.imr_multiaddr.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
+      clmdep_asio::detail::socket_ops::host_to_network_long(
           multicast_address.to_ulong());
     ipv4_value_.imr_interface.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
+      clmdep_asio::detail::socket_ops::host_to_network_long(
           network_interface.to_ulong());
   }
 
   // Construct with multicast address and IPv6 network interface index.
   explicit multicast_request(
-      const asio::ip::address_v6& multicast_address,
+      const clmdep_asio::ip::address_v6& multicast_address,
       unsigned long network_interface = 0)
     : ipv4_value_() // Zero-initialisation gives the "any" address.
   {
     using namespace std; // For memcpy.
-    asio::ip::address_v6::bytes_type bytes =
+    clmdep_asio::ip::address_v6::bytes_type bytes =
       multicast_address.to_bytes();
     memcpy(ipv6_value_.ipv6mr_multiaddr.s6_addr, bytes.data(), 16);
     if (network_interface)
@@ -482,8 +482,8 @@ public:
   }
 
 private:
-  asio::detail::in4_mreq_type ipv4_value_;
-  asio::detail::in6_mreq_type ipv6_value_;
+  clmdep_asio::detail::in4_mreq_type ipv4_value_;
+  clmdep_asio::detail::in6_mreq_type ipv6_value_;
 };
 
 // Helper template for implementing options that specify a network interface.
@@ -495,16 +495,16 @@ public:
   network_interface()
   {
     ipv4_value_.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
-          asio::ip::address_v4::any().to_ulong());
+      clmdep_asio::detail::socket_ops::host_to_network_long(
+          clmdep_asio::ip::address_v4::any().to_ulong());
     ipv6_value_ = 0;
   }
 
   // Construct with IPv4 interface.
-  explicit network_interface(const asio::ip::address_v4& ipv4_interface)
+  explicit network_interface(const clmdep_asio::ip::address_v4& ipv4_interface)
   {
     ipv4_value_.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
+      clmdep_asio::detail::socket_ops::host_to_network_long(
           ipv4_interface.to_ulong());
     ipv6_value_ = 0;
   }
@@ -513,8 +513,8 @@ public:
   explicit network_interface(unsigned int ipv6_interface)
   {
     ipv4_value_.s_addr =
-      asio::detail::socket_ops::host_to_network_long(
-          asio::ip::address_v4::any().to_ulong());
+      clmdep_asio::detail::socket_ops::host_to_network_long(
+          clmdep_asio::ip::address_v4::any().to_ulong());
     ipv6_value_ = ipv6_interface;
   }
 
@@ -555,14 +555,14 @@ public:
   }
 
 private:
-  asio::detail::in4_addr_type ipv4_value_;
+  clmdep_asio::detail::in4_addr_type ipv4_value_;
   unsigned int ipv6_value_;
 };
 
 } // namespace socket_option
 } // namespace detail
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

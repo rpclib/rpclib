@@ -28,21 +28,21 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace posix {
 
 /// Default service implementation for a stream descriptor.
 class stream_descriptor_service
 #if defined(GENERATING_DOCUMENTATION)
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 #else
-  : public asio::detail::service_base<stream_descriptor_service>
+  : public clmdep_asio::detail::service_base<stream_descriptor_service>
 #endif
 {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The unique service identifier.
-  static asio::io_service::id id;
+  static clmdep_asio::io_service::id id;
 #endif
 
 private:
@@ -72,8 +72,8 @@ public:
 #endif
 
   /// Construct a new stream descriptor service for the specified io_service.
-  explicit stream_descriptor_service(asio::io_service& io_service)
-    : asio::detail::service_base<stream_descriptor_service>(io_service),
+  explicit stream_descriptor_service(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<stream_descriptor_service>(io_service),
       service_impl_(io_service)
   {
   }
@@ -108,9 +108,9 @@ public:
   }
 
   /// Assign an existing native descriptor to a stream descriptor.
-  asio::error_code assign(implementation_type& impl,
+  clmdep_asio::error_code assign(implementation_type& impl,
       const native_handle_type& native_descriptor,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.assign(impl, native_descriptor, ec);
   }
@@ -122,8 +122,8 @@ public:
   }
 
   /// Close a stream descriptor implementation.
-  asio::error_code close(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code close(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.close(impl, ec);
   }
@@ -148,16 +148,16 @@ public:
   }
 
   /// Cancel all asynchronous operations associated with the descriptor.
-  asio::error_code cancel(implementation_type& impl,
-      asio::error_code& ec)
+  clmdep_asio::error_code cancel(implementation_type& impl,
+      clmdep_asio::error_code& ec)
   {
     return service_impl_.cancel(impl, ec);
   }
 
   /// Perform an IO control command on the descriptor.
   template <typename IoControlCommand>
-  asio::error_code io_control(implementation_type& impl,
-      IoControlCommand& command, asio::error_code& ec)
+  clmdep_asio::error_code io_control(implementation_type& impl,
+      IoControlCommand& command, clmdep_asio::error_code& ec)
   {
     return service_impl_.io_control(impl, command, ec);
   }
@@ -169,8 +169,8 @@ public:
   }
 
   /// Sets the non-blocking mode of the descriptor.
-  asio::error_code non_blocking(implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code non_blocking(implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     return service_impl_.non_blocking(impl, mode, ec);
   }
@@ -182,8 +182,8 @@ public:
   }
 
   /// Sets the non-blocking mode of the native descriptor implementation.
-  asio::error_code native_non_blocking(implementation_type& impl,
-      bool mode, asio::error_code& ec)
+  clmdep_asio::error_code native_non_blocking(implementation_type& impl,
+      bool mode, clmdep_asio::error_code& ec)
   {
     return service_impl_.native_non_blocking(impl, mode, ec);
   }
@@ -191,7 +191,7 @@ public:
   /// Write the given data to the stream.
   template <typename ConstBufferSequence>
   std::size_t write_some(implementation_type& impl,
-      const ConstBufferSequence& buffers, asio::error_code& ec)
+      const ConstBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.write_some(impl, buffers, ec);
   }
@@ -199,13 +199,13 @@ public:
   /// Start an asynchronous write.
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some(implementation_type& impl,
       const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
-    asio::detail::async_result_init<
-      WriteHandler, void (asio::error_code, std::size_t)> init(
+    clmdep_asio::detail::async_result_init<
+      WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(WriteHandler)(handler));
 
     service_impl_.async_write_some(impl, buffers, init.handler);
@@ -216,7 +216,7 @@ public:
   /// Read some data from the stream.
   template <typename MutableBufferSequence>
   std::size_t read_some(implementation_type& impl,
-      const MutableBufferSequence& buffers, asio::error_code& ec)
+      const MutableBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     return service_impl_.read_some(impl, buffers, ec);
   }
@@ -224,13 +224,13 @@ public:
   /// Start an asynchronous read.
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some(implementation_type& impl,
       const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
-    asio::detail::async_result_init<
-      ReadHandler, void (asio::error_code, std::size_t)> init(
+    clmdep_asio::detail::async_result_init<
+      ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
         ASIO_MOVE_CAST(ReadHandler)(handler));
 
     service_impl_.async_read_some(impl, buffers, init.handler);
@@ -250,7 +250,7 @@ private:
 };
 
 } // namespace posix
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

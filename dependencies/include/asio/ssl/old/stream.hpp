@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace old {
 
@@ -44,9 +44,9 @@ namespace old {
  * @par Example
  * To use the SSL stream template with an ip::tcp::socket, you would write:
  * @code
- * asio::io_service io_service;
- * asio::ssl::context context(io_service, asio::ssl::context::sslv23);
- * asio::ssl::stream<asio::ip::tcp::socket> sock(io_service, context);
+ * clmdep_asio::io_service io_service;
+ * clmdep_asio::ssl::context context(io_service, clmdep_asio::ssl::context::sslv23);
+ * clmdep_asio::ssl::stream<clmdep_asio::ip::tcp::socket> sock(io_service, context);
  * @endcode
  *
  * @par Concepts:
@@ -82,7 +82,7 @@ public:
   template <typename Arg, typename Context_Service>
   explicit stream(Arg& arg, basic_context<Context_Service>& context)
     : next_layer_(arg),
-      service_(asio::use_service<Service>(next_layer_.get_io_service())),
+      service_(clmdep_asio::use_service<Service>(next_layer_.get_io_service())),
       impl_(service_.null())
   {
     service_.create(impl_, next_layer_, context);
@@ -102,7 +102,7 @@ public:
    * @return A reference to the io_service object that stream will use to
    * dispatch handlers. Ownership is not transferred to the caller.
    */
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return next_layer_.get_io_service();
   }
@@ -165,13 +165,13 @@ public:
    * @param type The type of handshaking to be performed, i.e. as a client or as
    * a server.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void handshake(handshake_type type)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     service_.handshake(impl_, next_layer_, type, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
   }
 
   /// Perform SSL handshaking.
@@ -184,8 +184,8 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code handshake(handshake_type type,
-      asio::error_code& ec)
+  clmdep_asio::error_code handshake(handshake_type type,
+      clmdep_asio::error_code& ec)
   {
     return service_.handshake(impl_, next_layer_, type, ec);
   }
@@ -202,7 +202,7 @@ public:
    * completes. Copies will be made of the handler as required. The equivalent
    * function signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error // Result of operation.
+   *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
    */
   template <typename HandshakeHandler>
@@ -216,13 +216,13 @@ public:
    * This function is used to shut down SSL on the stream. The function call
    * will block until SSL has been shut down or an error occurs.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   void shutdown()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     service_.shutdown(impl_, next_layer_, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
   }
 
   /// Shut down SSL on the stream.
@@ -232,7 +232,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  asio::error_code shutdown(asio::error_code& ec)
+  clmdep_asio::error_code shutdown(clmdep_asio::error_code& ec)
   {
     return service_.shutdown(impl_, next_layer_, ec);
   }
@@ -246,7 +246,7 @@ public:
    * completes. Copies will be made of the handler as required. The equivalent
    * function signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error // Result of operation.
+   *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
    */
   template <typename ShutdownHandler>
@@ -265,7 +265,7 @@ public:
    *
    * @returns The number of bytes written.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The write_some operation may not transmit all of the data to the
    * peer. Consider using the @ref write function if you need to ensure that all
@@ -274,9 +274,9 @@ public:
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = service_.write_some(impl_, next_layer_, buffers, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
     return s;
   }
 
@@ -298,7 +298,7 @@ public:
    */
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_.write_some(impl_, next_layer_, buffers, ec);
   }
@@ -317,7 +317,7 @@ public:
    * Copies will be made of the handler as required. The equivalent function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes written.
    * ); @endcode
    *
@@ -342,7 +342,7 @@ public:
    *
    * @returns The number of bytes read.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The read_some operation may not read all of the requested number of
    * bytes. Consider using the @ref read function if you need to ensure that the
@@ -351,9 +351,9 @@ public:
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = service_.read_some(impl_, next_layer_, buffers, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
     return s;
   }
 
@@ -375,7 +375,7 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_.read_some(impl_, next_layer_, buffers, ec);
   }
@@ -394,7 +394,7 @@ public:
    * Copies will be made of the handler as required. The equivalent function
    * signature of the handler must be:
    * @code void handler(
-   *   const asio::error_code& error, // Result of operation.
+   *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred           // Number of bytes read.
    * ); @endcode
    *
@@ -420,14 +420,14 @@ public:
    *
    * @returns The number of bytes read.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   template <typename MutableBufferSequence>
   std::size_t peek(const MutableBufferSequence& buffers)
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = service_.peek(impl_, next_layer_, buffers, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
     return s;
   }
 
@@ -445,7 +445,7 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t peek(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return service_.peek(impl_, next_layer_, buffers, ec);
   }
@@ -457,13 +457,13 @@ public:
    *
    * @returns The number of bytes of data that can be read without blocking.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   std::size_t in_avail()
   {
-    asio::error_code ec;
+    clmdep_asio::error_code ec;
     std::size_t s = service_.in_avail(impl_, next_layer_, ec);
-    asio::detail::throw_error(ec);
+    clmdep_asio::detail::throw_error(ec);
     return s;
   }
 
@@ -476,7 +476,7 @@ public:
    *
    * @returns The number of bytes of data that can be read without blocking.
    */
-  std::size_t in_avail(asio::error_code& ec)
+  std::size_t in_avail(clmdep_asio::error_code& ec)
   {
     return service_.in_avail(impl_, next_layer_, ec);
   }
@@ -494,7 +494,7 @@ private:
 
 } // namespace old
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

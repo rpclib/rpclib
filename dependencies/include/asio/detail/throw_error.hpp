@@ -20,21 +20,21 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
-ASIO_DECL void do_throw_error(const asio::error_code& err);
+ASIO_DECL void do_throw_error(const clmdep_asio::error_code& err);
 
-ASIO_DECL void do_throw_error(const asio::error_code& err,
+ASIO_DECL void do_throw_error(const clmdep_asio::error_code& err,
     const char* location);
 
-inline void throw_error(const asio::error_code& err)
+inline void throw_error(const clmdep_asio::error_code& err)
 {
   if (err)
     do_throw_error(err);
 }
 
-inline void throw_error(const asio::error_code& err,
+inline void throw_error(const clmdep_asio::error_code& err,
     const char* location)
 {
   if (err)
@@ -42,7 +42,7 @@ inline void throw_error(const asio::error_code& err,
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -11,7 +11,7 @@
 #ifndef ASIO_COROUTINE_HPP
 #define ASIO_COROUTINE_HPP
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class coroutine_ref;
@@ -276,10 +276,10 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #define ASIO_CORO_REENTER(c) \
-  switch (::asio::detail::coroutine_ref _coro_value = c) \
+  switch (::clmdep_asio::detail::coroutine_ref _coro_value = c) \
     case -1: if (_coro_value) \
     { \
       goto terminate_coroutine; \

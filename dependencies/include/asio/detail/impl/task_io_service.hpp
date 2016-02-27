@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 template <typename Handler>
@@ -33,14 +33,14 @@ void task_io_service::dispatch(Handler& handler)
   if (thread_call_stack::contains(this))
   {
     fenced_block b(fenced_block::full);
-    asio_handler_invoke_helpers::invoke(handler, handler);
+    clmdep_asio_handler_invoke_helpers::invoke(handler, handler);
   }
   else
   {
     // Allocate and construct an operation to wrap the handler.
     typedef completion_handler<Handler> op;
-    typename op::ptr p = { asio::detail::addressof(handler),
-      asio_handler_alloc_helpers::allocate(
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      clmdep_asio_handler_alloc_helpers::allocate(
         sizeof(op), handler), 0 };
     p.p = new (p.v) op(handler);
 
@@ -55,12 +55,12 @@ template <typename Handler>
 void task_io_service::post(Handler& handler)
 {
   bool is_continuation =
-    asio_handler_cont_helpers::is_continuation(handler);
+    clmdep_asio_handler_cont_helpers::is_continuation(handler);
 
   // Allocate and construct an operation to wrap the handler.
   typedef completion_handler<Handler> op;
-  typename op::ptr p = { asio::detail::addressof(handler),
-    asio_handler_alloc_helpers::allocate(
+  typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+    clmdep_asio_handler_alloc_helpers::allocate(
       sizeof(op), handler), 0 };
   p.p = new (p.v) op(handler);
 
@@ -71,7 +71,7 @@ void task_io_service::post(Handler& handler)
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

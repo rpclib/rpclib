@@ -24,7 +24,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Context object the represents the currently executing coroutine.
 /**
@@ -113,7 +113,7 @@ public:
    *   ...
    * } @endcode
    */
-  basic_yield_context operator[](asio::error_code& ec) const
+  basic_yield_context operator[](clmdep_asio::error_code& ec) const
   {
     basic_yield_context tmp(*this);
     tmp.ec_ = &ec;
@@ -126,7 +126,7 @@ private:
   detail::weak_ptr<callee_type> coro_;
   caller_type& ca_;
   Handler& handler_;
-  asio::error_code* ec_;
+  clmdep_asio::error_code* ec_;
 };
 
 #if defined(GENERATING_DOCUMENTATION)
@@ -140,7 +140,7 @@ typedef basic_yield_context<
 #endif // defined(GENERATING_DOCUMENTATION)
 
 /**
- * @defgroup spawn asio::spawn
+ * @defgroup spawn clmdep_asio::spawn
  *
  * @brief Start a new stackful coroutine.
  *
@@ -148,11 +148,11 @@ typedef basic_yield_context<
  * library. This function enables programs to implement asynchronous logic in a
  * synchronous manner, as illustrated by the following example:
  *
- * @code asio::spawn(my_strand, do_echo);
+ * @code clmdep_asio::spawn(my_strand, do_echo);
  *
  * // ...
  *
- * void do_echo(asio::yield_context yield)
+ * void do_echo(clmdep_asio::yield_context yield)
  * {
  *   try
  *   {
@@ -161,10 +161,10 @@ typedef basic_yield_context<
  *     {
  *       std::size_t length =
  *         my_socket.async_read_some(
- *           asio::buffer(data), yield);
+ *           clmdep_asio::buffer(data), yield);
  *
- *       asio::async_write(my_socket,
- *           asio::buffer(data, length), yield);
+ *       clmdep_asio::async_write(my_socket,
+ *           clmdep_asio::buffer(data, length), yield);
  *     }
  *   }
  *   catch (std::exception& e)
@@ -231,7 +231,7 @@ void spawn(basic_yield_context<Handler> ctx,
  * @param attributes Boost.Coroutine attributes used to customise the coroutine.
  */
 template <typename Function>
-void spawn(asio::io_service::strand strand,
+void spawn(clmdep_asio::io_service::strand strand,
     ASIO_MOVE_ARG(Function) function,
     const boost::coroutines::attributes& attributes
       = boost::coroutines::attributes());
@@ -249,14 +249,14 @@ void spawn(asio::io_service::strand strand,
  * @param attributes Boost.Coroutine attributes used to customise the coroutine.
  */
 template <typename Function>
-void spawn(asio::io_service& io_service,
+void spawn(clmdep_asio::io_service& io_service,
     ASIO_MOVE_ARG(Function) function,
     const boost::coroutines::attributes& attributes
       = boost::coroutines::attributes());
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

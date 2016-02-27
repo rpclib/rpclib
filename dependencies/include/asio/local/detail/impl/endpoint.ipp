@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace local {
 namespace detail {
 
@@ -50,10 +50,10 @@ endpoint::endpoint(const std::string& path_name)
 
 void endpoint::resize(std::size_t new_size)
 {
-  if (new_size > sizeof(asio::detail::sockaddr_un_type))
+  if (new_size > sizeof(clmdep_asio::detail::sockaddr_un_type))
   {
-    asio::error_code ec(asio::error::invalid_argument);
-    asio::detail::throw_error(ec);
+    clmdep_asio::error_code ec(clmdep_asio::error::invalid_argument);
+    clmdep_asio::detail::throw_error(ec);
   }
   else if (new_size == 0)
   {
@@ -62,7 +62,7 @@ void endpoint::resize(std::size_t new_size)
   else
   {
     path_length_ = new_size
-      - offsetof(asio::detail::sockaddr_un_type, sun_path);
+      - offsetof(clmdep_asio::detail::sockaddr_un_type, sun_path);
 
     // The path returned by the operating system may be NUL-terminated.
     if (path_length_ > 0 && data_.local.sun_path[path_length_ - 1] == 0)
@@ -101,12 +101,12 @@ void endpoint::init(const char* path_name, std::size_t path_length)
   if (path_length > sizeof(data_.local.sun_path) - 1)
   {
     // The buffer is not large enough to store this address.
-    asio::error_code ec(asio::error::name_too_long);
-    asio::detail::throw_error(ec);
+    clmdep_asio::error_code ec(clmdep_asio::error::name_too_long);
+    clmdep_asio::detail::throw_error(ec);
   }
 
   using namespace std; // For memcpy.
-  data_.local = asio::detail::sockaddr_un_type();
+  data_.local = clmdep_asio::detail::sockaddr_un_type();
   data_.local.sun_family = AF_UNIX;
   memcpy(data_.local.sun_path, path_name, path_length);
   path_length_ = path_length;
@@ -119,7 +119,7 @@ void endpoint::init(const char* path_name, std::size_t path_length)
 
 } // namespace detail
 } // namespace local
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

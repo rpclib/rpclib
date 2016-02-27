@@ -34,7 +34,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 namespace winrt_utils {
 
@@ -83,21 +83,21 @@ inline Windows::Storage::Streams::IBuffer^ buffer_dup(
     const ConstBufferSequence& buffers)
 {
   using Microsoft::WRL::ComPtr;
-  std::size_t size = asio::buffer_size(buffers);
+  std::size_t size = clmdep_asio::buffer_size(buffers);
   auto b = ref new Windows::Storage::Streams::Buffer(size);
   ComPtr<IInspectable> insp = reinterpret_cast<IInspectable*>(b);
   ComPtr<Windows::Storage::Streams::IBufferByteAccess> bacc;
   insp.As(&bacc);
   byte* bytes = nullptr;
   bacc->Buffer(&bytes);
-  asio::buffer_copy(asio::buffer(bytes, size), buffers);
+  clmdep_asio::buffer_copy(clmdep_asio::buffer(bytes, size), buffers);
   b->Length = size;
   return b;
 }
 
 } // namespace winrt_utils
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

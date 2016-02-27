@@ -20,7 +20,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ip {
 
 /// Socket option for determining whether an IPv6 socket supports IPv6
@@ -31,18 +31,18 @@ namespace ip {
  * @par Examples
  * Setting the option:
  * @code
- * asio::ip::tcp::socket socket(io_service); 
+ * clmdep_asio::ip::tcp::socket socket(io_service); 
  * ...
- * asio::ip::v6_only option(true);
+ * clmdep_asio::ip::v6_only option(true);
  * socket.set_option(option);
  * @endcode
  *
  * @par
  * Getting the current option value:
  * @code
- * asio::ip::tcp::socket socket(io_service); 
+ * clmdep_asio::ip::tcp::socket socket(io_service); 
  * ...
- * asio::ip::v6_only option;
+ * clmdep_asio::ip::v6_only option;
  * socket.get_option(option);
  * bool v6_only = option.value();
  * @endcode
@@ -53,16 +53,16 @@ namespace ip {
 #if defined(GENERATING_DOCUMENTATION)
 typedef implementation_defined v6_only;
 #elif defined(IPV6_V6ONLY)
-typedef asio::detail::socket_option::boolean<
+typedef clmdep_asio::detail::socket_option::boolean<
     IPPROTO_IPV6, IPV6_V6ONLY> v6_only;
 #else
-typedef asio::detail::socket_option::boolean<
-    asio::detail::custom_socket_option_level,
-    asio::detail::always_fail_option> v6_only;
+typedef clmdep_asio::detail::socket_option::boolean<
+    clmdep_asio::detail::custom_socket_option_level,
+    clmdep_asio::detail::always_fail_option> v6_only;
 #endif
 
 } // namespace ip
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

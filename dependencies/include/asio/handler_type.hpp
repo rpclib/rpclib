@@ -19,7 +19,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Default handler type traits provided for all handlers.
 /**
@@ -102,7 +102,7 @@ struct handler_type<ReturnType(Arg1, Arg2, Arg3, Arg4, Arg5), Signature>
 
 #endif // !defined(GENERATING_DOCUMENTATION)
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /// Adds buffering to the read- and write-related operations of a stream.
 /**
@@ -88,7 +88,7 @@ public:
   }
 
   /// Get the io_service associated with the object.
-  asio::io_service& get_io_service()
+  clmdep_asio::io_service& get_io_service()
   {
     return stream_impl_.get_io_service();
   }
@@ -100,7 +100,7 @@ public:
   }
 
   /// Close the stream.
-  asio::error_code close(asio::error_code& ec)
+  clmdep_asio::error_code close(clmdep_asio::error_code& ec)
   {
     return stream_impl_.close(ec);
   }
@@ -116,7 +116,7 @@ public:
   /// Flush all data from the buffer to the next layer. Returns the number of
   /// bytes written to the next layer on the last write operation, or 0 if an
   /// error occurred.
-  std::size_t flush(asio::error_code& ec)
+  std::size_t flush(clmdep_asio::error_code& ec)
   {
     return stream_impl_.next_layer().flush(ec);
   }
@@ -124,7 +124,7 @@ public:
   /// Start an asynchronous flush.
   template <typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_flush(ASIO_MOVE_ARG(WriteHandler) handler)
   {
     return stream_impl_.next_layer().async_flush(
@@ -143,7 +143,7 @@ public:
   /// or 0 if an error occurred.
   template <typename ConstBufferSequence>
   std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return stream_impl_.write_some(buffers, ec);
   }
@@ -152,7 +152,7 @@ public:
   /// lifetime of the asynchronous operation.
   template <typename ConstBufferSequence, typename WriteHandler>
   ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_write_some(const ConstBufferSequence& buffers,
       ASIO_MOVE_ARG(WriteHandler) handler)
   {
@@ -169,7 +169,7 @@ public:
 
   /// Fill the buffer with some data. Returns the number of bytes placed in the
   /// buffer as a result of the operation, or 0 if an error occurred.
-  std::size_t fill(asio::error_code& ec)
+  std::size_t fill(clmdep_asio::error_code& ec)
   {
     return stream_impl_.fill(ec);
   }
@@ -177,7 +177,7 @@ public:
   /// Start an asynchronous fill.
   template <typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_fill(ASIO_MOVE_ARG(ReadHandler) handler)
   {
     return stream_impl_.async_fill(ASIO_MOVE_CAST(ReadHandler)(handler));
@@ -195,7 +195,7 @@ public:
   /// an error occurred.
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return stream_impl_.read_some(buffers, ec);
   }
@@ -204,7 +204,7 @@ public:
   /// must be valid for the lifetime of the asynchronous operation.
   template <typename MutableBufferSequence, typename ReadHandler>
   ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (asio::error_code, std::size_t))
+      void (clmdep_asio::error_code, std::size_t))
   async_read_some(const MutableBufferSequence& buffers,
       ASIO_MOVE_ARG(ReadHandler) handler)
   {
@@ -224,7 +224,7 @@ public:
   /// or 0 if an error occurred.
   template <typename MutableBufferSequence>
   std::size_t peek(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
+      clmdep_asio::error_code& ec)
   {
     return stream_impl_.peek(buffers, ec);
   }
@@ -236,7 +236,7 @@ public:
   }
 
   /// Determine the amount of data that may be read without blocking.
-  std::size_t in_avail(asio::error_code& ec)
+  std::size_t in_avail(clmdep_asio::error_code& ec)
   {
     return stream_impl_.in_avail(ec);
   }
@@ -251,7 +251,7 @@ private:
   read_stream_type stream_impl_;
 };
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

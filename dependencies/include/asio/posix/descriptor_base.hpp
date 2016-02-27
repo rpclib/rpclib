@@ -25,7 +25,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace posix {
 
 /// The descriptor_base class is used as a base for the basic_stream_descriptor
@@ -41,9 +41,9 @@ public:
    *
    * @par Example
    * @code
-   * asio::posix::stream_descriptor descriptor(io_service); 
+   * clmdep_asio::posix::stream_descriptor descriptor(io_service); 
    * ...
-   * asio::descriptor_base::non_blocking_io command(true);
+   * clmdep_asio::descriptor_base::non_blocking_io command(true);
    * descriptor.io_control(command);
    * @endcode
    *
@@ -53,7 +53,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined non_blocking_io;
 #else
-  typedef asio::detail::io_control::non_blocking_io non_blocking_io;
+  typedef clmdep_asio::detail::io_control::non_blocking_io non_blocking_io;
 #endif
 
   /// IO control command to get the amount of data that can be read without
@@ -63,9 +63,9 @@ public:
    *
    * @par Example
    * @code
-   * asio::posix::stream_descriptor descriptor(io_service); 
+   * clmdep_asio::posix::stream_descriptor descriptor(io_service); 
    * ...
-   * asio::descriptor_base::bytes_readable command(true);
+   * clmdep_asio::descriptor_base::bytes_readable command(true);
    * descriptor.io_control(command);
    * std::size_t bytes_readable = command.get();
    * @endcode
@@ -76,7 +76,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined bytes_readable;
 #else
-  typedef asio::detail::io_control::bytes_readable bytes_readable;
+  typedef clmdep_asio::detail::io_control::bytes_readable bytes_readable;
 #endif
 
 protected:
@@ -87,7 +87,7 @@ protected:
 };
 
 } // namespace posix
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

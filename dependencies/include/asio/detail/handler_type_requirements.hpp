@@ -63,7 +63,7 @@
 # define ASIO_UNUSED_TYPEDEF
 #endif // !defined(ASIO_UNUSED_TYPEDEF)
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 #if defined(ASIO_ENABLE_HANDLER_TYPE_REQUIREMENTS)
@@ -124,49 +124,49 @@ struct handler_type_requirements
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void()) asio_true_handler_type; \
+      void()) clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::zero_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), 0)) == 1, \
+      sizeof(clmdep_asio::detail::zero_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), 0)) == 1, \
       "CompletionHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()(), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()(), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_READ_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, std::size_t)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, std::size_t)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const std::size_t*>(0))) == 1, \
       "ReadHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>(), \
-            asio::detail::lvref<const std::size_t>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+            clmdep_asio::detail::lvref<const std::size_t>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 
@@ -174,260 +174,260 @@ struct handler_type_requirements
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, std::size_t)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, std::size_t)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const std::size_t*>(0))) == 1, \
       "WriteHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>(), \
-            asio::detail::lvref<const std::size_t>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+            clmdep_asio::detail::lvref<const std::size_t>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_ACCEPT_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::one_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0))) == 1, \
+      sizeof(clmdep_asio::detail::one_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0))) == 1, \
       "AcceptHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_CONNECT_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::one_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0))) == 1, \
+      sizeof(clmdep_asio::detail::one_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0))) == 1, \
       "ConnectHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_COMPOSED_CONNECT_HANDLER_CHECK( \
     handler_type, handler, iter_type) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, iter_type)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, iter_type)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const iter_type*>(0))) == 1, \
       "ComposedConnectHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>(), \
-            asio::detail::lvref<const iter_type>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+            clmdep_asio::detail::lvref<const iter_type>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_RESOLVE_HANDLER_CHECK( \
     handler_type, handler, iter_type) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, iter_type)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, iter_type)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const iter_type*>(0))) == 1, \
       "ResolveHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>(), \
-            asio::detail::lvref<const iter_type>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+            clmdep_asio::detail::lvref<const iter_type>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_WAIT_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::one_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0))) == 1, \
+      sizeof(clmdep_asio::detail::one_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0))) == 1, \
       "WaitHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_SIGNAL_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, int)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, int)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const int*>(0))) == 1, \
       "SignalHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>(), \
-            asio::detail::lvref<const int>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+            clmdep_asio::detail::lvref<const int>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_HANDSHAKE_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::one_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0))) == 1, \
+      sizeof(clmdep_asio::detail::one_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0))) == 1, \
       "HandshakeHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_BUFFERED_HANDSHAKE_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code, std::size_t)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code, std::size_t)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::two_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0), \
+      sizeof(clmdep_asio::detail::two_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0), \
           static_cast<const std::size_t*>(0))) == 1, \
       "BufferedHandshakeHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-          asio::detail::lvref<const asio::error_code>(), \
-          asio::detail::lvref<const std::size_t>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+          clmdep_asio::detail::lvref<const clmdep_asio::error_code>(), \
+          clmdep_asio::detail::lvref<const std::size_t>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #define ASIO_SHUTDOWN_HANDLER_CHECK( \
     handler_type, handler) \
   \
   typedef ASIO_HANDLER_TYPE(handler_type, \
-      void(asio::error_code)) \
-    asio_true_handler_type; \
+      void(clmdep_asio::error_code)) \
+    clmdep_asio_true_handler_type; \
   \
   ASIO_HANDLER_TYPE_REQUIREMENTS_ASSERT( \
-      sizeof(asio::detail::one_arg_handler_test( \
-          asio::detail::clvref< \
-            asio_true_handler_type>(), \
-          static_cast<const asio::error_code*>(0))) == 1, \
+      sizeof(clmdep_asio::detail::one_arg_handler_test( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>(), \
+          static_cast<const clmdep_asio::error_code*>(0))) == 1, \
       "ShutdownHandler type requirements not met") \
   \
-  typedef asio::detail::handler_type_requirements< \
+  typedef clmdep_asio::detail::handler_type_requirements< \
       sizeof( \
-        asio::detail::argbyv( \
-          asio::detail::clvref< \
-            asio_true_handler_type>())) + \
+        clmdep_asio::detail::argbyv( \
+          clmdep_asio::detail::clvref< \
+            clmdep_asio_true_handler_type>())) + \
       sizeof( \
-        asio::detail::lvref< \
-          asio_true_handler_type>()( \
-            asio::detail::lvref<const asio::error_code>()), \
+        clmdep_asio::detail::lvref< \
+          clmdep_asio_true_handler_type>()( \
+            clmdep_asio::detail::lvref<const clmdep_asio::error_code>()), \
         char(0))> ASIO_UNUSED_TYPEDEF
 
 #else // !defined(ASIO_ENABLE_HANDLER_TYPE_REQUIREMENTS)
@@ -483,6 +483,6 @@ struct handler_type_requirements
 #endif // !defined(ASIO_ENABLE_HANDLER_TYPE_REQUIREMENTS)
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #endif // ASIO_DETAIL_HANDLER_TYPE_REQUIREMENTS_HPP

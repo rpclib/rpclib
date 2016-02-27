@@ -27,7 +27,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace ssl {
 namespace detail {
 
@@ -38,10 +38,10 @@ engine::engine(SSL_CTX* context)
 {
   if (!ssl_)
   {
-    asio::error_code ec(
+    clmdep_asio::error_code ec(
         static_cast<int>(::ERR_get_error()),
-        asio::error::get_ssl_category());
-    asio::detail::throw_error(ec, "engine");
+        clmdep_asio::error::get_ssl_category());
+    clmdep_asio::detail::throw_error(ec, "engine");
   }
 
   accept_mutex().init();
@@ -74,26 +74,26 @@ SSL* engine::native_handle()
   return ssl_;
 }
 
-asio::error_code engine::set_verify_mode(
-    verify_mode v, asio::error_code& ec)
+clmdep_asio::error_code engine::set_verify_mode(
+    verify_mode v, clmdep_asio::error_code& ec)
 {
   ::SSL_set_verify(ssl_, v, ::SSL_get_verify_callback(ssl_));
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code engine::set_verify_depth(
-    int depth, asio::error_code& ec)
+clmdep_asio::error_code engine::set_verify_depth(
+    int depth, clmdep_asio::error_code& ec)
 {
   ::SSL_set_verify_depth(ssl_, depth);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
-asio::error_code engine::set_verify_callback(
-    verify_callback_base* callback, asio::error_code& ec)
+clmdep_asio::error_code engine::set_verify_callback(
+    verify_callback_base* callback, clmdep_asio::error_code& ec)
 {
   if (SSL_get_app_data(ssl_))
     delete static_cast<verify_callback_base*>(SSL_get_app_data(ssl_));
@@ -103,7 +103,7 @@ asio::error_code engine::set_verify_callback(
   ::SSL_set_verify(ssl_, ::SSL_get_verify_mode(ssl_),
       &engine::verify_callback_function);
 
-  ec = asio::error_code();
+  ec = clmdep_asio::error_code();
   return ec;
 }
 
@@ -131,80 +131,80 @@ int engine::verify_callback_function(int preverified, X509_STORE_CTX* ctx)
 }
 
 engine::want engine::handshake(
-    stream_base::handshake_type type, asio::error_code& ec)
+    stream_base::handshake_type type, clmdep_asio::error_code& ec)
 {
-  return perform((type == asio::ssl::stream_base::client)
+  return perform((type == clmdep_asio::ssl::stream_base::client)
       ? &engine::do_connect : &engine::do_accept, 0, 0, ec, 0);
 }
 
-engine::want engine::shutdown(asio::error_code& ec)
+engine::want engine::shutdown(clmdep_asio::error_code& ec)
 {
   return perform(&engine::do_shutdown, 0, 0, ec, 0);
 }
 
-engine::want engine::write(const asio::const_buffer& data,
-    asio::error_code& ec, std::size_t& bytes_transferred)
+engine::want engine::write(const clmdep_asio::const_buffer& data,
+    clmdep_asio::error_code& ec, std::size_t& bytes_transferred)
 {
-  if (asio::buffer_size(data) == 0)
+  if (clmdep_asio::buffer_size(data) == 0)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return engine::want_nothing;
   }
 
   return perform(&engine::do_write,
-      const_cast<void*>(asio::buffer_cast<const void*>(data)),
-      asio::buffer_size(data), ec, &bytes_transferred);
+      const_cast<void*>(clmdep_asio::buffer_cast<const void*>(data)),
+      clmdep_asio::buffer_size(data), ec, &bytes_transferred);
 }
 
-engine::want engine::read(const asio::mutable_buffer& data,
-    asio::error_code& ec, std::size_t& bytes_transferred)
+engine::want engine::read(const clmdep_asio::mutable_buffer& data,
+    clmdep_asio::error_code& ec, std::size_t& bytes_transferred)
 {
-  if (asio::buffer_size(data) == 0)
+  if (clmdep_asio::buffer_size(data) == 0)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return engine::want_nothing;
   }
 
   return perform(&engine::do_read,
-      asio::buffer_cast<void*>(data),
-      asio::buffer_size(data), ec, &bytes_transferred);
+      clmdep_asio::buffer_cast<void*>(data),
+      clmdep_asio::buffer_size(data), ec, &bytes_transferred);
 }
 
-asio::mutable_buffers_1 engine::get_output(
-    const asio::mutable_buffer& data)
+clmdep_asio::mutable_buffers_1 engine::get_output(
+    const clmdep_asio::mutable_buffer& data)
 {
   int length = ::BIO_read(ext_bio_,
-      asio::buffer_cast<void*>(data),
-      static_cast<int>(asio::buffer_size(data)));
+      clmdep_asio::buffer_cast<void*>(data),
+      static_cast<int>(clmdep_asio::buffer_size(data)));
 
-  return asio::buffer(data,
+  return clmdep_asio::buffer(data,
       length > 0 ? static_cast<std::size_t>(length) : 0);
 }
 
-asio::const_buffer engine::put_input(
-    const asio::const_buffer& data)
+clmdep_asio::const_buffer engine::put_input(
+    const clmdep_asio::const_buffer& data)
 {
   int length = ::BIO_write(ext_bio_,
-      asio::buffer_cast<const void*>(data),
-      static_cast<int>(asio::buffer_size(data)));
+      clmdep_asio::buffer_cast<const void*>(data),
+      static_cast<int>(clmdep_asio::buffer_size(data)));
 
-  return asio::buffer(data +
+  return clmdep_asio::buffer(data +
       (length > 0 ? static_cast<std::size_t>(length) : 0));
 }
 
-const asio::error_code& engine::map_error_code(
-    asio::error_code& ec) const
+const clmdep_asio::error_code& engine::map_error_code(
+    clmdep_asio::error_code& ec) const
 {
   // We only want to map the error::eof code.
-  if (ec != asio::error::eof)
+  if (ec != clmdep_asio::error::eof)
     return ec;
 
   // If there's data yet to be read, it's an error.
   if (BIO_wpending(ext_bio_))
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         ERR_PACK(ERR_LIB_SSL, 0, SSL_R_SHORT_READ),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
     return ec;
   }
 
@@ -216,22 +216,22 @@ const asio::error_code& engine::map_error_code(
   // Otherwise, the peer should have negotiated a proper shutdown.
   if ((::SSL_get_shutdown(ssl_) & SSL_RECEIVED_SHUTDOWN) == 0)
   {
-    ec = asio::error_code(
+    ec = clmdep_asio::error_code(
         ERR_PACK(ERR_LIB_SSL, 0, SSL_R_SHORT_READ),
-        asio::error::get_ssl_category());
+        clmdep_asio::error::get_ssl_category());
   }
 
   return ec;
 }
 
-asio::detail::static_mutex& engine::accept_mutex()
+clmdep_asio::detail::static_mutex& engine::accept_mutex()
 {
-  static asio::detail::static_mutex mutex = ASIO_STATIC_MUTEX_INIT;
+  static clmdep_asio::detail::static_mutex mutex = ASIO_STATIC_MUTEX_INIT;
   return mutex;
 }
 
 engine::want engine::perform(int (engine::* op)(void*, std::size_t),
-    void* data, std::size_t length, asio::error_code& ec,
+    void* data, std::size_t length, clmdep_asio::error_code& ec,
     std::size_t* bytes_transferred)
 {
   std::size_t pending_output_before = ::BIO_ctrl_pending(ext_bio_);
@@ -243,15 +243,15 @@ engine::want engine::perform(int (engine::* op)(void*, std::size_t),
 
   if (ssl_error == SSL_ERROR_SSL)
   {
-    ec = asio::error_code(sys_error,
-        asio::error::get_ssl_category());
+    ec = clmdep_asio::error_code(sys_error,
+        clmdep_asio::error::get_ssl_category());
     return want_nothing;
   }
 
   if (ssl_error == SSL_ERROR_SYSCALL)
   {
-    ec = asio::error_code(sys_error,
-        asio::error::get_system_category());
+    ec = clmdep_asio::error_code(sys_error,
+        clmdep_asio::error::get_system_category());
     return want_nothing;
   }
 
@@ -260,34 +260,34 @@ engine::want engine::perform(int (engine::* op)(void*, std::size_t),
 
   if (ssl_error == SSL_ERROR_WANT_WRITE)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return want_output_and_retry;
   }
   else if (pending_output_after > pending_output_before)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return result > 0 ? want_output : want_output_and_retry;
   }
   else if (ssl_error == SSL_ERROR_WANT_READ)
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return want_input_and_retry;
   }
   else if (::SSL_get_shutdown(ssl_) & SSL_RECEIVED_SHUTDOWN)
   {
-    ec = asio::error::eof;
+    ec = clmdep_asio::error::eof;
     return want_nothing;
   }
   else
   {
-    ec = asio::error_code();
+    ec = clmdep_asio::error_code();
     return want_nothing;
   }
 }
 
 int engine::do_accept(void*, std::size_t)
 {
-  asio::detail::static_mutex::scoped_lock lock(accept_mutex());
+  clmdep_asio::detail::static_mutex::scoped_lock lock(accept_mutex());
   return ::SSL_accept(ssl_);
 }
 
@@ -320,7 +320,7 @@ int engine::do_write(void* data, std::size_t length)
 
 } // namespace detail
 } // namespace ssl
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

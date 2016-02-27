@@ -36,15 +36,15 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class winrt_timer_scheduler
-  : public asio::detail::service_base<winrt_timer_scheduler>
+  : public clmdep_asio::detail::service_base<winrt_timer_scheduler>
 {
 public:
   // Constructor.
-  ASIO_DECL winrt_timer_scheduler(asio::io_service& io_service);
+  ASIO_DECL winrt_timer_scheduler(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~winrt_timer_scheduler();
@@ -54,7 +54,7 @@ public:
 
   // Recreate internal descriptors following a fork.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Initialise the task. No effect as this class uses its own thread.
   ASIO_DECL void init_task();
@@ -98,16 +98,16 @@ private:
   io_service_impl& io_service_;
 
   // Mutex used to protect internal variables.
-  asio::detail::mutex mutex_;
+  clmdep_asio::detail::mutex mutex_;
 
   // Event used to wake up background thread.
-  asio::detail::event event_;
+  clmdep_asio::detail::event event_;
 
   // The timer queues.
   timer_queue_set timer_queues_;
 
   // The background thread that is waiting for timers to expire.
-  asio::detail::thread* thread_;
+  clmdep_asio::detail::thread* thread_;
 
   // Does the background thread need to stop.
   bool stop_thread_;
@@ -117,7 +117,7 @@ private:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

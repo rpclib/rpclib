@@ -21,10 +21,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-// Calls to asio_handler_is_continuation must be made from a namespace that
+// Calls to clmdep_asio_handler_is_continuation must be made from a namespace that
 // does not contain overloads of this function. This namespace is defined here
 // for that purpose.
-namespace asio_handler_cont_helpers {
+namespace clmdep_asio_handler_cont_helpers {
 
 template <typename Context>
 inline bool is_continuation(Context& context)
@@ -32,13 +32,13 @@ inline bool is_continuation(Context& context)
 #if !defined(ASIO_HAS_HANDLER_HOOKS)
   return false;
 #else
-  using asio::asio_handler_is_continuation;
-  return asio_handler_is_continuation(
-      asio::detail::addressof(context));
+  using clmdep_asio::clmdep_asio_handler_is_continuation;
+  return clmdep_asio_handler_is_continuation(
+      clmdep_asio::detail::addressof(context));
 #endif
 }
 
-} // namespace asio_handler_cont_helpers
+} // namespace clmdep_asio_handler_cont_helpers
 
 #include "asio/detail/pop_options.hpp"
 

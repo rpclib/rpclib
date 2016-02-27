@@ -20,26 +20,26 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class resolver_service_base::work_io_service_runner
 {
 public:
-  work_io_service_runner(asio::io_service& io_service)
+  work_io_service_runner(clmdep_asio::io_service& io_service)
     : io_service_(io_service) {}
   void operator()() { io_service_.run(); }
 private:
-  asio::io_service& io_service_;
+  clmdep_asio::io_service& io_service_;
 };
 
 resolver_service_base::resolver_service_base(
-    asio::io_service& io_service)
-  : io_service_impl_(asio::use_service<io_service_impl>(io_service)),
-    work_io_service_(new asio::io_service),
-    work_io_service_impl_(asio::use_service<
+    clmdep_asio::io_service& io_service)
+  : io_service_impl_(clmdep_asio::use_service<io_service_impl>(io_service)),
+    work_io_service_(new clmdep_asio::io_service),
+    work_io_service_impl_(clmdep_asio::use_service<
         io_service_impl>(*work_io_service_)),
-    work_(new asio::io_service::work(*work_io_service_)),
+    work_(new clmdep_asio::io_service::work(*work_io_service_)),
     work_thread_(0)
 {
 }
@@ -65,11 +65,11 @@ void resolver_service_base::shutdown_service()
 }
 
 void resolver_service_base::fork_service(
-    asio::io_service::fork_event fork_ev)
+    clmdep_asio::io_service::fork_event fork_ev)
 {
   if (work_thread_.get())
   {
-    if (fork_ev == asio::io_service::fork_prepare)
+    if (fork_ev == clmdep_asio::io_service::fork_prepare)
     {
       work_io_service_->stop();
       work_thread_->join();
@@ -77,7 +77,7 @@ void resolver_service_base::fork_service(
     else
     {
       work_io_service_->reset();
-      work_thread_.reset(new asio::detail::thread(
+      work_thread_.reset(new clmdep_asio::detail::thread(
             work_io_service_runner(*work_io_service_)));
     }
   }
@@ -114,16 +114,16 @@ void resolver_service_base::start_resolve_op(operation* op)
 
 void resolver_service_base::start_work_thread()
 {
-  asio::detail::mutex::scoped_lock lock(mutex_);
+  clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
   if (!work_thread_.get())
   {
-    work_thread_.reset(new asio::detail::thread(
+    work_thread_.reset(new clmdep_asio::detail::thread(
           work_io_service_runner(*work_io_service_)));
   }
 }
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

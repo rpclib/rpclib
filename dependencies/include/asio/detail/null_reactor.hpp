@@ -23,16 +23,16 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class null_reactor
-  : public asio::detail::service_base<null_reactor>
+  : public clmdep_asio::detail::service_base<null_reactor>
 {
 public:
   // Constructor.
-  null_reactor(asio::io_service& io_service)
-    : asio::detail::service_base<null_reactor>(io_service)
+  null_reactor(clmdep_asio::io_service& io_service)
+    : clmdep_asio::detail::service_base<null_reactor>(io_service)
   {
   }
 
@@ -58,7 +58,7 @@ public:
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

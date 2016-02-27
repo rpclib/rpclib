@@ -23,10 +23,10 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 /**
- * @defgroup read asio::read
+ * @defgroup read clmdep_asio::read
  *
  * @brief Attempt to read a certain amount of data from a stream before
  * returning.
@@ -55,19 +55,19 @@ namespace asio {
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To read into a single data buffer use the @ref buffer function as follows:
- * @code asio::read(s, asio::buffer(data, size)); @endcode
+ * @code clmdep_asio::read(s, clmdep_asio::buffer(data, size)); @endcode
  * See the @ref buffer documentation for information on reading into multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::read(
+ * @code clmdep_asio::read(
  *     s, buffers,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncReadStream, typename MutableBufferSequence>
 std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers);
@@ -98,19 +98,19 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers);
  *
  * @par Example
  * To read into a single data buffer use the @ref buffer function as follows:
- * @code asio::read(s, asio::buffer(data, size), ec); @endcode
+ * @code clmdep_asio::read(s, clmdep_asio::buffer(data, size), ec); @endcode
  * See the @ref buffer documentation for information on reading into multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::read(
+ * @code clmdep_asio::read(
  *     s, buffers,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncReadStream, typename MutableBufferSequence>
 std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Attempt to read a certain amount of data from a stream before returning.
 /**
@@ -137,7 +137,7 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -148,12 +148,12 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @par Example
  * To read into a single data buffer use the @ref buffer function as follows:
- * @code asio::read(s, asio::buffer(data, size),
- *     asio::transfer_at_least(32)); @endcode
+ * @code clmdep_asio::read(s, clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32)); @endcode
  * See the @ref buffer documentation for information on reading into multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
@@ -188,7 +188,7 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -205,7 +205,7 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
 template <typename SyncReadStream, typename MutableBufferSequence,
     typename CompletionCondition>
 std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
-    CompletionCondition completion_condition, asio::error_code& ec);
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec);
 
 #if !defined(ASIO_NO_IOSTREAM)
 
@@ -228,12 +228,12 @@ std::size_t read(SyncReadStream& s, const MutableBufferSequence& buffers,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  *
  * @note This overload is equivalent to calling:
- * @code asio::read(
+ * @code clmdep_asio::read(
  *     s, b,
- *     asio::transfer_all()); @endcode
+ *     clmdep_asio::transfer_all()); @endcode
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b);
@@ -260,13 +260,13 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b);
  * @returns The number of bytes transferred.
  *
  * @note This overload is equivalent to calling:
- * @code asio::read(
+ * @code clmdep_asio::read(
  *     s, b,
- *     asio::transfer_all(), ec); @endcode
+ *     clmdep_asio::transfer_all(), ec); @endcode
  */
 template <typename SyncReadStream, typename Allocator>
 std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
-    asio::error_code& ec);
+    clmdep_asio::error_code& ec);
 
 /// Attempt to read a certain amount of data from a stream before returning.
 /**
@@ -290,7 +290,7 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -301,7 +301,7 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
  *
  * @returns The number of bytes transferred.
  *
- * @throws asio::system_error Thrown on failure.
+ * @throws clmdep_asio::system_error Thrown on failure.
  */
 template <typename SyncReadStream, typename Allocator,
     typename CompletionCondition>
@@ -330,7 +330,7 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -347,13 +347,13 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
 template <typename SyncReadStream, typename Allocator,
     typename CompletionCondition>
 std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
-    CompletionCondition completion_condition, asio::error_code& ec);
+    CompletionCondition completion_condition, clmdep_asio::error_code& ec);
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 /*@}*/
 /**
- * @defgroup async_read asio::async_read
+ * @defgroup async_read clmdep_asio::async_read
  *
  * @brief Start an asynchronous operation to read a certain amount of data from
  * a stream.
@@ -392,7 +392,7 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes copied into the
  *                                           // buffers. If an error occurred,
@@ -403,27 +403,27 @@ std::size_t read(SyncReadStream& s, basic_streambuf<Allocator>& b,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To read into a single data buffer use the @ref buffer function as follows:
  * @code
- * asio::async_read(s, asio::buffer(data, size), handler);
+ * clmdep_asio::async_read(s, clmdep_asio::buffer(data, size), handler);
  * @endcode
  * See the @ref buffer documentation for information on reading into multiple
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  *
  * @note This overload is equivalent to calling:
- * @code asio::async_read(
+ * @code clmdep_asio::async_read(
  *     s, buffers,
- *     asio::transfer_all(),
+ *     clmdep_asio::transfer_all(),
  *     handler); @endcode
  */
 template <typename AsyncReadStream, typename MutableBufferSequence,
     typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
     ASIO_MOVE_ARG(ReadHandler) handler);
 
@@ -454,7 +454,7 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -467,7 +467,7 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes copied into the
  *                                           // buffers. If an error occurred,
@@ -478,13 +478,13 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @par Example
  * To read into a single data buffer use the @ref buffer function as follows:
- * @code asio::async_read(s,
- *     asio::buffer(data, size),
- *     asio::transfer_at_least(32),
+ * @code clmdep_asio::async_read(s,
+ *     clmdep_asio::buffer(data, size),
+ *     clmdep_asio::transfer_at_least(32),
  *     handler); @endcode
  * See the @ref buffer documentation for information on reading into multiple
  * buffers in one go, and how to use it with arrays, boost::array or
@@ -493,7 +493,7 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
 template <typename AsyncReadStream, typename MutableBufferSequence,
     typename CompletionCondition, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
     CompletionCondition completion_condition,
     ASIO_MOVE_ARG(ReadHandler) handler);
@@ -529,7 +529,7 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes copied into the
  *                                           // buffers. If an error occurred,
@@ -540,17 +540,17 @@ async_read(AsyncReadStream& s, const MutableBufferSequence& buffers,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  *
  * @note This overload is equivalent to calling:
- * @code asio::async_read(
+ * @code clmdep_asio::async_read(
  *     s, b,
- *     asio::transfer_all(),
+ *     clmdep_asio::transfer_all(),
  *     handler); @endcode
  */
 template <typename AsyncReadStream, typename Allocator, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
     ASIO_MOVE_ARG(ReadHandler) handler);
 
@@ -584,7 +584,7 @@ async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
  * must be:
  * @code std::size_t completion_condition(
  *   // Result of latest async_read_some operation.
- *   const asio::error_code& error,
+ *   const clmdep_asio::error_code& error,
  *
  *   // Number of bytes transferred so far.
  *   std::size_t bytes_transferred
@@ -597,7 +597,7 @@ async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
  * Copies will be made of the handler as required. The function signature of the
  * handler must be:
  * @code void handler(
- *   const asio::error_code& error, // Result of operation.
+ *   const clmdep_asio::error_code& error, // Result of operation.
  *
  *   std::size_t bytes_transferred           // Number of bytes copied into the
  *                                           // buffers. If an error occurred,
@@ -608,12 +608,12 @@ async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
  * Regardless of whether the asynchronous operation completes immediately or
  * not, the handler will not be invoked from within this function. Invocation of
  * the handler will be performed in a manner equivalent to using
- * asio::io_service::post().
+ * clmdep_asio::io_service::post().
  */
 template <typename AsyncReadStream, typename Allocator,
     typename CompletionCondition, typename ReadHandler>
 ASIO_INITFN_RESULT_TYPE(ReadHandler,
-    void (asio::error_code, std::size_t))
+    void (clmdep_asio::error_code, std::size_t))
 async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
     CompletionCondition completion_condition,
     ASIO_MOVE_ARG(ReadHandler) handler);
@@ -622,7 +622,7 @@ async_read(AsyncReadStream& s, basic_streambuf<Allocator>& b,
 
 /*@}*/
 
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

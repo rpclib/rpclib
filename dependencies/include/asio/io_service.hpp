@@ -33,7 +33,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 
 class io_service;
 template <typename Service> Service& use_service(io_service& ios);
@@ -55,10 +55,10 @@ namespace detail {
  * The io_service class provides the core I/O functionality for users of the
  * asynchronous I/O objects, including:
  *
- * @li asio::ip::tcp::socket
- * @li asio::ip::tcp::acceptor
- * @li asio::ip::udp::socket
- * @li asio::deadline_timer.
+ * @li clmdep_asio::ip::tcp::socket
+ * @li clmdep_asio::ip::tcp::acceptor
+ * @li clmdep_asio::ip::udp::socket
+ * @li clmdep_asio::deadline_timer.
  *
  * The io_service class also includes facilities intended for developers of
  * custom asynchronous services.
@@ -102,7 +102,7 @@ namespace detail {
  * For example:
  *
  * @code
- * asio::io_service io_service;
+ * clmdep_asio::io_service io_service;
  * ...
  * for (;;)
  * {
@@ -124,10 +124,10 @@ namespace detail {
  * returning when there is no more work to do. For example, the io_service may
  * be being run in a background thread that is launched prior to the
  * application's asynchronous operations. The run() call may be kept running by
- * creating an object of type asio::io_service::work:
+ * creating an object of type clmdep_asio::io_service::work:
  *
- * @code asio::io_service io_service;
- * asio::io_service::work work(io_service);
+ * @code clmdep_asio::io_service io_service;
+ * clmdep_asio::io_service::work work(io_service);
  * ... @endcode
  *
  * To effect a shutdown, the application will then need to call the io_service
@@ -138,9 +138,9 @@ namespace detail {
  * Alternatively, if the application requires that all operations and handlers
  * be allowed to finish normally, the work object may be explicitly destroyed.
  *
- * @code asio::io_service io_service;
- * auto_ptr<asio::io_service::work> work(
- *     new asio::io_service::work(io_service));
+ * @code clmdep_asio::io_service io_service;
+ * auto_ptr<clmdep_asio::io_service::work> work(
+ *     new clmdep_asio::io_service::work(io_service));
  * ...
  * work.reset(); // Allow run() to exit. @endcode
  *
@@ -263,7 +263,7 @@ public:
    *
    * @return The number of handlers that were executed.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    *
    * @note The run() function must not be called from a thread that is currently
    * calling one of run(), run_one(), poll() or poll_one() on the same
@@ -300,7 +300,7 @@ public:
    * The poll() function may also be used to dispatch ready handlers, but
    * without blocking.
    */
-  ASIO_DECL std::size_t run(asio::error_code& ec);
+  ASIO_DECL std::size_t run(clmdep_asio::error_code& ec);
 
   /// Run the io_service object's event processing loop to execute at most one
   /// handler.
@@ -314,7 +314,7 @@ public:
    * poll_one() will return immediately unless there is a prior call to
    * reset().
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   ASIO_DECL std::size_t run_one();
 
@@ -332,7 +332,7 @@ public:
    *
    * @return The number of handlers that were executed.
    */
-  ASIO_DECL std::size_t run_one(asio::error_code& ec);
+  ASIO_DECL std::size_t run_one(clmdep_asio::error_code& ec);
 
   /// Run the io_service object's event processing loop to execute ready
   /// handlers.
@@ -342,7 +342,7 @@ public:
    *
    * @return The number of handlers that were executed.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   ASIO_DECL std::size_t poll();
 
@@ -356,7 +356,7 @@ public:
    *
    * @return The number of handlers that were executed.
    */
-  ASIO_DECL std::size_t poll(asio::error_code& ec);
+  ASIO_DECL std::size_t poll(clmdep_asio::error_code& ec);
 
   /// Run the io_service object's event processing loop to execute one ready
   /// handler.
@@ -366,7 +366,7 @@ public:
    *
    * @return The number of handlers that were executed.
    *
-   * @throws asio::system_error Thrown on failure.
+   * @throws clmdep_asio::system_error Thrown on failure.
    */
   ASIO_DECL std::size_t poll_one();
 
@@ -380,7 +380,7 @@ public:
    *
    * @return The number of handlers that were executed.
    */
-  ASIO_DECL std::size_t poll_one(asio::error_code& ec);
+  ASIO_DECL std::size_t poll_one(clmdep_asio::error_code& ec);
 
   /// Stop the io_service object's event processing loop.
   /**
@@ -431,7 +431,7 @@ public:
    *
    * @note This function throws an exception only if:
    *
-   * @li the handler's @c asio_handler_allocate function; or
+   * @li the handler's @c clmdep_asio_handler_allocate function; or
    *
    * @li the handler's copy constructor
    *
@@ -457,7 +457,7 @@ public:
    *
    * @note This function throws an exception only if:
    *
-   * @li the handler's @c asio_handler_allocate function; or
+   * @li the handler's @c clmdep_asio_handler_allocate function; or
    *
    * @li the handler's copy constructor
    *
@@ -525,23 +525,23 @@ public:
    *
    * @param event A fork-related event.
    *
-   * @throws asio::system_error Thrown on failure. If the notification
+   * @throws clmdep_asio::system_error Thrown on failure. If the notification
    * fails the io_service object should no longer be used and should be
    * destroyed.
    *
    * @par Example
    * The following code illustrates how to incorporate the notify_fork()
    * function:
-   * @code my_io_service.notify_fork(asio::io_service::fork_prepare);
+   * @code my_io_service.notify_fork(clmdep_asio::io_service::fork_prepare);
    * if (fork() == 0)
    * {
    *   // This is the child process.
-   *   my_io_service.notify_fork(asio::io_service::fork_child);
+   *   my_io_service.notify_fork(clmdep_asio::io_service::fork_child);
    * }
    * else
    * {
    *   // This is the parent process.
-   *   my_io_service.notify_fork(asio::io_service::fork_parent);
+   *   my_io_service.notify_fork(clmdep_asio::io_service::fork_parent);
    * } @endcode
    *
    * @note For each service object @c svc in the io_service set, performs
@@ -550,7 +550,7 @@ public:
    * lifetime. Otherwise, services are visited in order of the beginning of
    * service object lifetime.
    */
-  ASIO_DECL void notify_fork(asio::io_service::fork_event event);
+  ASIO_DECL void notify_fork(clmdep_asio::io_service::fork_event event);
 
   /// Obtain the service object corresponding to the given type.
   /**
@@ -577,10 +577,10 @@ public:
    * it will destroy the service object by performing:
    * @code delete static_cast<io_service::service*>(svc) @endcode
    *
-   * @throws asio::service_already_exists Thrown if a service of the
+   * @throws clmdep_asio::service_already_exists Thrown if a service of the
    * given type is already present in the io_service.
    *
-   * @throws asio::invalid_service_owner Thrown if the service's owning
+   * @throws clmdep_asio::invalid_service_owner Thrown if the service's owning
    * io_service is not the io_service object specified by the ios parameter.
    */
   template <typename Service>
@@ -607,7 +607,7 @@ private:
 #endif
 
   // The service registry.
-  asio::detail::service_registry* service_registry_;
+  clmdep_asio::detail::service_registry* service_registry_;
 
   // The implementation.
   impl_type& impl_;
@@ -632,7 +632,7 @@ public:
    * This ensures that the io_service object's run() function will not exit
    * while the work is underway.
    */
-  explicit work(asio::io_service& io_service);
+  explicit work(clmdep_asio::io_service& io_service);
 
   /// Copy constructor notifies the io_service that work is starting.
   /**
@@ -651,7 +651,7 @@ public:
   ~work();
 
   /// Get the io_service associated with the work.
-  asio::io_service& get_io_service();
+  clmdep_asio::io_service& get_io_service();
 
 private:
   // Prevent assignment.
@@ -676,14 +676,14 @@ class io_service::service
 {
 public:
   /// Get the io_service object that owns the service.
-  asio::io_service& get_io_service();
+  clmdep_asio::io_service& get_io_service();
 
 protected:
   /// Constructor.
   /**
    * @param owner The io_service object that owns the service.
    */
-  ASIO_DECL service(asio::io_service& owner);
+  ASIO_DECL service(clmdep_asio::io_service& owner);
 
   /// Destructor.
   ASIO_DECL virtual ~service();
@@ -699,17 +699,17 @@ private:
    * implement it if necessary. The default implementation does nothing.
    */
   ASIO_DECL virtual void fork_service(
-      asio::io_service::fork_event event);
+      clmdep_asio::io_service::fork_event event);
 
-  friend class asio::detail::service_registry;
+  friend class clmdep_asio::detail::service_registry;
   struct key
   {
     key() : type_info_(0), id_(0) {}
     const std::type_info* type_info_;
-    const asio::io_service::id* id_;
+    const clmdep_asio::io_service::id* id_;
   } key_;
 
-  asio::io_service& owner_;
+  clmdep_asio::io_service& owner_;
   service* next_;
 };
 
@@ -735,30 +735,30 @@ namespace detail {
 // Special derived service id type to keep classes header-file only.
 template <typename Type>
 class service_id
-  : public asio::io_service::id
+  : public clmdep_asio::io_service::id
 {
 };
 
 // Special service base class to keep classes header-file only.
 template <typename Type>
 class service_base
-  : public asio::io_service::service
+  : public clmdep_asio::io_service::service
 {
 public:
-  static asio::detail::service_id<Type> id;
+  static clmdep_asio::detail::service_id<Type> id;
 
   // Constructor.
-  service_base(asio::io_service& io_service)
-    : asio::io_service::service(io_service)
+  service_base(clmdep_asio::io_service& io_service)
+    : clmdep_asio::io_service::service(io_service)
   {
   }
 };
 
 template <typename Type>
-asio::detail::service_id<Type> service_base<Type>::id;
+clmdep_asio::detail::service_id<Type> service_base<Type>::id;
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 

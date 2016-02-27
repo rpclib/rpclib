@@ -28,7 +28,7 @@
 
 #include "asio/detail/push_options.hpp"
 
-namespace asio {
+namespace clmdep_asio {
 namespace detail {
 
 class resolver_service_base
@@ -39,7 +39,7 @@ public:
   typedef socket_ops::shared_cancel_token_type implementation_type;
 
   // Constructor.
-  ASIO_DECL resolver_service_base(asio::io_service& io_service);
+  ASIO_DECL resolver_service_base(clmdep_asio::io_service& io_service);
 
   // Destructor.
   ASIO_DECL ~resolver_service_base();
@@ -49,7 +49,7 @@ public:
 
   // Perform any fork-related housekeeping.
   ASIO_DECL void fork_service(
-      asio::io_service::fork_event fork_ev);
+      clmdep_asio::io_service::fork_event fork_ev);
 
   // Construct a new resolver implementation.
   ASIO_DECL void construct(implementation_type& impl);
@@ -67,10 +67,10 @@ protected:
 #if !defined(ASIO_WINDOWS_RUNTIME)
   // Helper class to perform exception-safe cleanup of addrinfo objects.
   class auto_addrinfo
-    : private asio::detail::noncopyable
+    : private clmdep_asio::detail::noncopyable
   {
   public:
-    explicit auto_addrinfo(asio::detail::addrinfo_type* ai)
+    explicit auto_addrinfo(clmdep_asio::detail::addrinfo_type* ai)
       : ai_(ai)
     {
     }
@@ -81,13 +81,13 @@ protected:
         socket_ops::freeaddrinfo(ai_);
     }
 
-    operator asio::detail::addrinfo_type*()
+    operator clmdep_asio::detail::addrinfo_type*()
     {
       return ai_;
     }
 
   private:
-    asio::detail::addrinfo_type* ai_;
+    clmdep_asio::detail::addrinfo_type* ai_;
   };
 #endif // !defined(ASIO_WINDOWS_RUNTIME)
 
@@ -102,23 +102,23 @@ protected:
 
 private:
   // Mutex to protect access to internal data.
-  asio::detail::mutex mutex_;
+  clmdep_asio::detail::mutex mutex_;
 
   // Private io_service used for performing asynchronous host resolution.
-  asio::detail::scoped_ptr<asio::io_service> work_io_service_;
+  clmdep_asio::detail::scoped_ptr<clmdep_asio::io_service> work_io_service_;
 
   // The work io_service implementation used to post completions.
   io_service_impl& work_io_service_impl_;
 
   // Work for the private io_service to perform.
-  asio::detail::scoped_ptr<asio::io_service::work> work_;
+  clmdep_asio::detail::scoped_ptr<clmdep_asio::io_service::work> work_;
 
   // Thread used for running the work io_service's run loop.
-  asio::detail::scoped_ptr<asio::detail::thread> work_thread_;
+  clmdep_asio::detail::scoped_ptr<clmdep_asio::detail::thread> work_thread_;
 };
 
 } // namespace detail
-} // namespace asio
+} // namespace clmdep_asio
 
 #include "asio/detail/pop_options.hpp"
 
