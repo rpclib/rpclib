@@ -1,29 +1,42 @@
 = Getting started
 
-== Building
+Currently, there are no binary releases of `callme` available. That will change in the future, but in the meantime, you have to build it from source in order to use it. This document details the steps of doing that.
+
+== What you need
 
 === Compiler
 
 `callme` uses some C++14 features, and as such, requires a very recent compiler. The following compilers are tried and tested with `callme` at the moment:
 
-  * g++ 5.0 (and likely newer versions)
-  * clang++ 3.7 (and likely newer versions)
-  * MSVC 2015 Update 1 (and likely newer versions)
+  * g++ 5.0 
+  * clang++ 3.7 
+  * MSVC 2015 Update 1 
+
+Newer versions of these compilers likely work, too.
 
 TIP: This is not an exhaustive list; if you have success with other compilers, please let me know!
 
-=== Building
+=== Tools
 
 In addition to a capable compiler, you will need:
 
-  * cmake 3.x
-  * git (optional, to get the sources, but you can obtain it in a number ways, like downloading from GitHub as a zip)
+  * link:https://cmake.org[CMake 3.x]
+  * GNU make (on *nixes) or MSBuild/Visual Studio (on Microsoft Windows).
 
-==== Unix-type systems
+=== Dependencies
 
-Building `callme` is much similar to other cmake-based projects:
+From a practical point of view, `callme` has no external dependencies with the exception of `msgpack` which it ships along with its headers (including some compatibility patches, which are being sent to upstream). 
 
-[source,bash]
+NOTE: The whole truth is a bit more complicated, see the <<design.adoc#,Design>> documentation for details.
+
+
+== Building steps
+
+=== Unix-type systems
+
+This includes most (all?) Linux distributions and cygwin. Building `callme` is very similar to other cmake-based projects:
+
+[source]
 ----
 git clone git@github.com:sztomi/callme.git
 cd callme
@@ -32,15 +45,6 @@ cmake ..
 make
 ----
 
-==== Windows
+And that's it. If all goes well, your build output will be in the lib, examples, and tests subfolders.
 
-== Dependencies
-
-From a practical point of view, `callme` has no external dependencies with the exception of `msgpack` which it ships along with its headers (including some compatibility patches, which are being sent to upstream). 
-
-NOTE: The whole truth is a bit more complicated, see the <<design.adoc#,Design>> documentation for details.
-
-
-
-
-== Releases
+=== Microsoft Windows
