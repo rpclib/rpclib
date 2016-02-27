@@ -22,14 +22,11 @@ addons:
     packages:
       - gcc-5
       - g++-5
-        #- clang-3.7
       - cmake
       - cmake-data
 
 install:
-  #- pip install --user codecov
   - pip install --user cpp-coveralls
-    #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
@@ -37,7 +34,7 @@ script:
   - git submodule init
   - git submodule update --init --recursive
   - mkdir build && cd build
-  - cmake -Dcoverage=ON -Dlogging=OFF ..
+  - cmake -DCALLME_ENABLE_COVERAGE=ON -DCALLME_BUILD_TESTS=ON ..
   - make -j2
 
 after_success:
