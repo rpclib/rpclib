@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.0.0)
 project(callme)
-include(cmake/compiler_specific.cmake)
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+include(compiler_specific)
+include(TargetArch)
 
 ################################################################################
 #
@@ -14,8 +16,17 @@ option(CALLME_GENERATE_COMPDB "Generate compilation database. Useful for YCM." O
 option(CALLME_BUILD_EXAMPLES "Build examples." ON)
 option(CALLME_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(CALLME_ENABLE_COVERAGE "Generate CALLME_ENABLE_COVERAGE information" OFF)
+option(CALLME_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
 
 ################################################################################
+#
+# Compile & install the library
+#
+################################################################################
+
+set(CALLME_VERSION_MAJOR 1)
+set(CALLME_VERSION_MINOR 0)
+set(CALLME_VERSION_BUILD 1)
 
 add_definitions(-DASIO_STANDALONE)
 add_definitions(-DCALLME_ASIO=clmdep_asio)
@@ -24,9 +35,20 @@ if(CALLME_ENABLE_LOGGING)
     add_definitions(-DCALLME_ENABLE_LOGGING)
 endif()
 
-include_directories(include dependencies/include)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 
-file(GLOB_RECURSE CALLME_HEADERS include/callme/*.h)
+configure_file(
+  "${PROJECT_SOURCE_DIR}/include/callme/version.h.in"
+  "${PROJECT_BINARY_DIR}/version.h")
+
+include_directories(include)
+include_directories(SYSTEM dependencies/include)
+
+file(GLOB_RECURSE CALLME_HEADERS 
+    include/callme/*.h
+    include/msgpack/*.hpp)
 file(GLOB_RECURSE DEP_HEADERS 
     dependencies/include/*.h 
     dependencies/include/*.hpp)
@@ -48,6 +70,18 @@ add_library(${OUTPUT_LIBRARY_NAME}
 
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
+install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
+install(DIRECTORY include/callme 
+    DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.in" EXCLUDE)
+install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/callme)
+
+if (CALLME_INSTALL_MSGPACK)
+    install(DIRECTORY include/msgpack DESTINATION include)
+endif()
+
 if(CALLME_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
     add_custom_command(TARGET ${OUTPUT_LIBRARY_NAME} POST_BUILD
@@ -55,6 +89,10 @@ if(CALLME_GENERATE_COMPDB)
                        copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_BINARY_DIR}/../compile_commands.json)
 endif()
 
+################################################################################
+#
+# Unit tests
+#
 ################################################################################
 
 if(CALLME_BUILD_TESTS)
@@ -68,13 +106,18 @@ if(CALLME_BUILD_TESTS)
         tests/callme/response_test.cc
         tests/callme/server_test.cc)
 
-    include_directories("${PROJECT_SOURCE_DIR}/tests")
+    include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 
     add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
+    SetLessStrictWarnings(${TEST_PROJECT_NAME})
 
     LinkTests()
 endif()
 
+################################################################################
+#
+# Example programs
+#
 ################################################################################
 
 if(CALLME_BUILD_EXAMPLES)
@@ -86,13 +129,51 @@ if(CALLME_BUILD_EXAMPLES)
     add_executable(${CLIENT_EXAMPLE_NAME} examples/client/main.cc)
     add_executable(${CUSTOMT_EXAMPLE_NAME} examples/custom_types/main.cc)
 
-    if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-        target_link_libraries(${SERVER_EXAMPLE_NAME} callme)
-        target_link_libraries(${CLIENT_EXAMPLE_NAME} callme)
-        target_link_libraries(${CUSTOMT_EXAMPLE_NAME} callme)
-    else()
-        target_link_libraries(${SERVER_EXAMPLE_NAME} callme pthread)
-        target_link_libraries(${CLIENT_EXAMPLE_NAME} callme pthread)
-        target_link_libraries(${CUSTOMT_EXAMPLE_NAME} callme pthread)
-    endif()
+    SetLessStrictWarnings(${SERVER_EXAMPLE_NAME})
+    SetLessStrictWarnings(${CLIENT_EXAMPLE_NAME})
+    SetLessStrictWarnings(${CUSTOMT_EXAMPLE_NAME})
+    target_link_libraries(${SERVER_EXAMPLE_NAME} callme)
+    target_link_libraries(${CLIENT_EXAMPLE_NAME} callme)
+    target_link_libraries(${CUSTOMT_EXAMPLE_NAME} callme)
 endif()
+
+
+################################################################################
+#
+# CPack
+#
+################################################################################
+
+include(InstallRequiredSystemLibraries)
+
+target_architecture(CALLME_TARGET_ARCH)
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modern msgpack-rpc for C++")
+set(CPACK_PACKAGE_VENDOR "Tamás Szelei")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
+set(CPACK_PACKAGE_VERSION_MAJOR "${CALLME_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${CALLME_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_BUILD "${CALLME_VERSION_MINOR}")
+set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/output/pkg")
+set(CPACK_PACKAGE_EXECUTABLES "libcallme" "callme")
+if(LINUX)
+    set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${CALLME_VERSION_MAJOR}.${CALLME_VERSION_MINOR}.${CALLME_VERSION_BUILD}")
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CALLME_TARGET_ARCH})
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tamás Szelei")
+    set(CPACK_DEBIAN_PACKAGE_CONTACT "Tamás Szelei")
+elseif(WIN32)
+    set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}_${CALLME_VERSION_MAJOR}.${CALLME_VERSION_MINOR}.${CALLME_VERSION_BUILD}_${CALLME_TARGET_ARCH}")
+endif()
+
+if(WIN32)
+    #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+    #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "libcallme ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} callme")
+    #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
+    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/callme")
+    #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+    set(CPACK_NSIS_MODIFY_PATH ON)
+endif()
+include(CPack)

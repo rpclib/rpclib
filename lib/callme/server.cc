@@ -9,14 +9,15 @@
 #include "asio.hpp"
 #include "format.h"
 
-#include "callme/detail/log.h"
-#include "callme/detail/thread_group.h"
 #include "callme/detail/dev_utils.h"
 #include "callme/detail/log.h"
+#include "callme/detail/log.h"
 #include "callme/detail/server_session.h"
+#include "callme/detail/thread_group.h"
 
 using namespace callme::detail;
 using CALLME_ASIO::ip::tcp;
+using namespace CALLME_ASIO;
 
 namespace callme {
 
@@ -24,7 +25,8 @@ struct server::impl {
     impl(server *parent, std::string const &address, uint16_t port)
         : parent_(parent),
           io_(),
-          acceptor_(io_, tcp::endpoint(tcp::v4(), port)),
+          acceptor_(io_,
+                    tcp::endpoint(ip::address::from_string(address), port)),
           socket_(io_),
           suppress_exceptions_(false) {}
 
@@ -37,7 +39,7 @@ struct server::impl {
                                                  suppress_exceptions_)
                     ->start();
             } else {
-                // TODO: handle error [sztomi 2016-01-13]
+                LOG_ERROR("Error while accepting connection: {}", ec);
             }
             start_accept();
             // TODO: allow graceful exit [sztomi 2016-01-13]

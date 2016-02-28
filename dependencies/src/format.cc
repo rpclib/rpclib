@@ -25,6 +25,18 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// CALLME is compiled with most warnings, but this file needs more turned off.
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmultichar"
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#pragma clang diagnostic ignored "-Wunused-member-function"
+#pragma clang diagnostic ignored "-Wswitch-enum"
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#pragma clang diagnostic ignored "-Wimplicit-fallthrough"
+#endif
+
 #include "format.h"
 
 #include <string.h>
@@ -1382,4 +1394,8 @@ template int clmdep_fmt::internal::CharTraits<wchar_t>::format_float(
 
 #ifdef _MSC_VER
 # pragma warning(pop)
+#endif
+
+#ifdef __clang__
+#pragma clang diagnostic pop
 #endif

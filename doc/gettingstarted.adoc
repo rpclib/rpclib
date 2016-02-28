@@ -25,12 +25,12 @@ In addition to a capable compiler, you will need:
 
 === Dependencies
 
-From a practical point of view, `callme` has no external dependencies with the exception of `msgpack` which it ships along with its headers (including some compatibility patches, which are being sent to upstream). 
+`callme` has no external library dependencies, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
 
-NOTE: The whole truth is a bit more complicated, see the <<design.adoc#,Design>> documentation for details.
+TIP: See the <<design.adoc#,Design>> documentation for details on how `callme` handles its dependencies.
 
 
-== Building steps
+== Building step by step
 
 === Unix-type systems
 
@@ -48,3 +48,15 @@ make
 And that's it. If all goes well, your build output will be in the lib, examples, and tests subfolders.
 
 === Microsoft Windows
+
+On Windows with MSVC it is very similar, except you will probably want to 
+
+TBD
+[source]
+----
+git clone git@github.com:sztomi/callme.git
+cd callme
+mkdir build && cd build
+cmake ..
+make
+----

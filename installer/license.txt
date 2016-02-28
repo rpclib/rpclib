@@ -1,28 +1,3 @@
-# License terms for humans
-
-The following is a friendly explanation of the license. For legal purposes, the license below is
-what matters, not this explanation.
-
-This library is licensed under the *MIT license*. What this means for you:
-
-  * You can use it freely in any form you want
-  * You can sell software that uses it
-  * You can sell modified versions of it
-  * You **do not** need to apply the same license to software you develop with it
-  * You **do not** need to apply the same license for modified versions
-  * You **do not** have to attribute usage.
-
-## But
-
-  * There is no guarantee. None. At all. I'm also not obligated to work on a particular issue, or
-    even respond to them (though I'll do my best, I promise).
-
-## Also
-
-This is not part of the license, but if you want to be nice and give back, please let me know
-if you are using the library for anything serious. You can also let the world know that you are using it.
-
-
 # The MIT License
 
 Copyright (c) 2015-2016, Tamás Szelei

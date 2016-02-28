@@ -59,9 +59,8 @@ struct client::impl {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
                         auto &promise = ongoing_calls_[id];
-                        strand_.post([this, id]() {
-                            ongoing_calls_.erase(id);
-                        });
+                        strand_.post(
+                            [this, id]() { ongoing_calls_.erase(id); });
                         try {
                             if (r.get_error().size() > 0) {
                                 throw std::runtime_error(CALLME_FMT::format(
@@ -78,7 +77,6 @@ struct client::impl {
             });
     }
 
-
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
     void write(msgpack::sbuffer item) { writer_.write(std::move(item)); }
@@ -86,8 +84,9 @@ struct client::impl {
     client *parent_;
     CALLME_ASIO::io_service io_;
     CALLME_ASIO::strand strand_;
-    std::atomic<int> call_idx_; //< The index of the last call made
-    std::unordered_map<int, std::promise<msgpack::object_handle>> ongoing_calls_;
+    std::atomic<int> call_idx_; /// The index of the last call made
+    std::unordered_map<uint32_t, std::promise<msgpack::object_handle>>
+        ongoing_calls_;
     std::string addr_;
     uint16_t port_;
     msgpack::unpacker pac_;

@@ -9,7 +9,7 @@ void bad(int x) {
     }
 }
 
-int main(int argc, char *argv[]) {
+int main() {
     // Create a server that listens on port 8080
     callme::server srv("0.0.0.0", 8080);
 

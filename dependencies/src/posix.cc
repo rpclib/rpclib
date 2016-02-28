@@ -26,8 +26,17 @@
  */
 
 // Disable bogus MSVC warnings.
+#ifdef _MSC_VER
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
+#endif
+#endif
+
+// CALLME is compiled with most warnings, but this file needs more turned off.
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
 #endif
 
 #include "posix.h"

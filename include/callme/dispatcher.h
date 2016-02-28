@@ -29,7 +29,6 @@ public:
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    //! \tparam Args The types of the arguments.
     template <typename F> void bind(std::string const &name, F func);
 
     //! \defgroup Tag-dispatched bind implementations for various functor cases.
@@ -71,7 +70,7 @@ public:
 
     //! \brief Processes a message that contains a call according to
     //! the Msgpack-RPC spec.
-    //! \param msg_obj The messagepack object that contains the call.
+    //! \param msg The messagepack object that contains the call.
     //! \param suppress_exceptions If true, exceptions will be caught and
     //! written
     //! as response for the client.

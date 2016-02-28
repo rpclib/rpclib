@@ -1,6 +1,7 @@
 #include "callme/dispatcher.h"
 #include "callme/detail/log.h"
 #include "format.h"
+
 #include <cassert>
 
 namespace callme {
@@ -88,10 +89,6 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
         LOG_DEBUG("Dispatching call to '{}'", name);
         try {
             auto result = (it_func->second)(args);
-        } catch (std::exception &e) {
-            if (!suppress_exceptions) {
-                throw;
-            }
         } catch (...) {
             if (!suppress_exceptions) {
                 throw;

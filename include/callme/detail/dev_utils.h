@@ -10,6 +10,7 @@
 namespace callme {
 namespace detail {
 inline void name_thread(std::string const &name) {
+    (void)name;
 #ifdef CALLME_LINUX
     pthread_setname_np(pthread_self(), name.c_str());
 #endif

@@ -16,7 +16,7 @@ const int test_port = 8080;
 class server_workers_test : public testing::Test {
 public:
     server_workers_test()
-        : s("localhost", test_port), long_count(0), short_count(0) {
+        : s("127.0.0.1", test_port), long_count(0), short_count(0) {
         s.bind("long_func", [this]() {
             std::this_thread::sleep_for(500ms);
             ++long_count;
@@ -66,7 +66,7 @@ TEST_F(server_workers_test, multiple_workers) {
 
 class server_error_handling : public testing::Test {
 public:
-    server_error_handling() : s("localhost", test_port) {
+    server_error_handling() : s("127.0.0.1", test_port) {
         s.bind("blue", []() {
             throw std::runtime_error("I'm blue daba dee daba die");
         });
@@ -78,7 +78,7 @@ protected:
     callme::server s;
 };
 
-#ifndef WIN32
+#ifndef CALLME_WIN32
 TEST_F(server_error_handling, no_suppress) {
     callme::client c("127.0.0.1", test_port);
     s.suppress_exceptions(false);
@@ -144,7 +144,7 @@ TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
 class dispatch_unicode : public testing::Test {
 public:
     dispatch_unicode()
-        : s("localhost", 8080),
+        : s("127.0.0.1", 8080),
           str_utf8("árvíztűrő tükörfúrógép") {
         s.bind("utf", [](std::string const &p) { return p; });
         s.async_run();

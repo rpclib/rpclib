@@ -39,7 +39,7 @@ msgpack::sbuffer response::get_data() const {
     return data;
 }
 
-int response::get_id() const { return id_; }
+uint32_t response::get_id() const { return id_; }
 
 std::string const &response::get_error() const { return error_; }
 
@@ -47,8 +47,8 @@ msgpack::object_handle response::get_result() const {
     return std::move(*result_);
 }
 
-response &response::empty() {
-    static response r;
+response response::empty() {
+    response r;
     r.empty_ = true;
     return r;
 }

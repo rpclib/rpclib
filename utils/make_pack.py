@@ -1,4 +1,8 @@
 #! python2
+
+# This is used to generate binary msgpack-rpc calls for the 
+# unit tests.
+
 import msgpack
 
 def make_pack(call):

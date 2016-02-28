@@ -27,7 +27,7 @@ public:
 
     //! \brief Returns the call id/index used to identify which call
     //! this response corresponds to.
-    int get_id() const;
+    uint32_t get_id() const;
 
     //! \brief Returns the error message stored in the response. Can
     //! be empty.
@@ -39,7 +39,7 @@ public:
     //! \brief Gets an empty response which means "no response" (not to be
     //! confused with void return, i.e. this means literally
     //! "don't write the response to the socket")
-    static response &empty();
+    static response empty();
 
     //! \brief If true, this response is empty (\see empty())
     bool is_empty() const;

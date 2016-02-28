@@ -1,5 +1,9 @@
 #! python3
 
+# This is a terrible script that renames the namespaces of
+# dependencies that callme ships with (in order to 
+# avoid name collisions during linking)
+
 import fileinput
 import glob2
 import re
