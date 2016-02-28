@@ -2,9 +2,6 @@
 
 cmake_policy(SET CMP0054 OLD) # silence quoted variables warning
 
-message(${CALLME_FORCE_M32})
-message(${CALLME_FORCE_M64})
-
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     set(CALLME_ORIGINAL_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     set(CMAKE_CXX_FLAGS 

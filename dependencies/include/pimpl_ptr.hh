@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <utility>
 
+namespace callme {
 namespace detail {
 template <std::size_t Size, int Align> struct aligned_storage {
     typedef typename std::aligned_storage<Size, Align>::type type;
@@ -22,14 +23,13 @@ struct ptr_checker {
     static_assert(ReqAlignment == Alignment,
                   "pimpl_ptr: T has a different alignment!");
 };
-}
 
 template <typename T, std::size_t Size, int Align = -1> class pimpl_ptr {
-    typename detail::aligned_storage<Size, Align>::type data;
+    typename aligned_storage<Size, Align>::type data;
 
 public:
 #define PIMPL_PTR_CHECK_()                                                     \
-    detail::ptr_checker<T, sizeof(T), Size, Align, alignof(T)>                 \
+    ptr_checker<T, sizeof(T), Size, Align, alignof(T)>                 \
         callme_ptr_checker; (void) callme_ptr_checker;
 
     template <typename... Args> pimpl_ptr(Args &&... args) {
@@ -84,5 +84,6 @@ public:
     }
 #undef PIMPL_PTR_CHECK_
 };
+}
 
 #endif /* PIMPL_PTR_HH_ */
