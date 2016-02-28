@@ -15,8 +15,8 @@ CMAKE_FLAGS="-DCALLME_BUILD_TESTS=OFF -DCALLME_BUILD_EXAMPLES=OFF"
 
 # create dirs
 mkdir -p $RELEASE_OUTPUT_DIR && cd $RELEASE_OUTPUT_DIR
-mkdir -p ARCH64_DIR
-mkdir -p ARCH32_DIR
+mkdir -p $ARCH64_DIR
+mkdir -p $ARCH32_DIR
 
 git clone --depth=1 --branch=dev https://github.com/sztomi/callme.git src
 
@@ -41,3 +41,4 @@ cd ..
 
 mv $BUILD_DIR/output/pkg/* $ARCH32_DIR
 rm -rf build
+rm -rf src
