@@ -85,5 +85,6 @@ public:
 #undef PIMPL_PTR_CHECK_
 };
 }
+}
 
 #endif /* PIMPL_PTR_HH_ */

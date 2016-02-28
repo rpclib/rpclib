@@ -5,14 +5,16 @@
 
 #include "pimpl_ptr.hh"
 
-#ifdef _MSC_VER
+#ifdef CALLME_ARCH_X86
 #define CALLME_DEF_ALIGN 4
-#else
+#elif CALLME_ARCH_X64
 #define CALLME_DEF_ALIGN 8
+#else
+#error "Unkown architecture"
 #endif
 
 #define CALLME_DECL_PIMPL(Size)                                                \
     struct impl;                                                               \
-    pimpl_ptr<impl, Size, CALLME_DEF_ALIGN> pimpl;
+    detail::pimpl_ptr<impl, Size, CALLME_DEF_ALIGN> pimpl;
 
 #endif /* end of include guard: PIMPL_H_TV7E3C9K */

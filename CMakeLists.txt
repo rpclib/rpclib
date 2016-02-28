@@ -31,6 +31,22 @@ set(CALLME_VERSION_MAJOR 1)
 set(CALLME_VERSION_MINOR 0)
 set(CALLME_VERSION_BUILD 1)
 
+target_architecture(CALLME_TARGET_ARCH)
+
+if(CALLME_FORCE_M32)
+    message("Compiling for 32-bit")
+    add_definitions(-DCALLME_ARCH_X86)
+elseif(CALLME_FORCE_M64)
+    message("Compiling for 64-bit")
+    add_definitions(-DCALLME_ARCH_X64)
+elseif (${CALLME_TARGET_ARCH} STREQUAL "i386")
+    message("Compiling for 32-bit")
+    add_definitions(-DCALLME_ARCH_X86)
+elseif(${CALLME_TARGET_ARCH} STREQUAL "x86_64")
+    message("Compiling for 64-bit")
+    add_definitions(-DCALLME_ARCH_X64)
+endif()
+
 add_definitions(-DASIO_STANDALONE)
 add_definitions(-DCALLME_ASIO=clmdep_asio)
 add_definitions(-DCALLME_FMT=clmdep_fmt)
@@ -148,8 +164,6 @@ endif()
 ################################################################################
 
 include(InstallRequiredSystemLibraries)
-
-target_architecture(CALLME_TARGET_ARCH)
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modern msgpack-rpc for C++")
 set(CPACK_PACKAGE_VENDOR "Tamás Szelei")
