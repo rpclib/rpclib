@@ -5,16 +5,38 @@ SRC=src
 
 ARCH64_DIR=arch_64
 ARCH32_DIR=arch_32
+BUILD_DIR=build
 
+# cleanup
+[ -d $RELEASE_OUTPUT_DIR ] && rm -rf $RELEASE_OUTPUT_DIR
+[ -d $ARCH32_DIR ] && rm -rf $ARCH32_DIR
+[ -d $ARCH64_DIR ] && rm -rf $ARCH64_DIR
+
+# create dirs
 mkdir -p $RELEASE_OUTPUT_DIR && cd $RELEASE_OUTPUT_DIR
+mkdir -p ARCH64_DIR
+mkdir -p ARCH32_DIR
 
-echo "Getting sources"
 git clone --depth=1 --branch=dev https://github.com/sztomi/callme.git src
 
-echo "Building for 64-bit"
 # 64-bit
-mkdir -p $ARCH64_DIR && cd $ARCH64_DIR
-cmake ../src
+mkdir -p $BUILD_DIR && cd $BUILD_DIR
+cmake ../src -DCALLME_FORCE_M64=ON
 make -j6
 cpack
 cpack -G DEB
+cd ..
+
+mv $BUILD_DIR/output/pkg/* $ARCH64_DIR
+rm -rf build
+
+# 32-bit
+mkdir -p $BUILD_DIR && cd $BUILD_DIR
+cmake ../src -DCALLME_FORCE_M32=ON
+make -j6
+cpack
+cpack -G DEB
+cd ..
+
+mv $BUILD_DIR/output/pkg/* $ARCH32_DIR
+rm -rf build

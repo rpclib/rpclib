@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.0.0)
 project(callme)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-include(compiler_specific)
-include(TargetArch)
 
 ################################################################################
 #
@@ -17,12 +15,17 @@ option(CALLME_BUILD_EXAMPLES "Build examples." ON)
 option(CALLME_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(CALLME_ENABLE_COVERAGE "Generate CALLME_ENABLE_COVERAGE information" OFF)
 option(CALLME_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
+option(CALLME_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
+option(CALLME_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 
 ################################################################################
 #
 # Compile & install the library
 #
 ################################################################################
+
+include(compiler_specific)
+include(TargetArch)
 
 set(CALLME_VERSION_MAJOR 1)
 set(CALLME_VERSION_MINOR 0)
@@ -157,12 +160,12 @@ set(CPACK_PACKAGE_VERSION_MINOR "${CALLME_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_BUILD "${CALLME_VERSION_MINOR}")
 set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/output/pkg")
 set(CPACK_PACKAGE_EXECUTABLES "libcallme" "callme")
-set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${CALLME_VERSION_MAJOR}.${CALLME_VERSION_MINOR}.${CALLME_VERSION_BUILD}")
+set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}")
 set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CALLME_TARGET_ARCH})
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tamás Szelei")
 set(CPACK_DEBIAN_PACKAGE_CONTACT "Tamás Szelei")
 if(WIN32)
-    set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}_${CALLME_VERSION_MAJOR}.${CALLME_VERSION_MINOR}.${CALLME_VERSION_BUILD}_${CALLME_TARGET_ARCH}")
+    set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
 endif()
 
 if(WIN32)

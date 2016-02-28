@@ -2,16 +2,31 @@
 
 cmake_policy(SET CMP0054 OLD) # silence quoted variables warning
 
+message(${CALLME_FORCE_M32})
+message(${CALLME_FORCE_M64})
+
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     set(CALLME_ORIGINAL_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     set(CMAKE_CXX_FLAGS 
         "${CMAKE_CXX_FLAGS} -Wall -pedantic -Weverything -Wno-c++98-compat\
         -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
         -pthread -std=c++14")
+    if(CALLME_FORCE_M32)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+    endif()
+    if(CALLME_FORCE_M64)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64")
+    endif()
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -pthread -std=c++14")
-    if(coverage)
+    if(CALLME_ENABLE_COVERAGE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g --coverage -O0")
+    endif()
+    if(CALLME_FORCE_M32)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+    endif()
+    if(CALLME_FORCE_M64)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64")
     endif()
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
   # using Intel C++
