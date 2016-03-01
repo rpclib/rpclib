@@ -1,0 +1,80 @@
+= Building `callme`
+:icons: font
+
+== Default configuration
+
+The default configuration is the one intended for end-users. If you want to hack on `callme`, you might be interested in some of the <<Advanced options>>.
+
+=== Unix-type systems
+
+This includes most (all?) Linux distributions and cygwin. Building `callme` is very similar to other cmake-based projects:
+
+[source]
+----
+git clone git@github.com:sztomi/callme.git
+cd callme
+mkdir build && cd build
+cmake ..
+make
+----
+
+And that's it. If all goes well, your build output will be in the lib, examples, and tests subfolders.
+
+=== Microsoft Windows
+
+On Windows with MSVC it is very similar, except you will probably want to 
+
+TBD
+[source]
+----
+git clone git@github.com:sztomi/callme.git
+cd callme
+mkdir build && cd build
+cmake ..
+make
+----
+
+== Advanced options
+
+There are some compilation options that affect the build output. These options can be set using ccmake, cmake-gui or on the cmake command line.
+
+[cols="2,1,6", options="header"]
+|===
+|Name |Default value |Usage 
+
+|`CALLME_BUILD_TESTS`
+|icon:toggle-off[] OFF
+|Builds the unit tests of the library. You might want to turn this on if you are using an unreleased version.
+
+|`CALLME_GENERATE_COMPDB`
+|icon:toggle-off[] OFF
+|Generates a json compilation database for use with clang-based tools (such as clang-tidy, YCM etc.)
+
+|`CALLME_BUILD_EXAMPLES`
+|icon:toggle-on[role="green"] ON
+|Builds the collection of example programs that demonstrate the features of `callme`.
+
+|`CALLME_ENABLE_LOGGING`
+|icon:toggle-off[] OFF
+|Enables the internal logging of `callme`. This slightly affects performance. Currently the logging is not very configurable
+(for example, everything goes to stdout), but there are plans to make it easier to integrate with your 
+application. Use this feature for debugging purposes.
+
+|`CALLME_ENABLE_COVERAGE`
+|icon:toggle-off[] OFF
+|This enables passing the code coverage generation flag when building with g++. It is used on Travis to provide
+coverage monitoring in tandem with Coveralls.io. 
+
+|`CALLME_INSTALL_MSGPACK`
+|icon:toggle-on[role="green"] ON
+|Install msgpack headers with the install target. `callme` currently ships some minor patches with msgpack, 
+so this is recommended to be left on!
+
+|`CALLME_FORCE_M64`
+|icon:toggle-off[] OFF
+|Force -m64 for g++ and clang++.
+
+|`CALLME_FORCE_M32`
+|icon:toggle-off[] OFF
+|Force -m32 for g++ and clang++.
+|===

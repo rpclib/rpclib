@@ -1,6 +1,6 @@
 = Getting started
 
-Currently, there are no binary releases of `callme` available. That will change in the future, but in the meantime, you have to build it from source in order to use it. This document details the steps of doing that.
+This document details the steps of getting everything in place to be able to use `callme`.
 
 == What you need
 
@@ -12,9 +12,7 @@ Currently, there are no binary releases of `callme` available. That will change 
   * clang++ 3.7 
   * MSVC 2015 Update 1 
 
-Newer versions of these compilers likely work, too.
-
-TIP: This is not an exhaustive list; if you have success with other compilers, please let me know!
+TIP: Newer versions of these compilers are expected to work.
 
 === Tools
 
@@ -30,33 +28,9 @@ In addition to a capable compiler, you will need:
 TIP: See the <<design.adoc#,Design>> documentation for details on how `callme` handles its dependencies.
 
 
-== Building step by step
+== Building 
 
-=== Unix-type systems
+`callme` uses CMake and has a very conventional build process. If you know how to build a CMake-based process, you know how to build `callme`.
 
-This includes most (all?) Linux distributions and cygwin. Building `callme` is very similar to other cmake-based projects:
+If not, you can read the <<building.adoc#,Building>> chapter for step-by-step instructions. You can also visit that document for information on advanced building options.
 
-[source]
-----
-git clone git@github.com:sztomi/callme.git
-cd callme
-mkdir build && cd build
-cmake ..
-make
-----
-
-And that's it. If all goes well, your build output will be in the lib, examples, and tests subfolders.
-
-=== Microsoft Windows
-
-On Windows with MSVC it is very similar, except you will probably want to 
-
-TBD
-[source]
-----
-git clone git@github.com:sztomi/callme.git
-cd callme
-mkdir build && cd build
-cmake ..
-make
-----

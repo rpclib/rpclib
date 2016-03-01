@@ -1,0 +1,4 @@
+= Primer
+:icons: font
+
+Welcome to the Primer! This document is a tutorial introduction to `callme`. 

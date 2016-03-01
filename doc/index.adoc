@@ -17,6 +17,7 @@ Welcome to the documentation of `callme`! `callme` is a new msgpack-rpc implemen
 === Related Information
 
   * <<design.adoc#,Design>>: Explains the internal design of `callme`
+  * <<building.adoc#,Building>>: Basic and advanced building options.
   * <<spec.adoc#,MsgPack-RPC specification>>: The specification of the Msgpack-RPC protocol, as `callme` implements it
   * <<devguide.adoc#,Developer guide>>: Read this before contributing to `callme`
   * <<roadmap.adoc#,Roadmap>>: Planned features
