@@ -2,3 +2,43 @@
 :icons: font
 
 Welcome to the Primer! This document is a tutorial introduction to `callme`. 
+
+== Introduction
+
+=== What is `callme`?
+
+`callme` is a link:https://en.wikipedia.org/wiki/Remote_procedure_call[RPC] library that provides both a _client_ and a _server_ implementation. The _server_ allows you to expose functions of your program to be called remotely from another program that can produce the protocol, while the _client_ allows you to call functions of servers that understand this protocol. You can use the `callme` client and server in tandem (even in the same program, if you want to). The connected client and server can be on the same physical machine or far away, on the same network.
+
+=== What is msgpack-RPC?
+
+Msgpack-RPC is the protocol that `callme` uses for dispatching and encoding calls to functions. The protocol is based on link:http://msgpack.org[msgpack], a fast and compact format. The most important use cases are RPC (Remote Procedure Call) and IPC (Inter-Process Communication). There exist many implementations of the protocol in a wide amount of languages, which makes it a possible inter-language communication bridge as well. 
+
+For details on how exactly the protocol is structured, see the <<spec.adoc#,MsgPack-RPC specification>> chapter.
+
+== Writing server applications
+
+In the first part of this tutorial, we will learn about writing server applications. Your server application will expose its functions to the world _to be called_.
+
+IMPORTANT: msgpack-RPC defines *zero* security features. If you need secure communication, you have to implement it above or below the protocol!
+
+=== Calculator, the "Hello World" of RPC libraries.
+
+Our first server application will expose four functions: `add`, `subtract`, `multiply`, `divide`. The skeleton of this application will look like this:
+
+[source,cpp]
+----
+#include "callme/server.h"
+
+// The functions to expose
+double add(double a, double b) { return a + b; }
+double subtract(double a, double b) { return a - b; }
+double multiply(double a, double b) { return a * b; }
+double divide(double a, double b) { return a / b; }
+
+int main() {
+    // server code goes here
+    return 0;
+}
+----
+
+
