@@ -14,7 +14,10 @@ namespace callme {
 //! point with the library for creating servers.
 class server {
 public:
-    explicit server(std::string const &address, uint16_t port);
+    explicit server(uint16_t port);
+
+    server(std::string const &address, uint16_t port);
+
     ~server();
 
     //! \brief Starts the server loop. This is a blocking call.

@@ -30,6 +30,14 @@ struct server::impl {
           socket_(io_),
           suppress_exceptions_(false) {}
 
+    impl(server *parent, uint16_t port)
+        : parent_(parent),
+          io_(),
+          acceptor_(io_,
+                    tcp::endpoint(tcp::v4(), port)),
+          socket_(io_),
+          suppress_exceptions_(false) {}
+
     void start_accept() {
         acceptor_.async_accept(socket_, [this](std::error_code ec) {
             if (!ec) {
@@ -47,13 +55,19 @@ struct server::impl {
     }
 
     server *parent_;
-    CALLME_ASIO::io_service io_;
-    CALLME_ASIO::ip::tcp::acceptor acceptor_;
-    CALLME_ASIO::ip::tcp::socket socket_;
+    io_service io_;
+    ip::tcp::acceptor acceptor_;
+    ip::tcp::socket socket_;
     callme::detail::thread_group loop_workers_;
     std::atomic_bool suppress_exceptions_;
     CALLME_CREATE_LOG_CHANNEL(server)
 };
+
+server::server(uint16_t port)
+    : pimpl(this, port), disp_(std::make_shared<dispatcher>()) {
+    LOG_INFO("Created server on localhost:{}", port);
+    pimpl->start_accept();
+}
 
 server::server(std::string const &address, uint16_t port)
     : pimpl(this, address, port), disp_(std::make_shared<dispatcher>()) {

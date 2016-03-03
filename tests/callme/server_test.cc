@@ -159,3 +159,9 @@ TEST_F(dispatch_unicode, narrow_unicode) {
     callme::client c("127.0.0.1", test_port);
     EXPECT_EQ(str_utf8, c.call("utf", str_utf8).as<std::string>());
 }
+
+TEST(server_misc, single_param_ctor) {
+    callme::server s(8080);
+    s.async_run();
+    callme::client c("127.0.0.1", 8080);
+}

@@ -3,7 +3,7 @@
 #ifndef LOG_H_SPSC31OG
 #define LOG_H_SPSC31OG
 
-#ifdef CALLME_LOGGING
+#ifdef CALLME_ENABLE_LOGGING
 
 #include "format.h"
 #include <chrono>
@@ -33,6 +33,7 @@ public:
     template <typename... Args>
     void trace(const char *channel, const char *file, const char *func,
                std::size_t line, const char *msg, Args... args) {
+        (void)func;
         basic_log(
             "TRACE", channel,
             CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
@@ -41,6 +42,7 @@ public:
     template <typename... Args>
     void debug(const char *channel, const char *file, const char *func,
                std::size_t line, const char *msg, Args... args) {
+        (void)func;
         basic_log(
             "DEBUG", channel,
             CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
@@ -76,7 +78,7 @@ private:
 #else
     static std::string now() {
         std::stringstream ss;
-        timespec now_t = {0};
+        timespec now_t = {};
         clock_gettime(CLOCK_REALTIME, &now_t);
         ss << std::put_time(
                   std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),
