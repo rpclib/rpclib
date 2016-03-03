@@ -30,15 +30,36 @@ Our first server application will expose four functions: `add`, `subtract`, `mul
 #include "callme/server.h"
 
 // The functions to expose
-double add(double a, double b) { return a + b; }
+double add(double a, double b)      { return a + b; }
 double subtract(double a, double b) { return a - b; }
 double multiply(double a, double b) { return a * b; }
-double divide(double a, double b) { return a / b; }
+double divide(double a, double b)   { return a / b; }
 
 int main() {
     // server code goes here
     return 0;
 }
 ----
+
+So how do we define a server? First, we create the server object:
+
+[source,cpp]
+----
+callme::server srv(8080);
+----
+
+The server will listen on port 8080 (clients will have to connect to that port). Next, we _bind_ the functions to names:
+
+[source,cpp]
+----
+srv.bind("add", &add);
+srv.bind("subtract", &subtract);
+srv.bind("multiply", &multiply);
+srv.bind("divide", &divide);
+----
+
+These are the names that the client can use to call our functions. There is nothing stopping you to bind functions to names that are different from their own, too. It is also possible to bind the same function to multiple names.
+
+NOTE: Under the hood, each `bind` statement generates at compile-time a wrapper function that takes a `msgpack` object, decodes it into the real parameters of the bound function (if any) and calls it. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the <<design.adoc#,Design>> chapter.
 
 
