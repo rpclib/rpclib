@@ -29,9 +29,9 @@ public:
     //! this response corresponds to.
     uint32_t get_id() const;
 
-    //! \brief Returns the error message stored in the response. Can
+    //! \brief Returns the error object stored in the response. Can
     //! be empty.
-    std::string const &get_error() const;
+    std::shared_ptr<msgpack::object_handle> get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
     msgpack::object_handle get_result() const;
@@ -53,10 +53,10 @@ private:
 
 private:
     uint32_t id_;
-    std::string error_;
     // I really wish to avoid shared_ptr here but at this point asio does not
     // work with move-only handlers in post() and I need to capture responses
     // in lambdas.
+    std::shared_ptr<msgpack::object_handle> error_;
     std::shared_ptr<msgpack::object_handle> result_;
     bool empty_;
     CALLME_CREATE_LOG_CHANNEL(response)

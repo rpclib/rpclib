@@ -12,13 +12,14 @@ flags = [
     '-Wno-variadic-macros',
     '-fexceptions',
     '-DNDEBUG',
-    '-std=c++11',
+    '-std=c++14',
     '-x',
     'c++',
-    '-I', os.path.join(current_path(), 'include')
+    '-I', os.path.join(current_path(), 'include'),
+    '-I', os.path.join(current_path(), 'dependencies', 'include')
 ]
 
-compilation_database_folder = os.path.join(current_path(), 'build')
+compilation_database_folder = ''
 
 if os.path.exists(compilation_database_folder):
     database = ycm_core.CompilationDatabase(compilation_database_folder)

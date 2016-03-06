@@ -1,5 +1,6 @@
 #include "callme/detail/server_session.h"
 #include "callme/detail/log.h"
+#include "callme/this_handler.h"
 
 namespace callme {
 namespace detail {
@@ -37,7 +38,26 @@ void server_session::do_read() {
                         this, msg, z = std::shared_ptr<msgpack::zone>(
                                        result.zone().release())
                     ]() {
+                        this_handler.clear();
                         auto resp = disp_->dispatch(msg, suppress_exceptions_);
+
+                        // There are various things that decide what to send
+                        // as a response. They have a precedence.
+                        
+                        // First, if the response is disabled, that wins
+                        // So You Get Nothing, You Lose! Good Day Sir! 
+                        if (!this_handler.resp_enabled_) {
+                            return;
+                        }
+
+                        // Second, if there is an error set, we send that
+                        if (!this_handler.error_.get().is_nil()) {
+                            resp.set_error(this_handler.error_); // TODO: upgrade set_error to take object_handles
+                        } 
+                        else if (!this_handler.resp_.get().is_nil()) {
+                            resp.set_result(this_handler.resp_); // TODO
+                        }
+
                         if (!resp.is_empty()) {
 #ifdef _MSC_VER
                             // doesn't compile otherwise.

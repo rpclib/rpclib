@@ -1,5 +1,6 @@
 #include "callme/response.h"
 #include "callme/detail/log.h"
+#include "callme/detail/util.h"
 
 #include <assert.h>
 
@@ -32,8 +33,8 @@ response::response(msgpack::object_handle o) : response() {
 msgpack::sbuffer response::get_data() const {
     msgpack::sbuffer data;
     response_type r(1, id_,
-                    error_.size() > 0 ? msgpack::object(error_)
-                                      : msgpack::object(msgpack::type::nil()),
+                    error_ > 0 ? msgpack::object(error_)
+                              : msgpack::object(msgpack::type::nil()),
                     result_ ? result_->get() : msgpack::object());
     msgpack::pack(&data, r);
     return data;
@@ -41,7 +42,9 @@ msgpack::sbuffer response::get_data() const {
 
 uint32_t response::get_id() const { return id_; }
 
-std::string const &response::get_error() const { return error_; }
+std::shared_ptr<msgpack::object_handle> response::get_error() const { 
+    return error_;
+}
 
 msgpack::object_handle response::get_result() const {
     return std::move(*result_);

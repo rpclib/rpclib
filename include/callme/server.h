@@ -6,6 +6,7 @@
 #include "msgpack.hpp"
 
 #include "callme/dispatcher.h"
+#include "callme/this_handler.h"
 #include "callme/detail/pimpl.h"
 
 namespace callme {
