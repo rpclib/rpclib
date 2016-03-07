@@ -76,8 +76,8 @@ public:
     //! as response for the client.
     //! \throws std::runtime_error If the types of the parameters are not
     //! convertible to the called functions' parameters.
-    response dispatch(msgpack::object const &msg,
-                      bool suppress_exceptions = false);
+    detail::response dispatch(msgpack::object const &msg,
+                              bool suppress_exceptions = false);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
@@ -94,11 +94,11 @@ private:
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
 
-    response dispatch_call(msgpack::object const &msg,
-                           bool suppress_exceptions = false);
-
-    response dispatch_notification(msgpack::object const &msg,
+    detail::response dispatch_call(msgpack::object const &msg,
                                    bool suppress_exceptions = false);
+
+    detail::response dispatch_notification(msgpack::object const &msg,
+                                           bool suppress_exceptions = false);
 
     template <typename T> msgpack::object pack(T &&arg);
 

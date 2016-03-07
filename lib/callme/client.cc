@@ -62,7 +62,7 @@ struct client::impl {
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
                         try {
-                            if (r.get_error().size() > 0) {
+                            if (r.get_error() > 0) {
                                 throw std::runtime_error(CALLME_FMT::format(
                                     "callme: error during RPC call: {}",
                                     r.get_error()));

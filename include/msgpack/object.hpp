@@ -101,6 +101,12 @@ public:
     }
 #endif // defined(MSGPACK_USE_CPP03)
 
+    object_handle& assign(object_handle&& other) {
+        m_obj = other.m_obj;
+        m_zone = msgpack::move(other.m_zone);
+        return *this;
+    }
+
 private:
     msgpack::object m_obj;
     msgpack::unique_ptr<msgpack::zone> m_zone;

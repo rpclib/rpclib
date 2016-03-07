@@ -19,7 +19,9 @@ class server_session;
 //! handler. This is the interface through which bound functions
 //! may return errors, arbitrary type responses or prohibit sending a response.
 //! \note Setting each property of the handler is only relevant
-//! for one call in one thread.
+//! for one call in one thread. If the same handler is executing concurrently
+//! in a different thread, you can safely set different properties
+//! and everything will "just work".
 class this_handler_t {
 public:
     //! \brief Sets an arbitrary object to be sent back as an error
@@ -77,7 +79,7 @@ namespace callme {
 //! from handlers that execute the same function concurrently is safe.
 //! \note Accessing this object outside of handlers while a server is
 //! running is potentially unsafe.
-this_handler_t& this_handler();
+this_handler_t &this_handler();
 }
 
 #endif /* end of include guard: HANDLER_H_BZ8DT5WS */

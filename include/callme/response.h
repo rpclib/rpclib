@@ -8,15 +8,25 @@
 #include "msgpack.hpp"
 
 namespace callme {
+namespace detail {
 
 //! \brief Represents a response and creates a msgpack to be sent back
 //! as per the msgpack-rpc spec.
 class response {
 public:
-    //! \brief Constructs a msgpack::response with the given values.
-    response(uint32_t id, std::string const &error,
-             std::unique_ptr<msgpack::object_handle> result =
-                 std::unique_ptr<msgpack::object_handle>());
+    //! \brief Creates a response that represents a normal return value.
+    //! \param id The sequence id (as per protocol).
+    //! \param result The return value to store in the response.
+    //! \tparam T Any msgpack-able type.
+    //! \note If there is both an error and result in the response,
+    //! the result will be discarded while packing the data.
+    template <typename T> static response make_result(uint32_t id, T &&result);
+
+    //! \brief Creates a response that represents an error.
+    //! \param id The sequence id (as per protocol).
+    //! \param error The error value to store in the response.
+    //! \tparam T Any msgpack-able type.
+    template <typename T> static response make_error(uint32_t id, T &&error);
 
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).
@@ -24,6 +34,15 @@ public:
 
     //! \brief Gets the response data as a msgpack::sbuffer.
     msgpack::sbuffer get_data() const;
+
+    //! \brief Moves the specified object_handle into the response
+    //! as a result.
+    //! \param r The result to capture.
+    void capture_result(msgpack::object_handle &r);
+
+    //! \brief Moves the specified object_handle into the response as an error.
+    //! \param e The error to capture.
+    void capture_error(msgpack::object_handle &e);
 
     //! \brief Returns the call id/index used to identify which call
     //! this response corresponds to.
@@ -61,6 +80,37 @@ private:
     bool empty_;
     CALLME_CREATE_LOG_CHANNEL(response)
 };
+
+template <typename T>
+inline response response::make_result(uint32_t id, T &&result) {
+    auto z = std::make_unique<msgpack::zone>();
+    msgpack::object o(std::forward<T>(result), *z);
+    response inst;
+    inst.id_ = id;
+    inst.result_ = std::make_shared<msgpack::object_handle>(o, std::move(z));
+    return inst;
+}
+
+template <>
+inline response
+response::make_result(uint32_t id, std::unique_ptr<msgpack::object_handle> &&r) {
+    response inst;
+    inst.id_ = id;
+    inst.result_ = std::move(r);
+    return inst;
+}
+
+template <typename T>
+inline response response::make_error(uint32_t id, T &&error) {
+    auto z = std::make_unique<msgpack::zone>();
+    msgpack::object o(std::forward<T>(error), *z);
+    response inst;
+    inst.id_ = id;
+    inst.error_ = std::make_shared<msgpack::object_handle>(o, std::move(z));
+    return inst;
+}
+
+} /* detail */
 
 } /* callme  */
 

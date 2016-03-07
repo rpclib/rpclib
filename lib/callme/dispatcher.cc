@@ -6,6 +6,8 @@
 
 namespace callme {
 
+using detail::response;
+
 void dispatcher::dispatch(msgpack::sbuffer const &msg) {
     msgpack::unpacked unpacked;
     msgpack::unpack(&unpacked, msg.data(), msg.size());
@@ -43,32 +45,33 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
         LOG_DEBUG("Dispatching call to '{}'", name);
         try {
             auto result = (it_func->second)(args);
-            return response(id, std::string(), std::move(result));
+            return response::make_result(id, std::move(result));
         } catch (std::exception &e) {
             if (!suppress_exceptions) {
                 throw;
             }
-            return response(id,
-                            CALLME_FMT::format("callme: function '{0}' (taking {1} "
-                                        "arg(s)) "
-                                        "threw an exception. The exception "
-                                        "contained this information: {2}.",
-                                        name, args.via.array.size, e.what()));
+            return response::make_error(
+                id, CALLME_FMT::format("callme: function '{0}' (taking {1} "
+                                       "arg(s)) "
+                                       "threw an exception. The exception "
+                                       "contained this information: {2}.",
+                                       name, args.via.array.size, e.what()));
         } catch (...) {
             if (!suppress_exceptions) {
                 throw;
             }
-            return response(
-                id, CALLME_FMT::format("callme: function '{0}' (taking {1} "
-                                "arg(s)) threw an exception. The exception "
-                                "is not derived from std::exception. No "
-                                "further information available.",
-                                name, args.via.array.size));
+            return response::make_error(id, CALLME_FMT::format(
+                                    "callme: function '{0}' (taking {1} "
+                                    "arg(s)) threw an exception. The exception "
+                                    "is not derived from std::exception. No "
+                                    "further information available.",
+                                    name, args.via.array.size));
         }
     }
-    return response(id, CALLME_FMT::format("callme: server could not find "
-                                    "function '{0}' with argument count {1}.",
-                                    name, args.via.array.size));
+    return response::make_error(
+        id, CALLME_FMT::format("callme: server could not find "
+                               "function '{0}' with argument count {1}.",
+                               name, args.via.array.size));
 }
 
 response dispatcher::dispatch_notification(msgpack::object const &msg,
@@ -101,10 +104,10 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
 void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
                                    std::size_t expected) {
     if (found != expected) {
-        throw std::runtime_error(
-            CALLME_FMT::format("Function '{0}' was called with an invalid number of "
-                        "arguments. Expected: {1}, got: {2}",
-                        func, expected, found));
+        throw std::runtime_error(CALLME_FMT::format(
+            "Function '{0}' was called with an invalid number of "
+            "arguments. Expected: {1}, got: {2}",
+            func, expected, found));
     }
 }
 
