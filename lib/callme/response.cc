@@ -27,7 +27,7 @@ response::response(msgpack::object_handle o) : response() {
 
 msgpack::sbuffer response::get_data() const {
     msgpack::sbuffer data;
-    response_type r(1, id_, error_ > 0 ? msgpack::object(error_)
+    response_type r(1, id_, error_ > 0 ? msgpack::object(error_->get())
                                        : msgpack::object(msgpack::type::nil()),
                     result_ ? result_->get() : msgpack::object());
     msgpack::pack(&data, r);
@@ -40,8 +40,8 @@ std::shared_ptr<msgpack::object_handle> response::get_error() const {
     return error_;
 }
 
-msgpack::object_handle response::get_result() const {
-    return std::move(*result_);
+std::shared_ptr<msgpack::object_handle> response::get_result() const {
+    return result_;
 }
 
 response response::empty() {
@@ -60,7 +60,7 @@ void response::capture_result(msgpack::object_handle &r) {
 }
 
 void response::capture_error(msgpack::object_handle &e) {
-    if (!error_) { 
+    if (!error_) {
         error_ = std::make_shared<msgpack::object_handle>();
     }
     error_->assign(std::move(e));

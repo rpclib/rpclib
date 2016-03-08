@@ -53,7 +53,7 @@ public:
     std::shared_ptr<msgpack::object_handle> get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
-    msgpack::object_handle get_result() const;
+    std::shared_ptr<msgpack::object_handle> get_result() const;
 
     //! \brief Gets an empty response which means "no response" (not to be
     //! confused with void return, i.e. this means literally

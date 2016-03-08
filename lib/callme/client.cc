@@ -65,9 +65,9 @@ struct client::impl {
                             if (r.get_error() > 0) {
                                 throw std::runtime_error(CALLME_FMT::format(
                                     "callme: error during RPC call: {}",
-                                    r.get_error()));
+                                    r.get_error()->get()));
                             }
-                            promise.set_value(r.get_result());
+                            promise.set_value(std::move(*r.get_result()));
                         } catch (...) {
                             promise.set_exception(std::current_exception());
                         }

@@ -86,6 +86,7 @@ add_library(${OUTPUT_LIBRARY_NAME}
     lib/callme/server.cc
     lib/callme/response.cc
     lib/callme/client.cc
+    lib/callme/this_handler.cc
     lib/callme/detail/server_session.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
@@ -98,6 +99,7 @@ install(DIRECTORY include/callme
     DESTINATION include
     FILES_MATCHING
     PATTERN "*.h"
+    PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
 install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/callme)
 

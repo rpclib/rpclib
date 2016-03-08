@@ -108,6 +108,7 @@ TEST_F(server_error_handling, suppress_right_msg) {
         FAIL() << "There was no exception thrown.";
     } catch (std::exception &e) {
         EXPECT_TRUE(str_match(e.what(), ".*I'm blue daba dee daba die.*"));
+        std::cout << e.what() <<std::endl;
     }
 
     try {
