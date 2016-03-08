@@ -1,6 +1,7 @@
 #include "callme/detail/server_session.h"
 #include "callme/detail/log.h"
 #include "callme/this_handler.h"
+#include "callme/this_session.h"
 
 namespace callme {
 namespace detail {
@@ -29,7 +30,7 @@ void server_session::do_read() {
             if (!ec) {
                 pac_.buffer_consumed(length);
                 msgpack::unpacked result;
-                while (pac_.next(&result)) {
+                while (pac_.next(&result) && !exit_) {
                     auto msg = result.get();
                     output_buf_.clear();
 
@@ -39,23 +40,25 @@ void server_session::do_read() {
                                        result.zone().release())
                     ]() {
                         this_handler().clear();
+                        this_session().clear();
+
                         auto resp = disp_->dispatch(msg, suppress_exceptions_);
 
                         // There are various things that decide what to send
                         // as a response. They have a precedence.
-                        
+
                         // First, if the response is disabled, that wins
-                        // So You Get Nothing, You Lose! Good Day Sir! 
+                        // So You Get Nothing, You Lose! Good Day Sir!
                         if (!this_handler().resp_enabled_) {
                             return;
                         }
 
                         // Second, if there is an error set, we send that
-                        // and only third, if there is a special response, we use it
+                        // and only third, if there is a special response, we
+                        // use it
                         if (!this_handler().error_.get().is_nil()) {
                             resp.capture_error(this_handler().error_);
-                        } 
-                        else if (!this_handler().resp_.get().is_nil()) {
+                        } else if (!this_handler().resp_.get().is_nil()) {
                             resp.capture_result(this_handler().resp_);
                         }
 
@@ -69,12 +72,21 @@ void server_session::do_read() {
                                 [this, resp, z]() { write(resp.get_data()); });
 #endif
                         }
+
+                        if (this_session().exit_) {
+                            exit_ = true;
+                        }
                     });
                 }
 
-                do_read();
+                if (!exit_) {
+                    do_read();
+                }
             }
         }));
+    if (exit_) {
+        socket_.close();
+    }
 }
 
 } /* detail */

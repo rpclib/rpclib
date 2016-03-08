@@ -87,5 +87,16 @@ TEST_F(this_handler_test, disable_response) {
     s.async_run();
 
     auto f = c.async_call("noresp");
-    EXPECT_EQ(f.wait_for(100ms), std::future_status::timeout);
+    EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
+}
+
+TEST_F(this_handler_test, enable_response) {
+    using namespace std::chrono_literals;
+    s.bind("noresp", []() {
+        callme::this_handler().disable_response();
+    });
+    s.async_run();
+
+    auto f = c.async_call("noresp");
+    EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
 }

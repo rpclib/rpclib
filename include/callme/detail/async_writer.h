@@ -8,6 +8,9 @@
 #include <deque>
 
 namespace callme {
+
+class client;
+
 namespace detail {
 
 //! \brief Common logic for classes that have a write queue with async writing.
@@ -15,7 +18,7 @@ class async_writer {
 public:
     async_writer(CALLME_ASIO::io_service *io,
                  CALLME_ASIO::ip::tcp::socket socket)
-        : socket_(std::move(socket)), write_strand_(*io) {}
+        : socket_(std::move(socket)), write_strand_(*io), exit_(false) {}
 
     void do_write() {
         auto &item = write_queue_.front();
@@ -29,7 +32,9 @@ public:
                     if (!ec) {
                         write_queue_.pop_front();
                         if (write_queue_.size() > 0) {
-                            do_write();
+                            if (!exit_) {
+                                do_write();
+                            }
                         }
                     } else {
                         LOG_ERROR("Error while writing to socket: {}", ec);
@@ -46,8 +51,12 @@ public:
         do_write();
     }
 
+    friend class callme::client;
+
+protected:
     CALLME_ASIO::ip::tcp::socket socket_;
     CALLME_ASIO::strand write_strand_;
+    std::atomic_bool exit_;
 
 private:
     std::deque<msgpack::sbuffer> write_queue_;

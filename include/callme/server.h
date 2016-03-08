@@ -7,6 +7,7 @@
 
 #include "callme/dispatcher.h"
 #include "callme/this_handler.h"
+#include "callme/this_session.h"
 #include "callme/detail/pimpl.h"
 
 namespace callme {
