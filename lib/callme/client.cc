@@ -13,7 +13,7 @@
 
 #include "callme/detail/async_writer.h"
 #include "callme/detail/dev_utils.h"
-#include "callme/response.h"
+#include "callme/detail/response.h"
 
 using CALLME_ASIO::ip::tcp;
 using namespace callme::detail;

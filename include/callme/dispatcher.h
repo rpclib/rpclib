@@ -17,7 +17,7 @@
 #include "callme/detail/log.h"
 #include "callme/detail/not.h"
 #include "callme/detail/object.h"
-#include "callme/response.h"
+#include "callme/detail/response.h"
 
 namespace callme {
 

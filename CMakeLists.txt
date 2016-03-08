@@ -84,10 +84,10 @@ set(DEP_SOURCES
 add_library(${OUTPUT_LIBRARY_NAME}
     lib/callme/dispatcher.cc
     lib/callme/server.cc
-    lib/callme/response.cc
     lib/callme/client.cc
     lib/callme/this_handler.cc
     lib/callme/detail/server_session.cc
+    lib/callme/detail/response.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
     ${CALLME_HEADERS})

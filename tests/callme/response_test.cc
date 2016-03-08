@@ -5,7 +5,7 @@
 #include <memory>
 #include <thread>
 
-#include "callme/response.h"
+#include "callme/detail/response.h"
 
 using namespace callme::testutils;
 using namespace callme::detail;
