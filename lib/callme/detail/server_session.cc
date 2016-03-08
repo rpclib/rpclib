@@ -51,6 +51,7 @@ void server_session::do_read() {
                         }
 
                         // Second, if there is an error set, we send that
+                        // and only third, if there is a special response, we use it
                         if (!this_handler().error_.get().is_nil()) {
                             resp.capture_error(this_handler().error_);
                         } 

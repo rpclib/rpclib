@@ -51,7 +51,7 @@ public:
 
     //! \brief Instructs the server to not send a response to the client
     //! (ignoring any errors and return values).
-    //! \note It is unusual to not send a response to calls, and doing so
+    //! \note It is unusual to not send a response to requests, and doing so
     //! might cause problems in the client (depending on its implementation).
     void disable_response();
 

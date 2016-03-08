@@ -129,7 +129,8 @@ if(CALLME_BUILD_TESTS)
         tests/callme/dispatcher_test.cc
         tests/callme/client_test.cc
         tests/callme/response_test.cc
-        tests/callme/server_test.cc)
+        tests/callme/server_test.cc
+        tests/callme/this_handler_test.cc)
 
     include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 
