@@ -63,6 +63,8 @@ struct server::impl {
     CALLME_CREATE_LOG_CHANNEL(server)
 };
 
+CALLME_CREATE_LOG_CHANNEL(server)
+
 server::server(uint16_t port)
     : pimpl(this, port), disp_(std::make_shared<dispatcher>()) {
     LOG_INFO("Created server on localhost:{}", port);

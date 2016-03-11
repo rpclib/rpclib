@@ -15,7 +15,7 @@ class server_session;
 //! this handler is running in. This is the interface through which bound
 //! functions may interact with the session.
 //! \note Accessing the this_session() object is thread safe, but incurs some
-//! syncrhonization cost (usually not a concern).
+//! syncrhonization cost in the form of atomic flags. (usually not a concern)
 class this_session_t {
 public:
     //! \brief Gracefully exits the session (i.e. ongoing writes and reads are
@@ -24,17 +24,12 @@ public:
     //! handler.
     void post_exit();
 
-    //! \brief After the handler finishes, this will abort the session
-    //! immediately. Ongoing writes and reads are not completed.
-    //! \note In most cases, post_exit() is a better idea.
-    void post_abort();
-
     friend class callme::detail::server_session;
 
 private:
     void clear();
 
-    std::atomic_bool exit_{false}, abort_{false};
+    std::atomic_bool exit_{false};
 };
 
 //! \brief A thread-local object that can be used to control the currently

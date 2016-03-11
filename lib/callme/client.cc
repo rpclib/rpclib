@@ -29,6 +29,7 @@ struct client::impl {
           addr_(addr),
           port_(port),
           is_connected_(false),
+          state_(client::connection_state::initial),
           writer_(&io_, CALLME_ASIO::ip::tcp::socket(io_)) {}
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
@@ -39,6 +40,7 @@ struct client::impl {
                     std::unique_lock<std::mutex> lock(mut_connection_finished_);
                     LOG_INFO("Client connected to {}:{}", addr_, port_);
                     is_connected_ = true;
+                    state_ = client::connection_state::connected;
                     conn_finished_.notify_all();
                     do_read();
                 } else {
@@ -73,8 +75,18 @@ struct client::impl {
                         }
                     }
                     do_read();
+                } else if (ec == CALLME_ASIO::error::eof) {
+                    LOG_WARN("The server closed the connection.");
+                    state_ = client::connection_state::disconnected;
+                } else if (ec == CALLME_ASIO::error::connection_reset) {
+                    state_ = client::connection_state::reset;
+                    LOG_WARN("The connection was reset.");
                 }
             });
+    }
+
+    client::connection_state get_connection_state() const {
+        return state_;
     }
 
     //! \brief Waits for the write queue and writes any buffers to the network
@@ -94,8 +106,9 @@ struct client::impl {
     std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;
     std::thread io_thread_;
-
+    std::atomic<client::connection_state> state_;
     detail::async_writer writer_;
+    CALLME_CREATE_LOG_CHANNEL(client)
 };
 
 client::client(std::string const &addr, uint16_t port)
@@ -105,6 +118,7 @@ client::client(std::string const &addr, uint16_t port)
         resolver.resolve({pimpl->addr_, std::to_string(pimpl->port_)});
     pimpl->do_connect(endpoint_it);
     std::thread io_thread([this]() {
+        CALLME_CREATE_LOG_CHANNEL(client)
         name_thread("client");
         LOG_INFO("Starting");
         pimpl->io_.run();
@@ -140,6 +154,10 @@ void client::post(msgpack::sbuffer *buffer) {
         pimpl->write(std::move(*buffer));
         delete buffer;
     });
+}
+
+client::connection_state client::get_connection_state() const {
+    return pimpl->get_connection_state();
 }
 
 client::~client() {

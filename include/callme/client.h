@@ -49,6 +49,12 @@ public:
     template <typename... Args>
     void send(std::string const &func_name, Args... args);
 
+    //! \brief Enum representing the connection states of the client.
+    enum class connection_state { initial, connected, disconnected, reset };
+
+    //! \brief Returns the current connection state.
+    connection_state get_connection_state() const;
+
 private:
     enum class request_type { call = 0, notification = 2 };
 

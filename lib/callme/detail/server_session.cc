@@ -74,7 +74,10 @@ void server_session::do_read() {
                         }
 
                         if (this_session().exit_) {
-                            exit_ = true;
+                            LOG_WARN("Session exit requested from a handler.");
+                            // posting through the strand so this comes after
+                            // the previous write
+                            write_strand_.post([this]() { exit_ = true; });
                         }
                     });
                 }

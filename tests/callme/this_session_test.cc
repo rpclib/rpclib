@@ -1,5 +1,5 @@
 #include <chrono>
-#include <thread> 
+#include <thread>
 
 #include "gtest/gtest.h"
 
@@ -9,6 +9,7 @@
 #include "testutils.h"
 
 using namespace callme::testutils;
+using namespace callme;
 
 const uint16_t test_port = 8080;
 
@@ -29,4 +30,5 @@ TEST_F(this_session_test, post_exit) {
     std::this_thread::sleep_for(100ms);
     auto f = c.async_call("exit");
     EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
+    EXPECT_EQ(c.get_connection_state(), client::connection_state::disconnected);
 }

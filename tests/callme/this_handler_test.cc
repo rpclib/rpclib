@@ -76,14 +76,13 @@ TEST_F(this_handler_test, clear_special_response) {
 
     EXPECT_EQ(c.call("spec_func", false).as<int>(), 5);
     EXPECT_EQ(c.call("spec_func", true).as<int>(), 5);
-    EXPECT_THROW(c.call("spec_func", true).as<std::string>(), msgpack::type_error);
+    EXPECT_THROW(c.call("spec_func", true).as<std::string>(),
+                 msgpack::type_error);
 }
 
 TEST_F(this_handler_test, disable_response) {
     using namespace std::chrono_literals;
-    s.bind("noresp", []() {
-        callme::this_handler().disable_response();
-    });
+    s.bind("noresp", []() { callme::this_handler().disable_response(); });
     s.async_run();
 
     auto f = c.async_call("noresp");
@@ -92,9 +91,7 @@ TEST_F(this_handler_test, disable_response) {
 
 TEST_F(this_handler_test, enable_response) {
     using namespace std::chrono_literals;
-    s.bind("noresp", []() {
-        callme::this_handler().disable_response();
-    });
+    s.bind("noresp", []() { callme::this_handler().disable_response(); });
     s.async_run();
 
     auto f = c.async_call("noresp");

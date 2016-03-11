@@ -39,6 +39,11 @@ public:
                     } else {
                         LOG_ERROR("Error while writing to socket: {}", ec);
                     }
+
+                    if (exit_) {
+                        LOG_INFO("Closing socket");
+                        socket_.close();
+                    }
                 }));
     }
 
@@ -60,6 +65,7 @@ protected:
 
 private:
     std::deque<msgpack::sbuffer> write_queue_;
+    CALLME_CREATE_LOG_CHANNEL(async_writer)
 };
 
 } /* detail */

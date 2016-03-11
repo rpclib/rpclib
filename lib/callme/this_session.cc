@@ -12,12 +12,8 @@ void this_session_t::post_exit() {
     exit_ = true;
 }
 
-void this_session_t::post_abort() {
-    abort_ = true;
-}
-
 void this_session_t::clear() {
-    exit_ = abort_ = false;
+    exit_ = false;
 }
 
     
