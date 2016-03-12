@@ -25,6 +25,8 @@ server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
 
 void server_session::start() { do_read(); }
 
+void server_session::close() { socket_.close(); }
+
 void server_session::do_read() {
     auto self(shared_from_this());
     socket_.async_read_some(
@@ -88,7 +90,8 @@ void server_session::do_read() {
                             LOG_WARN("Server exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
-                            write_strand_.post([this]() { parent_->stop(); });
+                            write_strand_.post(
+                                [this]() { parent_->close_sessions(); });
                         }
                     });
                 }

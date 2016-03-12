@@ -87,6 +87,7 @@ add_library(${OUTPUT_LIBRARY_NAME}
     lib/callme/client.cc
     lib/callme/this_handler.cc
     lib/callme/this_session.cc
+    lib/callme/this_server.cc
     lib/callme/detail/server_session.cc
     lib/callme/detail/response.cc
     ${DEP_SOURCES}
@@ -132,7 +133,8 @@ if(CALLME_BUILD_TESTS)
         tests/callme/response_test.cc
         tests/callme/server_test.cc
         tests/callme/this_handler_test.cc
-        tests/callme/this_session_test.cc)
+        tests/callme/this_session_test.cc
+        tests/callme/this_server_test.cc)
 
     include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 

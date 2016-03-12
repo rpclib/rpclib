@@ -47,9 +47,12 @@ public:
     //! \note Setting this flag only affects subsequent connections.
     void suppress_exceptions(bool suppress);
 
-    //! \brief Gracefully stops the server, only returns when all writes
-    //! and reads are completed.
+    //! \brief Stops the server.
+    //! \note This should not be called from worker threads.
     void stop();
+
+    //! \brief Closes all sessions gracefully.
+    void close_sessions();
 
     friend class detail::server_session;
 

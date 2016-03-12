@@ -41,16 +41,23 @@ struct server::impl {
         acceptor_.async_accept(socket_, [this](std::error_code ec) {
             if (!ec) {
                 LOG_INFO("Accepted connection.");
-                std::make_shared<server_session>(
+                auto s = std::make_shared<server_session>(
                     parent_, &io_, std::move(socket_), parent_->disp_,
-                    suppress_exceptions_)
-                    ->start();
+                    suppress_exceptions_);
+                s->start();
+                sessions_.push_back(s);
             } else {
                 LOG_ERROR("Error while accepting connection: {}", ec);
             }
             start_accept();
             // TODO: allow graceful exit [sztomi 2016-01-13]
         });
+    }
+
+    void close_sessions() {
+        for (auto &session : sessions_) {
+            session->close();
+        }
     }
 
     void stop() {
@@ -100,5 +107,7 @@ void server::async_run(std::size_t worker_threads) {
 }
 
 void server::stop() { pimpl->stop(); }
+
+void server::close_sessions() { pimpl->close_sessions(); }
 
 } /* callme */

@@ -26,6 +26,8 @@ public:
                    std::shared_ptr<dispatcher> disp, bool suppress_exceptions);
     void start();
 
+    void close();
+
 private:
     void do_read();
 
