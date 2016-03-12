@@ -6,11 +6,13 @@
 #include "msgpack.hpp"
 
 #include "callme/dispatcher.h"
-#include "callme/this_handler.h"
-#include "callme/this_session.h"
 #include "callme/detail/pimpl.h"
 
 namespace callme {
+
+namespace detail {
+class server_session;
+}
 
 //! \brief Implements a msgpack-rpc server. This is the main interfacing
 //! point with the library for creating servers.
@@ -45,9 +47,15 @@ public:
     //! \note Setting this flag only affects subsequent connections.
     void suppress_exceptions(bool suppress);
 
+    //! \brief Gracefully stops the server, only returns when all writes
+    //! and reads are completed.
+    void stop();
+
+    friend class detail::server_session;
+
 private:
-	CALLME_DECL_PIMPL(172)
     std::shared_ptr<dispatcher> disp_;
+	CALLME_DECL_PIMPL(172)
 };
 
 } /* callme */

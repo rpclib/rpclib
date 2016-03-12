@@ -54,11 +54,17 @@ struct server::impl {
         });
     }
 
+    void stop() {
+        io_.stop();
+        loop_workers_.join_all();
+    }
+
     server *parent_;
     io_service io_;
     ip::tcp::acceptor acceptor_;
     ip::tcp::socket socket_;
     callme::detail::thread_group loop_workers_;
+    std::vector<std::shared_ptr<server_session>> sessions_;
     std::atomic_bool suppress_exceptions_;
     CALLME_CREATE_LOG_CHANNEL(server)
 };
@@ -78,8 +84,7 @@ server::server(std::string const &address, uint16_t port)
 }
 
 server::~server() {
-    pimpl->io_.stop();
-    pimpl->loop_workers_.join_all();
+    pimpl->stop();
 }
 
 void server::suppress_exceptions(bool suppress) {
@@ -95,6 +100,10 @@ void server::async_run(std::size_t worker_threads) {
         pimpl->io_.run();
         LOG_INFO("Exiting");
     });
+}
+
+void server::stop() {
+    pimpl->stop();
 }
 
 } /* callme */

@@ -4,6 +4,7 @@
 
 #include "callme/client.h"
 #include "callme/server.h"
+#include "callme/this_handler.h"
 
 #include "testutils.h"
 
