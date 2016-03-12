@@ -13,12 +13,15 @@
 #include "callme/dispatcher.h"
 
 namespace callme {
+
+class server;
+
 namespace detail {
 
 class server_session : public async_writer,
                        public std::enable_shared_from_this<server_session> {
 public:
-    server_session(CALLME_ASIO::io_service *io,
+    server_session(server *srv, CALLME_ASIO::io_service *io,
                    CALLME_ASIO::ip::tcp::socket socket,
                    std::shared_ptr<dispatcher> disp, bool suppress_exceptions);
     void start();
@@ -27,6 +30,7 @@ private:
     void do_read();
 
 private:
+    server* parent_;
     CALLME_ASIO::io_service *io_;
     CALLME_ASIO::strand read_strand_;
     std::shared_ptr<dispatcher> disp_;

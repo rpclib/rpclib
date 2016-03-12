@@ -1,16 +1,19 @@
 #include "callme/detail/server_session.h"
 #include "callme/detail/log.h"
+#include "callme/server.h"
 #include "callme/this_handler.h"
+#include "callme/this_server.h"
 #include "callme/this_session.h"
 
 namespace callme {
 namespace detail {
 
-server_session::server_session(CALLME_ASIO::io_service *io,
+server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
                                CALLME_ASIO::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp,
                                bool suppress_exceptions)
-    : async_writer(io, std::move(socket)),
+    : parent_(srv),
+      async_writer(io, std::move(socket)),
       io_(io),
       read_strand_(*io),
       disp_(disp),
@@ -41,6 +44,7 @@ void server_session::do_read() {
                     ]() {
                         this_handler().clear();
                         this_session().clear();
+                        this_server().cancel_stop();
 
                         auto resp = disp_->dispatch(msg, suppress_exceptions_);
 
@@ -78,6 +82,13 @@ void server_session::do_read() {
                             // posting through the strand so this comes after
                             // the previous write
                             write_strand_.post([this]() { exit_ = true; });
+                        }
+
+                        if (this_server().stopping_) {
+                            LOG_WARN("Server exit requested from a handler.");
+                            // posting through the strand so this comes after
+                            // the previous write
+                            write_strand_.post([this]() { parent_->stop(); });
                         }
                     });
                 }

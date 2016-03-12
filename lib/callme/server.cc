@@ -33,8 +33,7 @@ struct server::impl {
     impl(server *parent, uint16_t port)
         : parent_(parent),
           io_(),
-          acceptor_(io_,
-                    tcp::endpoint(tcp::v4(), port)),
+          acceptor_(io_, tcp::endpoint(tcp::v4(), port)),
           socket_(io_),
           suppress_exceptions_(false) {}
 
@@ -42,9 +41,9 @@ struct server::impl {
         acceptor_.async_accept(socket_, [this](std::error_code ec) {
             if (!ec) {
                 LOG_INFO("Accepted connection.");
-                std::make_shared<server_session>(&io_, std::move(socket_),
-                                                 parent_->disp_,
-                                                 suppress_exceptions_)
+                std::make_shared<server_session>(
+                    parent_, &io_, std::move(socket_), parent_->disp_,
+                    suppress_exceptions_)
                     ->start();
             } else {
                 LOG_ERROR("Error while accepting connection: {}", ec);
@@ -83,9 +82,7 @@ server::server(std::string const &address, uint16_t port)
     pimpl->start_accept();
 }
 
-server::~server() {
-    pimpl->stop();
-}
+server::~server() { pimpl->stop(); }
 
 void server::suppress_exceptions(bool suppress) {
     pimpl->suppress_exceptions_ = suppress;
@@ -102,8 +99,6 @@ void server::async_run(std::size_t worker_threads) {
     });
 }
 
-void server::stop() {
-    pimpl->stop();
-}
+void server::stop() { pimpl->stop(); }
 
 } /* callme */
