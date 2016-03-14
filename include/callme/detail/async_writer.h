@@ -61,7 +61,7 @@ public:
 protected:
     CALLME_ASIO::ip::tcp::socket socket_;
     CALLME_ASIO::strand write_strand_;
-    std::atomic_bool exit_;
+    std::atomic_bool exit_{false};
 
 private:
     std::deque<msgpack::sbuffer> write_queue_;
