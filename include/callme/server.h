@@ -18,8 +18,12 @@ class server_session;
 //! point with the library for creating servers.
 class server {
 public:
+    //! \brief Constructs a server that listens on the localhost on the
+    //! specified port.
     explicit server(uint16_t port);
 
+    //! \brief Constructs a server that listens on the specified address on 
+    //! the specified port.
     server(std::string const &address, uint16_t port);
 
     ~server();

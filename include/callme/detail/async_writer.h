@@ -42,6 +42,8 @@ public:
 
                     if (exit_) {
                         LOG_INFO("Closing socket");
+                        socket_.shutdown(
+                            CALLME_ASIO::ip::tcp::socket::shutdown_both);
                         socket_.close();
                     }
                 }));

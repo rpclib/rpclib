@@ -55,6 +55,9 @@ public:
     //! \brief Returns the current connection state.
     connection_state get_connection_state() const;
 
+    //! \brief Waits for the completion of all ongoing calls.
+    void wait_all_responses();
+
 private:
     enum class request_type { call = 0, notification = 2 };
 

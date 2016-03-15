@@ -91,12 +91,16 @@ public:
     using notification_t = std::tuple<int8_t, std::string, msgpack::object>;
 
 private:
+    //! \brief Checks the argument count and throws an exception if 
+    //! it is not the expected amount.
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
 
+    //! \brief Dispatches a call (which will have a response).
     detail::response dispatch_call(msgpack::object const &msg,
                                    bool suppress_exceptions = false);
 
+    //! \brief Dispatches a notification (which will not have a response)
     detail::response dispatch_notification(msgpack::object const &msg,
                                            bool suppress_exceptions = false);
 

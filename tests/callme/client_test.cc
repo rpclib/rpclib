@@ -5,6 +5,7 @@
 #include "testutils.h"
 
 #include <chrono>
+
 using namespace callme::testutils;
 using namespace std::literals::chrono_literals;
 
@@ -21,9 +22,9 @@ public:
 
 protected:
     static const int test_port = 8080;
+    MockDummy md;
     callme::server s;
     std::atomic_bool is_running_;
-    MockDummy md;
 };
 
 TEST_F(client_test, instantiation) {
@@ -44,5 +45,6 @@ TEST_F(client_test, notification) {
     EXPECT_CALL(md, dummy_void_zeroarg());
     callme::client client("127.0.0.1", test_port);
     client.send("dummy_void_zeroarg");
-    std::this_thread::sleep_for(100ms);
+    client.wait_all_responses();
+    std::this_thread::sleep_for(50ms);
 }

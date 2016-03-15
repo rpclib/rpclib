@@ -32,6 +32,8 @@ struct client::impl {
           state_(client::connection_state::initial),
           writer_(&io_, CALLME_ASIO::ip::tcp::socket(io_)) {}
 
+    ~impl() {}
+
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         CALLME_ASIO::async_connect(
             writer_.socket_, endpoint_iterator,
@@ -85,9 +87,7 @@ struct client::impl {
             });
     }
 
-    client::connection_state get_connection_state() const {
-        return state_;
-    }
+    client::connection_state get_connection_state() const { return state_; }
 
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
@@ -120,9 +120,9 @@ client::client(std::string const &addr, uint16_t port)
     std::thread io_thread([this]() {
         CALLME_CREATE_LOG_CHANNEL(client)
         name_thread("client");
-        LOG_INFO("Starting");
+        LOG_INFO("Starting io thread");
         pimpl->io_.run();
-        LOG_INFO("Exiting");
+        LOG_INFO("Exiting io thread");
     });
     pimpl->io_thread_ = std::move(io_thread);
 }
@@ -158,6 +158,12 @@ void client::post(msgpack::sbuffer *buffer) {
 
 client::connection_state client::get_connection_state() const {
     return pimpl->get_connection_state();
+}
+
+void client::wait_all_responses() {
+    for (auto &c : pimpl->ongoing_calls_) {
+        c.second.get_future().wait();
+    }
 }
 
 client::~client() {
