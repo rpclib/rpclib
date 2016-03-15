@@ -63,8 +63,10 @@ void server_session::do_read() {
                         // and only third, if there is a special response, we
                         // use it
                         if (!this_handler().error_.get().is_nil()) {
+                            LOG_WARN("There was an error set in the handler");
                             resp.capture_error(this_handler().error_);
                         } else if (!this_handler().resp_.get().is_nil()) {
+                            LOG_WARN("There was a special result set in the handler");
                             resp.capture_result(this_handler().resp_);
                         }
 
