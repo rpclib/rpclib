@@ -58,6 +58,7 @@ struct server::impl {
         for (auto &session : sessions_) {
             session->close();
         }
+        sessions_.clear();
     }
 
     void stop() {

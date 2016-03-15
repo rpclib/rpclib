@@ -15,6 +15,7 @@
 #include "callme/detail/dev_utils.h"
 #include "callme/detail/response.h"
 
+using namespace CALLME_ASIO;
 using CALLME_ASIO::ip::tcp;
 using namespace callme::detail;
 
@@ -35,6 +36,7 @@ struct client::impl {
     ~impl() {}
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
+        LOG_INFO("Starting connection");
         CALLME_ASIO::async_connect(
             writer_.socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
