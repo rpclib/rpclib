@@ -25,7 +25,10 @@ server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
 
 void server_session::start() { do_read(); }
 
-void server_session::close() { socket_.close(); }
+void server_session::close() { 
+    exit_ = true;
+    socket_.close(); 
+}
 
 void server_session::do_read() {
     auto self(shared_from_this());

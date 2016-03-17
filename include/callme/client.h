@@ -69,7 +69,7 @@ private:
 
 private:
     static const uint32_t default_buffer_size = 4096;
-    CALLME_DECL_PIMPL(600)
+    CALLME_DECL_PIMPL(648)
 };
 }
 

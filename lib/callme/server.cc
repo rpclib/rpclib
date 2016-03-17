@@ -90,7 +90,9 @@ server::server(std::string const &address, uint16_t port)
     pimpl->start_accept();
 }
 
-server::~server() { pimpl->stop(); }
+server::~server() {
+    pimpl->stop(); 
+}
 
 void server::suppress_exceptions(bool suppress) {
     pimpl->suppress_exceptions_ = suppress;

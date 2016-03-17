@@ -19,7 +19,7 @@ flags = [
     '-I', os.path.join(current_path(), 'dependencies', 'include')
 ]
 
-compilation_database_folder = ''
+compilation_database_folder = current_path()
 
 if os.path.exists(compilation_database_folder):
     database = ycm_core.CompilationDatabase(compilation_database_folder)

@@ -18,8 +18,7 @@ class server;
 
 namespace detail {
 
-class server_session : public async_writer,
-                       public std::enable_shared_from_this<server_session> {
+class server_session : public async_writer {
 public:
     server_session(server *srv, CALLME_ASIO::io_service *io,
                    CALLME_ASIO::ip::tcp::socket socket,

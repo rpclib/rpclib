@@ -31,14 +31,13 @@ struct client::impl {
           port_(port),
           is_connected_(false),
           state_(client::connection_state::initial),
-          writer_(&io_, CALLME_ASIO::ip::tcp::socket(io_)) {}
-
-    ~impl() {}
+          writer_(std::make_shared<detail::async_writer>(
+                      &io_, CALLME_ASIO::ip::tcp::socket(io_))) {}
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         LOG_INFO("Starting connection");
         CALLME_ASIO::async_connect(
-            writer_.socket_, endpoint_iterator,
+            writer_->socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
                 if (!ec) {
                     std::unique_lock<std::mutex> lock(mut_connection_finished_);
@@ -54,7 +53,7 @@ struct client::impl {
     }
 
     void do_read() {
-        writer_.socket_.async_read_some(
+        writer_->socket_.async_read_some(
             CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 LOG_TRACE("Reading from tcp. nread = {}", length);
@@ -93,7 +92,7 @@ struct client::impl {
 
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
-    void write(msgpack::sbuffer item) { writer_.write(std::move(item)); }
+    void write(msgpack::sbuffer item) { writer_->write(std::move(item)); }
 
     client *parent_;
     CALLME_ASIO::io_service io_;
@@ -109,7 +108,7 @@ struct client::impl {
     std::mutex mut_connection_finished_;
     std::thread io_thread_;
     std::atomic<client::connection_state> state_;
-    detail::async_writer writer_;
+    std::shared_ptr<detail::async_writer> writer_;
     CALLME_CREATE_LOG_CHANNEL(client)
 };
 
@@ -130,8 +129,8 @@ client::client(std::string const &addr, uint16_t port)
 }
 
 void client::wait_conn() {
+    std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
     if (!pimpl->is_connected_) {
-        std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
         pimpl->conn_finished_.wait(lock);
     }
 }
