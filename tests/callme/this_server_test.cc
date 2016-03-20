@@ -30,8 +30,7 @@ TEST_F(this_server_test, stop) {
     s.async_run();
     c1.call("stop_server");
     std::this_thread::sleep_for(100ms);
-    auto f = c2.async_call("exit");
-    EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
+
     EXPECT_EQ(c1.get_connection_state(),
               client::connection_state::disconnected);
     EXPECT_EQ(c2.get_connection_state(),

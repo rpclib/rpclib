@@ -5,10 +5,10 @@
 
 #include "asio.hpp"
 #include "msgpack.hpp"
-#include <deque>
-#include <thread>
-#include <memory>
 #include <condition_variable>
+#include <deque>
+#include <memory>
+#include <thread>
 
 namespace callme {
 
@@ -25,7 +25,7 @@ public:
 
     void do_write() {
         if (exit_) {
-            return; 
+            return;
         }
         auto self(shared_from_this());
         auto &item = write_queue_.front();

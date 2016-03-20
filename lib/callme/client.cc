@@ -32,10 +32,10 @@ struct client::impl {
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
-                      &io_, CALLME_ASIO::ip::tcp::socket(io_))) {}
+              &io_, CALLME_ASIO::ip::tcp::socket(io_))) {}
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
-        LOG_INFO("Starting connection");
+        LOG_INFO("Initiating connection.");
         CALLME_ASIO::async_connect(
             writer_->socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
@@ -47,7 +47,7 @@ struct client::impl {
                     conn_finished_.notify_all();
                     do_read();
                 } else {
-                    LOG_ERROR("Error during connect: {}", ec);
+                    LOG_ERROR("Error during connection: {}", ec);
                 }
             });
     }
@@ -56,7 +56,6 @@ struct client::impl {
         writer_->socket_.async_read_some(
             CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
-                LOG_TRACE("Reading from tcp. nread = {}", length);
                 if (!ec) {
                     pac_.buffer_consumed(length);
                     msgpack::unpacked result;
@@ -121,9 +120,7 @@ client::client(std::string const &addr, uint16_t port)
     std::thread io_thread([this]() {
         CALLME_CREATE_LOG_CHANNEL(client)
         name_thread("client");
-        LOG_INFO("Starting io thread");
         pimpl->io_.run();
-        LOG_INFO("Exiting io thread");
     });
     pimpl->io_thread_ = std::move(io_thread);
 }
@@ -140,13 +137,11 @@ int client::get_next_call_idx() {
     return pimpl->call_idx_;
 }
 
-void client::post(msgpack::sbuffer *buffer, int idx,
-                  std::promise<msgpack::object_handle> *p) {
+void client::post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
+                  std::shared_ptr<std::promise<msgpack::object_handle>> p) {
     pimpl->strand_.post([this, buffer, idx, p]() {
         pimpl->ongoing_calls_.insert(std::make_pair(idx, std::move(*p)));
-        delete p;
         pimpl->write(std::move(*buffer));
-        delete buffer;
     });
 }
 

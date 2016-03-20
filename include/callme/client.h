@@ -62,8 +62,8 @@ private:
     enum class request_type { call = 0, notification = 2 };
 
     void wait_conn();
-    void post(msgpack::sbuffer *buffer, int idx,
-              std::promise<msgpack::object_handle> *p);
+    void post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
+              std::shared_ptr<std::promise<msgpack::object_handle>> p);
     void post(msgpack::sbuffer *buffer);
     int get_next_call_idx();
 

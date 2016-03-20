@@ -12,8 +12,8 @@ server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
                                CALLME_ASIO::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp,
                                bool suppress_exceptions)
-    : parent_(srv),
-      async_writer(io, std::move(socket)),
+    : async_writer(io, std::move(socket)),
+      parent_(srv),
       io_(io),
       read_strand_(*io),
       disp_(disp),
@@ -25,9 +25,10 @@ server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
 
 void server_session::start() { do_read(); }
 
-void server_session::close() { 
+void server_session::close() {
+    LOG_INFO("Closing session.");
     exit_ = true;
-    socket_.close(); 
+    write_strand_.post([this]() { socket_.close(); });
 }
 
 void server_session::do_read() {
@@ -69,7 +70,8 @@ void server_session::do_read() {
                             LOG_WARN("There was an error set in the handler");
                             resp.capture_error(this_handler().error_);
                         } else if (!this_handler().resp_.get().is_nil()) {
-                            LOG_WARN("There was a special result set in the handler");
+                            LOG_WARN("There was a special result set in the "
+                                     "handler");
                             resp.capture_result(this_handler().resp_);
                         }
 

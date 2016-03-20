@@ -34,18 +34,20 @@ public:
     void trace(const char *channel, const char *file, const char *func,
                std::size_t line, const char *msg, Args... args) {
         (void)func;
-        basic_log(
-            "TRACE", channel,
-            CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
+        basic_log("TRACE", channel,
+                  CALLME_FMT::format("{} ({}:{})",
+                                     CALLME_FMT::format(msg, args...), file,
+                                     line));
     }
 
     template <typename... Args>
     void debug(const char *channel, const char *file, const char *func,
                std::size_t line, const char *msg, Args... args) {
         (void)func;
-        basic_log(
-            "DEBUG", channel,
-            CALLME_FMT::format("{} ({}:{})", CALLME_FMT::format(msg, args...), file, line));
+        basic_log("DEBUG", channel,
+                  CALLME_FMT::format("{} ({}:{})",
+                                     CALLME_FMT::format(msg, args...), file,
+                                     line));
     }
 
     template <typename... Args>
@@ -71,8 +73,9 @@ private:
         std::stringstream ss;
         SYSTEMTIME t;
         GetSystemTime(&t);
-        ss << CALLME_FMT::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth, t.wDay,
-                          t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
+        ss << CALLME_FMT::format("{}-{}-{} {}:{}:{}.{:03}", t.wYear, t.wMonth,
+                                 t.wDay, t.wHour, t.wMinute, t.wSecond,
+                                 t.wMilliseconds);
         return ss.str();
     }
 #else
@@ -83,8 +86,8 @@ private:
         ss << std::put_time(
                   std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),
                   "%F %T")
-           << CALLME_FMT::format(".{:03}",
-                          round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
+           << CALLME_FMT::format(
+                  ".{:03}", round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
         return ss.str();
     }
 #endif
@@ -94,8 +97,8 @@ private:
         using CALLME_FMT::arg;
         std::lock_guard<std::mutex> lock(mut_print_);
         CALLME_FMT::print("{time:16}  {severity:6}  {channel:12}    {msg:40}\n",
-                   arg("severity", severity), arg("channel", channel),
-                   arg("time", now()), arg("msg", msg));
+                          arg("severity", severity), arg("channel", channel),
+                          arg("time", now()), arg("msg", msg));
     }
 
 private:
@@ -104,8 +107,21 @@ private:
 } /* detail */
 } /* callme */
 
+#ifdef _MSC_VER
 #define CALLME_CREATE_LOG_CHANNEL(Name)                                        \
     static constexpr const char *callme_channel_name = #Name;
+#elif defined(__GNUC__)
+#define CALLME_CREATE_LOG_CHANNEL(Name)                                        \
+    _Pragma("GCC diagnostic push")                                            \
+    _Pragma("GCC diagnostic ignored \"-Wunused-variable\"")                       \
+    static constexpr const char *callme_channel_name = #Name;                  \
+    _Pragma("GCC diagnostic pop")
+#elif defined(__clang__)
+    _Pragma("clang diagnostic push")                                            \
+    _Pragma("clang diagnostic ignored \"-Wunused-variable\"")                       \
+    static constexpr const char *callme_channel_name = #Name;                  \
+    _Pragma("clang diagnostic pop")
+#endif
 
 CALLME_CREATE_LOG_CHANNEL(global)
 
