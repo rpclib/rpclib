@@ -45,21 +45,88 @@ So how do we define a server? First, we create the server object:
 
 [source,cpp]
 ----
-callme::server srv(8080);
+    callme::server srv(8080);
 ----
 
-The server will listen on port 8080 (clients will have to connect to that port). Next, we _bind_ the functions to names:
+The server will listen on port 8080 (but not right away after construction - we need to `run` it). Next, we _bind_ the functions to names:
 
 [source,cpp]
 ----
-srv.bind("add", &add);
-srv.bind("subtract", &subtract);
-srv.bind("multiply", &multiply);
-srv.bind("divide", &divide);
+    srv.bind("add", &add);
+    srv.bind("subtract", &subtract);
+    srv.bind("multiply", &multiply);
+    srv.bind("divide", &divide);
 ----
 
-These are the names that the client can use to call our functions. There is nothing stopping you to bind functions to names that are different from their own, too. It is also possible to bind the same function to multiple names.
+These are the names that the client can use to call our functions. There is nothing stopping you from binding functions to names that are different from their own, too. It is also possible to bind the same function to multiple names. 
 
 NOTE: Under the hood, each `bind` statement generates at compile-time a wrapper function that takes a `msgpack` object, decodes it into the real parameters of the bound function (if any) and calls it. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the <<design.adoc#,Design>> chapter.
 
+Lastly, we need to run the server:
 
+[source,cpp]
+----
+    srv.run();
+----
+
+`run` is a blocking function, but it also has a non-blocking pair called `async_run`. When `run` is called, the server starts listening on the port we set above and the internal event loop will be continously processed.
+
+This is now a functioning (although, in some ways, incomplete) server. The complete listing so far:
+
+[source,cpp]
+----
+#include "callme/server.h"
+
+// The functions to expose
+double add(double a, double b)      { return a + b; }
+double subtract(double a, double b) { return a - b; }
+double multiply(double a, double b) { return a * b; }
+double divide(double a, double b)   { return a / b; }
+
+int main() {
+    callme::server srv(8080);
+    srv.bind("add", &add);
+    srv.bind("subtract", &subtract);
+    srv.bind("multiply", &multiply);
+    srv.bind("divide", &divide);
+    srv.run();
+
+    return 0;
+}
+----
+
+==== Error handling
+
+The attentive reader might have noticed a big problem with this program already. What is it? A client can easily make it crash by calling `divide` with a 0 divider (causing, you guessed it, division by zero). What can be done we do about this?
+
+Luckily, the msgpack-rpc protocol supports error signaling. We need to modify our `divide` function a little bit for this:
+
+
+[source,cpp]
+----
+#include "callme/server.h"
+#include "callme/this_handler.h"
+
+double divide(double a, double b) { 
+    if (b == 0) {
+        callme::this_handler().set_error("Division by zero");
+        return 0;
+    }
+    return a / b; 
+}
+----
+
+You might be puzzled about why we are returning 0 after setting the error. The reason for this is that `set_error` is just a normal function call, i.e. the handler would continue to run after calling it. 
+
+NOTE: If there is an error set for the handler, `callme` ignores the return value.
+
+Now our server is bullet-proof. Or is it?
+
+==== What about exceptions?
+
+Our little calculator server is pretty stable at this point, but real-world applications often have to deal with exceptions. In general, exceptions should be handled at the library users' discretion, so by default, `callme` doesn't do anything with them. Yet, it is possible to explicitly turn exceptions from handlers into RPC errors as such:
+
+[source,cpp]
+----
+    srv.suppress_exceptions(false);
+----
