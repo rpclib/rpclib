@@ -1,17 +1,22 @@
 = Primer
 :icons: font
+:toc:
 
-Welcome to the Primer! This document is a tutorial introduction to `callme`. 
+Welcome to the Primer! This document is a tutorial introduction to `callme` for absolute beginners. If you are new to `callme`, you are in the right place!
 
 == Introduction
 
+=== Prerequisites
+
+This tutorial assumes that you have an intermediate grasp of C++ and that you have an idea of what link:https://en.wikipedia.org/wiki/Remote_procedure_call[RPC] (Remote Procedure Call) is.
+
 === What is `callme`?
 
-`callme` is a link:https://en.wikipedia.org/wiki/Remote_procedure_call[RPC] library that provides both a _client_ and a _server_ implementation. The _server_ allows you to expose functions of your program to be called remotely from another program that can produce the protocol, while the _client_ allows you to call functions of servers that understand this protocol. You can use the `callme` client and server in tandem (even in the same program, if you want to). The connected client and server can be on the same physical machine or far away, on the same network.
+`callme` is a RPC library that provides both a _client_ and a _server_ implementation. The _server_ allows you to expose functions of your program to be called remotely from another program that can produce the protocol, while the _client_ allows you to call functions of servers that understand this protocol. You can use the `callme` client and server in tandem (even in the same program, if you want to), but it's not a requirement. The connected client and server can be on the same physical machine or far away, on the same network.
 
 === What is msgpack-RPC?
 
-Msgpack-RPC is the protocol that `callme` uses for dispatching and encoding calls to functions. The protocol is based on link:http://msgpack.org[msgpack], a fast and compact format. The most important use cases are RPC (Remote Procedure Call) and IPC (Inter-Process Communication). There exist many implementations of the protocol in a wide amount of languages, which makes it a possible inter-language communication bridge as well. 
+Msgpack-RPC is the protocol that `callme` uses for dispatching and encoding calls to functions. The protocol is based on link:http://msgpack.org[msgpack], a fast and compact format. The most important use cases are RPC (Remote Procedure Call) and IPC (Inter-Process Communication). This is useful for a wide variety of applications because it allows high-level communication and interoperability. There exist many implementations of the protocol in a wide amount of languages, which makes it a possible inter-language communication bridge as well. 
 
 For details on how exactly the protocol is structured, see the <<spec.adoc#,MsgPack-RPC specification>> chapter.
 
@@ -58,7 +63,7 @@ The server will listen on port 8080 (but not right away after construction - we 
     srv.bind("divide", &divide);
 ----
 
-These are the names that the client can use to call our functions. There is nothing stopping you from binding functions to names that are different from their own, too. It is also possible to bind the same function to multiple names. 
+These are the names that the client can use to call our functions. There is nothing stopping you from binding functions to names that are different from their own, too. But usually you will want to  It is also possible to bind the same function to multiple names. 
 
 NOTE: Under the hood, each `bind` statement generates at compile-time a wrapper function that takes a `msgpack` object, decodes it into the real parameters of the bound function (if any) and calls it. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the <<design.adoc#,Design>> chapter.
 
@@ -95,11 +100,13 @@ int main() {
 }
 ----
 
+TIP: Free functions are not the only thing you can `bind`. It also accepts _lambda expressions_ (both capturing and non-capturing), `std::function` objects and _custom functors_. To bind class members, you can wrap an instance with the member function pointer in a lambda or using `std::bind`.
+
 ==== Error handling
 
-The attentive reader might have noticed a big problem with this program already. What is it? A client can easily make it crash by calling `divide` with a 0 divider (causing, you guessed it, division by zero). What can be done we do about this?
+There is, however a huge issue with this server. Did you spot it? A client can easily make it crash - just by calling `divide` with a 0 divider (causing, you guessed it, division by zero). What can we do about this? Well of course, we can just check the divider and _not_ perform the division if it happens to be zero. This is enough to avoid the crash, but not enough for a smooth workflow: the client will get an arbitrary result which is most likely not what they want.
 
-Luckily, the msgpack-rpc protocol supports error signaling. We need to modify our `divide` function a little bit for this:
+Luckily, the msgpack-rpc protocol supports error signaling. We need to modify our `divide` function a little bit to utilize it:
 
 
 [source,cpp]
@@ -110,23 +117,41 @@ Luckily, the msgpack-rpc protocol supports error signaling. We need to modify ou
 double divide(double a, double b) { 
     if (b == 0) {
         callme::this_handler().set_error("Division by zero");
-        return 0;
     }
     return a / b; 
 }
 ----
 
-You might be puzzled about why we are returning 0 after setting the error. The reason for this is that `set_error` is just a normal function call, i.e. the handler would continue to run after calling it. 
-
-NOTE: If there is an error set for the handler, `callme` ignores the return value.
+You might be puzzled about why we are not returning after setting the error. The reason for this is that `set_error` throws an internal exception that is handled inside the library. 
 
 Now our server is bullet-proof. Or is it?
 
-==== What about exceptions?
+==== What about _my_ exceptions?
 
-Our little calculator server is pretty stable at this point, but real-world applications often have to deal with exceptions. In general, exceptions should be handled at the library users' discretion, so by default, `callme` doesn't do anything with them. Yet, it is possible to explicitly turn exceptions from handlers into RPC errors as such:
+Our little calculator server is pretty stable at this point, but real-world applications often have to deal with exceptions. In general, exceptions should be handled at the library users' discretion (that is, on the handler level), so by default, `callme` doesn't do anything with them. If an exception leaves the handler, that is an unhandled exception. Yet, there are cases when you can't or don't want to handle exceptions in the handler. To facilitate this, `callme` provides a way to automatically turn exceptions into RPC errors:
 
 [source,cpp]
 ----
     srv.suppress_exceptions(false);
 ----
+
+With this, you can call throwing functions or throw exceptions of your own.
+
+[source,cpp]
+----
+double divide(double a, double b) { 
+    if (b == 0) {
+        callme::this_handler().set_error("Division by zero");
+    }
+    else if (b == 1) {
+        throw std::runtime_error("Come on!");
+    }
+    return SeriousFunctionThatThrows(a, b);
+}
+----
+
+As you can see, `set_error` is still valid - and remains the preferred way to signal errors. 
+
+What happens to the exception? `callme` will try to catch `std::exception` - s and use their `what()` member to get a string representation which it sets as an error. What if you throw something that is not a `std::exception` -descendant? First of all, shame on you. Second, `callme` will send an error message letting your clients know how that you threw something that is not a `std::exception`.
+
+

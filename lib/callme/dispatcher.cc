@@ -1,5 +1,6 @@
 #include "callme/dispatcher.h"
 #include "callme/detail/log.h"
+#include "callme/this_handler.h"
 #include "format.h"
 
 #include <cassert>
@@ -56,16 +57,23 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                                        "threw an exception. The exception "
                                        "contained this information: {2}.",
                                        name, args.via.array.size, e.what()));
+        } catch (callme::detail::handler_error &) {
+            // doing nothing, the exception was only thrown to
+            // return immediately
+        } catch (callme::detail::handler_spec_response &) {
+            // doing nothing, the exception was only thrown to
+            // return immediately
         } catch (...) {
             if (!suppress_exceptions) {
                 throw;
             }
-            return response::make_error(id, CALLME_FMT::format(
-                                    "callme: function '{0}' (taking {1} "
-                                    "arg(s)) threw an exception. The exception "
-                                    "is not derived from std::exception. No "
-                                    "further information available.",
-                                    name, args.via.array.size));
+            return response::make_error(
+                id,
+                CALLME_FMT::format("callme: function '{0}' (taking {1} "
+                                   "arg(s)) threw an exception. The exception "
+                                   "is not derived from std::exception. No "
+                                   "further information available.",
+                                   name, args.via.array.size));
         }
     }
     return response::make_error(
@@ -92,6 +100,12 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
         LOG_DEBUG("Dispatching call to '{}'", name);
         try {
             auto result = (it_func->second)(args);
+        } catch (callme::detail::handler_error &) {
+            // doing nothing, the exception was only thrown to
+            // return immediately
+        } catch (callme::detail::handler_spec_response &) {
+            // doing nothing, the exception was only thrown to
+            // return immediately
         } catch (...) {
             if (!suppress_exceptions) {
                 throw;

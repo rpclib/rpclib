@@ -13,6 +13,8 @@ namespace callme {
 
 namespace detail {
 class server_session;
+class handler_error {};
+class handler_spec_response {};
 }
 
 //! \brief Encapsulates information about the currently executing
@@ -31,10 +33,6 @@ public:
     //! \tparam T The type of the error object.
     template <typename T> void set_error(T &&err_obj);
 
-    //! \brief Clears the error object (if any). If there is none,
-    //! this will have no effect.
-    void clear_error();
-
     //! \brief Sets an arbitrary object to be sent back as the response
     //! to the call.
     //! \param resp_obj The response object. This can be anything that
@@ -45,9 +43,6 @@ public:
     //! \note You can use clear_special_response() to clear the special
     //! response and use the normal return value.
     template <typename T> void set_special_response(T &&resp_obj);
-
-    //! \brief Clears the special response object (if any).
-    void clear_special_response();
 
     //! \brief Instructs the server to not send a response to the client
     //! (ignoring any errors and return values).

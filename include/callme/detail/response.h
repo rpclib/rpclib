@@ -28,6 +28,7 @@ public:
     //! \tparam T Any msgpack-able type.
     template <typename T> static response make_error(uint32_t id, T &&error);
 
+
     //! \brief Constructs a response from msgpack::object (useful when
     //! reading a response from a stream).
     response(msgpack::object_handle o);
@@ -68,9 +69,9 @@ public:
         std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
 
 private:
+    //! \brief Default constructor for responses.
     response();
 
-private:
     uint32_t id_;
     // I really wish to avoid shared_ptr here but at this point asio does not
     // work with move-only handlers in post() and I need to capture responses
