@@ -165,6 +165,8 @@ if(CALLME_BUILD_EXAMPLES)
     target_link_libraries(${SERVER_EXAMPLE_NAME} callme)
     target_link_libraries(${CLIENT_EXAMPLE_NAME} callme)
     target_link_libraries(${CUSTOMT_EXAMPLE_NAME} callme)
+
+    add_subdirectory(examples/mandelbrot)
 endif()
 
 

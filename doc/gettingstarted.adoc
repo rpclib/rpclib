@@ -1,4 +1,5 @@
 = Getting started
+ifdef::env-github[:outfilesuffix: .adoc]
 
 This document details the steps of getting everything in place to be able to use `callme`.
 

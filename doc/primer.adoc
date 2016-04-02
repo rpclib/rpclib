@@ -1,6 +1,7 @@
 = Primer
+ifdef::env-github[:outfilesuffix: .adoc]
 :icons: font
-:toc:
+:toc: right
 
 Welcome to the Primer! This document is a tutorial introduction to `callme` for absolute beginners. If you are new to `callme`, you are in the right place!
 
@@ -154,4 +155,7 @@ As you can see, `set_error` is still valid - and remains the preferred way to si
 
 What happens to the exception? `callme` will try to catch `std::exception` - s and use their `what()` member to get a string representation which it sets as an error. What if you throw something that is not a `std::exception` -descendant? First of all, shame on you. Second, `callme` will send an error message letting your clients know how that you threw something that is not a `std::exception`.
 
+=== Using custom types as parameters
 
+
+=== Asynchronous processing

@@ -63,8 +63,6 @@ struct client::impl {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
                         auto &promise = ongoing_calls_[id];
-                        strand_.post(
-                            [this, id]() { ongoing_calls_.erase(id); });
                         try {
                             if (r.get_error() > 0) {
                                 throw std::runtime_error(CALLME_FMT::format(
@@ -75,6 +73,8 @@ struct client::impl {
                         } catch (...) {
                             promise.set_exception(std::current_exception());
                         }
+                        strand_.post(
+                            [this, id]() { ongoing_calls_.erase(id); });
                     }
                     do_read();
                 } else if (ec == CALLME_ASIO::error::eof) {

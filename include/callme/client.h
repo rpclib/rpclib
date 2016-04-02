@@ -68,7 +68,7 @@ private:
     int get_next_call_idx();
 
 private:
-    static const uint32_t default_buffer_size = 4096;
+    static const uint32_t default_buffer_size = 65535;
     CALLME_DECL_PIMPL(648)
 };
 }

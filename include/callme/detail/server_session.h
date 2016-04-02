@@ -38,7 +38,7 @@ private:
     msgpack::unpacker pac_;
     msgpack::sbuffer output_buf_;
     const bool suppress_exceptions_;
-    static const uint32_t default_buffer_size = 4096;
+    static const uint32_t default_buffer_size = 65535;
     CALLME_CREATE_LOG_CHANNEL(session)
 };
 } /* detail */

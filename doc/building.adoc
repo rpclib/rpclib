@@ -1,5 +1,6 @@
 = Building `callme`
 :icons: font
+ifdef::env-github[:outfilesuffix: .adoc]
 
 == Default configuration
 

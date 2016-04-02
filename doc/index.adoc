@@ -1,4 +1,5 @@
 = callme - modern msgpack-rpc for C++
+ifdef::env-github[:outfilesuffix: .adoc]
 
 == Intro
 
