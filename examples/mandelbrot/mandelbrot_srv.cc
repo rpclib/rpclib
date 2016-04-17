@@ -34,8 +34,8 @@ int main() {
 
     srv.bind("get_mandelbrot", [&](int width, int height) {
         pixel_data data;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 double cr = to_real(x, width, minR, maxR);
                 double ci = to_im(y, height, minI, maxI);
                 int n = mandelbrot(cr, ci, maxN);

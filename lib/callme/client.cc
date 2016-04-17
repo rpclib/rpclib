@@ -32,7 +32,9 @@ struct client::impl {
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
-              &io_, CALLME_ASIO::ip::tcp::socket(io_))) {}
+              &io_, CALLME_ASIO::ip::tcp::socket(io_))) {
+              pac_.reserve_buffer(default_buffer_size);
+          }
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         LOG_INFO("Initiating connection.");
@@ -53,11 +55,21 @@ struct client::impl {
     }
 
     void do_read() {
+        LOG_TRACE("do_read");
         writer_->socket_.async_read_some(
             CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
                     pac_.buffer_consumed(length);
+                    if (length >= pac_.buffer_capacity()) {
+                        auto new_size = 
+                            static_cast<std::size_t>(pac_.buffer_capacity() *
+                                    buffer_grow_factor);
+                        LOG_INFO("Resizing buffer to {}", new_size);
+                        pac_.reserve_buffer(new_size);
+                    }
+
+                    LOG_TRACE("Read chunk of size {}", length);
                     msgpack::unpacked result;
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
@@ -83,6 +95,9 @@ struct client::impl {
                 } else if (ec == CALLME_ASIO::error::connection_reset) {
                     state_ = client::connection_state::reset;
                     LOG_WARN("The connection was reset.");
+                }
+                else {
+                    LOG_ERROR("Unhandled error code: {}", ec);
                 }
             });
     }
