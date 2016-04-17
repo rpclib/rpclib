@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 option(CALLME_BUILD_TESTS "Build unit CALLME_BUILD_TESTSs." ON)
 option(CALLME_GENERATE_COMPDB "Generate compilation database. Useful for YCM." OFF)
-option(CALLME_BUILD_EXAMPLES "Build examples." ON)
+option(CALLME_BUILD_EXAMPLES "Build examples." OFF)
 option(CALLME_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(CALLME_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(CALLME_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
