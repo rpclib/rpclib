@@ -7,6 +7,8 @@ def current_path():
 
 flags = [
     '-Wall',
+    '-DCALLME_ASIO=clmdep_asio',
+    '-DCALLME_FMT=clmdep_fmt',
     '-Wextra',
     '-Wno-long-long',
     '-Wno-variadic-macros',
@@ -76,6 +78,7 @@ def GetCompilationInfoForFile(filename):
 
 
 def FlagsForFile(filename, **kwargs):
+    global flags
     if database:
         compilation_info = GetCompilationInfoForFile(filename)
         if not compilation_info:
@@ -86,5 +89,7 @@ def FlagsForFile(filename, **kwargs):
     else:
         relative_to = current_path()
         final_flags = MakeRelativePathsInFlagsAbsolute(flags, relative_to)
+
+    final_flags.extend(flags)
 
     return {'flags': final_flags, 'do_cache': True}
