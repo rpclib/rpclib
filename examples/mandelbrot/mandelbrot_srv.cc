@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <time.h>
 
 #include "callme/server.h"
 #include "mandelbrot.h"
@@ -32,6 +33,14 @@ int main() {
 
     callme::server srv(8080);
 
+    srv.bind("get_time", []() {
+        time_t rawtime;
+        struct tm *timeinfo;
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+        return asctime(timeinfo);
+    });
+
     srv.bind("get_mandelbrot", [&](int width, int height) {
         pixel_data data;
         for (int x = 0; x < width; x++) {
@@ -51,6 +60,8 @@ int main() {
         return data;
     });
 
-    srv.run();
+    srv.async_run(2);
+    std::cout << "Press [ENTER] to exit the server." << std::endl;
+    std::cin.ignore();
     return 0;
 }

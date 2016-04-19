@@ -10,7 +10,6 @@ namespace detail {
 response::response() : id_(0), error_(), result_(), empty_(false) {}
 
 response::response(msgpack::object_handle o) : response() {
-    LOG_DEBUG("Response {}", o.get());
     response_type r;
     o.get().convert(&r);
     // TODO: check protocol [t.szelei 2015-12-30]

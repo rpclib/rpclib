@@ -9,11 +9,20 @@ int main() {
     const int width = 1024, height = 768;
 
     callme::client c("127.0.0.1", 8080);
-    auto result = c.call("get_mandelbrot", width, height).as<pixel_data>();
-    LOG_INFO("Got data");
+
+    std::cout << "Calling get_mandelbrot asynchronically" << std::endl;
+    auto result_obj = c.async_call("get_mandelbrot", width, height);
+
+    std::cout << "Calling get_time synchronically" << std::endl;
+    auto current_time = c.call("get_time").as<std::string>();
+    std::cout << "Current time: " << current_time << std::endl;
 
     sf::Image image;
     image.create(width, height, sf::Color::Black);
+
+    std::cout << "Waiting for get_mandelbrot result" << std::endl;
+    auto result = result_obj.get().as<pixel_data>();
+    std::cout << "Got mandelbrot data, displying..." << std::endl;
 
     for (size_t y = 0; y < height; ++y) {
         for (size_t x = 0; x < width; ++x) {
