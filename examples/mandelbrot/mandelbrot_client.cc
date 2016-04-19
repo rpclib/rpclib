@@ -17,7 +17,7 @@ int main() {
 
     for (size_t y = 0; y < height; ++y) {
         for (size_t x = 0; x < width; ++x) {
-            auto item = result[y * height + x];
+            auto item = result[x * height + y];
             auto color = sf::Color(item.r, item.g, item.b, 255);
             image.setPixel(x, y, color);
         }
