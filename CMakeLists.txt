@@ -9,9 +9,9 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 #
 ################################################################################
 
-option(CALLME_BUILD_TESTS "Build unit CALLME_BUILD_TESTSs." ON)
+option(CALLME_BUILD_TESTS "Build unit CALLME_BUILD_TESTS." ON)
 option(CALLME_GENERATE_COMPDB "Generate compilation database. Useful for YCM." OFF)
-option(CALLME_BUILD_EXAMPLES "Build examples." ON)
+option(CALLME_BUILD_EXAMPLES "Build examples." OFF)
 option(CALLME_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(CALLME_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(CALLME_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
@@ -29,7 +29,7 @@ include(TargetArch)
 
 set(CALLME_VERSION_MAJOR 1)
 set(CALLME_VERSION_MINOR 0)
-set(CALLME_VERSION_BUILD 1)
+set(CALLME_VERSION_PATCH 1)
 
 target_architecture(TARGET_ARCH)
 
@@ -101,17 +101,18 @@ add_library(${OUTPUT_LIBRARY_NAME}
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
 install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
-install(DIRECTORY include/callme 
+install(DIRECTORY include/
     DESTINATION include
     FILES_MATCHING
     PATTERN "*.h"
+    PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/callme)
+install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include)
 
-if (CALLME_INSTALL_MSGPACK)
-    install(DIRECTORY include/msgpack DESTINATION include)
-endif()
+#if (CALLME_INSTALL_MSGPACK)
+    #install(DIRECTORY include/msgpack DESTINATION include)
+#endif()
 
 if(CALLME_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
