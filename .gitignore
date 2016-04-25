@@ -6,3 +6,4 @@ CMakeLists.txt.user
 cppcheck*
 report
 utils/release
+.vscode
