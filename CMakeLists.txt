@@ -156,21 +156,8 @@ endif()
 ################################################################################
 
 if(CALLME_BUILD_EXAMPLES)
-    set(SERVER_EXAMPLE_NAME server)
-    set(CLIENT_EXAMPLE_NAME client)
-    set(CUSTOMT_EXAMPLE_NAME custom_types)
-
-    add_executable(${SERVER_EXAMPLE_NAME} examples/server/main.cc)
-    add_executable(${CLIENT_EXAMPLE_NAME} examples/client/main.cc)
-    add_executable(${CUSTOMT_EXAMPLE_NAME} examples/custom_types/main.cc)
-
-    SetLessStrictWarnings(${SERVER_EXAMPLE_NAME})
-    SetLessStrictWarnings(${CLIENT_EXAMPLE_NAME})
-    SetLessStrictWarnings(${CUSTOMT_EXAMPLE_NAME})
-    target_link_libraries(${SERVER_EXAMPLE_NAME} callme)
-    target_link_libraries(${CLIENT_EXAMPLE_NAME} callme)
-    target_link_libraries(${CUSTOMT_EXAMPLE_NAME} callme)
-
+    add_subdirectory(examples/server)
+    add_subdirectory(examples/client)
     add_subdirectory(examples/mandelbrot)
 endif()
 
