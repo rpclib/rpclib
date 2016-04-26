@@ -163,7 +163,7 @@ The following example demonstrates asynchronous processing and binding custom da
 
 Anything that msgpack can process can be used as a parameter or return value for a bound function. In order to teach msgpack about your custom types, you need to use the `MSGPACK_DEFINE_ARRAY` or `MSGPACK_DEFINE_MAP` macros. 
 
-NOTE: The difference is that the array only contains the data values after each other, while the map also contains the names of the values. The latter gives more flexibility, the former is more compact.
+TIP: The difference is that the array only contains the data values after each other, while the map also contains the names of the values. The latter gives more flexibility, the former is more compact.
 
 In our mandelbrot example, we will want to send pixel data to the clients, so let's define a struct:
 [source,cpp]
@@ -176,4 +176,56 @@ struct pixel {
 using pixel_data = std::vector<pixel>;
 ----
 
+We will share this definition between the client and server, so for our purposes it's best to put it in a common header.
 
+Like in the first example, we create the server and bind the functions we expose. This time I'm using lambdas as the bound functions.
+
+[source,cpp]
+----
+    callme::server srv(8080);
+
+    srv.bind("get_time", []() {
+        time_t rawtime;
+        struct tm *timeinfo;
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+        return asctime(timeinfo);
+    });
+    
+    srv.bind("get_mandelbrot", [&](int width, int height) {
+        pixel_data data;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                double cr = to_real(x, width, minR, maxR);
+                double ci = to_im(y, height, minI, maxI);
+                int n = mandelbrot(cr, ci, maxN);
+
+                unsigned char r = ((int)(fabs(n * cosf(n))) % 256);
+                unsigned char g = ((n * 3) % 256);
+                unsigned char b = (n % 256);
+
+                data.push_back({r, g, b});
+            }
+        }
+
+        return data;
+    });
+----
+
+The exact contents of these functions is not a concern for our purposes, just note that the `get_time` returns a value very quickly, while `get_mandelbrot` computes a large array of numbers for several seconds.
+
+==== Running the server asynchrously and utilizing workers
+
+In the first example, we called the blocking `run` function of the server to start it. Here, we are going to use `async_run`. There are two important differences.
+
+. `run` blocks, `async_run` returns after starting the server.
+. `async_run` supports spawning worker threads for executing the bound functions.
+
+In this example, we call it like this:
+
+[source,cpp]
+----
+    srv.async_run(2);
+    std::cout << "Press [ENTER] to exit the server." << std::endl;
+    std::cin.ignore();
+----
