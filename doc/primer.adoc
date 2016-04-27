@@ -226,6 +226,28 @@ In this example, we call it like this:
 [source,cpp]
 ----
     srv.async_run(2);
-    std::cout << "Press [ENTER] to exit the server." << std::endl;
-    std::cin.ignore();
 ----
+
+This will spawn two worker threads in the server (so now there are three in the program, because the main thread already exists). The threads will wait until there is something to do. 
+
+NOTE: "Something" is not only executing handlers. Processing network I/O is also part of the work that threads can take. You don't need an extra thread per connection though, because processing the I/O is typically not very processor-intensive. 
+
+Now this server can take a call to `get_mandelbrot`, start executing it and in the meantime it can finish multiple `get_time` calls. The handlers are only executed by these worker threads, the main thread is free to continue.
+
+== Client implementation
+
+Creating msgpack-rpc clients with `callme` happens in a very similarly to servers. Mirroring the server examples above, we will implement their corresponding clients.
+
+=== The Calculator client
+
+The `client` object is instantiated like this:
+
+[source,cpp]
+----
+    callme::client client("127.0.0.1", 8080);
+----
+
+The important difference, compared to a server, is that we also need to specify the host to connect to. 
+
+
+
