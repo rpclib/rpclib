@@ -249,5 +249,30 @@ The `client` object is instantiated like this:
 
 The important difference, compared to a server, is that we also need to specify the host to connect to. 
 
+Another difference is that the client tries to connect to the server right away during construction (but the construction of the client is not a blocking call). The client object can be used right away:
+
+[source,cpp]
+----
+    auto result = client.call("add", 2, 3).as<int>();
+----
+
+==== The anatomy of `call`
+
+`call` does a couple of things:
+
+    * If the client is not yet connected to the server, it waits until it connects (this blocks)
+    * Sends a "call" message to the server
+    * Waits for the response and it returns it (which is always a msgpack object)
+    
+In the line above, you can see how getting a strongly typed value from the result is done: using the `as` member template. This takes the msgpack object and tries to deserialize it into the type given. If that fails, you will get a `type_error`. 
+
+`call` takes at least one parameter (the name of the function to call), and an arbitrary number and type of other paramters that are meant to be passed to the function being called. Each parameter has to be serializable by msgpack. 
+
+TIP: See See link:https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor[msgpack adaptors] for more information on serializing and deserializing custom types.
+
+
+
+
+
 
 
