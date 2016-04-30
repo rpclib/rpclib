@@ -133,7 +133,7 @@ Our little calculator server is pretty stable at this point, but real-world appl
 
 [source,cpp]
 ----
-    srv.suppress_exceptions(false);
+    srv.suppress_exceptions(true);
 ----
 
 With this, you can call functions that throw or throw exceptions of your own in the bound function.
@@ -151,9 +151,9 @@ double divide(double a, double b) {
 }
 ----
 
-So yes, this means that if you set `suppress_excpetions` to `false`, you might as well signal errors from handlers by throwing exceptions. Be advised, that `set_error` is still valid and remains the preferred way to do so. 
+So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised, that `set_error` is still valid and remains the preferred way to do so. 
 
-What exactly happens to the exception? `callme` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error. What if you throw something that is not a `std::exception` -descendant? First of all, shame on you. Second, `callme` will send an error message letting your clients know how that you threw something that is not a `std::exception`.
+What exactly happens to the exception? `callme` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error. What if you throw something that is not a `std::exception`-descendant? First of all, shame on you. Second, `callme` will send an error message letting your clients know how that you threw something that is not a `std::exception`.
 
 === A more complicated server - Asynchronous mandelbrot-generation
 
@@ -178,7 +178,7 @@ using pixel_data = std::vector<pixel>;
 
 We will share this definition between the client and server, so for our purposes it's best to put it in a common header.
 
-Like in the first example, we create the server and bind the functions we expose. This time I'm using lambdas as the bound functions.
+Like in the first example, we create the server and bind the functions we expose. This time we are using lambdas as the bound functions.
 
 [source,cpp]
 ----
@@ -196,15 +196,7 @@ Like in the first example, we create the server and bind the functions we expose
         pixel_data data;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                double cr = to_real(x, width, minR, maxR);
-                double ci = to_im(y, height, minI, maxI);
-                int n = mandelbrot(cr, ci, maxN);
-
-                unsigned char r = ((int)(fabs(n * cosf(n))) % 256);
-                unsigned char g = ((n * 3) % 256);
-                unsigned char b = (n % 256);
-
-                data.push_back({r, g, b});
+                // ...
             }
         }
 
@@ -256,23 +248,48 @@ Another difference is that the client tries to connect to the server right away 
     auto result = client.call("add", 2, 3).as<int>();
 ----
 
-==== The anatomy of `call`
+==== The anatomy of a `call`
 
 `call` does a couple of things:
 
-    * If the client is not yet connected to the server, it waits until it connects (this blocks)
+    * If the client is not yet connected to the server, it waits until it connects (this might block until the connection is established)
     * Sends a "call" message to the server
-    * Waits for the response and it returns it (which is always a msgpack object)
+    * Waits for the response and returns it as a msgpack object - this blocks until the response is read.
     
-In the line above, you can see how getting a strongly typed value from the result is done: using the `as` member template. This takes the msgpack object and tries to deserialize it into the type given. If that fails, you will get a `type_error`. 
+In the example above, you can see how getting a strongly typed value from the result is done: using the `as` member template. This takes the msgpack object and tries to deserialize it into the type given. If that fails, you will get a `type_error`. 
 
 `call` takes at least one parameter (the name of the function to call), and an arbitrary number and type of other paramters that are meant to be passed to the function being called. Each parameter has to be serializable by msgpack. 
 
-TIP: See See link:https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor[msgpack adaptors] for more information on serializing and deserializing custom types.
+TIP: See link:https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor[msgpack adaptors] for more information on serializing and deserializing custom types.
 
+TBD: error handling
 
+That's pretty much all we need for the calculator client. 
 
+=== The Mandelbrot client
 
+The client for the mandelbrot server above is interesting because we will take advantage of the multiple workers in the server. In order to do that, we need just one different step: instead of `call` we user `async_call`. 
 
+`async_call` is very similar to `call`, but it does not wait for the response. Instead, it will return a link:http://en.cppreference.com/w/cpp/thread/future[future], allowing us to continue our program flow and retrieve the result later (which the server can compute in the meantime). 
+
+[source,cpp]
+----
+    callme::client c("127.0.0.1", 8080);
+
+    // this returns immediately:
+    auto result_obj = c.async_call("get_mandelbrot", width, height);
+
+    // we can now call another function and wait for its result:
+    auto current_time = c.call("get_time").as<std::string>();
+
+    // ... after some time, retrieve the result (optionally wait for it)
+    auto result = result_obj.get().as<pixel_data>();
+----
+
+The call to `get_time` can be performed with `call` (no need for `async_call`), because the other call is running on a different worker. 
+
+IMPORTANT: **What would happen if our server only had one worker thread?** We would get the same output, but with more delay: The server would only start processing the `get_time` call after it finished executing and writing the response of `get_mandelbrot`. Essentially, a single-threaded server works in a "queue" fashion. The same thing would happen if the server was simple under heavy load.
+
+Does the asynchonous nature of `async_call` depend on the server or the load of the server then? No, it does not. It's important to realize that `async_call` is still asynchronous even if the server does not execute requests in parallel. Our client program only blocks if we use the blocking `call` function and the server happens to be single-threaded.
 
 
