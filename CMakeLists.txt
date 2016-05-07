@@ -92,6 +92,7 @@ add_library(${OUTPUT_LIBRARY_NAME}
     lib/callme/this_handler.cc
     lib/callme/this_session.cc
     lib/callme/this_server.cc
+    lib/callme/rpc_error.cc
     lib/callme/detail/server_session.cc
     lib/callme/detail/response.cc
     ${DEP_SOURCES}

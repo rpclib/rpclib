@@ -1,4 +1,5 @@
 #include "callme/client.h"
+#include "callme/rpc_error.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -33,8 +34,8 @@ struct client::impl {
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
               &io_, CALLME_ASIO::ip::tcp::socket(io_))) {
-              pac_.reserve_buffer(default_buffer_size);
-          }
+        pac_.reserve_buffer(default_buffer_size);
+    }
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         LOG_INFO("Initiating connection.");
@@ -62,9 +63,8 @@ struct client::impl {
                 if (!ec) {
                     pac_.buffer_consumed(length);
                     if (length >= pac_.buffer_capacity()) {
-                        auto new_size = 
-                            static_cast<std::size_t>(pac_.buffer_capacity() *
-                                    buffer_grow_factor);
+                        auto new_size = static_cast<std::size_t>(
+                            pac_.buffer_capacity() * buffer_grow_factor);
                         LOG_INFO("Resizing buffer to {}", new_size);
                         pac_.reserve_buffer(new_size);
                     }
@@ -74,16 +74,15 @@ struct client::impl {
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
-                        auto &promise = ongoing_calls_[id];
+                        auto &c = ongoing_calls_[id];
                         try {
-                            if (r.get_error() > 0) {
-                                throw std::runtime_error(CALLME_FMT::format(
-                                    "callme: error during RPC call: {}",
-                                    r.get_error()->get()));
+                            if (r.get_error()) {
+                                throw rpc_error("callme::rpc_error during call",
+                                                std::get<0>(c), r.get_error());
                             }
-                            promise.set_value(std::move(*r.get_result()));
+                            std::get<1>(c).set_value(std::move(*r.get_result()));
                         } catch (...) {
-                            promise.set_exception(std::current_exception());
+                            std::get<1>(c).set_exception(std::current_exception());
                         }
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
@@ -95,8 +94,7 @@ struct client::impl {
                 } else if (ec == CALLME_ASIO::error::connection_reset) {
                     state_ = client::connection_state::reset;
                     LOG_WARN("The connection was reset.");
-                }
-                else {
+                } else {
                     LOG_ERROR("Unhandled error code: {}", ec);
                 }
             });
@@ -108,12 +106,13 @@ struct client::impl {
     //! connection. Should be executed throught strand_.
     void write(msgpack::sbuffer item) { writer_->write(std::move(item)); }
 
+    using call_t = std::pair<std::string, std::promise<msgpack::object_handle>>;
+
     client *parent_;
     CALLME_ASIO::io_service io_;
     CALLME_ASIO::strand strand_;
     std::atomic<int> call_idx_; /// The index of the last call made
-    std::unordered_map<uint32_t, std::promise<msgpack::object_handle>>
-        ongoing_calls_;
+    std::unordered_map<uint32_t, call_t> ongoing_calls_;
     std::string addr_;
     uint16_t port_;
     msgpack::unpacker pac_;
@@ -153,15 +152,17 @@ int client::get_next_call_idx() {
 }
 
 void client::post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
-                  std::shared_ptr<std::promise<msgpack::object_handle>> p) {
-    pimpl->strand_.post([this, buffer, idx, p]() {
-        pimpl->ongoing_calls_.insert(std::make_pair(idx, std::move(*p)));
+                  std::string const &func_name,
+                  std::shared_ptr<rsp_promise> p) {
+    pimpl->strand_.post([=]() {
+        pimpl->ongoing_calls_.insert(
+            std::make_pair(idx, std::make_pair(func_name, std::move(*p))));
         pimpl->write(std::move(*buffer));
     });
 }
 
 void client::post(msgpack::sbuffer *buffer) {
-    pimpl->strand_.post([this, buffer]() {
+    pimpl->strand_.post([=]() {
         pimpl->write(std::move(*buffer));
         delete buffer;
     });
@@ -173,7 +174,7 @@ client::connection_state client::get_connection_state() const {
 
 void client::wait_all_responses() {
     for (auto &c : pimpl->ongoing_calls_) {
-        c.second.get_future().wait();
+        c.second.second.get_future().wait();
     }
 }
 

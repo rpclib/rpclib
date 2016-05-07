@@ -31,7 +31,7 @@ client::async_call(std::string const &func_name, Args... args) {
     auto p = std::make_shared<std::promise<msgpack::object_handle>>();
     auto ft = p->get_future();
 
-    post(buffer, idx, p);
+    post(buffer, idx, func_name, p);
 
     return ft;
 }

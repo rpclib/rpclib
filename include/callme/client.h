@@ -24,7 +24,7 @@ public:
     //! \returns A msgpack::object containing the result of the function (if
     //! any).
     //! To obtain a typed value, use the msgpack API.
-    //! \tparam Args THe types of the arguments.
+    //! \tparam Args The types of the arguments.
     template <typename... Args>
     msgpack::object_handle call(std::string const &func_name, Args... args);
 
@@ -59,16 +59,20 @@ public:
     void wait_all_responses();
 
 private:
+    //! \brief Type of a promise holding a future response.
+    using rsp_promise = std::promise<msgpack::object_handle>;
+
     enum class request_type { call = 0, notification = 2 };
 
     void wait_conn();
     void post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
-              std::shared_ptr<std::promise<msgpack::object_handle>> p);
+              std::string const& func_name,
+              std::shared_ptr<rsp_promise> p);
     void post(msgpack::sbuffer *buffer);
     int get_next_call_idx();
 
 private:
-    static const uint32_t default_buffer_size = 65535;
+    static constexpr uint32_t default_buffer_size = 65535;
     static constexpr double buffer_grow_factor = 1.5;
     CALLME_DECL_PIMPL(648)
 };
