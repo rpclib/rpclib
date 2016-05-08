@@ -41,6 +41,27 @@ TEST_F(this_handler_test, set_error) {
     }
 }
 
+TEST_F(this_handler_test, error_obj) {
+    auto err = std::make_tuple(1234, "this is a custom error object");
+
+    s.bind("customerr", [&]() {
+            callme::this_handler().set_error(err);
+    });
+    s.async_run();
+
+    callme::client c("127.0.0.1", test_port);
+    EXPECT_THROW(c.call("customerr"), std::runtime_error);
+    EXPECT_THROW(c.call("customerr"), callme::rpc_error);
+
+    try {
+        c.call("customerr");
+        FAIL() << "There was no exception thrown.";
+    } catch (callme::rpc_error &e) {
+        auto err_received = e.get_error()->as<std::tuple<int, std::string>>();
+        EXPECT_EQ(err_received, err);
+    }
+}
+
 TEST_F(this_handler_test, set_special_response) {
     std::string text("What? You thought I was a number?");
     s.bind("spec_func", [text](bool special) {
