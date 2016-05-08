@@ -5,6 +5,7 @@
 #include "gtest/gtest.h"
 
 #include "callme/client.h"
+#include "callme/rpc_error.h"
 #include "callme/server.h"
 #include "testutils.h"
 
@@ -106,17 +107,19 @@ TEST_F(server_error_handling, suppress_right_msg) {
     try {
         c.call("blue");
         FAIL() << "There was no exception thrown.";
-    } catch (std::exception &e) {
-        EXPECT_TRUE(str_match(e.what(), ".*I'm blue daba dee daba die.*"));
-        std::cout << e.what() <<std::endl;
+    } catch (callme::rpc_error &e) {
+        EXPECT_STREQ(e.what(), "callme::rpc_error during call");
+        auto err = e.get_error()->as<std::string>();
+        EXPECT_TRUE(str_match(err, ".*?I'm blue.*"));
     }
 
     try {
         c.call("red");
         FAIL() << "There was no exception thrown.";
-    } catch (std::exception &e) {
-        EXPECT_FALSE(str_match(e.what(), ".*Am I evil.*"));
-        EXPECT_TRUE(str_match(e.what(), ".*not derived from std::exception.*"));
+    } catch (callme::rpc_error &e) {
+        EXPECT_FALSE(str_match(e.what(), ".*?Am I evil.*"));
+        auto err = e.get_error()->as<std::string>();
+        EXPECT_TRUE(str_match(err, ".*?not derived from std::exception.*"));
     }
 }
 
@@ -126,8 +129,9 @@ TEST_F(server_error_handling, no_such_method_right_msg) {
     try {
         c.call("green");
         FAIL() << "There was no exception thrown.";
-    } catch (std::exception &e) {
-        EXPECT_TRUE(str_match(e.what(), ".*could not find.*"));
+    } catch (callme::rpc_error &e) {
+        auto err = e.get_error()->as<std::string>();
+        EXPECT_TRUE(str_match(err, ".*?could not find.*"));
     }
 }
 
@@ -137,16 +141,16 @@ TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
     try {
         c.call("blue", 1);
         FAIL() << "There was no exception thrown.";
-    } catch (std::exception &e) {
-        EXPECT_TRUE(str_match(e.what(), ".*invalid number of arguments.*"));
+    } catch (callme::rpc_error &e) {
+        auto err = e.get_error()->as<std::string>();
+        EXPECT_TRUE(str_match(err, ".*?invalid number of arguments.*"));
     }
 }
 
 class dispatch_unicode : public testing::Test {
 public:
     dispatch_unicode()
-        : s("127.0.0.1", 8080),
-          str_utf8("árvíztűrő tükörfúrógép") {
+        : s("127.0.0.1", 8080), str_utf8("árvíztűrő tükörfúrógép") {
         s.bind("utf", [](std::string const &p) { return p; });
         s.async_run();
     }

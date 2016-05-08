@@ -3,12 +3,11 @@
 #ifndef TESTUTILS_H_LHCAMVUX
 #define TESTUTILS_H_LHCAMVUX
 
-#include <regex>
-#include <tuple>
-#include <thread>
 #include "gmock/gmock.h"
 #include "msgpack.hpp"
-
+#include <regex>
+#include <thread>
+#include <tuple>
 
 namespace callme {
 namespace testutils {
@@ -34,7 +33,7 @@ inline msgpack::sbuffer make_packed(Types... items) {
     return buf;
 }
 
-inline bool str_match(std::string const& str, std::string const& rgx) {
+inline bool str_match(std::string const &str, std::string const &rgx) {
     using std::regex;
     regex r(rgx);
     return std::regex_match(str, r);
@@ -51,9 +50,7 @@ struct MockDummy : IDummy {
     MOCK_METHOD1(dummy_void_singlearg, void(int));
     MOCK_METHOD2(dummy_void_multiarg, void(int, int));
 };
-
 }
 }
-
 
 #endif /* end of include guard: TESTUTILS_H_LHCAMVUX */

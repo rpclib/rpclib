@@ -4,6 +4,7 @@
 
 #include "callme/client.h"
 #include "callme/server.h"
+#include "callme/rpc_error.h"
 #include "callme/this_handler.h"
 
 #include "testutils.h"
@@ -29,12 +30,14 @@ TEST_F(this_handler_test, set_error) {
 
     callme::client c("127.0.0.1", test_port);
     EXPECT_THROW(c.call("errfunc"), std::runtime_error);
+    EXPECT_THROW(c.call("errfunc"), callme::rpc_error);
 
     try {
         c.call("errfunc");
         FAIL() << "There was no exception thrown.";
-    } catch (std::runtime_error &e) {
-        EXPECT_TRUE(str_match(e.what(), ".*Imma let you finish, but.*"));
+    } catch (callme::rpc_error &e) {
+        auto err = e.get_error()->as<std::string>();
+        EXPECT_TRUE(str_match(err, ".*?Imma let you finish, but.*"));
     }
 }
 
