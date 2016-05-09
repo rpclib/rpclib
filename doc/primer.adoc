@@ -290,6 +290,11 @@ The call to `get_time` can be performed with `call` (no need for `async_call`), 
 
 IMPORTANT: **What would happen if our server only had one worker thread?** We would get the same output, but with more delay: The server would only start processing the `get_time` call after it finished executing and writing the response of `get_mandelbrot`. Essentially, a single-threaded server works in a "queue" fashion. The same thing would happen if the server was simple under heavy load.
 
-Does the asynchonous nature of `async_call` depend on the server or the load of the server then? No, it does not. It's important to realize that `async_call` is still asynchronous even if the server does not execute requests in parallel. Our client program only blocks if we use the blocking `call` function and the server happens to be single-threaded.
+==== How do async servers relate to async clients and parallel execution in general?
 
+Does the asynchonous nature of `async_call` depend on the server or the load of the server then? No, it does not. It's important to realize that `async_call` is still asynchronous even if the server does not execute requests in parallel. If there are multiple clients connected to the server, their requests are processed in a more queued manner (still two requests processed at the same time).
+
+TIP: `callme` uses a simple convention: `foo` is a synchronous call, `async_foo` is asynchronous. This conventions was adapted from Asio. The latter only means that the call returns "immediately" (or rather, very quickly and without finishing all of the work). 
+
+The two worker threads in the mandelbrot server can serve two clients in parallel. Or two calls of the same client, which happens in the example. In order to be able to send two requests in an interleaved fashion, we first use `async_call` which allows the control flow of the client to continue.
 
