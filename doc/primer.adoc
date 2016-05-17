@@ -262,7 +262,9 @@ In the example above, you can see how getting a strongly typed value from the re
 
 TIP: See link:https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor[msgpack adaptors] for more information on serializing and deserializing custom types.
 
-TBD: error handling
+==== Error handling
+
+Any request that client makes, might potentially receive an error response. In msgpack-RPC, an error is an arbitrary object.
 
 That's pretty much all we need for the calculator client. 
 
