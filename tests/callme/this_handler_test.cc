@@ -36,7 +36,7 @@ TEST_F(this_handler_test, set_error) {
         c.call("errfunc");
         FAIL() << "There was no exception thrown.";
     } catch (callme::rpc_error &e) {
-        auto err = e.get_error()->as<std::string>();
+        auto err = e.get_error().as<std::string>();
         EXPECT_TRUE(str_match(err, ".*?Imma let you finish, but.*"));
     }
 }
@@ -57,7 +57,7 @@ TEST_F(this_handler_test, error_obj) {
         c.call("customerr");
         FAIL() << "There was no exception thrown.";
     } catch (callme::rpc_error &e) {
-        auto err_received = e.get_error()->as<std::tuple<int, std::string>>();
+        auto err_received = e.get_error().as<std::tuple<int, std::string>>();
         EXPECT_EQ(err_received, err);
     }
 }

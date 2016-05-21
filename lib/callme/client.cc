@@ -76,9 +76,10 @@ struct client::impl {
                         auto id = r.get_id();
                         auto &c = ongoing_calls_[id];
                         try {
-                            if (r.get_error()) {
+                            if (auto e = r.get_error()) {
+								std::cout << e->get() << std::endl;
                                 throw rpc_error("callme::rpc_error during call",
-                                                std::get<0>(c), r.get_error());
+                                                std::get<0>(c), e);
                             }
                             std::get<1>(c).set_value(std::move(*r.get_result()));
                         } catch (...) {

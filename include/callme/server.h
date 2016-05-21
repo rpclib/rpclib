@@ -61,7 +61,7 @@ public:
     friend class detail::server_session;
 
 private:
-	CALLME_DECL_PIMPL(180)
+	CALLME_DECL_PIMPL(188)
     std::shared_ptr<dispatcher> disp_;
 };
 

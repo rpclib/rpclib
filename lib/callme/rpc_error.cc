@@ -11,8 +11,8 @@ rpc_error::rpc_error(std::string const &what_arg,
 
 std::string rpc_error::get_function_name() const { return func_name_; }
 
-std::shared_ptr<msgpack::object_handle> rpc_error::get_error() const {
-    return ob_h_;
+msgpack::object_handle& rpc_error::get_error() const {
+    return *ob_h_;
 }
 
 } /* callme */

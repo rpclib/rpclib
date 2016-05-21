@@ -18,7 +18,7 @@ public:
 
     //! \brief Returns the error object that the server
     //! provided.
-    std::shared_ptr<msgpack::object_handle> get_error() const;
+    msgpack::object_handle& get_error() const;
 
 private:
     friend class client;
