@@ -93,7 +93,7 @@ struct client::impl {
                     LOG_WARN("The server closed the connection.");
                     state_ = client::connection_state::disconnected;
                 } else if (ec == CALLME_ASIO::error::connection_reset) {
-                    state_ = client::connection_state::reset;
+                    state_ = client::connection_state::disconnected;
                     LOG_WARN("The connection was reset.");
                 } else {
                     LOG_ERROR("Unhandled error code: {}", ec);
