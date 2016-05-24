@@ -1,0 +1,17 @@
+docs_dir: pages
+site_name: rpclib
+
+pages:
+  - 'Home': 'index.md'
+  - 'Getting started': 'gettingstarted.md'
+  - 'Primer': 'primer.md'
+  - 'Building': 'building.md'
+
+theme_dir: rpclib-flatly
+extra_css: ['extra.css']
+
+markdown_extensions:
+  - toc:
+      permalink: True
+      baselevel: 1
+

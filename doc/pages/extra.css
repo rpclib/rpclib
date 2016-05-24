@@ -1,0 +1,23 @@
+body {
+    line-height: 1.6;
+}
+
+h1, .h1 {
+    font-size: 2em;
+    line-height: 1.6;
+}
+
+h2, .h2, h3 {
+    margin-top: 21px;
+    margin-bottom: 10.5px;
+    line-height: 1.6;
+}
+
+pre, code {
+    border: 0;
+    font-family: "Source Code Pro", monospace;
+}
+
+.hljs-keyword {
+    color: #18bc9c;
+}
