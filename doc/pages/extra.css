@@ -16,8 +16,90 @@ h2, .h2, h3 {
 pre, code {
     border: 0;
     font-family: "Source Code Pro", monospace;
+    background: transparent;
+}
+
+code {
+    color: #2c3e50;
 }
 
 .hljs-keyword {
     color: #18bc9c;
 }
+
+.admonition {
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 1em;
+}
+
+.admonition > p {
+    margin: 0;
+    padding: 8px 20px;
+    display: block;
+}
+
+.admonition-title {
+    color: #fff;
+    padding: 2px;
+}
+
+.admonition > .admonition-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admonition > .admonition-title {
+    font-size: 1px;
+    letter-spacing: -1px;
+    color: transparent;
+    text-align: center;
+    vertical-align: middle;
+    min-width: 64px;
+}
+
+.admonition > .admonition-title:before {
+    font-family: "FontAwesome";
+    font-size: 32px;
+    letter-spacing: normal;
+    color: #fff;
+}
+
+/* Type-specific */
+
+.admonition.info > .admonition-title:before {
+    content: "\f129";
+}
+.admonition.info > .admonition-title {
+    background-color: #2B83BD;
+}
+.admonition.info > p:not(.admonition-title) {
+    background-color: #9AC0D9;
+}
+
+.admonition.warn > .admonition-title:before {
+    content: "\f12a";
+}
+.admonition.warn > .admonition-title {
+    background-color: #C94E28;
+}
+.admonition.warn > p:not(.admonition-title) {
+    background-color: #E0A589;
+}
+
+.admonition.tip > .admonition-title:before {
+    content: "\f0eb";
+}
+.admonition.tip > .admonition-title {
+    background-color: #21B085;
+}
+.admonition.tip > p:not(.admonition-title) {
+    background-color: #82CFB8;
+}
+
+
+
+

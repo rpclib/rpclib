@@ -21,9 +21,8 @@ msgpack-RPC is the protocol that `callme` uses for dispatching and encoding call
 
 # Writing servers
 
-In the first part of this tutorial, we will learn about writing server applications.
-
-IMPORTANT: msgpack-RPC defines *zero* security features. If you need secure communication, you have to implement it above or below the protocol!
+In the first part of this tutorial, we will learn about writing server applications. Two example
+applications will be implemented step-by-step.
 
 ## Calculator, the "Hello World" of RPC libraries.
 
@@ -61,7 +60,8 @@ This server will listen on port 8080 (but not right away after construction - we
 
 These are the names that the client can use to call our functions. There is nothing stopping you from binding functions to names that are different from what they are named in your source, too. But usually you will want to avoid that and aim to keep the principle of least surprises. It is also possible to bind the same function to multiple names.
 
-NOTE: Under the hood, each `bind` statement generates at compile-time a wrapper function that takes a `msgpack` object, decodes it into the real parameters of the bound function (if any) and calls it. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the [Design](design.md) chapter.
+!!! info
+    Under the hood, each `bind` statement generates a compile-time a wrapper function that takes a `msgpack` object, decodes it into the real parameters of the bound function (if any) and calls it. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the [Design](design.md) chapter.
 
 After we exposed the function, we need to `run` the server:
 
@@ -155,7 +155,9 @@ The following example demonstrates parallel processing and binding custom data t
 
 Anything that msgpack can process can be used as a parameter or return value for a bound function. In order to teach msgpack about your custom types, you need to use the `MSGPACK_DEFINE_ARRAY` or `MSGPACK_DEFINE_MAP` macros.
 
-TIP: The difference is that the array only contains the data values after each other, while the map also contains the names of the values. The latter gives more flexibility, the former is more compact.
+!!! info
+    The difference between the two macros is that the array only contains the data values after each other, while the map also contains the names of the values. The latter gives more flexibility, the former is more compact.
+
 
 In our mandelbrot example, we will want to send pixel data to the clients, so let's define a struct:
 
@@ -210,22 +212,23 @@ In this example, we call it like this:
     srv.async_run(2);
 ```
 
-This will spawn two worker threads in the server (so now there are three in the program, because the main thread already exists). The threads will wait until there is something to do.
+This will spawn two worker threads in the server (so now there are three in the program, because the main thread already exists). The threads will wait until there is work to do.
 
-NOTE: "Something" is not only executing handlers. Processing network I/O is also part of the work that threads can take. You don't need an extra thread per connection though, because processing the I/O is typically not very processor-intensive.
+!!! info
+    "Work" is not only executing handlers. Processing network I/O is also part of the work that threads can take. You don't need an extra thread per connection though, because processing the I/O is typically not very processor-intensive.
 
 Now this server can take a call to `get_mandelbrot`, start executing it and in the meantime it can finish multiple `get_time` calls. The handlers are only executed by these worker threads, the main thread is free to continue.
 
 # Writing clients
 
-Creating msgpack-rpc clients with `callme` happens in a very similarly to servers. Mirroring the server examples above, we will implement their corresponding clients.
+Creating msgpack-rpc clients with `callme` happens very similarly to servers. Mirroring the server examples above, we will implement their corresponding clients.
 
 ## The Calculator client
 
 The `client` object is instantiated like this:
 
 ```cpp
-    callme::client client("127.0.0.1", 8080);
+callme::client client("127.0.0.1", 8080);
 ```
 
 The important difference, compared to a server, is that we also need to specify the host to connect to.
@@ -233,22 +236,23 @@ The important difference, compared to a server, is that we also need to specify 
 Another difference is that the client tries to connect to the server right away during construction (but the construction of the client is not a blocking call). The client object can be used right away:
 
 ```cpp
-    auto result = client.call("add", 2, 3).as<int>();
+auto result = client.call("add", 2, 3).as<int>();
 ```
 
 ### The anatomy of a `call`
 
 `call` does a couple of things:
 
-    * If the client is not yet connected to the server, it waits until it connects (this might block until the connection is established)
-    * Sends a "call" message to the server
-    * Waits for the response and returns it as a msgpack object - this blocks until the response is read.
+  * If the client is not yet connected to the server, it waits until it connects (this might block until the connection is established)
+  * Sends a "call" message to the server
+  * Waits for the response and returns it as a msgpack object - this blocks until the response is read.
 
 In the example above, you can see how getting a strongly typed value from the result is done: using the `as` member template. This takes the msgpack object and tries to deserialize it into the type given. If that fails, you will get a `type_error`.
 
 `call` takes at least one parameter (the name of the function to call), and an arbitrary number and type of other paramters that are meant to be passed to the function being called. Each parameter has to be serializable by msgpack.
 
-TIP: See [msgpack adaptors](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor) for more information on serializing and deserializing custom types.
+!!! tip
+    See [msgpack adaptors](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor) for more information on serializing and deserializing custom types.
 
 ## Error handling
 
