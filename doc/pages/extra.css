@@ -30,7 +30,6 @@ code {
 .admonition {
     border: none;
     display: flex;
-    justify-content: center;
     align-items: stretch;
     margin-bottom: 1em;
 }
@@ -39,6 +38,7 @@ code {
     margin: 0;
     padding: 8px 20px;
     display: block;
+    flex-grow: 1;
 }
 
 .admonition-title {
@@ -47,9 +47,10 @@ code {
 }
 
 .admonition > .admonition-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0;
 }
 
 .admonition > .admonition-title {
@@ -97,9 +98,6 @@ code {
     background-color: #21B085;
 }
 .admonition.tip > p:not(.admonition-title) {
-    background-color: #82CFB8;
+    background-color: #BCF7CB;
 }
-
-
-
 

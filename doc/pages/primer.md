@@ -252,11 +252,15 @@ In the example above, you can see how getting a strongly typed value from the re
 `call` takes at least one parameter (the name of the function to call), and an arbitrary number and type of other paramters that are meant to be passed to the function being called. Each parameter has to be serializable by msgpack.
 
 !!! tip
-    See [msgpack adaptors](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor) for more information on serializing and deserializing custom types.
+    See [msgpack adaptors](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor) from the msgpack documentation for more information on serializing and deserializing custom types.
 
 ## Error handling
 
-Any request that client makes, might potentially receive an error response. In msgpack-RPC, an error is an arbitrary object. `callme` allows you to handle these error objects by catching `callme::rpc_error` exceptions.
+Any request that a client makes might potentially receive an error response. In msgpack-RPC, an error is an arbitrary object. `callme` allows you to handle these error objects by catching `callme::rpc_error` exceptions. To handle the errors the server throws, we would wrap the calls like this:
+
+```cpp
+
+```
 
 That's pretty much all we need for the calculator client.
 
