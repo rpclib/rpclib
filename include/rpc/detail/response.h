@@ -3,11 +3,11 @@
 #ifndef RESPONSE_H_MVRZEKPX
 #define RESPONSE_H_MVRZEKPX
 
-#include "callme/detail/log.h"
-#include "callme/detail/object.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/object.h"
 #include "msgpack.hpp"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 //! \brief Represents a response and creates a msgpack to be sent back
@@ -79,7 +79,7 @@ private:
     std::shared_ptr<msgpack::object_handle> error_;
     std::shared_ptr<msgpack::object_handle> result_;
     bool empty_;
-    CALLME_CREATE_LOG_CHANNEL(response)
+    RPCLIB_CREATE_LOG_CHANNEL(response)
 };
 
 template <typename T>
@@ -113,6 +113,6 @@ inline response response::make_error(uint32_t id, T &&error) {
 
 } /* detail */
 
-} /* callme  */
+} /* rpc  */
 
 #endif /* end of include guard: RESPONSE_H_MVRZEKPX */

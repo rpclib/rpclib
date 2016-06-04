@@ -1,11 +1,11 @@
-#include "callme/dispatcher.h"
-#include "callme/detail/log.h"
-#include "callme/this_handler.h"
+#include "rpc/dispatcher.h"
+#include "rpc/detail/log.h"
+#include "rpc/this_handler.h"
 #include "format.h"
 
 #include <cassert>
 
-namespace callme {
+namespace rpc {
 
 using detail::response;
 
@@ -52,15 +52,15 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                 throw;
             }
             return response::make_error(
-                id, CALLME_FMT::format("callme: function '{0}' (taking {1} "
+                id, RPCLIB_FMT::format("rpc: function '{0}' (taking {1} "
                                        "arg(s)) "
                                        "threw an exception. The exception "
                                        "contained this information: {2}.",
                                        name, args.via.array.size, e.what()));
-        } catch (callme::detail::handler_error &) {
+        } catch (rpc::detail::handler_error &) {
             // doing nothing, the exception was only thrown to
             // return immediately
-        } catch (callme::detail::handler_spec_response &) {
+        } catch (rpc::detail::handler_spec_response &) {
             // doing nothing, the exception was only thrown to
             // return immediately
         } catch (...) {
@@ -69,7 +69,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
             }
             return response::make_error(
                 id,
-                CALLME_FMT::format("callme: function '{0}' (taking {1} "
+                RPCLIB_FMT::format("rpc: function '{0}' (taking {1} "
                                    "arg(s)) threw an exception. The exception "
                                    "is not derived from std::exception. No "
                                    "further information available.",
@@ -77,7 +77,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
         }
     }
     return response::make_error(
-        id, CALLME_FMT::format("callme: server could not find "
+        id, RPCLIB_FMT::format("rpc: server could not find "
                                "function '{0}' with argument count {1}.",
                                name, args.via.array.size));
 }
@@ -100,10 +100,10 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
         LOG_DEBUG("Dispatching call to '{}'", name);
         try {
             auto result = (it_func->second)(args);
-        } catch (callme::detail::handler_error &) {
+        } catch (rpc::detail::handler_error &) {
             // doing nothing, the exception was only thrown to
             // return immediately
-        } catch (callme::detail::handler_spec_response &) {
+        } catch (rpc::detail::handler_spec_response &) {
             // doing nothing, the exception was only thrown to
             // return immediately
         } catch (...) {
@@ -118,11 +118,11 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
 void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
                                    std::size_t expected) {
     if (found != expected) {
-        throw std::runtime_error(CALLME_FMT::format(
+        throw std::runtime_error(RPCLIB_FMT::format(
             "Function '{0}' was called with an invalid number of "
             "arguments. Expected: {1}, got: {2}",
             func, expected, found));
     }
 }
 
-} /* callme */
+} /* rpc */

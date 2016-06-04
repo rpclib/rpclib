@@ -1,6 +1,6 @@
 # Primer
 
-Welcome to the Primer! This document is a tutorial introduction to `callme` for absolute beginners. If you are new to the library and prefer detailed instructions, this is the right place. If short examples with less explanation work better for you, check out the [Cookbook](cookbook.md)!
+Welcome to the Primer! This document is a tutorial introduction to `rpclib` for absolute beginners. If you are new to the library and prefer detailed instructions, this is the right place. If short examples with less explanation work better for you, check out the [Cookbook](cookbook.md)!
 
 The tutorial is sturctured as follows: in the first part, writing servers is explained with one simple and one more advanced example. In the second part, the corresponding clients are implemented.
 
@@ -9,15 +9,15 @@ The tutorial is sturctured as follows: in the first part, writing servers is exp
 Knowledge-wise, this tutorial assumes that you have an intermediate grasp of C++ and that you have an idea of what [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) (Remote Procedure Call) is.
 
 For your build environment, make sure that you are able to compile and link a program with
-`callme`. The [Getting Started](gettingstarted.md) page can help you with that.
+`rpclib`. The [Getting Started](gettingstarted.md) page can help you with that.
 
 ## Introduction
 
-`callme` is a RPC library that provides both a _client_ and a _server_ implementation. The _server_ allows you to expose functions of your program to be called remotely, while the _client_ allows you to call functions of servers. You can use the `callme` client and server in tandem (even in the same program, if you want to), but it's not a requirement. 
+`rpclib` is a RPC library that provides both a _client_ and a _server_ implementation. The _server_ allows you to expose functions of your program to be called remotely, while the _client_ allows you to call functions of servers. You can use the `rpclib` client and server in tandem (even in the same program, if you want to), but it's not a requirement.
 
-As other RPC libraries, `callme` is a good candidate for inter-process communication. Also, there exist many implementations of the protocol in a large amount of languages, which makes it a possible inter-language communication bridge.
+As other RPC libraries, `rpclib` is a good candidate for inter-process communication. Also, there exist many implementations of the protocol in a large amount of languages, which makes it a possible inter-language communication bridge.
 
-msgpack-RPC is the protocol that `callme` uses for dispatching and encoding calls to functions. The protocol is based on [msgpack](http://msgpack.org), a fast and compact format. For details on how exactly it is structured, see the [Specification](spec.md) chapter.
+msgpack-RPC is the protocol that `rpclib` uses for dispatching and encoding calls to functions. The protocol is based on [msgpack](http://msgpack.org), a fast and compact format. For details on how exactly it is structured, see the [Specification](spec.md) chapter.
 
 # Writing servers
 
@@ -29,7 +29,7 @@ applications will be implemented step-by-step.
 Our first server application will expose four functions: `add`, `subtract`, `multiply`, `divide`. The skeleton of this application will look like this:
 
 ```cpp
-#include "callme/server.h"
+#include "rpc/server.h"
 
 // The functions to expose
 double add(double a, double b)      { return a + b; }
@@ -46,7 +46,7 @@ int main() {
 So how do we define a server? First, we create the server object:
 
 ```cpp
-    callme::server srv(8080);
+    rpc::server srv(8080);
 ```
 
 This server will listen on port 8080 (but not right away after construction - we need to `run` it). Next, we _bind_ the functions to names:
@@ -74,7 +74,7 @@ After we exposed the function, we need to `run` the server:
 This is now a functioning (although, in some ways, incomplete) server. The complete listing so far:
 
 ```cpp
-#include "callme/server.h"
+#include "rpc/server.h"
 
 // The functions to expose
 double add(double a, double b)      { return a + b; }
@@ -83,7 +83,7 @@ double multiply(double a, double b) { return a * b; }
 double divide(double a, double b)   { return a / b; }
 
 int main() {
-    callme::server srv(8080);
+    rpc::server srv(8080);
     srv.bind("add", &add);
     srv.bind("subtract", &subtract);
     srv.bind("multiply", &multiply);
@@ -104,12 +104,12 @@ Luckily, the msgpack-rpc protocol supports error signaling. We need to modify ou
 
 
 ```cpp
-#include "callme/server.h"
-#include "callme/this_handler.h"
+#include "rpc/server.h"
+#include "rpc/this_handler.h"
 
 double divide(double a, double b) {
     if (b == 0) {
-        callme::this_handler().set_error("Division by zero");
+        rpc::this_handler().set_error("Division by zero");
     }
     return a / b;
 }
@@ -121,7 +121,7 @@ Now, with the added error handling, our server is bullet-proof. Or is it?
 
 ## What about _my_ exceptions?
 
-Our little calculator server is pretty stable at this point, but real-world applications often have to deal with exceptions. In general, exceptions should be handled at the library users' discretion (that is, on the handler level), so by default, `callme` doesn't do anything with them. If an exception leaves the handler, that is an unhandled exception and your server will crash. Yet, there are cases when you can't or don't want to handle exceptions in the handler. To facilitate this, `callme` provides a way to automatically turn exceptions into RPC errors:
+Our little calculator server is pretty stable at this point, but real-world applications often have to deal with exceptions. In general, exceptions should be handled at the library users' discretion (that is, on the handler level), so by default, `rpclib` doesn't do anything with them. If an exception leaves the handler, that is an unhandled exception and your server will crash. Yet, there are cases when you can't or don't want to handle exceptions in the handler. To facilitate this, `rpclib` provides a way to automatically turn exceptions into RPC errors:
 
 ```cpp
     srv.suppress_exceptions(true);
@@ -132,7 +132,7 @@ With this, you can call functions that throw or throw exceptions of your own in 
 ```cpp
 double divide(double a, double b) {
     if (b == 0) {
-        callme::this_handler().set_error("Division by zero");
+        rpc::this_handler().set_error("Division by zero");
     }
     else if (b == 1) {
         throw std::runtime_error("Come on!");
@@ -143,9 +143,9 @@ double divide(double a, double b) {
 
 So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised, that `set_error` is still valid and remains the preferred way to do so.
 
-What exactly happens to the exception? `callme` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error. 
+What exactly happens to the exception? `rpclib` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error.
 
-What if you throw something that is not a `std::exception`-descendant? First of all, shame on you. Second, `callme` will send an error message letting your clients know how that you threw something that is not a `std::exception` (*shaming you in front of your clients*).
+What if you throw something that is not a `std::exception`-descendant? First of all, shame on you. Second, `rpclib` will send an error message letting your clients know how that you threw something that is not a `std::exception` (*shaming you in front of your clients*).
 
 ## A more complicated server - Parallel mandelbrot-generation
 
@@ -175,7 +175,7 @@ We will share this definition between the client and server, so for our purposes
 Like in the first example, we create the server and bind the functions we expose. This time we are using lambdas as the bound functions.
 
 ```cpp
-    callme::server srv(8080);
+    rpc::server srv(8080);
 
     srv.bind("get_time", []() {
         time_t rawtime;
@@ -221,14 +221,14 @@ Now this server can take a call to `get_mandelbrot`, start executing it and in t
 
 # Writing clients
 
-Creating msgpack-rpc clients with `callme` happens very similarly to servers. Mirroring the server examples above, we will implement their corresponding clients.
+Creating msgpack-rpc clients with `rpclib` happens very similarly to servers. Mirroring the server examples above, we will implement their corresponding clients.
 
 ## The Calculator client
 
 The `client` object is instantiated like this:
 
 ```cpp
-callme::client client("127.0.0.1", 8080);
+rpc::client client("127.0.0.1", 8080);
 ```
 
 The important difference, compared to a server, is that we also need to specify the host to connect to.
@@ -256,7 +256,7 @@ In the example above, you can see how getting a strongly typed value from the re
 
 ## Error handling
 
-Any request that a client makes might potentially receive an error response. In msgpack-RPC, an error is an arbitrary object. `callme` allows you to handle these error objects by catching `callme::rpc_error` exceptions. To handle the errors the server throws, we would wrap the calls like this:
+Any request that a client makes might potentially receive an error response. In msgpack-RPC, an error is an arbitrary object. `rpclib` allows you to handle these error objects by catching `rpc::rpc_error` exceptions. To handle the errors the server throws, we would wrap the calls like this:
 
 ```cpp
 
@@ -271,7 +271,7 @@ The client for the mandelbrot server above is interesting because we will take a
 `async_call` is very similar to `call`, but it does not wait for the response. Instead, it will return a [future](http://en.cppreference.com/w/cpp/thread/future), allowing us to continue our program flow and retrieve the result later (which the server can compute in the meantime).
 
 ```cpp
-    callme::client c("127.0.0.1", 8080);
+    rpc::client c("127.0.0.1", 8080);
 
     // this returns immediately:
     auto result_obj = c.async_call("get_mandelbrot", width, height);
@@ -291,6 +291,6 @@ IMPORTANT: **What would happen if our server only had one worker thread?** We wo
 
 Does the asynchonous nature of `async_call` depend on the server or the load of the server then? No, it does not. It's important to realize that `async_call` is still asynchronous even if the server does not execute requests in parallel. If there are multiple clients connected to the server, their requests are processed in a more queued manner (still two requests processed at the same time).
 
-TIP: `callme` uses a simple convention: `foo` is a synchronous call, `async_foo` is asynchronous. This conventions was adapted from Asio. The latter only means that the call returns "immediately" (or rather, very quickly and without finishing all of the work).
+TIP: `rpclib` uses a simple convention: `foo` is a synchronous call, `async_foo` is asynchronous. This conventions was adapted from Asio. The latter only means that the call returns "immediately" (or rather, very quickly and without finishing all of the work).
 
 The two worker threads in the mandelbrot server can serve two clients in parallel. Or two calls of the same client, which happens in the example. In order to be able to send two requests in an interleaved fashion, we first use `async_call` which allows the control flow of the client to continue.

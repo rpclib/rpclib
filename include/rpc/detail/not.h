@@ -3,9 +3,9 @@
 #ifndef NOT_H_0MEGQWII
 #define NOT_H_0MEGQWII
 
-#include "callme/detail/bool.h"
+#include "rpc/detail/bool.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template<typename B>

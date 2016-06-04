@@ -1,7 +1,7 @@
 
-# callme ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/callme.svg?branch=master)](https://travis-ci.org/sztomi/callme) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/sztomi/callme/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/callme?branch=master) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)
+# rpc ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/sztomi/rpc.svg?branch=master)](https://travis-ci.org/sztomi/rpc) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/rpc) [![Coverage Status](https://coveralls.io/repos/sztomi/rpc/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/rpc?branch=master) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)
 
-`callme` may be the easiest RPC library for C++! It is built using modern C++14, and as such, requires a very recent compiler.
+`rpclib` may be the easiest RPC library for C++! It is built using modern C++14, and as such, requires a very recent compiler.
 
 The library uses a recent (continually updated) version of the msgpack headers. I decided
 to not require it as a dependency but rather keep it in the repo, because it is quite small
@@ -13,11 +13,11 @@ This library is a work in progress. Some things might not work, periodically bre
 
 # Building
 
-To build `callme` you can do the following:
+To build `rpclib` you can do the following:
 
 ```
-git clone git@github.com:sztomi/callme.git
-cd callme
+git clone git@github.com:sztomi/rpc.git
+cd rpc
 mkdir build && cd build
 cmake ..
 make
@@ -33,10 +33,10 @@ TBD: cmake options, preprocessor definitions, handling builtin dependencies.
 
 ## Server
 
-Creating a server is quite simple in callme.
+Creating a server is quite simple in rpc.
 
 ```cpp
-#include "callme/server.h"
+#include "rpc/server.h"
 #include <iostream>
 
 void foo() {
@@ -45,7 +45,7 @@ void foo() {
 
 int main(int argc, char *argv[]) {
     // Create a server that listens on port 8080
-    callme::server srv("0.0.0.0", 8080);
+    rpc::server srv("0.0.0.0", 8080);
 
     // Binding the name "foo" to free function foo.
     // note: the signature is automatically captured
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-When `srv.run()` is called, `callme` starts the server loop which listens to incoming connections
+When `srv.run()` is called, `rpclib` starts the server loop which listens to incoming connections
 and tries to dispatch calls to the bound functions. The functions are called from the thread where
 `run` was called from. There is a convenience function called `async_run` that starts a new thread.
 
@@ -71,10 +71,10 @@ and tries to dispatch calls to the bound functions. The functions are called fro
 
 ```cpp
 #include <iostream>
-#include "callme/client.h"
+#include "rpc/client.h"
 
 int main() {
-    callme::client client("127.0.0.1", 8080);
+    rpc::client client("127.0.0.1", 8080);
     auto result = client.call("add", 2, 3).as<int>();
     std::cout << "The result is: " << result << std::endl;
     return 0;
@@ -83,7 +83,7 @@ int main() {
 
 # Thanks
 
-`callme` builds on the shoulders of giants. These great projects are, in no particular order:
+`rpclib` builds on the shoulders of giants. These great projects are, in no particular order:
 
   * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) by Takatoshi Kondo ([website](http://msgpack.org/))
   * [asio](https://github.com/chriskohlhoff/asio) by Christopher Kohlhoff ([website](http://think-async.com/Asio))

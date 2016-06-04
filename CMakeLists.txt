@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(callme)
+project(rpc)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -9,14 +9,14 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 #
 ################################################################################
 
-option(CALLME_BUILD_TESTS "Build unit CALLME_BUILD_TESTS." ON)
-option(CALLME_GENERATE_COMPDB "Generate compilation database. Useful for YCM." OFF)
-option(CALLME_BUILD_EXAMPLES "Build examples." OFF)
-option(CALLME_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
-option(CALLME_ENABLE_COVERAGE "Generate coverage information" OFF)
-option(CALLME_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
-option(CALLME_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
-option(CALLME_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
+option(RPCLIB_BUILD_TESTS "Build unit RPCLIB_BUILD_TESTS." ON)
+option(RPCLIB_GENERATE_COMPDB "Generate compilation database. Useful for YCM." OFF)
+option(RPCLIB_BUILD_EXAMPLES "Build examples." OFF)
+option(RPCLIB_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
+option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
+option(RPCLIB_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
+option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
+option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 
 ################################################################################
 #
@@ -27,39 +27,39 @@ option(CALLME_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 include(compiler_specific)
 include(TargetArch)
 
-set(CALLME_VERSION_MAJOR 1)
-set(CALLME_VERSION_MINOR 0)
-set(CALLME_VERSION_PATCH 1)
+set(RPCLIB_VERSION_MAJOR 1)
+set(RPCLIB_VERSION_MINOR 0)
+set(RPCLIB_VERSION_PATCH 1)
 
 target_architecture(TARGET_ARCH)
 
-if(CALLME_FORCE_M32)
+if(RPCLIB_FORCE_M32)
     message("Compiling for 32-bit")
-    add_definitions(-DCALLME_ARCH_X86)
-    set(CALLME_TARGET_ARCH "x86")
-    set(CALLME_DEB_ARCH "i386")
-elseif(CALLME_FORCE_M64)
+    add_definitions(-DRPCLIB_ARCH_X86)
+    set(RPCLIB_TARGET_ARCH "x86")
+    set(RPCLIB_DEB_ARCH "i386")
+elseif(RPCLIB_FORCE_M64)
     message("Compiling for 64-bit")
-    add_definitions(-DCALLME_ARCH_X64)
-    set(CALLME_TARGET_ARCH "x64")
-    set(CALLME_DEB_ARCH "amd64")
+    add_definitions(-DRPCLIB_ARCH_X64)
+    set(RPCLIB_TARGET_ARCH "x64")
+    set(RPCLIB_DEB_ARCH "amd64")
 elseif (${TARGET_ARCH} STREQUAL "i386")
     message("Compiling for 32-bit")
-    add_definitions(-DCALLME_ARCH_X86)
-    set(CALLME_TARGET_ARCH "x86")
-    set(CALLME_DEB_ARCH "i386")
+    add_definitions(-DRPCLIB_ARCH_X86)
+    set(RPCLIB_TARGET_ARCH "x86")
+    set(RPCLIB_DEB_ARCH "i386")
 elseif(${TARGET_ARCH} STREQUAL "x86_64")
     message("Compiling for 64-bit")
-    add_definitions(-DCALLME_ARCH_X64)
-    set(CALLME_TARGET_ARCH "x64")
-    set(CALLME_DEB_ARCH "amd64")
+    add_definitions(-DRPCLIB_ARCH_X64)
+    set(RPCLIB_TARGET_ARCH "x64")
+    set(RPCLIB_DEB_ARCH "amd64")
 endif()
 
 add_definitions(-DASIO_STANDALONE)
-add_definitions(-DCALLME_ASIO=clmdep_asio)
-add_definitions(-DCALLME_FMT=clmdep_fmt)
-if(CALLME_ENABLE_LOGGING)
-    add_definitions(-DCALLME_ENABLE_LOGGING)
+add_definitions(-DRPCLIB_ASIO=clmdep_asio)
+add_definitions(-DRPCLIB_FMT=clmdep_fmt)
+if(RPCLIB_ENABLE_LOGGING)
+    add_definitions(-DRPCLIB_ENABLE_LOGGING)
 endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
@@ -67,14 +67,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 
 configure_file(
-  "${PROJECT_SOURCE_DIR}/include/callme/version.h.in"
+  "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
   "${PROJECT_BINARY_DIR}/version.h")
 
 include_directories(include)
 include_directories(SYSTEM dependencies/include)
 
-file(GLOB_RECURSE CALLME_HEADERS 
-    include/callme/*.h
+file(GLOB_RECURSE RPCLIB_HEADERS 
+    include/rpc/*.h
     include/msgpack/*.hpp)
 file(GLOB_RECURSE DEP_HEADERS 
     dependencies/include/*.h 
@@ -86,18 +86,18 @@ set(DEP_SOURCES
     dependencies/src/posix.cc)
 
 add_library(${OUTPUT_LIBRARY_NAME}
-    lib/callme/dispatcher.cc
-    lib/callme/server.cc
-    lib/callme/client.cc
-    lib/callme/this_handler.cc
-    lib/callme/this_session.cc
-    lib/callme/this_server.cc
-    lib/callme/rpc_error.cc
-    lib/callme/detail/server_session.cc
-    lib/callme/detail/response.cc
+    lib/rpc/dispatcher.cc
+    lib/rpc/server.cc
+    lib/rpc/client.cc
+    lib/rpc/this_handler.cc
+    lib/rpc/this_session.cc
+    lib/rpc/this_server.cc
+    lib/rpc/rpc_error.cc
+    lib/rpc/detail/server_session.cc
+    lib/rpc/detail/response.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
-    ${CALLME_HEADERS})
+    ${RPCLIB_HEADERS})
 
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
@@ -111,11 +111,11 @@ install(DIRECTORY include/
     PATTERN "*.in" EXCLUDE)
 install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include)
 
-#if (CALLME_INSTALL_MSGPACK)
+#if (RPCLIB_INSTALL_MSGPACK)
     #install(DIRECTORY include/msgpack DESTINATION include)
 #endif()
 
-if(CALLME_GENERATE_COMPDB)
+if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
     add_custom_command(TARGET ${OUTPUT_LIBRARY_NAME} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E
@@ -128,19 +128,19 @@ endif()
 #
 ################################################################################
 
-if(CALLME_BUILD_TESTS)
+if(RPCLIB_BUILD_TESTS)
     set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
     set(TEST_SOURCES
         dependencies/src/gmock-gtest-all.cc
         tests/testmain.cc
         tests/testutils.h
-        tests/callme/dispatcher_test.cc
-        tests/callme/client_test.cc
-        tests/callme/response_test.cc
-        tests/callme/server_test.cc
-        tests/callme/this_handler_test.cc
-        tests/callme/this_session_test.cc
-        tests/callme/this_server_test.cc)
+        tests/rpc/dispatcher_test.cc
+        tests/rpc/client_test.cc
+        tests/rpc/response_test.cc
+        tests/rpc/server_test.cc
+        tests/rpc/this_handler_test.cc
+        tests/rpc/this_session_test.cc
+        tests/rpc/this_server_test.cc)
 
     include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 
@@ -156,7 +156,7 @@ endif()
 #
 ################################################################################
 
-if(CALLME_BUILD_EXAMPLES)
+if(RPCLIB_BUILD_EXAMPLES)
     add_subdirectory(examples/server)
     add_subdirectory(examples/client)
     add_subdirectory(examples/mandelbrot)
@@ -172,17 +172,17 @@ endif()
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modern msgpack-rpc library for C++")
-set(CPACK_PACKAGE_DESCRIPTION "callme is a modern msgpack-rpc library for C++. It allows connecting applications through a network channel where they can talk to each other using the msgpack-rpc protocol. It provides both a client and server, which can be used independently.")
+set(CPACK_PACKAGE_DESCRIPTION "rpc is a modern msgpack-rpc library for C++. It allows connecting applications through a network channel where they can talk to each other using the msgpack-rpc protocol. It provides both a client and server, which can be used independently.")
 set(CPACK_PACKAGE_VENDOR "Tamás Szelei")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
-set(CPACK_PACKAGE_VERSION_MAJOR "${CALLME_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${CALLME_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_BUILD "${CALLME_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${RPCLIB_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${RPCLIB_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_BUILD "${RPCLIB_VERSION_MINOR}")
 set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/output/pkg")
-set(CPACK_PACKAGE_EXECUTABLES "libcallme" "callme")
-set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${CALLME_DEB_ARCH}")
-set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CALLME_DEB_ARCH})
+set(CPACK_PACKAGE_EXECUTABLES "librpc" "rpc")
+set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${RPCLIB_DEB_ARCH}")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${RPCLIB_DEB_ARCH})
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tamás Szelei")
 set(CPACK_DEBIAN_PACKAGE_CONTACT "Tamás Szelei")
 if(WIN32)
@@ -192,10 +192,10 @@ endif()
 if(WIN32)
     #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
     #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "libcallme ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
-    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} callme")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} rpc")
     #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/callme")
+    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/rpc")
     #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
     set(CPACK_NSIS_MODIFY_PATH ON)
 endif()

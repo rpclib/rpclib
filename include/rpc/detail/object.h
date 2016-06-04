@@ -6,11 +6,11 @@
 #include <tuple>
 #include "msgpack.hpp"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 } /* detail */
 
-} /* callme */
+} /* rpc */
 
 #endif /* end of include guard: OBJECT_H_8WIFSU0W */

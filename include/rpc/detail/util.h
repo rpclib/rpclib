@@ -5,7 +5,7 @@
 
 #include "msgpack.hpp"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 template <typename T> msgpack::object_handle pack(T &&o) {
     auto z = std::make_unique<msgpack::zone>();
@@ -13,6 +13,6 @@ template <typename T> msgpack::object_handle pack(T &&o) {
     return msgpack::object_handle(obj, std::move(z));
 }
 } /* detail */
-} /* callme  */
+} /* rpc  */
 
 #endif /* end of include guard: UTIL_H_YRIZ63UJ */

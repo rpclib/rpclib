@@ -3,11 +3,11 @@
 #ifndef FUNC_TOOLS_H_9FNRD4G2
 #define FUNC_TOOLS_H_9FNRD4G2
 
-#include "callme/detail/invoke.h"
-#include "callme/detail/all.h"
-#include "callme/detail/any.h"
+#include "rpc/detail/invoke.h"
+#include "rpc/detail/all.h"
+#include "rpc/detail/any.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 

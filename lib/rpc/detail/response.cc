@@ -1,10 +1,10 @@
-#include "callme/detail/response.h"
-#include "callme/detail/log.h"
-#include "callme/detail/util.h"
+#include "rpc/detail/response.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/util.h"
 
 #include <assert.h>
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 response::response() : id_(0), error_(), result_(), empty_(false) {}
@@ -16,18 +16,16 @@ response::response(msgpack::object_handle o) : response() {
     id_ = std::get<1>(r);
     auto &&error_obj = std::get<2>(r);
     if (error_obj != msgpack::type::nil()) {
-        auto z = std::make_unique<msgpack::zone>();
-        error_ =
-            std::make_shared<msgpack::object_handle>(error_obj, std::move(z));
+        error_ = std::make_shared<msgpack::object_handle>();
+        error_->assign(msgpack::clone(error_obj));
     }
-    result_ = std::make_shared<msgpack::object_handle>(std::get<3>(r),
-                                                       std::move(o.zone()));
+    result_ = std::make_shared<msgpack::object_handle>(
+        std::get<3>(r), std::move(o.zone()));
 }
 
 msgpack::sbuffer response::get_data() const {
     msgpack::sbuffer data;
-    response_type r(1, id_, error_ > 0 ? msgpack::object(error_->get())
-                                       : msgpack::object(msgpack::type::nil()),
+    response_type r(1, id_, error_ ? error_->get() : msgpack::object(),
                     result_ ? result_->get() : msgpack::object());
     msgpack::pack(&data, r);
     return data;
@@ -35,9 +33,7 @@ msgpack::sbuffer response::get_data() const {
 
 uint32_t response::get_id() const { return id_; }
 
-std::shared_ptr<msgpack::object_handle> response::get_error() const {
-    return error_;
-}
+std::shared_ptr<msgpack::object_handle> response::get_error() const { return error_; }
 
 std::shared_ptr<msgpack::object_handle> response::get_result() const {
     return result_;
@@ -60,10 +56,10 @@ void response::capture_result(msgpack::object_handle &r) {
 
 void response::capture_error(msgpack::object_handle &e) {
     if (!error_) {
-        error_ = std::make_shared<msgpack::object_handle>();
+        error_ = std::shared_ptr<msgpack::object_handle>();
     }
     error_->assign(std::move(e));
 }
 
 } /* detail */
-} /* callme */
+} /* rpc */

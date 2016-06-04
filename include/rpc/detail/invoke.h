@@ -3,7 +3,7 @@
 #ifndef INVOKE_H_0CWMPLUE
 #define INVOKE_H_0CWMPLUE
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template<typename T>

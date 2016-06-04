@@ -32,7 +32,7 @@
 #endif
 #endif
 
-// CALLME is compiled with most warnings, but this file needs more turned off.
+// RPCLIB is compiled with most warnings, but this file needs more turned off.
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wsign-conversion"

@@ -3,10 +3,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "callme/dispatcher.h"
+#include "rpc/dispatcher.h"
 #include "testutils.h"
 
-using namespace callme::testutils;
+using namespace rpc::testutils;
 
 // Unit tests for binding functions to names.
 // A couple of these tests exist to check if the code compiles correctly,
@@ -36,7 +36,7 @@ public:
     }
 
 protected:
-    callme::dispatcher dispatcher;
+    rpc::dispatcher dispatcher;
 };
 
 class dispatch_test : public binding_test {};

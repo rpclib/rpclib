@@ -5,7 +5,7 @@
 
 #include <atomic>
 
-namespace callme {
+namespace rpc {
 
 namespace detail {
 class server_session;
@@ -24,7 +24,7 @@ public:
     //! handler.
     void post_exit();
 
-    friend class callme::detail::server_session;
+    friend class rpc::detail::server_session;
 
 private:
     void clear();
@@ -38,6 +38,6 @@ private:
 //! running is potentially unsafe.
 this_session_t &this_session();
 
-} /* callme */
+} /* rpc */
 
 #endif /* end of include guard: THIS_SESSION_H_HTS95N7G */

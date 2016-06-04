@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace callme {
+namespace rpc {
 namespace detail {
 template <std::size_t Size, int Align> struct aligned_storage {
     typedef typename std::aligned_storage<Size, Align>::type type;
@@ -32,7 +32,7 @@ template <typename T, std::size_t Size, int Align = -1> class pimpl_ptr {
 public:
 #define PIMPL_PTR_CHECK_()                                                     \
     ptr_checker<T, sizeof(T), Size, Align, alignof(T)>                 \
-        callme_ptr_checker; (void) callme_ptr_checker;
+        rpc_ptr_checker; (void) rpc_ptr_checker;
 
     template <typename... Args> pimpl_ptr(Args &&... args) {
         PIMPL_PTR_CHECK_();
@@ -90,15 +90,15 @@ public:
 }
 
 #if defined(i386) || defined(__i386) || defined(__i386__) || defined(_M_IX86)
-#define CALLME_DEF_ALIGN 4
+#define RPCLIB_DEF_ALIGN 4
 #elif defined(__amd64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64)
-#define CALLME_DEF_ALIGN 8
+#define RPCLIB_DEF_ALIGN 8
 #else
 #error "Unkown architecture"
 #endif
 
-#define CALLME_DECL_PIMPL(Size)                                                \
+#define RPCLIB_DECL_PIMPL(Size)                                                \
     struct impl;                                                               \
-    detail::pimpl_ptr<impl, Size, CALLME_DEF_ALIGN> pimpl;
+    detail::pimpl_ptr<impl, Size, RPCLIB_DEF_ALIGN> pimpl;
 
 #endif /* end of include guard: PIMPL_H_TV7E3C9K */

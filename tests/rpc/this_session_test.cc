@@ -3,14 +3,14 @@
 
 #include "gtest/gtest.h"
 
-#include "callme/client.h"
-#include "callme/server.h"
-#include "callme/this_session.h"
+#include "rpc/client.h"
+#include "rpc/server.h"
+#include "rpc/this_session.h"
 
 #include "testutils.h"
 
-using namespace callme::testutils;
-using namespace callme;
+using namespace rpc::testutils;
+using namespace rpc;
 
 const uint16_t test_port = 8080;
 
@@ -19,15 +19,15 @@ public:
     this_session_test() : s(test_port) {}
 
 protected:
-    callme::server s;
+    rpc::server s;
 };
 
 TEST_F(this_session_test, post_exit) {
     using namespace std::chrono_literals;
-    s.bind("exit", []() { callme::this_session().post_exit(); });
+    s.bind("exit", []() { rpc::this_session().post_exit(); });
     s.async_run();
 
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     c.call("exit");
     std::this_thread::sleep_for(100ms);
     auto f = c.async_call("exit");
@@ -39,13 +39,13 @@ TEST_F(this_session_test, post_exit_specific_to_session) {
     using namespace std::chrono_literals;
     s.bind("exit", [](bool do_exit) {
         if (do_exit) {
-            callme::this_session().post_exit();
+            rpc::this_session().post_exit();
         }
     });
     s.async_run();
 
-    callme::client c("127.0.0.1", test_port);
-    callme::client c2("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
+    rpc::client c2("127.0.0.1", test_port);
     c2.call("exit", false);
     c.call("exit", true);
     std::this_thread::sleep_for(100ms);

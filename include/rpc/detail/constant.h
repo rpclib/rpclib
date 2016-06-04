@@ -5,7 +5,7 @@
 
 #include <type_traits>
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template<typename T, T I>

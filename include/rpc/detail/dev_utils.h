@@ -3,19 +3,19 @@
 #ifndef DEV_UTILS_H_JQSWE2OS
 #define DEV_UTILS_H_JQSWE2OS
 
-#ifdef CALLME_LINUX
+#ifdef RPCLIB_LINUX
 #include "pthread.h"
 #endif
 
-namespace callme {
+namespace rpc {
 namespace detail {
 inline void name_thread(std::string const &name) {
     (void)name;
-#ifdef CALLME_LINUX
+#ifdef RPCLIB_LINUX
     pthread_setname_np(pthread_self(), name.c_str());
 #endif
 }
 } /* detail */
-} /* callme */
+} /* rpc */
 
 #endif /* end of include guard: DEV_UTILS_H_JQSWE2OS */

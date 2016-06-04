@@ -1,4 +1,4 @@
-#include "callme/server.h"
+#include "rpc/server.h"
 
 #include <atomic>
 #include <memory>
@@ -9,17 +9,17 @@
 #include "asio.hpp"
 #include "format.h"
 
-#include "callme/detail/dev_utils.h"
-#include "callme/detail/log.h"
-#include "callme/detail/log.h"
-#include "callme/detail/server_session.h"
-#include "callme/detail/thread_group.h"
+#include "rpc/detail/dev_utils.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/server_session.h"
+#include "rpc/detail/thread_group.h"
 
-using namespace callme::detail;
-using CALLME_ASIO::ip::tcp;
-using namespace CALLME_ASIO;
+using namespace rpc::detail;
+using RPCLIB_ASIO::ip::tcp;
+using namespace RPCLIB_ASIO;
 
-namespace callme {
+namespace rpc {
 
 struct server::impl {
     impl(server *parent, std::string const &address, uint16_t port)
@@ -70,13 +70,13 @@ struct server::impl {
     io_service io_;
     ip::tcp::acceptor acceptor_;
     ip::tcp::socket socket_;
-    callme::detail::thread_group loop_workers_;
+    rpc::detail::thread_group loop_workers_;
     std::vector<std::shared_ptr<server_session>> sessions_;
     std::atomic_bool suppress_exceptions_;
-    CALLME_CREATE_LOG_CHANNEL(server)
+    RPCLIB_CREATE_LOG_CHANNEL(server)
 };
 
-CALLME_CREATE_LOG_CHANNEL(server)
+RPCLIB_CREATE_LOG_CHANNEL(server)
 
 server::server(uint16_t port)
     : pimpl(this, port), disp_(std::make_shared<dispatcher>()) {
@@ -113,4 +113,4 @@ void server::stop() { pimpl->stop(); }
 
 void server::close_sessions() { pimpl->close_sessions(); }
 
-} /* callme */
+} /* rpc */

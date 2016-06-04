@@ -2,7 +2,7 @@
 #include <math.h>
 #include <time.h>
 
-#include "callme/server.h"
+#include "rpc/server.h"
 #include "mandelbrot.h"
 
 int mandelbrot(double cr, double ci, int max_iterations) {
@@ -31,7 +31,7 @@ int main() {
     int maxN = 255;
     double minR = -1.5, maxR = 0.8, minI = -1.0, maxI = 1.0;
 
-    callme::server srv(8080);
+    rpc::server srv(8080);
 
     srv.bind("get_time", []() {
         time_t rawtime;

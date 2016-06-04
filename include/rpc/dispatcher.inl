@@ -1,5 +1,5 @@
 
-namespace callme {
+namespace rpc {
 
 template <typename F> void dispatcher::bind(std::string const &name, F func) {
     bind(name, func, typename detail::func_kind_info<F>::result_kind(),

@@ -3,9 +3,9 @@
 #ifndef FUNC_TRAITS_H_HWIWA6G0
 #define FUNC_TRAITS_H_HWIWA6G0
 
-#include "callme/detail/bool.h"
+#include "rpc/detail/bool.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template <int N>

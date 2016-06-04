@@ -9,7 +9,7 @@
 #include <thread>
 #include <tuple>
 
-namespace callme {
+namespace rpc {
 namespace testutils {
 
 //! \brief Creates a unpacked messagepack containing its arguments.

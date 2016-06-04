@@ -1,7 +1,7 @@
 #! python3
 
 # This is a terrible script that renames the namespaces of
-# dependencies that callme ships with (in order to 
+# dependencies that rpclib ships with (in order to
 # avoid name collisions during linking)
 
 import fileinput
@@ -20,15 +20,15 @@ for f in files:
     with fileinput.FileInput(f, inplace=True) as fi:
         for line in fi:
             for t in targets:
-                line = line.replace('using namespace ' + t, 'using namespace clmdep_' + t)
-                line = line.replace('namespace ' + t, 'namespace clmdep_' + t)
-                line = line.replace(t + '::', 'clmdep_' + t + '::')
-                line = line.replace('using ' + t, 'using clmdep_' + t)
-                line = line.replace('asio_', 'clmdep_asio_')
-                line = line.replace('clmdep_clmdep_', 'clmdep_')
+                line = line.replace('using namespace ' + t, 'using namespace rpcdep_' + t)
+                line = line.replace('namespace ' + t, 'namespace rpcdep_' + t)
+                line = line.replace(t + '::', 'rpcdep_' + t + '::')
+                line = line.replace('using ' + t, 'using rpcdep_' + t)
+                line = line.replace('asio_', 'rpcdep_asio_')
+                line = line.replace('rpcdep_rpcdep_', 'rpcdep_')
             print(line, end='')
 
-usages = { 'asio': 'CALLME_ASIO', 'fmt': 'CALLME_FMT' }
+usages = { 'asio': 'RPCLIB_ASIO', 'fmt': 'RPCLIB_FMT' }
 
 files = []
 types = ['.h', '.cc']

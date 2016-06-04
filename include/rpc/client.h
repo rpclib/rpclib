@@ -2,11 +2,11 @@
 
 #include <future>
 
-#include "callme/detail/log.h"
-#include "callme/detail/pimpl.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/pimpl.h"
 #include "msgpack.hpp"
 
-namespace callme {
+namespace rpc {
 
 //! \brief Implements a client that connects to a msgpack-rpc server and is
 //! able to call functions synchronously or asynchronously.
@@ -74,8 +74,8 @@ private:
 private:
     static constexpr uint32_t default_buffer_size = 65535;
     static constexpr double buffer_grow_factor = 1.5;
-    CALLME_DECL_PIMPL(648)
+    RPCLIB_DECL_PIMPL(648)
 };
 }
 
-#include "callme/client.inl"
+#include "rpc/client.inl"

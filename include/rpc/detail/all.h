@@ -3,11 +3,11 @@
 #ifndef ALL_H_H8MAAYCG
 #define ALL_H_H8MAAYCG
 
-#include "callme/detail/invoke.h"
-#include "callme/detail/if.h"
-#include "callme/detail/bool.h"
+#include "rpc/detail/invoke.h"
+#include "rpc/detail/if.h"
+#include "rpc/detail/bool.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 //! \brief This type can be used to check multiple conditions.

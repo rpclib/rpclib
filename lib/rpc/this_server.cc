@@ -1,6 +1,6 @@
-#include "callme/this_server.h"
+#include "rpc/this_server.h"
 
-namespace callme
+namespace rpc
 {
 
 this_server_t &this_server() {
@@ -16,4 +16,4 @@ void this_server_t::cancel_stop() {
     stopping_ = false;
 }
 
-} /* callme */ 
+} /* rpc */ 

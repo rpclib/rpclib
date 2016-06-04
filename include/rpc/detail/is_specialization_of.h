@@ -3,9 +3,9 @@
 #ifndef IS_SPECIALIZATION_OF_H_OPZTARVG
 #define IS_SPECIALIZATION_OF_H_OPZTARVG
 
-#include "callme/detail/bool.h"
+#include "rpc/detail/bool.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template <template <typename...> class Templ, typename T>
@@ -15,6 +15,6 @@ template <template <typename...> class Templ, typename... T>
 struct is_specialization_of<Templ, Templ<T...>> : true_ {};
 
 }
-} /* callme  */
+} /* rpc  */
 
 #endif /* end of include guard: IS_SPECIALIZATION_OF_H_OPZTARVG */

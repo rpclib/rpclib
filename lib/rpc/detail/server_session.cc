@@ -1,15 +1,15 @@
-#include "callme/detail/server_session.h"
-#include "callme/detail/log.h"
-#include "callme/server.h"
-#include "callme/this_handler.h"
-#include "callme/this_server.h"
-#include "callme/this_session.h"
+#include "rpc/detail/server_session.h"
+#include "rpc/detail/log.h"
+#include "rpc/server.h"
+#include "rpc/this_handler.h"
+#include "rpc/this_server.h"
+#include "rpc/this_session.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
-server_session::server_session(server *srv, CALLME_ASIO::io_service *io,
-                               CALLME_ASIO::ip::tcp::socket socket,
+server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
+                               RPCLIB_ASIO::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp,
                                bool suppress_exceptions)
     : async_writer(io, std::move(socket)),
@@ -34,7 +34,7 @@ void server_session::close() {
 void server_session::do_read() {
     auto self(shared_from_this());
     socket_.async_read_some(
-        CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
+        RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
                 pac_.buffer_consumed(length);
@@ -114,4 +114,4 @@ void server_session::do_read() {
 }
 
 } /* detail */
-} /* callme */
+} /* rpc */

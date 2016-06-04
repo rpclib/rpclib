@@ -10,15 +10,15 @@
 
 #include "msgpack.hpp"
 
-#include "callme/detail/call.h"
-#include "callme/detail/func_tools.h"
-#include "callme/detail/func_traits.h"
-#include "callme/detail/log.h"
-#include "callme/detail/not.h"
-#include "callme/detail/object.h"
-#include "callme/detail/response.h"
+#include "rpc/detail/call.h"
+#include "rpc/detail/func_tools.h"
+#include "rpc/detail/func_traits.h"
+#include "rpc/detail/log.h"
+#include "rpc/detail/not.h"
+#include "rpc/detail/object.h"
+#include "rpc/detail/response.h"
 
-namespace callme {
+namespace rpc {
 
 //! \brief This class maintains a registry of functors associated with their
 //! names, and callable using a msgpack-rpc call pack.
@@ -109,7 +109,7 @@ private:
 
 private:
     std::unordered_map<std::string, adaptor_type> funcs_;
-    CALLME_CREATE_LOG_CHANNEL(dispatcher)
+    RPCLIB_CREATE_LOG_CHANNEL(dispatcher)
 };
 }
 

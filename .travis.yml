@@ -34,11 +34,11 @@ script:
   - git submodule init
   - git submodule update --init --recursive
   - mkdir build && cd build
-  - cmake -DCALLME_ENABLE_COVERAGE=ON -DCALLME_BUILD_TESTS=ON ..
+  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON ..
   - make -j2
 
 after_success:
-  - ./tests/callme_test
+  - ./tests/rpc_test
   - cd ..
   - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
     #- codecov

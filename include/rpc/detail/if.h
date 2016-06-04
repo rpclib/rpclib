@@ -3,9 +3,9 @@
 #ifndef IF_H_1OW9DR7G
 #define IF_H_1OW9DR7G
 
-#include "callme/detail/invoke.h"
+#include "rpc/detail/invoke.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template <typename C, typename T, typename F>

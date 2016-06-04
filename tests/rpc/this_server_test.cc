@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
 
-#include "callme/client.h"
-#include "callme/server.h"
-#include "callme/this_server.h"
+#include "rpc/client.h"
+#include "rpc/server.h"
+#include "rpc/this_server.h"
 
 #include "testutils.h"
 
-using namespace callme::testutils;
-using namespace callme;
+using namespace rpc::testutils;
+using namespace rpc;
 
 const uint16_t test_port = 8080;
 
@@ -19,14 +19,14 @@ public:
           c2("127.0.0.1", test_port) {}
 
 protected:
-    callme::server s;
-    callme::client c1;
-    callme::client c2;
+    rpc::server s;
+    rpc::client c1;
+    rpc::client c2;
 };
 
 TEST_F(this_server_test, stop) {
     using namespace std::chrono_literals;
-    s.bind("stop_server", []() { callme::this_server().stop(); });
+    s.bind("stop_server", []() { rpc::this_server().stop(); });
     s.async_run();
     c1.call("stop_server");
     std::this_thread::sleep_for(100ms);

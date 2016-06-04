@@ -1,12 +1,12 @@
 # Getting started
 
-This document details the steps of getting everything in place to be able to use `callme`.
+This document details the steps of getting everything in place to be able to use `rpclib`.
 
 ## What you need
 
 ### Compiler
 
-`callme` uses some C++14 features, and as such, requires a very recent compiler. The following compilers are tried and tested with `callme` at the moment:
+`rpclib` uses some C++14 features, and as such, requires a very recent compiler. The following compilers are tried and tested with `rpclib` at the moment:
 
   * g++ 5.0
   * clang++ 3.7
@@ -23,27 +23,27 @@ In addition to a capable compiler, you will need:
 
 ### Dependencies
 
-`callme` has no external library dependencies, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
+`rpclib` has no external library dependencies, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
 
-TIP: See the [Design](design.md) documentation for details on how `callme` handles its dependencies.
+TIP: See the [Design](design.md) documentation for details on how `rpclib` handles its dependencies.
 
 
 ## Building
 
-`callme` uses CMake and has a very conventional build process. If you know how to build a CMake-based library, you know how to build `callme`.
+`rpclib` uses CMake and has a very conventional build process. If you know how to build a CMake-based library, you know how to build `rpclib`.
 
 If not, you can read the <<building.adoc#,Building>> chapter for step-by-step instructions. You can also visit that document for information learn about advanced building options.
 
-## Your first project with `callme`: "Here's my number"
+## Your first project with `rpclib`: "Here's my number"
 
-In order to integrate `callme` into your project, you will need to have it built and stored somewhere on your system. Place the `callme` headers into your include path, and link libcallme.a with your executable. The exact process of that depends on your compiler and/or IDE.
+In order to integrate `rpclib` into your project, you will need to have it built and stored somewhere on your system. Place the `rpclib` headers into your include path, and link librpc.a with your executable. The exact process of that depends on your compiler and/or IDE.
 
 ### CMake/Clion
 
-`callme` ships with a CMake module that can be used to find the library in the system. Using it is pretty simple: place Findcallme.cmake into your CMake module path, then add the following to your CMakeLists.txt:
+`rpclib` ships with a CMake module that can be used to find the library in the system. Using it is pretty simple: place Findrpc.cmake into your CMake module path, then add the following to your CMakeLists.txt:
 
 ```cmake
-find_package(callme)
+find_package(rpc)
 ```
 
 ### Microsoft Visual Studio

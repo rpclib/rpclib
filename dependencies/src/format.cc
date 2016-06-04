@@ -25,7 +25,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// CALLME is compiled with most warnings, but this file needs more turned off.
+// RPCLIB is compiled with most warnings, but this file needs more turned off.
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmultichar"

@@ -1,6 +1,6 @@
 version: 1.0.{build}
 os: Visual Studio 2015
-clone_folder: C:\projects\callme
+clone_folder: C:\projects\rpc
 test: off
 
 branches:
@@ -18,13 +18,13 @@ environment:
 install: true
 
 build_script:
-  - cd c:\projects\callme
+  - cd c:\projects\rpc
   - git submodule init
   - git submodule update --init --recursive
   - md build
   - cd build
-  - cmake -DCALLME_ENABLE_COVERAGE=ON -DCALLME_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
+  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
-  - msbuild %MSBuildOptions% callme.sln
-  - .\output\bin\Release\callme_test.exe
+  - msbuild %MSBuildOptions% rpc.sln
+  - .\output\bin\Release\rpc_test.exe

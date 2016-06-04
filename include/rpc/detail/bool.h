@@ -3,9 +3,9 @@
 #ifndef BOOL_H_QLG6S5XZ
 #define BOOL_H_QLG6S5XZ
 
-#include "callme/detail/constant.h"
+#include "rpc/detail/constant.h"
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 template<bool B>

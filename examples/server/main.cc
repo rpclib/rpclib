@@ -1,5 +1,5 @@
 #include <iostream>
-#include "callme/server.h"
+#include "rpc/server.h"
 
 void foo() { std::cout << "foo was called!" << std::endl; }
 
@@ -11,7 +11,7 @@ void bad(int x) {
 
 int main() {
     // Create a server that listens on port 8080
-    callme::server srv("0.0.0.0", 8080);
+    rpc::server srv("0.0.0.0", 8080);
 
     // Binding the name "foo" to free function foo.
     // note: the signature is automatically captured

@@ -5,10 +5,10 @@
 #include <memory>
 #include <thread>
 
-#include "callme/detail/response.h"
+#include "rpc/detail/response.h"
 
-using namespace callme::testutils;
-using namespace callme::detail;
+using namespace rpc::testutils;
+using namespace rpc::detail;
 
 TEST(response, object_ctor) {
     auto o = make_unpacked(3, 42, "foo", "bar");

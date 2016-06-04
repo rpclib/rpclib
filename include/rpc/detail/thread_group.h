@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 
-namespace callme {
+namespace rpc {
 namespace detail {
 
 class thread_group {
@@ -35,6 +35,6 @@ private:
 };
 
 } /* detail */
-} /* callme  */
+} /* rpc  */
 
 #endif /* end of include guard: THREAD_GROUP_H_MQSLWGKD */

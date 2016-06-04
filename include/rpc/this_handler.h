@@ -7,9 +7,9 @@
 
 #include "msgpack.hpp"
 
-#include "callme/detail/util.h"
+#include "rpc/detail/util.h"
 
-namespace callme {
+namespace rpc {
 
 namespace detail {
 class server_session;
@@ -58,7 +58,7 @@ public:
     //! \brief Sets all state of the object to default.
     void clear();
 
-    friend class callme::detail::server_session;
+    friend class rpc::detail::server_session;
 
 private:
     msgpack::object_handle error_, resp_;
@@ -68,7 +68,7 @@ private:
 
 #include "this_handler.inl"
 
-namespace callme {
+namespace rpc {
 //! \brief A thread-local object that can be used to control
 //! the behavior of the server w.r.t. the handler. Accessing this object
 //! from handlers that execute the same function concurrently is safe.

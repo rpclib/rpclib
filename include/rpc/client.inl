@@ -1,9 +1,9 @@
-namespace callme {
+namespace rpc {
 
 template <typename... Args>
 msgpack::object_handle client::call(std::string const &func_name,
                                     Args... args) {
-    CALLME_CREATE_LOG_CHANNEL(client)
+    RPCLIB_CREATE_LOG_CHANNEL(client)
     auto future = async_call(func_name, std::forward<Args>(args)...);
     future.wait();
     return future.get();
@@ -12,7 +12,7 @@ msgpack::object_handle client::call(std::string const &func_name,
 template <typename... Args>
 std::future<msgpack::object_handle>
 client::async_call(std::string const &func_name, Args... args) {
-    CALLME_CREATE_LOG_CHANNEL(client)
+    RPCLIB_CREATE_LOG_CHANNEL(client)
     wait_conn();
     using msgpack::object;
     LOG_DEBUG("Calling {}", func_name);
@@ -44,7 +44,7 @@ client::async_call(std::string const &func_name, Args... args) {
 //! \tparam Args THe types of the arguments.
 template <typename... Args>
 void client::send(std::string const &func_name, Args... args) {
-    CALLME_CREATE_LOG_CHANNEL(client)
+    RPCLIB_CREATE_LOG_CHANNEL(client)
     LOG_DEBUG("Sending notification {}", func_name);
 
     auto args_obj = std::make_tuple(args...);

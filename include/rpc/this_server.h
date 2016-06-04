@@ -3,7 +3,7 @@
 #ifndef THIS_SERVER_H_X0CJLVVW
 #define THIS_SERVER_H_X0CJLVVW
 
-namespace callme {
+namespace rpc {
 
 namespace detail {
 class server_session;
@@ -19,7 +19,7 @@ public:
     //! \brief Cancels a requested stop operation.
     void cancel_stop();
 
-    friend class callme::detail::server_session;
+    friend class rpc::detail::server_session;
 
 private:
     bool stopping_;
@@ -32,6 +32,6 @@ private:
 //! running is potentially unsafe.
 this_server_t &this_server();
 
-} /* callme */
+} /* rpc */
 
 #endif /* end of include guard: THIS_SERVER_H_X0CJLVVW */

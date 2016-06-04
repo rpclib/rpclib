@@ -2,13 +2,13 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
-#include "callme/client.h"
+#include "rpc/client.h"
 #include "mandelbrot.h"
 
 int main() {
     const int width = 1024, height = 768;
 
-    callme::client c("127.0.0.1", 8080);
+    rpc::client c("127.0.0.1", 8080);
 
     std::cout << "Calling get_mandelbrot asynchronically" << std::endl;
     auto result_obj = c.async_call("get_mandelbrot", width, height);
@@ -32,7 +32,7 @@ int main() {
         }
     }
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "callme mandelbrot client");
+    sf::RenderWindow window(sf::VideoMode(width, height), "rpc mandelbrot client");
 
     sf::Texture texture;
     texture.loadFromImage(image, sf::IntRect(0, 0, width, height));

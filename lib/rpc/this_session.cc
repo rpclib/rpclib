@@ -1,6 +1,6 @@
-#include "callme/this_session.h"
+#include "rpc/this_session.h"
 
-namespace callme
+namespace rpc
 {
 
 this_session_t &this_session() {
@@ -17,4 +17,4 @@ void this_session_t::clear() {
 }
 
     
-} /* callme */ 
+} /* rpc */ 

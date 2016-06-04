@@ -4,12 +4,12 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "callme/client.h"
-#include "callme/rpc_error.h"
-#include "callme/server.h"
+#include "rpc/client.h"
+#include "rpc/rpc_error.h"
+#include "rpc/server.h"
 #include "testutils.h"
 
-using namespace callme::testutils;
+using namespace rpc::testutils;
 using namespace std::literals::chrono_literals;
 
 const int test_port = 8080;
@@ -29,14 +29,14 @@ public:
     }
 
 protected:
-    callme::server s;
+    rpc::server s;
     std::atomic_int long_count, short_count;
 };
 
 TEST_F(server_workers_test, single_worker) {
     const std::size_t workers = 1;
     s.async_run(workers);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     auto ft_long = c.async_call("long_func");
     auto ft_short = c.async_call("short_func");
     ft_short.wait();
@@ -52,7 +52,7 @@ TEST_F(server_workers_test, single_worker) {
 TEST_F(server_workers_test, multiple_workers) {
     const std::size_t workers = 2;
     s.async_run(workers);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     auto ft_long = c.async_call("long_func");
     auto ft_short = c.async_call("short_func");
     ft_short.wait();
@@ -76,12 +76,12 @@ public:
     }
 
 protected:
-    callme::server s;
+    rpc::server s;
 };
 
-#ifndef CALLME_WIN32
+#ifndef RPCLIB_WIN32
 TEST_F(server_error_handling, no_suppress) {
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     s.suppress_exceptions(false);
     EXPECT_DEATH({ c.call("blue"); }, "");
     EXPECT_DEATH({ c.call("red"); }, "");
@@ -90,7 +90,7 @@ TEST_F(server_error_handling, no_suppress) {
 
 TEST_F(server_error_handling, suppress) {
     s.suppress_exceptions(true);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     // this seems like the opposite check, but the client throwing
     // the exception means that it reached the other side, i.e.
     // the server suppressed it.
@@ -102,47 +102,47 @@ TEST_F(server_error_handling, suppress) {
 
 TEST_F(server_error_handling, suppress_right_msg) {
     s.suppress_exceptions(true);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
 
     try {
         c.call("blue");
         FAIL() << "There was no exception thrown.";
-    } catch (callme::rpc_error &e) {
-        EXPECT_STREQ(e.what(), "callme::rpc_error during call");
-        auto err = e.get_error()->as<std::string>();
+    } catch (rpc::rpc_error &e) {
+        EXPECT_STREQ(e.what(), "rpc::rpc_error during call");
+        auto err = e.get_error().as<std::string>();
         EXPECT_TRUE(str_match(err, ".*?I'm blue.*"));
     }
 
     try {
         c.call("red");
         FAIL() << "There was no exception thrown.";
-    } catch (callme::rpc_error &e) {
+    } catch (rpc::rpc_error &e) {
         EXPECT_FALSE(str_match(e.what(), ".*?Am I evil.*"));
-        auto err = e.get_error()->as<std::string>();
+        auto err = e.get_error().as<std::string>();
         EXPECT_TRUE(str_match(err, ".*?not derived from std::exception.*"));
     }
 }
 
 TEST_F(server_error_handling, no_such_method_right_msg) {
     s.suppress_exceptions(true);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     try {
         c.call("green");
         FAIL() << "There was no exception thrown.";
-    } catch (callme::rpc_error &e) {
-        auto err = e.get_error()->as<std::string>();
+    } catch (rpc::rpc_error &e) {
+        auto err = e.get_error().as<std::string>();
         EXPECT_TRUE(str_match(err, ".*?could not find.*"));
     }
 }
 
 TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
     s.suppress_exceptions(true);
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     try {
         c.call("blue", 1);
         FAIL() << "There was no exception thrown.";
-    } catch (callme::rpc_error &e) {
-        auto err = e.get_error()->as<std::string>();
+    } catch (rpc::rpc_error &e) {
+        auto err = e.get_error().as<std::string>();
         EXPECT_TRUE(str_match(err, ".*?invalid number of arguments.*"));
     }
 }
@@ -156,17 +156,17 @@ public:
     }
 
 protected:
-    callme::server s;
+    rpc::server s;
     std::string str_utf8;
 };
 
 TEST_F(dispatch_unicode, narrow_unicode) {
-    callme::client c("127.0.0.1", test_port);
+    rpc::client c("127.0.0.1", test_port);
     EXPECT_EQ(str_utf8, c.call("utf", str_utf8).as<std::string>());
 }
 
 TEST(server_misc, single_param_ctor) {
-    callme::server s(8080);
+    rpc::server s(8080);
     s.async_run();
-    callme::client c("127.0.0.1", 8080);
+    rpc::client c("127.0.0.1", 8080);
 }

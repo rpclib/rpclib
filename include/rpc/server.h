@@ -5,10 +5,10 @@
 
 #include "msgpack.hpp"
 
-#include "callme/dispatcher.h"
-#include "callme/detail/pimpl.h"
+#include "rpc/dispatcher.h"
+#include "rpc/detail/pimpl.h"
 
-namespace callme {
+namespace rpc {
 
 namespace detail {
 class server_session;
@@ -61,10 +61,10 @@ public:
     friend class detail::server_session;
 
 private:
-	CALLME_DECL_PIMPL(180)
+	RPCLIB_DECL_PIMPL(180)
     std::shared_ptr<dispatcher> disp_;
 };
 
-} /* callme */
+} /* rpc */
 
 #endif /* end of include guard: SERVER_H_S0HB5KXY */

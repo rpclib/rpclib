@@ -1,6 +1,6 @@
-#include "callme/this_handler.h"
+#include "rpc/this_handler.h"
 
-namespace callme {
+namespace rpc {
 
 this_handler_t &this_handler() {
     static thread_local this_handler_t instance;
@@ -17,4 +17,4 @@ void this_handler_t::clear() {
     enable_response();
 }
 
-} /* callme */
+} /* rpc */

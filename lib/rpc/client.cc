@@ -1,5 +1,5 @@
-#include "callme/client.h"
-#include "callme/rpc_error.h"
+#include "rpc/client.h"
+#include "rpc/rpc_error.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -12,15 +12,15 @@
 #include "asio.hpp"
 #include "format.h"
 
-#include "callme/detail/async_writer.h"
-#include "callme/detail/dev_utils.h"
-#include "callme/detail/response.h"
+#include "rpc/detail/async_writer.h"
+#include "rpc/detail/dev_utils.h"
+#include "rpc/detail/response.h"
 
-using namespace CALLME_ASIO;
-using CALLME_ASIO::ip::tcp;
-using namespace callme::detail;
+using namespace RPCLIB_ASIO;
+using RPCLIB_ASIO::ip::tcp;
+using namespace rpc::detail;
 
-namespace callme {
+namespace rpc {
 
 struct client::impl {
     impl(client *parent, std::string const &addr, uint16_t port)
@@ -33,13 +33,13 @@ struct client::impl {
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
-              &io_, CALLME_ASIO::ip::tcp::socket(io_))) {
+              &io_, RPCLIB_ASIO::ip::tcp::socket(io_))) {
         pac_.reserve_buffer(default_buffer_size);
     }
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         LOG_INFO("Initiating connection.");
-        CALLME_ASIO::async_connect(
+        RPCLIB_ASIO::async_connect(
             writer_->socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
                 if (!ec) {
@@ -58,7 +58,7 @@ struct client::impl {
     void do_read() {
         LOG_TRACE("do_read");
         writer_->socket_.async_read_some(
-            CALLME_ASIO::buffer(pac_.buffer(), default_buffer_size),
+            RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
                     pac_.buffer_consumed(length);
@@ -77,21 +77,24 @@ struct client::impl {
                         auto &c = ongoing_calls_[id];
                         try {
                             if (r.get_error()) {
-                                throw rpc_error("callme::rpc_error during call",
-                                                std::get<0>(c), r.get_error());
+                                throw rpc_error(
+                                    "rpc::rpc_error during call",
+                                    std::get<0>(c), msgpack::clone(r.get_error()->get()));
                             }
-                            std::get<1>(c).set_value(std::move(*r.get_result()));
+                            std::get<1>(c).set_value(
+                                std::move(*r.get_result()));
                         } catch (...) {
-                            std::get<1>(c).set_exception(std::current_exception());
+                            std::get<1>(c).set_exception(
+                                std::current_exception());
                         }
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
                     }
                     do_read();
-                } else if (ec == CALLME_ASIO::error::eof) {
+                } else if (ec == RPCLIB_ASIO::error::eof) {
                     LOG_WARN("The server closed the connection.");
                     state_ = client::connection_state::disconnected;
-                } else if (ec == CALLME_ASIO::error::connection_reset) {
+                } else if (ec == RPCLIB_ASIO::error::connection_reset) {
                     state_ = client::connection_state::reset;
                     LOG_WARN("The connection was reset.");
                 } else {
@@ -109,8 +112,8 @@ struct client::impl {
     using call_t = std::pair<std::string, std::promise<msgpack::object_handle>>;
 
     client *parent_;
-    CALLME_ASIO::io_service io_;
-    CALLME_ASIO::strand strand_;
+    RPCLIB_ASIO::io_service io_;
+    RPCLIB_ASIO::strand strand_;
     std::atomic<int> call_idx_; /// The index of the last call made
     std::unordered_map<uint32_t, call_t> ongoing_calls_;
     std::string addr_;
@@ -122,7 +125,7 @@ struct client::impl {
     std::thread io_thread_;
     std::atomic<client::connection_state> state_;
     std::shared_ptr<detail::async_writer> writer_;
-    CALLME_CREATE_LOG_CHANNEL(client)
+    RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
 client::client(std::string const &addr, uint16_t port)
@@ -132,7 +135,7 @@ client::client(std::string const &addr, uint16_t port)
         resolver.resolve({pimpl->addr_, std::to_string(pimpl->port_)});
     pimpl->do_connect(endpoint_it);
     std::thread io_thread([this]() {
-        CALLME_CREATE_LOG_CHANNEL(client)
+        RPCLIB_CREATE_LOG_CHANNEL(client)
         name_thread("client");
         pimpl->io_.run();
     });
