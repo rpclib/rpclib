@@ -22,7 +22,7 @@ int main() {
 
     std::cout << "Waiting for get_mandelbrot result" << std::endl;
     auto result = result_obj.get().as<pixel_data>();
-    std::cout << "Got mandelbrot data, displying..." << std::endl;
+    std::cout << "Got mandelbrot data, displaying..." << std::endl;
 
     for (size_t y = 0; y < height; ++y) {
         for (size_t x = 0; x < width; ++x) {

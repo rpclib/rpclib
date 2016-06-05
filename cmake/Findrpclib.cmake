@@ -1,9 +1,9 @@
 #
-# Findrpc.cmake can be distributed with the source of 
+# Findrpclib.cmake can be distributed with the source of
 # your software that depends on rpc. This allows you
 # to write 
 #
-#     find_package(rpc) 
+#     find_package(rpclib)
 #
 # in your CMakeLists.txt.
 #
@@ -26,6 +26,8 @@
 set(FIND_RPCLIB_PATHS
     ${RPCLIB_ROOT}
     $ENV{RPCLIB_ROOT}
+    ${CMAKE_CURRENT_LIST_DIR}/..                   # Support in-tree build
+    ${CMAKE_CURRENT_LIST_DIR}/../build/output/lib  #
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local
@@ -35,10 +37,12 @@ set(FIND_RPCLIB_PATHS
 
 find_path(RPCLIB_INCLUDE_DIR
     PATH_SUFFIXES "include"
-    NAMES "rpc/version.h")
+    NAMES "rpc/version.h"
+    PATHS ${FIND_RPCLIB_PATHS})
 
 find_library(RPCLIB_LIBS
-    NAMES librpc rpc)
+    NAMES librpc rpclib rpc
+    PATHS ${FIND_RPCLIB_PATHS})
 
 if(RPCLIB_INCLUDE_DIR)
     file(READ 
@@ -67,7 +71,7 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(rpc 
+find_package_handle_standard_args(rpclib
                       FOUND_VAR RPCLIB_FOUND
                       REQUIRED_VARS RPCLIB_INCLUDE_DIR RPCLIB_LIBS
                       VERSION_VAR RPCLIB_VERSION_STRING)

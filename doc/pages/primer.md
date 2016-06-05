@@ -109,13 +109,13 @@ Luckily, the msgpack-rpc protocol supports error signaling. We need to modify ou
 
 double divide(double a, double b) {
     if (b == 0) {
-        rpc::this_handler().set_error("Division by zero");
+        rpc::this_handler().respond_error("Division by zero");
     }
     return a / b;
 }
 ```
 
-You might be puzzled about why we are not returning after setting the error. The reason for this is that `set_error` throws an internal exception that is handled inside the library. This might be an implementation detail, but it's good to know what happens here (and it's unlikely to change).
+You might be puzzled about why we are not returning after setting the error. The reason for this is that `respond_error` throws an internal exception that is handled inside the library. This might be an implementation detail, but it's good to know what happens here (and it's unlikely to change).
 
 Now, with the added error handling, our server is bullet-proof. Or is it?
 
@@ -132,7 +132,7 @@ With this, you can call functions that throw or throw exceptions of your own in 
 ```cpp
 double divide(double a, double b) {
     if (b == 0) {
-        rpc::this_handler().set_error("Division by zero");
+        rpc::this_handler().respond_error("Division by zero");
     }
     else if (b == 1) {
         throw std::runtime_error("Come on!");
@@ -141,7 +141,7 @@ double divide(double a, double b) {
 }
 ```
 
-So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised, that `set_error` is still valid and remains the preferred way to do so.
+So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised, that `respond_error` is still valid and remains the preferred way to do so.
 
 What exactly happens to the exception? `rpclib` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error.
 
