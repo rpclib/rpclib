@@ -95,7 +95,10 @@ struct client::impl {
                     LOG_WARN("The server closed the connection.");
                     state_ = client::connection_state::disconnected;
                 } else if (ec == RPCLIB_ASIO::error::connection_reset) {
-                    state_ = client::connection_state::reset;
+                    // Yes, this should be connection_state::reset,
+                    // but on windows, disconnection results in reset. May be
+                    // asio bug, may be a windows socket pecularity. Should be investigated later.
+                    state_ = client::connection_state::disconnected;
                     LOG_WARN("The connection was reset.");
                 } else {
                     LOG_ERROR("Unhandled error code: {}", ec);
