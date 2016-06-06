@@ -26,7 +26,7 @@
 set(FIND_RPCLIB_PATHS
     ${RPCLIB_ROOT}
     $ENV{RPCLIB_ROOT}
-    ${CMAKE_CURRENT_LIST_DIR}/..                   # Support in-tree build
+    ${CMAKE_CURRENT_LIST_DIR}/..                   # To support in-tree build
     ${CMAKE_CURRENT_LIST_DIR}/../build/output/lib  #
     ~/Library/Frameworks
     /Library/Frameworks

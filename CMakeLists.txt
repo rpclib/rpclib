@@ -34,41 +34,135 @@ set(RPCLIB_VERSION_PATCH 1)
 target_architecture(TARGET_ARCH)
 
 if(RPCLIB_FORCE_M32)
-    message("Compiling for 32-bit")
-    add_definitions(-DRPCLIB_ARCH_X86)
+    message(STATUS "Compiling for 32-bit")
+    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X86")
     set(RPCLIB_TARGET_ARCH "x86")
     set(RPCLIB_DEB_ARCH "i386")
 elseif(RPCLIB_FORCE_M64)
-    message("Compiling for 64-bit")
-    add_definitions(-DRPCLIB_ARCH_X64)
+    message(STATUS "Compiling for 64-bit")
+    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X64")
     set(RPCLIB_TARGET_ARCH "x64")
     set(RPCLIB_DEB_ARCH "amd64")
 elseif (${TARGET_ARCH} STREQUAL "i386")
-    message("Compiling for 32-bit")
-    add_definitions(-DRPCLIB_ARCH_X86)
+    message(STATUS "Compiling for 32-bit")
+    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X86")
     set(RPCLIB_TARGET_ARCH "x86")
     set(RPCLIB_DEB_ARCH "i386")
 elseif(${TARGET_ARCH} STREQUAL "x86_64")
-    message("Compiling for 64-bit")
-    add_definitions(-DRPCLIB_ARCH_X64)
+    message(STATUS "Compiling for 64-bit")
+    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X64")
     set(RPCLIB_TARGET_ARCH "x64")
     set(RPCLIB_DEB_ARCH "amd64")
 endif()
 
-add_definitions(-DASIO_STANDALONE)
-add_definitions(-DRPCLIB_ASIO=clmdep_asio)
-add_definitions(-DRPCLIB_FMT=clmdep_fmt)
-if(RPCLIB_ENABLE_LOGGING)
-    add_definitions(-DRPCLIB_ENABLE_LOGGING)
+if (WIN32)
+    set(RPCLIB_OS_DEF "RPCLIB_WIN32")
+elseif (LINUX)
+    set(RPCLIB_OS_DEF "RPCLIB_LINUX")
+elseif (APPLE)
+    set(RPCLIB_OS_DEF "RPCLIB_MAC")
 endif()
+
+
+# This function sets the rpclib-specific flags that are used for
+# development. You do not need this in your project. Instead,
+# Findrpclib.cmake supplies a (possibly empty) RPCLIB_EXTRA_FLAGS variable
+# that you should append to your build flags.
+function(set_rpclib_flags TARGET)
+    # clang is the compiler used for developing mainly, so
+    # this is where I set the highest warning level
+    # but feel free to add similar flags to GCC
+    if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+
+        set(RPCLIB_BUILD_FLAGS
+            "-Wall -pedantic -Weverything -Wno-c++98-compat\
+            -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
+            -pthread -std=c++14")
+
+        if(RPCLIB_FORCE_M32)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+        elseif(RPCLIB_FORCE_M64)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+        endif()
+
+    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+
+        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread -std=c++14")
+
+        if(RPCLIB_ENABLE_COVERAGE)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
+        endif()
+
+        if(RPCLIB_FORCE_M32)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+        elseif(RPCLIB_FORCE_M64)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+        endif()
+
+    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+
+        set(RPCLIB_BUILD_DEFINITIONS
+            "${RPCLIB_BUILD_DEFINITIONS}"
+            "WIN32_LEAN_AND_MEAN"
+            "NOMINMAX"
+            "VC_EXTRALEAN"
+            "_CRT_SECURE_NO_WARNINGS"
+            "_CRT_NONSTDC_NO_DEPRECATE"
+            "_WIN32_WINNT=0x0501"
+            "_GNU_SOURCE"
+            "ASIO_HAS_STD_ADDRESSOF"
+            "ASIO_HAS_STD_ARRAY"
+            "ASIO_HAS_CSTDINT"
+            "ASIO_HAS_STD_SHARED_PTR"
+            "ASIO_HAS_STD_TYPE_TRAITS")
+
+        set(RPCLIB_BUILD_FLAGS
+            "${RPCLIB_BUILD_FLAGS} /EHsc $<$<CONFIG:Debug>:/Zi>")
+
+        set(RPCLIB_LINK_FLAGS "$<$<CONFIG:Debug>:/DEBUG>")
+
+    endif()
+
+    set(RPCLIB_BUILD_DEFINITIONS
+        "${RPCLIB_BUILD_DEFINITIONS}"
+        "${RPCLIB_ARCH_DEF}"
+        "${RPCLIB_OS_DEF}"
+        "ASIO_STANDALONE"
+        "RPCLIB_ASIO=clmdep_asio"
+        "RPCLIB_FMT=clmdep_fmt")
+
+    if(RPCLIB_ENABLE_LOGGING)
+        set(RPCLIB_BUILD_DEFINITIONS
+            "${RPCLIB_BUILD_DEFINITIONS};RPCLIB_ENABLE_LOGGING")
+    endif()
+
+    if(RPCLIB_BUILD_FLAGS)
+        set_target_properties(${TARGET}
+                PROPERTIES
+                COMPILE_FLAGS "${RPCLIB_BUILD_FLAGS}")
+    endif()
+
+    if(RPCLIB_BUILD_DEFINITIONS)
+        set_target_properties(${TARGET}
+                PROPERTIES
+                COMPILE_DEFINITIONS "${RPCLIB_BUILD_DEFINITIONS}")
+    endif()
+
+    if(RPCLIB_LINK_FLAGS)
+        set_target_properties(${TARGET}
+                PROPERTIES
+                LINK_FLAGS "${RPCLIB_LINK_FLAGS}")
+    endif()
+
+endfunction()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 
 configure_file(
-  "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
-  "${PROJECT_BINARY_DIR}/version.h")
+    "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
+    "${PROJECT_BINARY_DIR}/version.h")
 
 include_directories(include)
 include_directories(SYSTEM dependencies/include)
@@ -99,6 +193,8 @@ add_library(${OUTPUT_LIBRARY_NAME}
     ${DEP_HEADERS}
     ${RPCLIB_HEADERS})
 
+set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
+
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
 install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
@@ -110,10 +206,6 @@ install(DIRECTORY include/
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
 install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include)
-
-#if (RPCLIB_INSTALL_MSGPACK)
-    #install(DIRECTORY include/msgpack DESTINATION include)
-#endif()
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -145,6 +237,7 @@ if(RPCLIB_BUILD_TESTS)
     include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 
     add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
+    set_rpclib_flags(${TEST_PROJECT_NAME})
     SetLessStrictWarnings(${TEST_PROJECT_NAME})
 
     LinkTests()
@@ -160,6 +253,7 @@ if(RPCLIB_BUILD_EXAMPLES)
     add_subdirectory(examples/server)
     add_subdirectory(examples/client)
     add_subdirectory(examples/mandelbrot)
+    #add_subdirectory(examples/calculator)
 endif()
 
 
