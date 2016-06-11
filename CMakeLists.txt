@@ -24,7 +24,6 @@ option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 #
 ################################################################################
 
-include(compiler_specific)
 include(TargetArch)
 
 set(RPCLIB_VERSION_MAJOR 1)
@@ -85,6 +84,12 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
         endif()
 
+        set(RPCLIB_DEP_LIBRARIES "pthread")
+
+        if (RPCLIB_ENABLE_LOGGING)
+            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES} rt")
+        endif()
+
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
         set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread -std=c++14")
@@ -97,6 +102,12 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
         elseif(RPCLIB_FORCE_M64)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+        endif()
+
+        set(RPCLIB_DEP_LIBRARIES "pthread")
+
+        if (RPCLIB_ENABLE_LOGGING)
+            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES} rt")
         endif()
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
@@ -154,7 +165,10 @@ function(set_rpclib_flags TARGET)
                 LINK_FLAGS "${RPCLIB_LINK_FLAGS}")
     endif()
 
+    target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
+
 endfunction()
+
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
@@ -238,9 +252,21 @@ if(RPCLIB_BUILD_TESTS)
 
     add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
     set_rpclib_flags(${TEST_PROJECT_NAME})
-    SetLessStrictWarnings(${TEST_PROJECT_NAME})
+    target_link_libraries(
+        ${TEST_PROJECT_NAME}
+        ${CMAKE_PROJECT_NAME}
+        ${RPCLIB_DEP_LIBRARIES})
 
-    LinkTests()
+    # Set less strict warning for tests, since google test is not quite
+    # warning-clean
+    if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+        set_target_properties(${TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS
+            "-Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function \
+            -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default \
+            -Wno-missing-variable-declarations -Wno-deprecated -Wno-unused-macros -Wno-undef \
+            -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion")
+    endif()
+
 endif()
 
 ################################################################################
@@ -250,10 +276,13 @@ endif()
 ################################################################################
 
 if(RPCLIB_BUILD_EXAMPLES)
-    add_subdirectory(examples/server)
-    add_subdirectory(examples/client)
+    set(RPCLIB_ROOT_DIR "${PROJECT_SOURCE_DIR}")
+    set(RPCLIB_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
+    set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/localbuild")
+    #add_subdirectory(examples/server)
+    #add_subdirectory(examples/client)
     add_subdirectory(examples/mandelbrot)
-    #add_subdirectory(examples/calculator)
+    add_subdirectory(examples/calculator)
 endif()
 
 

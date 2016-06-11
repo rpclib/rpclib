@@ -1,14 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(mandelbrot)
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-find_package(SFML COMPONENTS graphics window system REQUIRED)
-# Normally, you would want to distribute Findrpclib.cmake
-# within your project directory; I wanted to avoid copies
-# of this file here, so I'm just setting the CMake module path.
-# In your project, you don't need the following line:
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake")
+# Find our dependencies
 find_package(rpclib REQUIRED)
+find_package(SFML COMPONENTS graphics window system REQUIRED)
 
 include_directories(${RPCLIB_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 

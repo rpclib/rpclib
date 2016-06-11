@@ -15,6 +15,10 @@
 #                         you add this directory, not #include "server.h".
 #   * RPCLIB_LIBS: The static libraries of rpc (for now, this is only one
 #                  library, but plural was chosen to be future-proof).
+#   * RPCLIB_EXTRA_FLAGS: Extra flags that need to be added to the C++ compiler
+#                         flags (e.g. CMAKE_CXX_FLAGS)
+#   * RPCLIB_EXTRA_FLAGS_DEBUG: Same as above, but for debug configuration.
+#                               (e.g. CMAKE_CXX_FLAGS_DEBUG)
 #
 # For finding in custom locations, you may set RPCLIB_ROOT as a cmake variable or
 # environment variable.
@@ -62,12 +66,12 @@ if(RPCLIB_INCLUDE_DIR)
 endif()
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-    list(APPEND CMAKE_CXX_FLAGS "-pthread")
+    set(RPCLIB_EXTRA_FLAGS "-pthread")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    list(APPEND CMAKE_CXX_FLAGS "-pthread")
+    set(RPCLIB_EXTRA_FLAGS "-pthread")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    list(APPEND CMAKE_CXX_FLAGS "/EHsc")
-    list(APPEND CMAKE_CXX_FLAGS_DEBUG "/Zi") 
+    set(RPCLIB_EXTRA_FLAGS "/EHsc")
+    set(RPCLIB_EXTRA_FLAGS_DEBUG "/Zi")
 endif()
 
 include(FindPackageHandleStandardArgs)
