@@ -5,6 +5,7 @@
 
 int main() {
     rpc::client c("localhost", 8080);
+
     try {
         std::cout << "add(2, 3) = ";
         double five = c.call("add", 2, 3).as<double>();
@@ -23,8 +24,14 @@ int main() {
         std::cout << hmm << std::endl;
     } catch (rpc::rpc_error &e) {
         std::cout << std::endl << e.what() << std::endl;
-        std::cout << "in function " << e.get_function_name() << ": "
+        std::cout << "in function '" << e.get_function_name() << "': ";
+
+        using err_t = std::tuple<int, std::string>;
+        auto err = e.get_error().as<err_t>();
+        std::cout << "[error " << std::get<0>(err) << "]: " << std::get<1>(err)
                   << std::endl;
-        std::cout << e.get_error().get() << std::endl;
+        return 1;
     }
+
+    return 0;
 }

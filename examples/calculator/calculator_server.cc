@@ -3,6 +3,14 @@
 #include "rpc/server.h"
 #include "rpc/this_handler.h"
 
+double divide(double a, double b) {
+    if (b == 0.0) {
+        rpc::this_handler().respond_error(
+                std::make_tuple(1, "Division by zero"));
+    }
+    return a / b;
+}
+
 struct subtractor {
     double operator()(double a, double b) {
         return a - b;
@@ -14,14 +22,6 @@ struct multiplier {
         return a * b;
     }
 };
-
-double divide(double a, double b) {
-    if (b == 0.0) {
-        rpc::this_handler().respond_error(
-            std::make_tuple(1, "Division by zero"));
-    }
-    return a / b;
-}
 
 int main() {
     rpc::server srv(8080);
