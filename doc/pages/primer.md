@@ -1,6 +1,6 @@
 # Primer
 
-Welcome to the Primer! This document is a tutorial introduction to `rpclib` for absolute beginners. If you are new to the library and prefer detailed instructions, you are in the right place. If short examples with less explanation work better for you, you might want to check out the [Cookbook](cookbook.md)!
+Welcome to the Primer! This document is a tutorial introduction to `rpclib` for absolute beginners. If you are new to the library and prefer detailed instructions and explanation, you are in the right place. If short examples with less explanation work better for you, you might want to check out the [Cookbook](cookbook.md)!
 
 The tutorial is sturctured as follows: in the first part, writing servers is explained with one simple and one more advanced example.  In the second part, the corresponding clients are implemented.
 
@@ -413,3 +413,12 @@ Does the asynchonous nature of `async_call` depend on the server or the load of 
     `rpclib` uses a simple convention: `foo` is a synchronous call, `async_foo` is asynchronous. This conventions was adapted from Asio. The latter only means that the call returns "immediately" (or rather, very quickly and without finishing all of the work).
 
 The two worker threads in the mandelbrot server can serve two clients in parallel. Or two calls of the same client, which happens in the example. In order to be able to send two requests in an interleaved fashion, we first use `async_call` which allows the control flow of the client to continue.
+
+# Where to go from here
+
+The [Cookbook](cookbook.md) features most (if not all) intended use cases of rpclib - it's a great
+place to continue. 
+
+If you are interested in the internal design of `rpclib`, take a look at the [Design](design.md)
+page.
+

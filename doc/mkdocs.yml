@@ -4,6 +4,7 @@ site_name: rpclib
 pages:
   - 'Home': 'index.md'
   - 'Getting started': 'gettingstarted.md'
+  - 'Cookbook': 'cookbook.md'
   - 'Primer': 'primer.md'
   - 'Building': 'building.md'
 
