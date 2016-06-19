@@ -13,7 +13,10 @@ set_target_properties(
         CXX_STANDARD 14
         COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
 
-#add_executable(calculator_client calculator_client.cc)
-#target_link_libraries(calculator_client ${RPCLIB_LIBS})
-#set_property(TARGET calculator_client PROPERTY CXX_STANDARD 14)
-
+add_executable(calculator_client calculator_client.cc)
+target_link_libraries(calculator_client ${RPCLIB_LIBS})
+set_target_properties(
+        calculator_client
+        PROPERTIES
+        CXX_STANDARD 14
+        COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
