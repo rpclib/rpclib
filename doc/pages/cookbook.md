@@ -1,8 +1,8 @@
 # Cookbook
 
 Welcome to the Cookbook! This is a collection of short examples that allows you to quickly learn
-the ins and outs of `rpclib`. This guide is written in the spirit of "less talk and more code". If
-you prefer detailed instructions and explanation, you might want to start with the
+the ins and outs of `rpclib`. This guide is written in the spirit of "less talk and more code" (it's mostly only the titles, but also look out for the comments, they contain important information).
+If you prefer detailed instructions and explanation, you might want to start with the
 [Primer](primer.md).
 
 ## Server examples
@@ -324,3 +324,7 @@ int main() {
     return 0;
 }
 ```
+
+## Where to go from here
+
+If you want to know even more about `rpclib`, look behind the abstractions in the [Design](design.md) chapter which explains the internal workings and design decisions. 
