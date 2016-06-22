@@ -3,10 +3,15 @@ site_name: rpclib
 
 pages:
   - 'Home': 'index.md'
-  - 'Getting started': 'gettingstarted.md'
-  - 'Cookbook': 'cookbook.md'
-  - 'Primer': 'primer.md'
-  - 'Building': 'building.md'
+  - 'Guides':
+    - 'Getting started': 'gettingstarted.md'
+    - 'Primer': 'primer.md'
+    - 'Cookbook': 'cookbook.md'
+    - 'Glossary': 'glossary.md'
+  - 'Advanced':
+    - 'Building': 'building.md'
+    - 'Internal design': 'design.md'
+    - 'Specification': 'spec.md'
 
 theme_dir: rpclib-flatly
 extra_css: ['extra.css']

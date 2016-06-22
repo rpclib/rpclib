@@ -35,7 +35,7 @@ int main() {
 
     srv.bind("foo", &foo);
 
-    srv.run(); // blocking call
+    srv.run(); // blocking call, handlers run on this thread.
     return 0;
 }
 ```
@@ -48,7 +48,7 @@ int main() {
 int main() {
     rpc::server srv(8080); // listen on TCP port 8080
 
-    srv.bind("hl3", [](){ 
+    srv.bind("hl3", []() { 
         std::cout << "Hey, I'm a lambda!" << std::endl; 
     });
 
@@ -114,6 +114,30 @@ int main() {
 }
 ```
 
+### Multiple worker threads
+
+```cpp
+#include "rpc/server.h"
+#include <iostream>
+
+void foo() {
+    std::cout << "Hey, I'm a free function." << std::endl;
+}
+
+int main() {
+    rpc::server srv(8080); // listen on TCP port 8080
+
+    srv.bind("foo", &foo);
+
+    constexpr size_t thread_count = 8;
+
+    srv.async_run(thread_count); // non-blocking call, handlers execute on one of the workers
+
+    std::cin.ignore();
+    return 0;
+}
+```
+
 ### Responding with errors
 
 ```cpp
@@ -123,7 +147,7 @@ int main() {
 int main() {
     rpc::server srv(8080); // listen on TCP port 8080
 
-    srv.bind("error", [](){ 
+    srv.bind("error", []() { 
         auto err_obj = std::make_tuple(13, "Errors are arbitrary objects");
         rpc::this_handler().respond_error(err_obj);
     });
@@ -224,3 +248,79 @@ int main() {
 ```
 
 ## Client examples
+
+### Creating a client
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+
+    // client initiates async connection upon creation
+    return 0;
+
+    // destructor of client disconnects
+}
+```
+
+### Calling functions
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+
+    // client initiates async connection upon creation
+
+    // call blocks until:
+    // - connection is established
+    // - result is read
+    c.call("foo", 2, 3.3, "str"); 
+
+    return 0;
+}
+```
+
+### Getting return values
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+    int a = c.call("add", 2, 3).as<int>(); 
+
+    return 0;
+}
+```
+
+### Calling functions asynchronously
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+
+    auto a_future = c.call_async("add", 2, 3); // non-blocking, returns std::future
+
+    int a = a_future.get().as<int>(); // possibly blocks if the result is not yet available
+
+    return 0;
+}
+```
+
+### Querying the connection state
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+    client::connection_state cs = c.get_connection_state();
+
+    return 0;
+}
+```

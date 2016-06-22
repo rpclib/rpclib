@@ -53,3 +53,9 @@ TBD
 ### XCode
 
 TBD
+
+## Where to go from here
+
+Now that you have an environment where you can compile and link programs with `rpclib`, either
+check out the [Primer](primer.md) for a step-by-step tutorial with lots of explanation. If you
+prefer short examples with minimal instructions, check out the [Cookbook](cookbook.md).

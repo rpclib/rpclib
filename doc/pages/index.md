@@ -10,6 +10,7 @@ Welcome to the documentation of `rpclib`! `rpclib` is a new msgpack-rpc implemen
 
   * [Getting started](gettingstarted.md): Requirements, installation - everything you need to be able to start using `rpclib`
   * [Cookbook](cookbook.md): Recipes for common tasks the library was designed for handling, in the form of short examples
+  * [Glossary](glossary.md): Collection of definitions used by the library.
   * [Primer](primer.md): A longer tutorial introduction to using the library, intended for newcomers
   * [Troubleshooting](troubleshooting.md): Common problems and their solutions
   * [FAQ](faq.md): Frequently Asked Questions
