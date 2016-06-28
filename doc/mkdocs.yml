@@ -9,7 +9,7 @@ pages:
     - 'Cookbook': 'cookbook.md'
     - 'Glossary': 'glossary.md'
   - 'Advanced':
-    - 'Building': 'building.md'
+    - 'Compiling': 'compiling.md'
     - 'Internal design': 'design.md'
     - 'Specification': 'spec.md'
 
@@ -21,5 +21,4 @@ markdown_extensions:
       permalink: True
       baselevel: 1
   - admonition
-  - fontawesome_markdown
 
