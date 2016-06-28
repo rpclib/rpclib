@@ -138,6 +138,31 @@ int main() {
 }
 ```
 
+### Binding using custom types
+
+```cpp
+#include "rpc/server.h"
+
+struct custom_type {
+    int x;
+    double y;
+    std::string str;
+    MSGPACK_DEFINE_ARRAY(x, y, str); // or MSGPACK_DEFINE_MAP
+};
+
+int main() {
+    rpc::server srv(8080); // listen on TCP port 8080
+
+    srv.bind("cool_function", [](custom_type const& c) {
+        std::cout << "c = { " << c.x << ", "
+                  << c.y << ", " << c.str << "}" << std::endl;
+    });
+
+    srv.run(); // blocking call
+    return 0;
+}
+```
+
 ### Responding with errors
 
 ```cpp
@@ -305,6 +330,8 @@ int main() {
     rpc::client c("127.0.0.1", 8080);
 
     auto a_future = c.call_async("add", 2, 3); // non-blocking, returns std::future
+
+    std::cout << "I can do something here immediately" << std::endl;
 
     int a = a_future.get().as<int>(); // possibly blocks if the result is not yet available
 
