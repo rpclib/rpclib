@@ -1,7 +1,6 @@
 #include <functional>
 
 #include "gmock/gmock.h"
-#include "gtest/gtest.h"
 
 #include "rpc/dispatcher.h"
 #include "testutils.h"
@@ -18,8 +17,8 @@ bool g_dummy_void_zeroarg_called;
 bool g_dummy_void_singlearg_called;
 bool g_dummy_void_multiarg_called;
 void dummy_void_zeroarg() { g_dummy_void_zeroarg_called = true; }
-void dummy_void_singlearg(int x) { g_dummy_void_singlearg_called = true; }
-void dummy_void_multiarg(int x, int y) { g_dummy_void_multiarg_called = true; }
+void dummy_void_singlearg(int) { g_dummy_void_singlearg_called = true; }
+void dummy_void_multiarg(int, int) { g_dummy_void_multiarg_called = true; }
 
 class binding_test : public testing::Test {
 public:
@@ -147,7 +146,7 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_few) {
                                     "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
                                     "\x65\x61\x72\x67\x90";
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
-    EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
+    EXPECT_NO_THROW(raw_call(raw_msg));
     EXPECT_FALSE(g_dummy_void_singlearg_called);
 }
 
@@ -157,7 +156,7 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
                                     "\x76\x6f\x69\x64\x5f\x73\x69\x6e\x67\x6c"
                                     "\x65\x61\x72\x67\x92\x2a\x2b";
     dispatcher.bind("dummy_void_singlearg", &dummy_void_singlearg);
-    EXPECT_THROW(raw_call(raw_msg), std::runtime_error);
+    EXPECT_NO_THROW(raw_call(raw_msg));
     EXPECT_FALSE(g_dummy_void_singlearg_called);
 }
 
