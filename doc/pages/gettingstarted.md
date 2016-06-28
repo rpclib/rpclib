@@ -6,56 +6,44 @@ This document details the steps of getting everything in place to be able to use
 
 ### Compiler
 
-`rpclib` uses some C++14 features, and as such, requires a very recent compiler. The following compilers are tried and tested with `rpclib` at the moment:
+`rpclib` uses some C++14 features, and as such, requires a recent compiler. The following compilers are tried and tested with `rpclib` at the moment:
 
   * g++ 5.0
   * clang++ 3.7
-  * MSVC 2015 Update 1
+  * MSVC 2015 Update 2
 
-TIP: Newer versions of these compilers are expected to work.
+Newer versions of these compilers are expected to work.
 
 ### Tools
 
 In addition to a capable compiler, you will need:
 
   * [CMake 3.x](https://cmake.org)
-  * GNU make (on \*nixes) or MSBuild/Visual Studio (on Microsoft Windows).
+  * And either
+      * GNU make, or
+      * Ninja, or
+      * MSBuild/Visual Studio (on Microsoft Windows).
 
-### Dependencies
+### The library
+
+There are various release packages available for the most popular systems and ideally you should install one of those. If there is no suitable package for your system or you simply prefer to build from source, take a look at the [Compiling](compiling.md) chapter.
+
+!!! info
+    `rpclib` uses CMake and has a very conventional build process. If you know how to build a CMake-based library, you know how to build `rpclib`.
+
+#### Dependencies
 
 `rpclib` has no external library dependencies, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
 
-TIP: See the [Design](design.md) documentation for details on how `rpclib` handles its dependencies.
+!!! tip
+    See the [Design](design.md) documentation for details on how `rpclib` handles its dependencies.
 
 
-## Building
+## Setting up your environment
 
-`rpclib` uses CMake and has a very conventional build process. If you know how to build a CMake-based library, you know how to build `rpclib`.
-
-If not, you can read the <<building.adoc#,Building>> chapter for step-by-step instructions. You can also visit that document for information learn about advanced building options.
-
-## Your first project with `rpclib`: "Here's my number"
-
-In order to integrate `rpclib` into your project, you will need to have it built and stored somewhere on your system. Place the `rpclib` headers into your include path, and link librpc.a with your executable. The exact process of that depends on your compiler and/or IDE.
-
-### CMake/Clion
-
-`rpclib` ships with a CMake module that can be used to find the library in the system. Using it is pretty simple: place Findrpc.cmake into your CMake module path, then add the following to your CMakeLists.txt:
-
-```cmake
-find_package(rpc)
-```
-
-### Microsoft Visual Studio
-
-TBD
-
-### XCode
-
-TBD
+In order to use `rpclib` in your projects, you will need to have it built and stored somewhere on your system. Place the `rpclib` headers into your include path, and link the static library with your executable. The exact process of that depends on your compiler and/or IDE.
 
 ## Where to go from here
 
 Now that you have an environment where you can compile and link programs with `rpclib`, either
-check out the [Primer](primer.md) for a step-by-step tutorial with lots of explanation. If you
-prefer short examples with minimal instructions, check out the [Cookbook](cookbook.md).
+check out the [Primer](primer.md) for a step-by-step tutorial or the [Cookbook](cookbook.md), if you prefer short examples with minimal instructions.
