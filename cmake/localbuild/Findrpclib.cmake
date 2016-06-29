@@ -1,6 +1,8 @@
 #
-# This is a "fake" Findrpclib.cmake. In your project, you will probably want
-# to use the Findrpclib.cmake one directory level up from here.
+# This is a "fake" Findrpclib.cmake. Don't use this in your project,
+# it is just an internal hack used by rpclib itself.
+# In your project, you will probably want to use the REAL
+# Findrpclib.cmake, one directory level up from here!
 #
 
 set(RPCLIB_INCLUDE_DIR "${RPCLIB_ROOT_DIR}/include")
