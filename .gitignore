@@ -7,3 +7,4 @@ cppcheck*
 report
 utils/release
 .vscode
+doc/site
