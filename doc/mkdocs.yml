@@ -13,12 +13,12 @@ pages:
     - 'Internal design': 'design.md'
     - 'Specification': 'spec.md'
 
-theme_dir: rpclib-flatly
+theme_dir: rpclib-cinder
 extra_css: ['extra.css']
 
 markdown_extensions:
   - toc:
-      permalink: True
+      permalink: False
       baselevel: 1
   - admonition
 
