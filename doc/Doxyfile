@@ -1,50 +1,10 @@
 # Doxyfile 1.8.11
 
-# This file describes the settings to be used by the documentation system
-# doxygen (www.doxygen.org) for a project.
-#
-# All text after a double hash (##) is considered a comment and is placed in
-# front of the TAG it is preceding.
-#
-# All text after a single hash (#) is considered a comment and will be ignored.
-# The format is:
-# TAG = value [value, ...]
-# For lists, items can also be appended using:
-# TAG += value [value, ...]
-# Values that contain spaces should be placed between quotes (\" \").
-
-#---------------------------------------------------------------------------
-# Project related configuration options
-#---------------------------------------------------------------------------
-
-# This tag specifies the encoding used for all characters in the config file
-# that follow. The default is UTF-8 which is also the encoding used for all text
-# before the first occurrence of this tag. Doxygen uses libiconv (or the iconv
-# built into libc) for the transcoding. See http://www.gnu.org/software/libiconv
-# for the list of possible encodings.
-# The default value is: UTF-8.
-
 DOXYFILE_ENCODING      = UTF-8
 
-# The PROJECT_NAME tag is a single word (or a sequence of words surrounded by
-# double-quotes, unless you are using Doxywizard) that should identify the
-# project for which the documentation is generated. This name is used in the
-# title of most generated pages and in a few other places.
-# The default value is: My Project.
-
 PROJECT_NAME           = "rpclib"
-
-# The PROJECT_NUMBER tag can be used to enter a project or revision number. This
-# could be handy for archiving the generated documentation or if some version
-# control system is used.
-
 PROJECT_NUMBER         =
-
-# Using the PROJECT_BRIEF tag one can provide an optional one line description
-# for a project that appears at the top of each page and should give viewer a
-# quick idea about the purpose of the project. Keep the description short.
-
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = "rpclib is a new msgpack-rpc implementation written using modern C++. The goal of this library is to provide a simple, no-nonsense RPC solution."
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -161,7 +121,7 @@ STRIP_FROM_PATH        =
 # specify the list of include paths that are normally passed to the compiler
 # using the -I flag.
 
-STRIP_FROM_INC_PATH    =
+STRIP_FROM_INC_PATH    = "../include"
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but
 # less readable) file names. This can be useful is your file systems doesn't
@@ -654,14 +614,14 @@ SHOW_USED_FILES        = YES
 # (if specified).
 # The default value is: YES.
 
-SHOW_FILES             = YES
+SHOW_FILES             = NO
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the Namespaces
 # page. This will remove the Namespaces entry from the Quick Index and from the
 # Folder Tree View (if specified).
 # The default value is: YES.
 
-SHOW_NAMESPACES        = YES
+SHOW_NAMESPACES        = NO
 
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that
 # doxygen should invoke to get the current version for each file (typically from
@@ -771,7 +731,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "../include/rpc"
+INPUT                  = "../include"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -811,7 +771,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = "../include/msgpack"
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -838,7 +798,7 @@ EXCLUDE_PATTERNS       =
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        =
+EXCLUDE_SYMBOLS        = rpc::detail
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
