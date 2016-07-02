@@ -22,4 +22,5 @@ markdown_extensions:
       permalink: False
       baselevel: 1
   - admonition
+  - attr_list
 
