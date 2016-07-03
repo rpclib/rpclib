@@ -3,7 +3,7 @@ DDIR=doxygen/xml
 
 all: reference.md
 
-doxy: Doxyfile
+$(DDIR)/index.xml: Doxyfile $(wildcard ../include/rpc/*.h)
 	doxygen Doxyfile
 
 all.xml: $(DDIR)/index.xml

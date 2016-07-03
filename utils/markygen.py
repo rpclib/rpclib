@@ -59,8 +59,10 @@ class Function(DoxyObject):
         except IndexError:
             self.exceptions = []
 
-        self.note = self._get('detaileddescription/para/simplesect[@kind="note"]/para')
-        self.returns = self._get('detaileddescription/para/simplesect[@kind="return"]/para')
+        self.note = self._get(
+            'detaileddescription/para/simplesect[@kind="note"]/para')
+        self.returns = self._get(
+            'detaileddescription/para/simplesect[@kind="return"]/para')
 
     def _get_type(self):
         try:

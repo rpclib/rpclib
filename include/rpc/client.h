@@ -20,8 +20,8 @@ class client {
 public:
     //! \brief Constructs a client.
     //!
-    //! When the client is constructed, it initiates a connection
-    //! asynchronically. This means that it will not block until the connection
+    //! When a client is constructed, it initiates a connection
+    //! asynchronically. This means that it will not block while the connection
     //! is established. However, when the first call is performed, it *might*
     //! block if the connection was not already established.
     //!
@@ -30,9 +30,9 @@ public:
     //! \param port The port on the server to connect to.
     client(std::string const &addr, uint16_t port);
 
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
+    //! \cond DOXYGEN_SKIP
     client(client const &) = delete;
-    #endif
+    //! \endcond
 
     //! \brief Destructor.
     //!
@@ -43,7 +43,7 @@ public:
     //! \brief Calls a function with the given name and arguments (if any).
     //!
     //! \param func_name The name of the function to call on the server.
-    //! \param args A variable number of  arguments to pass to the called
+    //! \param args A variable number of arguments to pass to the called
     //! function.
     //!
     //! \tparam Args The types of the arguments. Each type in this parameter
@@ -52,7 +52,7 @@ public:
     //! \returns A msgpack::object containing the result of the function (if
     //! any). To obtain a typed value, use the msgpack API.
     //!
-    //! \throws `rpc::rpc_error` if the server responds with an error.
+    //! \throws rpc::rpc_error if the server responds with an error.
     template <typename... Args>
     msgpack::object_handle call(std::string const &func_name, Args... args);
 
@@ -78,17 +78,16 @@ public:
 
     //! \brief Sends a notification with the given name and arguments (if any).
     //!
-    //! Notifications are a special kind of calls. As the name suggests, they
-    //! can be used to notify the server, while not expecting a response. In
-    //! `rpclib` terminology, a notification is like an `async_call` without
-    //! a return value.
+    //! Notifications are a special kind of calls. They can be used to notify
+    //! the server, while not expecting a response. In `rpclib` terminology,
+    //! a notification is like an `async_call` without a return value.
     //!
     //! \param func_name The name of the notification to call.
     //! \param args The arguments to pass to the function.
     //! \tparam Args THe types of the arguments.
     //!
     //! \note This function returns immediately (possibly before the
-    //! notification is written to the socket.
+    //! notification is written to the socket).
     template <typename... Args>
     void send(std::string const &func_name, Args... args);
 
