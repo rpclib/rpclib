@@ -44,7 +44,8 @@ class Function(DoxyObject):
         self.type = self._get_type()
         self.argsstr = self._get('argsstring')
         try:
-            self.params = [Parameter(p) for p in xml.xpath('detaileddescription/para/parameterlist[@kind="param"]')[0]]
+            self.params = [Parameter(p)
+                           for p in xml.xpath('detaileddescription/para/parameterlist[@kind="param"]')[0]]
         except IndexError:
             self.params = []
         try:
@@ -52,6 +53,12 @@ class Function(DoxyObject):
                             for p in xml.xpath('detaileddescription/para/parameterlist[@kind="templateparam"]')[0]]
         except IndexError:
             self.tparams = []
+        try:
+            self.exceptions = [Parameter(p)
+                               for p in xml.xpath('detaileddescription/para/parameterlist[@kind="exception"]')[0]]
+        except IndexError:
+            self.exceptions = []
+
         self.note = self._get('detaileddescription/para/simplesect[@kind="note"]/para')
         self.returns = self._get('detaileddescription/para/simplesect[@kind="return"]/para')
 

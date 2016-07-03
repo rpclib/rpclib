@@ -51,6 +51,8 @@ public:
     //!
     //! \returns A msgpack::object containing the result of the function (if
     //! any). To obtain a typed value, use the msgpack API.
+    //!
+    //! \throws `rpc::rpc_error` if the server responds with an error.
     template <typename... Args>
     msgpack::object_handle call(std::string const &func_name, Args... args);
 
@@ -60,8 +62,7 @@ public:
     //! A call is performed asynchronously in the context of the client, i.e.
     //! this is not to be confused with parallel execution on the server.
     //! This function differs from `call` in that it does not wait for the
-    //! result of the function. Instead, ti returns a
-    //! `[std::future](http://en.cppreference.com/w/cpp/thread/future)` that
+    //! result of the function. Instead, it returns a std::future that
     //! can be used to retrieve the result later.
     //!
     //! \param func_name The name of the function to call.

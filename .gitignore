@@ -8,3 +8,6 @@ report
 utils/release
 .vscode
 doc/site
+doc/doxygen
+doc/all.xml
+reference.md
