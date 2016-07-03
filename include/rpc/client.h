@@ -9,43 +9,85 @@
 namespace rpc {
 
 //! \brief Implements a client that connects to a msgpack-rpc server and is
-//! able to call functions synchronously or asynchronously.
+//! able to call functions synchronously or asynchronously. This is the main
+//! interfacing point for implementing client applications.
+//!
+//! Use this class to connect to msgpack-rpc servers and call their exposed
+//! functions. This class supports calling functions synchronously and
+//! asynchronously. When the client object is created, it initiates connecting
+//! to the given server asynchronically and disconnects when it is destroyed.
 class client {
 public:
+    //! \brief Constructs a client.
+    //!
+    //! When the client is constructed, it initiates a connection
+    //! asynchronically. This means that it will not block until the connection
+    //! is established. However, when the first call is performed, it *might*
+    //! block if the connection was not already established.
+    //!
+    //! \param addr The address of the server to connect to. This might be an
+    //! IP address or a host name, too.
+    //! \param port The port on the server to connect to.
     client(std::string const &addr, uint16_t port);
 
+    #ifndef DOXYGEN_SHOULD_SKIP_THIS
     client(client const &) = delete;
+    #endif
 
+    //! \brief Destructor.
+    //!
+    //! During destruction, the connection to the server is gracefully closed.
+    //! This means that any outstanding reads and writes are completed first.
     ~client();
 
     //! \brief Calls a function with the given name and arguments (if any).
-    //! \param func_name The name of the function to call.
-    //! \param args The arguments to pass to the function.
+    //!
+    //! \param func_name The name of the function to call on the server.
+    //! \param args A variable number of  arguments to pass to the called
+    //! function.
+    //!
+    //! \tparam Args The types of the arguments. Each type in this parameter
+    //! pack have to be serializable by msgpack.
+    //!
     //! \returns A msgpack::object containing the result of the function (if
-    //! any).
-    //! To obtain a typed value, use the msgpack API.
-    //! \tparam Args The types of the arguments.
+    //! any). To obtain a typed value, use the msgpack API.
     template <typename... Args>
     msgpack::object_handle call(std::string const &func_name, Args... args);
 
     //! \brief Calls a function asynchronously with the given name and
     //! arguments.
+    //!
+    //! A call is performed asynchronously in the context of the client, i.e.
+    //! this is not to be confused with parallel execution on the server.
+    //! This function differs from `call` in that it does not wait for the
+    //! result of the function. Instead, ti returns a
+    //! `[std::future](http://en.cppreference.com/w/cpp/thread/future)` that
+    //! can be used to retrieve the result later.
+    //!
     //! \param func_name The name of the function to call.
     //! \param args The arguments to pass to the function.
+    //!
+    //! \tparam Args The types of the arguments.
+    //!
     //! \returns A std::future, possibly holding a future result
     //! (which is a msgpack::object).
-    //! \tparam Args The types of the arguments.
     template <typename... Args>
     std::future<msgpack::object_handle> async_call(std::string const &func_name,
                                                    Args... args);
 
     //! \brief Sends a notification with the given name and arguments (if any).
+    //!
+    //! Notifications are a special kind of calls. As the name suggests, they
+    //! can be used to notify the server, while not expecting a response. In
+    //! `rpclib` terminology, a notification is like an `async_call` without
+    //! a return value.
+    //!
     //! \param func_name The name of the notification to call.
     //! \param args The arguments to pass to the function.
-    //! \note This function returns immediately (possibly before the
-    //! notification
-    //! is written to the socket.
     //! \tparam Args THe types of the arguments.
+    //!
+    //! \note This function returns immediately (possibly before the
+    //! notification is written to the socket.
     template <typename... Args>
     void send(std::string const &func_name, Args... args);
 
