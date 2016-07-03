@@ -23,7 +23,9 @@ h4 {
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 300;
     margin-top: 20px;
-    font-style: italic;
+    font-style: normal;
+    border-bottom: 1px solid #dadada;
+    padding-bottom: 10px;
 }
 h5 {
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
