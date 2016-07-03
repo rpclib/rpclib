@@ -43,11 +43,14 @@ ${"### Public functions"}
 
 
     % for f in c.functions:
-<h4 id="${f.id}">${opt(f.type)} ${c.name}::${f.name}${f.argsstr}</h4>
+<h4 id="${f.id}">${c.name}::${f.name}</h4>
+```cpp
+${opt(f.type)} ${c.name}::${f.name}${f.argsstr};
+```
 
 ${f.brief}
 
-        % if f.params:
+        % if f.tparams:
 ${"##### Template parameters"}
             % for t in f.tparams:
 `${t.name}` ${t.desc}
@@ -64,6 +67,11 @@ ${"##### Parameters"}
         % if f.desc:
 ${"##### Details"}
 ${f.desc}
+
+        % endif
+        % if f.returns:
+${"##### Return value"}
+${f.returns}
 
         % endif
         % if f.note:
