@@ -4,7 +4,6 @@ This is a terrible script that generates markdown from doxygen output.
 """
 
 import argparse
-from pprint import pprint
 from lxml import etree as et
 from mako.template import Template
 
@@ -14,6 +13,8 @@ class DoxyObject(object):
         self._xml = xml
         self.brief = self._get('briefdescription/para')
         self.desc = self._get('detaileddescription/para')
+        self.refid = xml.get('refid')
+        self.id = xml.get('id')
 
     def _get(self, xpath):
         try:
@@ -40,6 +41,7 @@ class Function(DoxyObject):
         self.is_virtual = xml.get('virtual') == 'virtual'
         self.name = self._get('name')
         self.type = self._get('type')
+        self.type = self._get_type()
         self.argsstr = self._get('argsstring')
         try:
             self.params = [Parameter(p) for p in xml.xpath('detaileddescription/para/parameterlist[@kind="param"]')[0]]
@@ -50,9 +52,15 @@ class Function(DoxyObject):
                             for p in xml.xpath('detaileddescription/para/parameterlist[@kind="templateparam"]')[0]]
         except IndexError:
             self.tparams = []
-
         self.note = self._get('detaileddescription/para/simplesect[@kind="note"]/para')
         self.returns = self._get('detaileddescription/para/simplesect[@kind="return"]/para')
+
+    def _get_type(self):
+        try:
+            t = self._xml.xpath('type/ref')[0].text
+        except:
+            t = self._xml.xpath('type')[0].text
+        return t
 
 
 class Class(DoxyObject):
@@ -62,8 +70,6 @@ class Class(DoxyObject):
         self.includes = self._get('includes')
         self.functions = [Function(f)
                           for f in xml.xpath('sectiondef[@kind="public-func"]/memberdef[@kind="function"]')]
-        for f in self.functions:
-            pprint(f.__dict__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input')
