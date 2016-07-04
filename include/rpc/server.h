@@ -95,7 +95,7 @@ public:
 
 private:
 	RPCLIB_DECL_PIMPL(180)
-    std::shared_ptr<dispatcher> disp_;
+    std::shared_ptr<detail::dispatcher> disp_;
 };
 
 } /* rpc */

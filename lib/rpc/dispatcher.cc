@@ -4,6 +4,7 @@
 #include "rpc/this_handler.h"
 
 namespace rpc {
+namespace detail {
 
 using detail::response;
 
@@ -130,4 +131,5 @@ void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
     }
 }
 
+}
 } /* rpc */

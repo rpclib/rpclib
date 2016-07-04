@@ -35,7 +35,7 @@ public:
     }
 
 protected:
-    rpc::dispatcher dispatcher;
+    rpc::detail::dispatcher dispatcher;
 };
 
 class dispatch_test : public binding_test {};

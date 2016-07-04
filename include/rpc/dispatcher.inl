@@ -1,5 +1,6 @@
 
 namespace rpc {
+namespace detail {
 
 template <typename F> void dispatcher::bind(std::string const &name, F func) {
     bind(name, func, typename detail::func_kind_info<F>::result_kind(),
@@ -68,5 +69,6 @@ void dispatcher::bind(std::string const &name, F func,
         auto result = msgpack::object(detail::call(func, args_real), *z);
         return std::make_unique<msgpack::object_handle>(result, std::move(z));
     }));
+}
 }
 }
