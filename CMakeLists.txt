@@ -127,10 +127,10 @@ function(set_rpclib_flags TARGET)
             "ASIO_HAS_STD_SHARED_PTR"
             "ASIO_HAS_STD_TYPE_TRAITS")
 
-        set(RPCLIB_BUILD_FLAGS
-            "${RPCLIB_BUILD_FLAGS} /EHsc $<$<CONFIG:Debug>:/Zi>")
+        #set(RPCLIB_BUILD_FLAGS
+        #    "${RPCLIB_BUILD_FLAGS} /EHsc" $<$<CONFIG:Debug>:/Zi>)
 
-        set(RPCLIB_LINK_FLAGS "$<$<CONFIG:Debug>:/DEBUG>")
+        set(RPCLIB_LINK_FLAGS)# $<$<CONFIG:Debug>:/DEBUG>)
 
     endif()
 

@@ -116,7 +116,7 @@ private:
 private:
     static constexpr uint32_t default_buffer_size = 65535;
     static constexpr double buffer_grow_factor = 1.5;
-    RPCLIB_DECL_PIMPL(648)
+    RPCLIB_DECL_PIMPL(512)
 };
 }
 

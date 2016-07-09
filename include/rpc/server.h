@@ -94,7 +94,7 @@ public:
     friend class detail::server_session;
 
 private:
-	RPCLIB_DECL_PIMPL(180)
+	RPCLIB_DECL_PIMPL(256)
     std::shared_ptr<detail::dispatcher> disp_;
 };
 
