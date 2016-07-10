@@ -14,9 +14,9 @@ option(RPCLIB_GENERATE_COMPDB "Generate compilation database. Useful for YCM." O
 option(RPCLIB_BUILD_EXAMPLES "Build examples." OFF)
 option(RPCLIB_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
-option(RPCLIB_INSTALL_MSGPACK "Install msgpack headers. Callme ships some minor patches with msgpack, so this is recommended!" ON)
 option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
+option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" ON)
 
 ################################################################################
 #
@@ -62,6 +62,11 @@ elseif (APPLE)
     set(RPCLIB_OS_DEF "RPCLIB_MAC")
 endif()
 
+macro(configure_msvc_runtime)
+  if(MSVC)
+
+  endif()
+endmacro()
 
 # This function sets the rpclib-specific flags that are used for
 # development. You do not need this in your project. Instead,
@@ -126,12 +131,10 @@ function(set_rpclib_flags TARGET)
             "ASIO_HAS_CSTDINT"
             "ASIO_HAS_STD_SHARED_PTR"
             "ASIO_HAS_STD_TYPE_TRAITS")
-
-        #set(RPCLIB_BUILD_FLAGS
-        #    "${RPCLIB_BUILD_FLAGS} /EHsc" $<$<CONFIG:Debug>:/Zi>)
-
-        set(RPCLIB_LINK_FLAGS)# $<$<CONFIG:Debug>:/DEBUG>)
-
+		
+		
+		
+			
     endif()
 
     set(RPCLIB_BUILD_DEFINITIONS
@@ -210,6 +213,31 @@ add_library(${OUTPUT_LIBRARY_NAME}
 set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
 
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
+
+if (RPCLIB_MSVC_STATIC_RUNTIME)			
+	# Set compiler options.
+	set(variables
+	  CMAKE_C_FLAGS_DEBUG
+	  CMAKE_C_FLAGS_MINSIZEREL
+	  CMAKE_C_FLAGS_RELEASE
+	  CMAKE_C_FLAGS_RELWITHDEBINFO
+	  CMAKE_CXX_FLAGS_DEBUG
+	  CMAKE_CXX_FLAGS_MINSIZEREL
+	  CMAKE_CXX_FLAGS_RELEASE
+	  CMAKE_CXX_FLAGS_RELWITHDEBINFO
+	)
+	
+	message(STATUS
+		"MSVC -> forcing use of statically-linked runtime."
+	)
+	
+	foreach(variable ${variables})
+		if(${variable} MATCHES "/MD")
+			string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
+		endif()
+	endforeach()
+	
+endif()
 
 install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
 install(DIRECTORY include/
