@@ -16,7 +16,7 @@ option(RPCLIB_ENABLE_LOGGING "ALlow logging in the library for debug purposes. A
 option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
-option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" ON)
+option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
 
 ################################################################################
 #
@@ -62,11 +62,9 @@ elseif (APPLE)
     set(RPCLIB_OS_DEF "RPCLIB_MAC")
 endif()
 
-macro(configure_msvc_runtime)
-  if(MSVC)
-
-  endif()
-endmacro()
+if (RPCLIB_MSVC_STATIC_RUNTIME)
+	set(RPCLIB_NAME_SUFFIX "-mt")
+endif()
 
 # This function sets the rpclib-specific flags that are used for
 # development. You do not need this in your project. Instead,
@@ -132,9 +130,6 @@ function(set_rpclib_flags TARGET)
             "ASIO_HAS_STD_SHARED_PTR"
             "ASIO_HAS_STD_TYPE_TRAITS")
 		
-		
-		
-			
     endif()
 
     set(RPCLIB_BUILD_DEFINITIONS
@@ -167,11 +162,14 @@ function(set_rpclib_flags TARGET)
                 PROPERTIES
                 LINK_FLAGS "${RPCLIB_LINK_FLAGS}")
     endif()
+	
+    set_target_properties(${TARGET}
+                PROPERTIES
+                DEBUG_POSTFIX "d")
 
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
 
 endfunction()
-
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
@@ -191,7 +189,7 @@ file(GLOB_RECURSE DEP_HEADERS
     dependencies/include/*.h 
     dependencies/include/*.hpp)
 
-set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
+set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}${RPCLIB_NAME_SUFFIX})
 set(DEP_SOURCES
     dependencies/src/format.cc
     dependencies/src/posix.cc)
@@ -214,6 +212,11 @@ set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
 
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
+# MSVC static runtime support
+#
+# While this pollutes global flags (when using add_library), you would not want to 
+# build with a disparity anyway. (also, CMake still has no support for this, so you
+# would end up doing something like this yourself). 
 if (RPCLIB_MSVC_STATIC_RUNTIME)			
 	# Set compiler options.
 	set(variables
@@ -282,7 +285,7 @@ if(RPCLIB_BUILD_TESTS)
     set_rpclib_flags(${TEST_PROJECT_NAME})
     target_link_libraries(
         ${TEST_PROJECT_NAME}
-        ${CMAKE_PROJECT_NAME}
+        ${OUTPUT_LIBRARY_NAME}
         ${RPCLIB_DEP_LIBRARIES})
 
     # Set less strict warning for tests, since google test is not quite
