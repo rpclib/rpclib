@@ -62,10 +62,6 @@ elseif (APPLE)
     set(RPCLIB_OS_DEF "RPCLIB_MAC")
 endif()
 
-if (RPCLIB_MSVC_STATIC_RUNTIME)
-	set(RPCLIB_NAME_SUFFIX "-mt")
-endif()
-
 # This function sets the rpclib-specific flags that are used for
 # development. You do not need this in your project. Instead,
 # Findrpclib.cmake supplies a (possibly empty) RPCLIB_EXTRA_FLAGS variable
