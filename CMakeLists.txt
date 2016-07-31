@@ -159,9 +159,11 @@ function(set_rpclib_flags TARGET)
                 LINK_FLAGS "${RPCLIB_LINK_FLAGS}")
     endif()
 	
-    set_target_properties(${TARGET}
-                PROPERTIES
-                DEBUG_POSTFIX "d")
+	if(NOT RPCLIB_NAME_SUFFIX)
+		set_target_properties(${TARGET}
+					PROPERTIES
+					DEBUG_POSTFIX "d")
+	endif()
 
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
 
@@ -185,7 +187,8 @@ file(GLOB_RECURSE DEP_HEADERS
     dependencies/include/*.h 
     dependencies/include/*.hpp)
 
-set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}${RPCLIB_NAME_SUFFIX})
+set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}-${RPCLIB_NAME_SUFFIX})
+
 set(DEP_SOURCES
     dependencies/src/format.cc
     dependencies/src/posix.cc)
