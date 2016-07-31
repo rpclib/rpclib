@@ -13,19 +13,31 @@ h2, .h2, h3 {
     line-height: 1.6;
 }
 
+h4.doxy {
+    border-top: 1px solid #dadada;
+    padding-top: 10px;
+    font-weight: 400;
+}
+
 pre, code {
     border: 0;
     font-family: "Source Code Pro", monospace;
     background: transparent;
 }
 
-code {
-    color: #2c3e50;
+pre {
+    padding: 0;
 }
 
+.navbar-default {
+    border-bottom: 0;
+}
+
+/*
 .hljs-keyword {
     color: #18bc9c;
 }
+*/
 
 .admonition {
     border: none;

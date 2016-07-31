@@ -24,7 +24,7 @@ protected:
 TEST_F(this_handler_test, set_error) {
     s.suppress_exceptions(false);
     s.bind("errfunc", []() {
-        rpc::this_handler().set_error("Imma let you finish, but.");
+        rpc::this_handler().respond_error("Imma let you finish, but.");
     });
     s.async_run();
 
@@ -45,7 +45,7 @@ TEST_F(this_handler_test, error_obj) {
     auto err = std::make_tuple(1234, "this is a custom error object");
 
     s.bind("customerr", [&]() {
-            rpc::this_handler().set_error(err);
+        rpc::this_handler().respond_error(err);
     });
     s.async_run();
 
@@ -66,7 +66,7 @@ TEST_F(this_handler_test, set_special_response) {
     std::string text("What? You thought I was a number?");
     s.bind("spec_func", [text](bool special) {
         if (special) {
-            rpc::this_handler().set_special_response(text);
+            rpc::this_handler().respond(text);
         }
         return 5;
     });

@@ -20,6 +20,8 @@
 
 namespace rpc {
 
+namespace detail {
+
 //! \brief This class maintains a registry of functors associated with their
 //! names, and callable using a msgpack-rpc call pack.
 class dispatcher {
@@ -90,7 +92,7 @@ public:
     using notification_t = std::tuple<int8_t, std::string, msgpack::object>;
 
 private:
-    //! \brief Checks the argument count and throws an exception if 
+    //! \brief Checks the argument count and throws an exception if
     //! it is not the expected amount.
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
@@ -111,6 +113,7 @@ private:
     std::unordered_map<std::string, adaptor_type> funcs_;
     RPCLIB_CREATE_LOG_CHANNEL(dispatcher)
 };
+}
 }
 
 #include "dispatcher.inl"

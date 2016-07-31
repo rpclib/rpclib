@@ -31,7 +31,7 @@ public:
     //! \param err_obj The error object. This can be anything that
     //! is possible to encode with messagepack (even custom structures).
     //! \tparam T The type of the error object.
-    template <typename T> void set_error(T &&err_obj);
+    template <typename T> void respond_error(T &&err_obj);
 
     //! \brief Sets an arbitrary object to be sent back as the response
     //! to the call.
@@ -42,7 +42,7 @@ public:
     //! ignored if a special response is set.
     //! \note You can use clear_special_response() to clear the special
     //! response and use the normal return value.
-    template <typename T> void set_special_response(T &&resp_obj);
+    template <typename T> void respond(T &&resp_obj);
 
     //! \brief Instructs the server to not send a response to the client
     //! (ignoring any errors and return values).

@@ -1,4 +1,6 @@
-# Building `rpclib`
+# Compiling `rpclib`
+
+Compiling `rpclib` is a fairly normal and unsurprising experience if you have used cmake-based projects. This document details the advanced building options as well as building the documentation which you might find useful if you want to reproduce everything locally.
 
 ## Default configuration
 
@@ -9,7 +11,7 @@ The default configuration is the one intended for end-users. If you want to hack
 This includes most (all?) Linux distributions and cygwin. Building `rpclib` is very similar to other cmake-based projects:
 
 ```
-git clone git@github.com:sztomi/rpc.git
+git clone git@github.com:rpclib/rpclib.git
 cd rpc
 mkdir build && cd build
 cmake ..
@@ -42,6 +44,6 @@ There are some compilation options that affect the build output. These options c
 |`RPCLIB_BUILD_EXAMPLES` | ON | Builds the collection of example programs that demonstrate the features of `rpclib`.
 | `RPCLIB_ENABLE_LOGGING` | OFF |Enables the internal logging of `rpclib`. This slightly affects performance. Currently the logging is not very configurable (for example, everything goes to stdout), but there are plans to make it easier to integrate with your application. Use this feature for debugging purposes.
 |`RPCLIB_ENABLE_COVERAGE` | OFF | This enables passing the code coverage generation flag when building with g++. It is used on Travis to provide coverage monitoring in tandem with Coveralls.io.
-|`RPCLIB_INSTALL_MSGPACK` | ON | Install msgpack headers with the install target. `rpclib` currently ships some minor patches for msgpack, so this is recommended to be left on!
 |`RPCLIB_FORCE_M64` | OFF | Force -m64 for g++ and clang++. Your build tools must support cross-compilation if this is not your native environment.
 |`RPCLIB_FORCE_M32` | OFF | Force -m32 for g++ and clang++. Your build tools must support cross-compilation if this is not your native environment.
+

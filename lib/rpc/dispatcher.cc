@@ -1,11 +1,10 @@
 #include "rpc/dispatcher.h"
-#include "rpc/detail/log.h"
-#include "rpc/this_handler.h"
 #include "format.h"
-
-#include <cassert>
+#include "rpc/detail/client_error.h"
+#include "rpc/this_handler.h"
 
 namespace rpc {
+namespace detail {
 
 using detail::response;
 
@@ -47,16 +46,20 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
         try {
             auto result = (it_func->second)(args);
             return response::make_result(id, std::move(result));
+        } catch (rpc::detail::client_error &e) {
+            return response::make_error(
+                id, RPCLIB_FMT::format("rpclib: {}", e.what()));
         } catch (std::exception &e) {
             if (!suppress_exceptions) {
                 throw;
             }
             return response::make_error(
-                id, RPCLIB_FMT::format("rpc: function '{0}' (taking {1} "
-                                       "arg(s)) "
-                                       "threw an exception. The exception "
-                                       "contained this information: {2}.",
-                                       name, args.via.array.size, e.what()));
+                id,
+                RPCLIB_FMT::format("rpclib: function '{0}' (called with {1} "
+                                   "arg(s)) "
+                                   "threw an exception. The exception "
+                                   "contained this information: {2}.",
+                                   name, args.via.array.size, e.what()));
         } catch (rpc::detail::handler_error &) {
             // doing nothing, the exception was only thrown to
             // return immediately
@@ -69,7 +72,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
             }
             return response::make_error(
                 id,
-                RPCLIB_FMT::format("rpc: function '{0}' (taking {1} "
+                RPCLIB_FMT::format("rpclib: function '{0}' (called with {1} "
                                    "arg(s)) threw an exception. The exception "
                                    "is not derived from std::exception. No "
                                    "further information available.",
@@ -77,7 +80,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
         }
     }
     return response::make_error(
-        id, RPCLIB_FMT::format("rpc: server could not find "
+        id, RPCLIB_FMT::format("rpclib: server could not find "
                                "function '{0}' with argument count {1}.",
                                name, args.via.array.size));
 }
@@ -117,12 +120,16 @@ response dispatcher::dispatch_notification(msgpack::object const &msg,
 
 void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
                                    std::size_t expected) {
+    using detail::client_error;
     if (found != expected) {
-        throw std::runtime_error(RPCLIB_FMT::format(
-            "Function '{0}' was called with an invalid number of "
-            "arguments. Expected: {1}, got: {2}",
-            func, expected, found));
+        throw client_error(
+            client_error::code::wrong_arity,
+            RPCLIB_FMT::format(
+                "Function '{0}' was called with an invalid number of "
+                "arguments. Expected: {1}, got: {2}",
+                func, expected, found));
     }
 }
 
+}
 } /* rpc */
