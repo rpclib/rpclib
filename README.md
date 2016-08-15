@@ -1,5 +1,5 @@
 
-# rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/rpclib/rpclib.svg?branch=dev)](https://travis-ci.org/sztomi/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/rpclib) [![Coverage Status](https://coveralls.io/repos/sztomi/rpclib/badge.svg?branch=master&service=github)](https://coveralls.io/github/sztomi/rpclib?branch=master) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)
+# rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/rpclib/rpclib.svg?branch=dev)](https://travis-ci.org/sztomi/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/rpclib) [![Coverage Status](https://coveralls.io/repos/github/rpclib/rpclib/badge.svg?branch=dev)](https://coveralls.io/github/rpclib/rpclib?branch=dev) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1)
 
 `rpclib` is a RPC library for C++, providing both a client and server implementation. It is built using modern C++14, and as such, requires a recent compiler. Using the library, you can:
 
