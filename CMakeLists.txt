@@ -125,7 +125,7 @@ function(set_rpclib_flags TARGET)
             "ASIO_HAS_CSTDINT"
             "ASIO_HAS_STD_SHARED_PTR"
             "ASIO_HAS_STD_TYPE_TRAITS")
-		
+
     endif()
 
     set(RPCLIB_BUILD_DEFINITIONS
@@ -153,12 +153,12 @@ function(set_rpclib_flags TARGET)
                 COMPILE_DEFINITIONS "${RPCLIB_BUILD_DEFINITIONS}")
     endif()
 
-    if(RPCLIB_LINK_FLAGS)
+    if(RPCLIB_ENABLE_COVERAGE)
         set_target_properties(${TARGET}
                 PROPERTIES
-                LINK_FLAGS "${RPCLIB_LINK_FLAGS}")
+                LINK_FLAGS "-lgcov --coverage")
     endif()
-	
+
 	if(NOT RPCLIB_NAME_SUFFIX)
 		set_target_properties(${TARGET}
 					PROPERTIES
@@ -180,14 +180,18 @@ configure_file(
 include_directories(include)
 include_directories(SYSTEM dependencies/include)
 
-file(GLOB_RECURSE RPCLIB_HEADERS 
+file(GLOB_RECURSE RPCLIB_HEADERS
     include/rpc/*.h
     include/msgpack/*.hpp)
-file(GLOB_RECURSE DEP_HEADERS 
-    dependencies/include/*.h 
+file(GLOB_RECURSE DEP_HEADERS
+    dependencies/include/*.h
     dependencies/include/*.hpp)
 
-set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}-${RPCLIB_NAME_SUFFIX})
+if(RPCLIB_NAME_SUFFIX)
+    set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}-${RPCLIB_NAME_SUFFIX})
+else()
+    set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
+endif()
 
 set(DEP_SOURCES
     dependencies/src/format.cc
@@ -213,10 +217,10 @@ target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
 # MSVC static runtime support
 #
-# While this pollutes global flags (when using add_library), you would not want to 
+# While this pollutes global flags (when using add_library), you would not want to
 # build with a disparity anyway. (also, CMake still has no support for this, so you
-# would end up doing something like this yourself). 
-if (RPCLIB_MSVC_STATIC_RUNTIME)			
+# would end up doing something like this yourself).
+if (RPCLIB_MSVC_STATIC_RUNTIME)
 	# Set compiler options.
 	set(variables
 	  CMAKE_C_FLAGS_DEBUG
@@ -228,17 +232,17 @@ if (RPCLIB_MSVC_STATIC_RUNTIME)
 	  CMAKE_CXX_FLAGS_RELEASE
 	  CMAKE_CXX_FLAGS_RELWITHDEBINFO
 	)
-	
+
 	message(STATUS
 		"MSVC -> forcing use of statically-linked runtime."
 	)
-	
+
 	foreach(variable ${variables})
 		if(${variable} MATCHES "/MD")
 			string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
 		endif()
 	endforeach()
-	
+
 endif()
 
 install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
