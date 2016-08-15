@@ -40,7 +40,6 @@ script:
 after_success:
   - ./output/bin/rpc_test
   - cd ..
-  - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
-    #- codecov
+  - coveralls --exclude dependencies --exclude test --exclude include/msgpack --exclude include/msgpack.hpp --gcov /usr/bin/gcov-5
 
 
