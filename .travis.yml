@@ -38,7 +38,7 @@ script:
   - make -j2
 
 after_success:
-  - ./tests/rpc_test
+  - ./output/bin/rpc_test
   - cd ..
   - coveralls --exclude dependencies --exclude test --gcov /usr/bin/gcov-5
     #- codecov
