@@ -75,7 +75,11 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread -std=c++14")
+            -pthread --system-header-prefix=msgpack -std=c++14 -stdlib=libc++")
+
+        set_target_properties(${TARGET}
+                PROPERTIES
+                LINK_FLAGS "-lc++ -lc++abi")
 
         if(RPCLIB_FORCE_M32)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
@@ -294,8 +298,9 @@ if(RPCLIB_BUILD_TESTS)
     # Set less strict warning for tests, since google test is not quite
     # warning-clean
     if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+        get_target_property(ORIGINAL_FLAGS ${TEST_PROJECT_NAME} COMPILE_FLAGS)
         set_target_properties(${TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS
-            "-Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function \
+            "${ORIGINAL_FLAGS} -Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function \
             -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default \
             -Wno-missing-variable-declarations -Wno-deprecated -Wno-unused-macros -Wno-undef \
             -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion")

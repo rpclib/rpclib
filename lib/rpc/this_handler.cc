@@ -3,7 +3,14 @@
 namespace rpc {
 
 this_handler_t &this_handler() {
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
+#endif
     static thread_local this_handler_t instance;
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
     return instance;
 }
 

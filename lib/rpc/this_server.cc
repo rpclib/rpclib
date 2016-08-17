@@ -16,4 +16,4 @@ void this_server_t::cancel_stop() {
     stopping_ = false;
 }
 
-} /* rpc */ 
+} /* rpc */

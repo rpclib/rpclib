@@ -12,3 +12,4 @@ client_error::client_error(code c, const std::string &msg)
 const char *client_error::what() const noexcept { return what_.c_str(); }
 }
 }
+

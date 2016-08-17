@@ -12,7 +12,7 @@ namespace rpc {
 //! \brief This exception is thrown by the client when the server signals an
 //! error during a call.
 //!
-//! It type allows clients to handle arbitrary error objects as the
+//! This type allows clients to handle arbitrary error objects as the
 //! msgpack-rpc specification allows. In client code you probably don't want to
 //! throw it, hence its constructor is private.
 class rpc_error : public std::runtime_error {
@@ -23,7 +23,7 @@ public:
 
     //! \brief Returns the error object that the server
     //! provided.
-    msgpack::object_handle& get_error();
+    virtual msgpack::object_handle& get_error();
 
 private:
     friend class client;
