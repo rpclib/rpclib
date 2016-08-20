@@ -1,6 +1,6 @@
 # Getting started
 
-This document details the steps of getting everything in place to be able to use `rpclib`.
+This chapter details the steps of getting everything in place to be able to use `rpclib`.
 
 ## What you need
 
@@ -10,9 +10,9 @@ This document details the steps of getting everything in place to be able to use
 
   * g++ 5.0
   * clang++ 3.7
-  * MSVC 2015 Update 2
+  * MSVC 2015 Update 3
 
-Newer versions of these compilers are expected to work.
+Newer versions of these compilers are expected to work, of course.
 
 ### Tools
 
@@ -33,7 +33,7 @@ There are various release packages available for the most popular systems and id
 
 #### Dependencies
 
-`rpclib` has no external library dependencies, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
+`rpclib` is completely self-contained, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
 
 !!! tip
     See the [Design](design.md) documentation for details on how `rpclib` handles its dependencies.
