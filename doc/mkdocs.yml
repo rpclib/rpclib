@@ -13,6 +13,7 @@ pages:
     - 'Internal design': 'design.md'
     - 'Specification': 'spec.md'
     - 'Roadmap': 'roadmap.md'
+  - 'Contributing': 'contributing.md'
   - 'Reference': 'reference.md'
 
 theme_dir: rpclib-cinder

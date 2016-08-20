@@ -6,32 +6,20 @@ Compiling `rpclib` is a fairly normal and unsurprising experience if you have us
 
 The default configuration is the one intended for end-users. If you want to hack on `rpclib`, you might be interested in some of the Advanced options.
 
-### Unix-type systems
+## Compiling
 
-This includes most (all?) Linux distributions and cygwin. Building `rpclib` is very similar to other cmake-based projects:
+This includes most (all?) Linux distributions, cygwin and Windows. Building `rpclib` is very similar to other cmake-based projects:
 
 ```
 git clone git@github.com:rpclib/rpclib.git
-cd rpc
-mkdir build && cd build
+cd rpclib
+mkdir build
+cd build
 cmake ..
-make
+cmake --build .
 ```
 
 And that's it. If all goes well, your build output will be in the `output` directory.
-
-### Microsoft Windows
-
-On Windows with MSVC it is very similar, except you will probably want to
-
-```
-git clone git@github.com:sztomi/rpc.git
-cd rpc
-mkdir build && cd build
-cmake ..
-```
-
-... and open the generated solution file in Visual Studio or build it using msbuild.
 
 ## Advanced options
 

@@ -1,6 +1,6 @@
 # rpclib - modern msgpack-rpc for C++
 
-Welcome! `rpclib` is a msgpack-rpc implementation written using modern C++. The goal of this library is to provide a simple, no-nonsense RPC solution.
+Welcome! `rpclib` is a msgpack-rpc library written using modern C++. The goal of this library is to provide a simple, no-nonsense RPC solution.
 
 ## What does it look like?
 
@@ -21,7 +21,7 @@ int main() {
 
   srv.run();
   return 0;
-
+}
 </code>
 </pre>
 

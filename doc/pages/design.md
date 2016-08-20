@@ -63,6 +63,8 @@ Instead of a `unique_ptr` for the pimpl pointer, the library uses a pointer-like
 its data in a `std::aligned_storage`. This increases the data locality during the calls and reduces
 dynamic allocation. The tradeoff is that the size of the storage is fixed, so adding extra data in an update is only possible with some bounds (the sizes used are a bit bigger then needed, so there is some room to do this without breaking binary compatibility).
 
+# Where to go from here
 
-
+As a user, there isn't much else to learn about this library. However, if you are interested, you may
+want to check out the [contribution guidelines](contributing.md), the [issue tracker](https://waffle.io/rpclib/rpclib), and [roadmap](roadmap.md) and start hacking on `rpclib`!
 
