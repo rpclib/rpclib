@@ -44,7 +44,6 @@ int main() {
 </code>
 </pre>
 </div>
-<div style="clear:both"></div>
 
 ## Chapters
 

@@ -154,6 +154,7 @@ footer > hr {
 
     #front-code code {
         height: 305px;
+        clear: both;
     }
 
     #second-code {

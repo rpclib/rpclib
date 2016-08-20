@@ -12,6 +12,7 @@ pages:
     - 'Compiling': 'compiling.md'
     - 'Internal design': 'design.md'
     - 'Specification': 'spec.md'
+    - 'Roadmap': 'roadmap.md'
   - 'Reference': 'reference.md'
 
 theme_dir: rpclib-cinder
