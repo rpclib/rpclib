@@ -80,3 +80,84 @@ pre {
 footer > hr {
     width: 35%;
 }
+
+#front-menu i.fa {
+    margin-right: 15px !important;
+}
+
+#front-menu .btn {
+    height: 8em;
+    font-weight: 600;
+    width: 16em;
+}
+
+@media(min-width:400px) {
+
+    #front-menu .btn {
+        max-width: 18em;
+        width: 18em;
+    }
+
+}
+
+@media(max-width:320px) {
+
+    #front-menu .btn {
+        width: 14em;
+    }
+
+}
+
+#front-menu {
+    list-style-type: none;
+}
+
+#front-menu li {
+    display: block;
+    float: left;
+    margin: 8px;
+}
+
+
+@media(max-width:1200px) {
+
+    #front-menu li {
+        display: block;
+        float: none;
+        margin: 8px;
+        margin-left: -2em;
+    }
+
+}
+
+.btn-desc {
+    padding-top: 16px;
+    white-space: normal;
+    font-size: smaller;
+    opacity: 0.95;
+    text-align: left;
+    font-weight: 400;
+}
+
+.btn-desc code {
+    color: #fff;
+}
+
+@media(min-width:1200px) {
+
+    #front-code pre {
+        display: block;
+        float: left;
+        min-width: 340px;
+        margin-right: 8px;
+    }
+
+    #front-code code {
+        height: 305px;
+    }
+
+    #second-code {
+        width: 440px;
+    }
+
+}
