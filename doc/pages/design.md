@@ -1,4 +1,4 @@
-# Design
+# Internals
 
 This chapter describes the internal design of `rpclib` and provides some insight into the
 engineering tradeoffs considered.
@@ -17,7 +17,7 @@ namespaces in their source files (apart from `msgpack`, none of the dependencies
 headers even).
 
 This means that as a user, you don't have to worry about linker problems if you integrate `rpclib`
-into your project; and you don't need gather its dependencies. This reduces friction. The tradeoff
+into your project; and you don't need to gather its dependencies. This reduces friction. The tradeoff
 is that the size of your binary will increase if you use one of these dependencies in your project
 outside `rpclib`.
 
@@ -30,15 +30,14 @@ outside `rpclib`.
     the namespace name provided. You might also need to change some of the preprocessor definitions
     in the CMakeLists.txt if you want to use the boost-flavored asio, not the standalone one.
 
-## The design of the server
+## The internals of the server
 
 ### The dispatcher
 
-`rpclib` maintains a registry of exposed functions in a `dispatcher`. The dispatcher is a template
-class and this is the part which pulls in most of the template metaprogramming in the library. The primary purpose of the metaprogramming is to generate wrappers that can manage calling an arbitrary functor from a msgpack-encoded message; then encode the result of the function (if any) in msgpack.
+`rpclib` maintains a registry of exposed functions in a `dispatcher`. The dispatcher is a class with tfunction templates and this is the part which pulls in most of the template metaprogramming in the library. The primary purpose of the metaprogramming is to generate wrappers that can manage calling an arbitrary functor from a msgpack-encoded message; then encode the result of the function (if any) in msgpack.
 
 The generated wrappers have a uniform signature (`dispatcher::adaptor_type`) which allows storing
-them in map. The dispatching is performed by looking up the right functor by name.
+them in a map. The dispatching is performed by looking up the right functor by name.
 
 ### The server loop
 
@@ -48,9 +47,28 @@ the output. `async_run` will spawn multiple worker threads that all `run` the lo
 great design of `asio`, this makes them act like a thread pool, i.e. waiting in line to take the
 next available work item. This scales pretty well for networked applications.
 
-## The design of the client
+### `this_handler`, `this_session`, `this_server`
 
-TBD
+The server provides the above objects as a means of interacting with the library. Their
+implementation relies on the realization that one thread executes at most one handler at any time;
+so `thread_local` objects are accessible both by the handler and the server loop. The server may
+set properties of these objects that the handler can query; and likewise, the handler can also set
+properties that the server can query.
+
+## The internals of the client
+
+The client is fundamentally asynchronous in nature, even though this might not be readily apparent
+on the surface. The reasone for this is that responses from the server are not required to arrive
+right away, and responses to multiple requests may come in any order.
+
+To address this, the client maintains a registry of ongoing calls. A "call" refers to
+a `std::promise` holding a `msgpack::object_handle`, which is the future result of the call. When
+the client reads a response, it will look up the promise and set the value.
+
+On the public interface, `async_call` returns a future that is bound to this promise. User code can
+wait for the result using this future.
+
+`call` is simply implemented as a call to `async_call` and waiting for the result right away.
 
 ## How and why the pimpl pattern is used
 
@@ -61,7 +79,7 @@ reasons why the library is not header-only.
 
 Instead of a `unique_ptr` for the pimpl pointer, the library uses a pointer-like class which stores
 its data in a `std::aligned_storage`. This increases the data locality during the calls and reduces
-dynamic allocation. The tradeoff is that the size of the storage is fixed, so adding extra data in an update is only possible with some bounds (the sizes used are a bit bigger then needed, so there is some room to do this without breaking binary compatibility).
+dynamic allocation. The tradeoff is that the size of the storage is fixed, so adding extra data in an update is only possible with some bounds (the sizes used are a bit bigger than needed, so there is some room to do this without breaking binary compatibility).
 
 # Where to go from here
 

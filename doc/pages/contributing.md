@@ -5,7 +5,7 @@ document provides information on why, how and what to contribute.
 
 ## Why contribute
 
-At the moment, this project is an approachable, intermediate-advanced level C++ project. If you contribute, you may deepen your knowledge in these areas:
+At the moment, this project is an approachable, intermediate-advanced level C++ project. If you contribute code, you may deepen your knowledge in these areas:
 
   * RPC clients and servers
   * Networking (through asio), TCP
@@ -89,6 +89,5 @@ the library.
 ### HTML+CSS
 
 The very site you are reading now is built using mkdocs and doxygen; but in some places it contains
-hand-written HTML and CSS. This is not my area of expertise, but documentation is not only about
-content, but also presentation. Changes that improve the robustness of the HTML and CSS are a huge
-win for the project.
+hand-written HTML and CSS. This is not my area of expertise. But documentation is not only about
+content, it's also the presentation. Changes that improve the robustness of the HTML and CSS are a huge win for the project.
