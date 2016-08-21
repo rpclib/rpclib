@@ -71,7 +71,7 @@ srv.bind("mul", [&m](double a, double b) { return m.multiply(a, b); });
 These are the names that the client can use to call our functions. There is nothing stopping you from binding `divide` to the name `"add"`, but it's a good practice to use names that reflect the source names. It is also possible to bind the same function to multiple names.
 
 !!! info
-    Under the hood, each `bind` statement generates a compile-time a wrapper function that takes a `msgpack` object, then decodes it into the real parameters of the bound function (if any) and calls the bound function. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the [Design](design.md) chapter.
+    Under the hood, each `bind` statement generates a compile-time a wrapper function that takes a `msgpack` object, then decodes it into the real parameters of the bound function (if any) and calls the bound function. If the function has a return value the wrapper is generated so that it encodes the result as a `msgpack` object which the server can send to the client in a response. More information on this mechanism can be found in the [Internals](internals.md) chapter.
 
 After we exposed the function, we need to `run` the server:
 
@@ -193,7 +193,7 @@ double divide(double a, double b) {
 }
 ```
 
-So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised that `respond_error` is still valid and remains the preferred way to do so (especially that it's the only way to respond with structured error objects). 
+So yes, this means that if you set `suppress_excpetions` to `true`, you might as well signal errors from handlers by throwing exceptions. Be advised that `respond_error` is still valid and remains the preferred way to do so (especially that it's the only way to respond with structured error objects).
 
 What exactly happens to the suppressed exception? `rpclib` will try to catch `std::exceptions` and use their `what()` members to get a string representation which it sets as an error.
 
@@ -359,7 +359,7 @@ As you would expect, the output looks like this:
 add(2, 3) = 5
 sub(3, 2) = 1
 mul(5, 0) = 0
-div(3, 0) = 
+div(3, 0) =
 rpclib: a handler responded with an error
 in function 'div': [error 1]: Division by zero
 ```
@@ -417,8 +417,8 @@ The two worker threads in the mandelbrot server can serve two clients in paralle
 # Where to go from here
 
 The [Cookbook](cookbook.md) features most (if not all) intended use cases of rpclib - it's a great
-place to continue. 
+place to continue.
 
-If you are interested in the internal design of `rpclib`, take a look at the [Design](design.md)
+If you are interested in the internal design of `rpclib`, take a look at the [Internals](internals.md)
 page.
 

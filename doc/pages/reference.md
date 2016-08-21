@@ -145,103 +145,6 @@ Waits for the completion of all ongoing calls.
 
 
 
-## rpc::dispatcher
-
-```cpp
-#include "rpc/dispatcher.h"
-```
-### Description
-
-This class maintains a registry of functors associated with their names, and callable using a msgpack-rpc call pack. 
-
-
-
-### Public functions
-
-| | |
-|---------|-------------|
-| void | [bind](#classrpc_1_1dispatcher_1aca9e60792934acbc3be2f2ec8589a64d)(std::string const &name, F func)
-| void | [bind](#group__Tag-dispatched_1ga6e78725d4388c8a0fedd14a257cb0a42)(std::string const &name, F func, detail::tags::void_result const &, detail::tags::zero_arg const &)
-| void | [bind](#group__Tag-dispatched_1gad8f621b0e8326af81522447b849f7ff9)(std::string const &name, F func, detail::tags::void_result const &, detail::tags::nonzero_arg const &)
-| void | [bind](#group__Tag-dispatched_1ga95160fbf7eccec3bcfe4358382eab76b)(std::string const &name, F func, detail::tags::nonvoid_result const &, detail::tags::zero_arg const &)
-| void | [bind](#group__Tag-dispatched_1ga4dc4322cf64d5b03779292551a29d36d)(std::string const &name, F func, detail::tags::nonvoid_result const &, detail::tags::nonzero_arg const &)
-| void | [dispatch](#classrpc_1_1dispatcher_1a5043fec71ade41f1c2cf2f2700d387de)(msgpack::sbuffer const &msg)
-| detail::response | [dispatch](#classrpc_1_1dispatcher_1a302435541506e11ee40f3d85ec97b6a4)(msgpack::object const &msg, bool suppress_exceptions=false)
-
-
-<h4 id="classrpc_1_1dispatcher_1aca9e60792934acbc3be2f2ec8589a64d" class="doxy">rpc::dispatcher::bind</h4>
-```cpp
-void rpc::dispatcher::bind(std::string const &name, F func);
-```
-
-Binds a functor to a name so it becomes callable via RPC. 
-
-##### Template parameters
-`F` The type of the functor. 
-
-##### Parameters
-`name` The name of the functor. 
-
-`func` The functor to bind. 
-
-
-<h4 id="group__Tag-dispatched_1ga6e78725d4388c8a0fedd14a257cb0a42" class="doxy">rpc::dispatcher::bind</h4>
-```cpp
-void rpc::dispatcher::bind(std::string const &name, F func, detail::tags::void_result const &, detail::tags::zero_arg const &);
-```
-
-Stores a void, zero-arg functor with a name. 
-
-
-<h4 id="group__Tag-dispatched_1gad8f621b0e8326af81522447b849f7ff9" class="doxy">rpc::dispatcher::bind</h4>
-```cpp
-void rpc::dispatcher::bind(std::string const &name, F func, detail::tags::void_result const &, detail::tags::nonzero_arg const &);
-```
-
-Stores a void, non-zero-arg functor with a name. 
-
-
-<h4 id="group__Tag-dispatched_1ga95160fbf7eccec3bcfe4358382eab76b" class="doxy">rpc::dispatcher::bind</h4>
-```cpp
-void rpc::dispatcher::bind(std::string const &name, F func, detail::tags::nonvoid_result const &, detail::tags::zero_arg const &);
-```
-
-Stores a non-void, zero-arg functor with a name. 
-
-
-<h4 id="group__Tag-dispatched_1ga4dc4322cf64d5b03779292551a29d36d" class="doxy">rpc::dispatcher::bind</h4>
-```cpp
-void rpc::dispatcher::bind(std::string const &name, F func, detail::tags::nonvoid_result const &, detail::tags::nonzero_arg const &);
-```
-
-Stores a non-void, non-zero-arg functor with a name. 
-
-
-<h4 id="classrpc_1_1dispatcher_1a5043fec71ade41f1c2cf2f2700d387de" class="doxy">rpc::dispatcher::dispatch</h4>
-```cpp
-void rpc::dispatcher::dispatch(msgpack::sbuffer const &msg);
-```
-
-Processes a message that contains a call according to the Msgpack-RPC spec. 
-
-##### Parameters
-`msg` The buffer that contains the messagepack. 
-
-
-<h4 id="classrpc_1_1dispatcher_1a302435541506e11ee40f3d85ec97b6a4" class="doxy">rpc::dispatcher::dispatch</h4>
-```cpp
-detail::response rpc::dispatcher::dispatch(msgpack::object const &msg, bool suppress_exceptions=false);
-```
-
-Processes a message that contains a call according to the Msgpack-RPC spec. 
-
-##### Parameters
-`msg` The messagepack object that contains the call. 
-
-`suppress_exceptions` If true, exceptions will be caught and written as response for the client. 
-
-
-
 ## rpc::rpc_error
 
 ```cpp
@@ -251,14 +154,14 @@ Processes a message that contains a call according to the Msgpack-RPC spec.
 
 This exception is thrown by the client when the server signals an error during a call. 
 
-It type allows clients to handle arbitrary error objects as the msgpack-rpc specification allows. In client code you probably don't want to throw it, hence its constructor is private. 
+This type allows clients to handle arbitrary error objects as the msgpack-rpc specification allows. In client code you probably don't want to throw it, hence its constructor is private. 
 
 ### Public functions
 
 | | |
 |---------|-------------|
 | std::string | [get_function_name](#classrpc_1_1rpc__error_1a54f9582763c4efd63d7b85232333cd71)() const 
-| msgpack::object_handle & | [get_error](#classrpc_1_1rpc__error_1a4d75a9c1717f4c2626dcf0c2bd288364)()
+| msgpack::object_handle & | [get_error](#classrpc_1_1rpc__error_1a2ba49857c07928d4f436d1bab0444e66)()
 
 
 <h4 id="classrpc_1_1rpc__error_1a54f9582763c4efd63d7b85232333cd71" class="doxy">rpc::rpc_error::get_function_name</h4>
@@ -269,7 +172,7 @@ std::string rpc::rpc_error::get_function_name() const ;
 Returns the name of the function that was called on the server while the error occurred. 
 
 
-<h4 id="classrpc_1_1rpc__error_1a4d75a9c1717f4c2626dcf0c2bd288364" class="doxy">rpc::rpc_error::get_error</h4>
+<h4 id="classrpc_1_1rpc__error_1a2ba49857c07928d4f436d1bab0444e66" class="doxy">rpc::rpc_error::get_error</h4>
 ```cpp
 msgpack::object_handle & rpc::rpc_error::get_error();
 ```

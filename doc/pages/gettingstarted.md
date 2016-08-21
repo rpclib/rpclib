@@ -36,7 +36,7 @@ There are various release packages available for the most popular systems and id
 `rpclib` is completely self-contained, i.e. you don't need to install any extra libraries to use it. The library does use third-party code, but it is hidden both during compilation and linking (i.e. it means you don't need to worry about linking against those same libraries).
 
 !!! tip
-    See the [Design](design.md) documentation for details on how `rpclib` handles its dependencies.
+    See the [Internals](internals.md) documentation for details on how `rpclib` handles its dependencies.
 
 
 ## Setting up your environment

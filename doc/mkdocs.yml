@@ -10,7 +10,7 @@ pages:
     - 'Glossary': 'glossary.md'
   - 'Advanced':
     - 'Compiling': 'compiling.md'
-    - 'Internal design': 'design.md'
+    - 'Internals': 'internals.md'
     - 'Specification': 'spec.md'
     - 'Roadmap': 'roadmap.md'
   - 'Contributing': 'contributing.md'
