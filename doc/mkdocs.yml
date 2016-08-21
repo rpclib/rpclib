@@ -26,3 +26,4 @@ markdown_extensions:
   - admonition
   - attr_list
 
+copyright: "Copyright &copy; 2016 Tamás Szelei"
