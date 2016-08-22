@@ -4,7 +4,6 @@
 #define RESPONSE_H_MVRZEKPX
 
 #include "rpc/detail/log.h"
-#include "rpc/detail/object.h"
 #include "msgpack.hpp"
 
 namespace rpc {

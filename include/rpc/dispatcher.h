@@ -15,7 +15,6 @@
 #include "rpc/detail/func_traits.h"
 #include "rpc/detail/log.h"
 #include "rpc/detail/not.h"
-#include "rpc/detail/object.h"
 #include "rpc/detail/response.h"
 
 namespace rpc {

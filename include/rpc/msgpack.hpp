@@ -15,6 +15,11 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
+
+#ifdef __clang__
+#pragma clang system_header
+#endif
+
 #include "msgpack/object.hpp"
 #include "msgpack/iterator.hpp"
 #include "msgpack/zone.hpp"

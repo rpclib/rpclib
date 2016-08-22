@@ -75,7 +75,7 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread --system-header-prefix=msgpack -std=c++14 -stdlib=libc++")
+            -pthread -std=c++14 -stdlib=libc++")
 
         set_target_properties(${TARGET}
                 PROPERTIES
@@ -184,6 +184,7 @@ configure_file(
     "${PROJECT_BINARY_DIR}/version.h")
 
 include_directories(include)
+include_directories(include/rpc)
 include_directories(SYSTEM dependencies/include)
 
 file(GLOB_RECURSE RPCLIB_HEADERS
