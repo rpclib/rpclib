@@ -260,7 +260,7 @@ install(DIRECTORY include/
     PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include)
+install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/rpc)
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -358,7 +358,7 @@ endif()
 if(WIN32)
     #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
     #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}")
     set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} rpclib")
     #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
     set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/rpc")
