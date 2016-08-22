@@ -22,7 +22,7 @@
 
 #include <msgpack/object_fwd.hpp>
 
-namespace msgpack
+namespace clmdep_msgpack
 {
     /// @cond
     MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)

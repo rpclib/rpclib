@@ -14,22 +14,22 @@ namespace testutils {
 
 //! \brief Creates a unpacked messagepack containing its arguments.
 template <typename... Types>
-inline msgpack::unpacked make_unpacked(Types... items) {
+inline RPCLIB_MSGPACK::unpacked make_unpacked(Types... items) {
     auto obj = std::make_tuple(items...);
-    msgpack::sbuffer buf;
-    msgpack::pack(buf, obj);
-    msgpack::unpacked msg;
-    msgpack::unpack(&msg, buf.data(), buf.size());
+    RPCLIB_MSGPACK::sbuffer buf;
+    RPCLIB_MSGPACK::pack(buf, obj);
+    RPCLIB_MSGPACK::unpacked msg;
+    RPCLIB_MSGPACK::unpack(&msg, buf.data(), buf.size());
     return msg;
 }
 
 //! \brief Creates a packed messagepack containing its arguments and returns the
 //! buffer containing it.
 template <typename... Types>
-inline msgpack::sbuffer make_packed(Types... items) {
+inline RPCLIB_MSGPACK::sbuffer make_packed(Types... items) {
     auto obj = std::make_tuple(items...);
-    msgpack::sbuffer buf;
-    msgpack::pack(buf, obj);
+    RPCLIB_MSGPACK::sbuffer buf;
+    RPCLIB_MSGPACK::pack(buf, obj);
     return buf;
 }
 

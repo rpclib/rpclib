@@ -23,7 +23,7 @@
 #include <cstring>
 #include <string>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -68,9 +68,9 @@ struct v4raw_ref {
 namespace adaptor {
 
 template <>
-struct convert<msgpack::type::v4raw_ref> {
-    msgpack::object const& operator()(msgpack::object const& o, msgpack::type::v4raw_ref& v) const {
-        if(o.type != msgpack::type::STR) { throw msgpack::type_error(); }
+struct convert<clmdep_msgpack::type::v4raw_ref> {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, clmdep_msgpack::type::v4raw_ref& v) const {
+        if(o.type != clmdep_msgpack::type::STR) { throw clmdep_msgpack::type_error(); }
         v.ptr  = o.via.str.ptr;
         v.size = o.via.str.size;
         return o;
@@ -78,9 +78,9 @@ struct convert<msgpack::type::v4raw_ref> {
 };
 
 template <>
-struct pack<msgpack::type::v4raw_ref> {
+struct pack<clmdep_msgpack::type::v4raw_ref> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::v4raw_ref& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::type::v4raw_ref& v) const {
         o.pack_v4raw(v.size);
         o.pack_v4raw_body(v.ptr, v.size);
         return o;
@@ -88,18 +88,18 @@ struct pack<msgpack::type::v4raw_ref> {
 };
 
 template <>
-struct object<msgpack::type::v4raw_ref> {
-    void operator()(msgpack::object& o, const msgpack::type::v4raw_ref& v) const {
-        o.type = msgpack::type::STR;
+struct object<clmdep_msgpack::type::v4raw_ref> {
+    void operator()(clmdep_msgpack::object& o, const clmdep_msgpack::type::v4raw_ref& v) const {
+        o.type = clmdep_msgpack::type::STR;
         o.via.str.ptr = v.ptr;
         o.via.str.size = v.size;
     }
 };
 
 template <>
-struct object_with_zone<msgpack::type::v4raw_ref> {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::v4raw_ref& v) const {
-        static_cast<msgpack::object&>(o) << v;
+struct object_with_zone<clmdep_msgpack::type::v4raw_ref> {
+    void operator()(clmdep_msgpack::object::with_zone& o, const clmdep_msgpack::type::v4raw_ref& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -109,6 +109,6 @@ struct object_with_zone<msgpack::type::v4raw_ref> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_TYPE_V4RAW_HPP

@@ -70,7 +70,7 @@ struct client::impl {
                     }
 
                     LOG_TRACE("Read chunk of size {}", length);
-                    msgpack::unpacked result;
+                    RPCLIB_MSGPACK::unpacked result;
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
@@ -79,7 +79,7 @@ struct client::impl {
                             if (r.get_error()) {
                                 throw rpc_error(
                                     "rpc::rpc_error during call",
-                                    std::get<0>(c), msgpack::clone(r.get_error()->get()));
+                                    std::get<0>(c), RPCLIB_MSGPACK::clone(r.get_error()->get()));
                             }
                             std::get<1>(c).set_value(
                                 std::move(*r.get_result()));
@@ -110,9 +110,9 @@ struct client::impl {
 
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
-    void write(msgpack::sbuffer item) { writer_->write(std::move(item)); }
+    void write(RPCLIB_MSGPACK::sbuffer item) { writer_->write(std::move(item)); }
 
-    using call_t = std::pair<std::string, std::promise<msgpack::object_handle>>;
+    using call_t = std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
 
     client *parent_;
     RPCLIB_ASIO::io_service io_;
@@ -121,7 +121,7 @@ struct client::impl {
     std::unordered_map<uint32_t, call_t> ongoing_calls_;
     std::string addr_;
     uint16_t port_;
-    msgpack::unpacker pac_;
+    RPCLIB_MSGPACK::unpacker pac_;
     std::atomic_bool is_connected_;
     std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;
@@ -157,7 +157,7 @@ int client::get_next_call_idx() {
     return pimpl->call_idx_;
 }
 
-void client::post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
+void client::post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
                   std::string const &func_name,
                   std::shared_ptr<rsp_promise> p) {
     pimpl->strand_.post([=]() {
@@ -167,7 +167,7 @@ void client::post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
     });
 }
 
-void client::post(msgpack::sbuffer *buffer) {
+void client::post(RPCLIB_MSGPACK::sbuffer *buffer) {
     pimpl->strand_.post([=]() {
         pimpl->write(std::move(*buffer));
         delete buffer;

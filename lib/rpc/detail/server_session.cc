@@ -38,14 +38,14 @@ void server_session::do_read() {
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
                 pac_.buffer_consumed(length);
-                msgpack::unpacked result;
+                RPCLIB_MSGPACK::unpacked result;
                 while (pac_.next(&result) && !exit_) {
                     auto msg = result.get();
                     output_buf_.clear();
 
                     // any worker thread can take this call
                     io_->post([
-                        this, msg, z = std::shared_ptr<msgpack::zone>(
+                        this, msg, z = std::shared_ptr<RPCLIB_MSGPACK::zone>(
                                        result.zone().release())
                     ]() {
                         this_handler().clear();

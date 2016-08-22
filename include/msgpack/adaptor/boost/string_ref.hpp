@@ -27,7 +27,7 @@
 
 #include <boost/utility/string_ref.hpp>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -37,16 +37,16 @@ namespace adaptor {
 
 template <>
 struct convert<boost::string_ref> {
-    msgpack::object const& operator()(msgpack::object const& o, boost::string_ref& v) const {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, boost::string_ref& v) const {
         switch (o.type) {
-        case msgpack::type::BIN:
+        case clmdep_msgpack::type::BIN:
             v = boost::string_ref(o.via.bin.ptr, o.via.bin.size);
             break;
-        case msgpack::type::STR:
+        case clmdep_msgpack::type::STR:
             v = boost::string_ref(o.via.str.ptr, o.via.str.size);
             break;
         default:
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
             break;
         }
         return o;
@@ -56,7 +56,7 @@ struct convert<boost::string_ref> {
 template <>
 struct pack<boost::string_ref> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const boost::string_ref& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const boost::string_ref& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_str(size);
         o.pack_str_body(v.data(), size);
@@ -66,9 +66,9 @@ struct pack<boost::string_ref> {
 
 template <>
 struct object<boost::string_ref> {
-    void operator()(msgpack::object& o, const boost::string_ref& v) const {
+    void operator()(clmdep_msgpack::object& o, const boost::string_ref& v) const {
         uint32_t size = checked_get_container_size(v.size());
-        o.type = msgpack::type::STR;
+        o.type = clmdep_msgpack::type::STR;
         o.via.str.ptr = v.data();
         o.via.str.size = size;
     }
@@ -76,8 +76,8 @@ struct object<boost::string_ref> {
 
 template <>
 struct object_with_zone<boost::string_ref> {
-    void operator()(msgpack::object::with_zone& o, const boost::string_ref& v) const {
-        static_cast<msgpack::object&>(o) << v;
+    void operator()(clmdep_msgpack::object::with_zone& o, const boost::string_ref& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -88,7 +88,7 @@ struct object_with_zone<boost::string_ref> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
 

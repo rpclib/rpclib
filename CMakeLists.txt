@@ -138,7 +138,9 @@ function(set_rpclib_flags TARGET)
         "${RPCLIB_OS_DEF}"
         "ASIO_STANDALONE"
         "RPCLIB_ASIO=clmdep_asio"
-        "RPCLIB_FMT=clmdep_fmt")
+        "RPCLIB_FMT=clmdep_fmt"
+        "RPCLIB_MSGPACK=clmdep_msgpack"
+        )
 
     if(RPCLIB_ENABLE_LOGGING)
         set(RPCLIB_BUILD_DEFINITIONS

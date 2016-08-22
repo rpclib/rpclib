@@ -75,7 +75,7 @@ TEST_F(this_handler_test, set_special_response) {
     rpc::client c("127.0.0.1", test_port);
     EXPECT_EQ(c.call("spec_func", false).as<int>(), 5);
     EXPECT_EQ(c.call("spec_func", true).as<std::string>(), text);
-    EXPECT_THROW(c.call("spec_func", true).as<int>(), msgpack::type_error);
+    EXPECT_THROW(c.call("spec_func", true).as<int>(), RPCLIB_MSGPACK::type_error);
 }
 
 TEST_F(this_handler_test, disable_response) {

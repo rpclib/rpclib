@@ -27,30 +27,30 @@
     template <typename Packer> \
     void msgpack_pack(Packer& pk) const \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(pk); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(pk); \
     } \
-    void msgpack_unpack(msgpack::object const& o) \
+    void msgpack_unpack(clmdep_msgpack::object const& o) \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(o); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* o, clmdep_msgpack::zone& z) const \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(o, z); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(o, z); \
     }
 
 #define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \
-  namespace msgpack { \
+  namespace clmdep_msgpack { \
   /** @cond */ \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
   /** @endcond */ \
   namespace adaptor { \
     template<> \
     struct convert<enum_name> { \
-      msgpack::object const& operator()(msgpack::object const& o, enum_name& v) const {\
+      clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, enum_name& v) const {\
         int tmp; \
         o >> tmp; \
         v = static_cast<enum_name>(tmp); \
@@ -59,20 +59,20 @@
     }; \
     template<> \
     struct object<enum_name> { \
-      void operator()(msgpack::object& o, const enum_name& v) const {\
+      void operator()(clmdep_msgpack::object& o, const enum_name& v) const {\
         o << static_cast<int>(v); \
       } \
     }; \
     template<> \
     struct object_with_zone<enum_name> { \
-      void operator()(msgpack::object::with_zone& o, const enum_name& v) const { \
+      void operator()(clmdep_msgpack::object::with_zone& o, const enum_name& v) const { \
         o << static_cast<int>(v); \
       } \
     }; \
     template<> \
     struct pack<enum_name> { \
       template <typename Stream> \
-      msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const enum_name& v) const { \
+      clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const enum_name& v) const { \
         return o << static_cast<int>(v); \
       } \
     }; \
@@ -82,7 +82,7 @@
   /** @endcond */ \
   }
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -103,13 +103,13 @@ struct define_array<> {
     {
         pk.pack_array(0);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone&) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone&) const
     {
-        o->type = msgpack::type::ARRAY;
+        o->type = clmdep_msgpack::type::ARRAY;
         o->via.array.ptr = nullptr;
         o->via.array.size = 0;
     }
@@ -130,25 +130,25 @@ struct define_array<A0> {
         
         pk.pack(a0);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 1: ptr[0].convert(a0);
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*1));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*1));
         o->via.array.size = 1;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
     }
     
     A0& a0;
@@ -168,12 +168,12 @@ struct define_array<A0, A1> {
         pk.pack(a0);
         pk.pack(a1);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 2: ptr[1].convert(a1);
@@ -181,14 +181,14 @@ struct define_array<A0, A1> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*2));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*2));
         o->via.array.size = 2;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
     }
     
     A0& a0;
@@ -210,12 +210,12 @@ struct define_array<A0, A1, A2> {
         pk.pack(a1);
         pk.pack(a2);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 3: ptr[2].convert(a2);
@@ -224,15 +224,15 @@ struct define_array<A0, A1, A2> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*3));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*3));
         o->via.array.size = 3;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
     }
     
     A0& a0;
@@ -256,12 +256,12 @@ struct define_array<A0, A1, A2, A3> {
         pk.pack(a2);
         pk.pack(a3);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 4: ptr[3].convert(a3);
@@ -271,16 +271,16 @@ struct define_array<A0, A1, A2, A3> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*4));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*4));
         o->via.array.size = 4;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
     }
     
     A0& a0;
@@ -306,12 +306,12 @@ struct define_array<A0, A1, A2, A3, A4> {
         pk.pack(a3);
         pk.pack(a4);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 5: ptr[4].convert(a4);
@@ -322,17 +322,17 @@ struct define_array<A0, A1, A2, A3, A4> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*5));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*5));
         o->via.array.size = 5;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
     }
     
     A0& a0;
@@ -360,12 +360,12 @@ struct define_array<A0, A1, A2, A3, A4, A5> {
         pk.pack(a4);
         pk.pack(a5);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 6: ptr[5].convert(a5);
@@ -377,18 +377,18 @@ struct define_array<A0, A1, A2, A3, A4, A5> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*6));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*6));
         o->via.array.size = 6;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
     }
     
     A0& a0;
@@ -418,12 +418,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6> {
         pk.pack(a5);
         pk.pack(a6);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 7: ptr[6].convert(a6);
@@ -436,19 +436,19 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*7));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*7));
         o->via.array.size = 7;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
     }
     
     A0& a0;
@@ -480,12 +480,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7> {
         pk.pack(a6);
         pk.pack(a7);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 8: ptr[7].convert(a7);
@@ -499,20 +499,20 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*8));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*8));
         o->via.array.size = 8;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
     }
     
     A0& a0;
@@ -546,12 +546,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
         pk.pack(a7);
         pk.pack(a8);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 9: ptr[8].convert(a8);
@@ -566,21 +566,21 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*9));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*9));
         o->via.array.size = 9;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
     }
     
     A0& a0;
@@ -616,12 +616,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
         pk.pack(a8);
         pk.pack(a9);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 10: ptr[9].convert(a9);
@@ -637,22 +637,22 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*10));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*10));
         o->via.array.size = 10;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
     }
     
     A0& a0;
@@ -690,12 +690,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
         pk.pack(a9);
         pk.pack(a10);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 11: ptr[10].convert(a10);
@@ -712,23 +712,23 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*11));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*11));
         o->via.array.size = 11;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
     }
     
     A0& a0;
@@ -768,12 +768,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
         pk.pack(a10);
         pk.pack(a11);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 12: ptr[11].convert(a11);
@@ -791,24 +791,24 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*12));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*12));
         o->via.array.size = 12;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
     }
     
     A0& a0;
@@ -850,12 +850,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
         pk.pack(a11);
         pk.pack(a12);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 13: ptr[12].convert(a12);
@@ -874,25 +874,25 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*13));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*13));
         o->via.array.size = 13;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
     }
     
     A0& a0;
@@ -936,12 +936,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> 
         pk.pack(a12);
         pk.pack(a13);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 14: ptr[13].convert(a13);
@@ -961,26 +961,26 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*14));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*14));
         o->via.array.size = 14;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
     }
     
     A0& a0;
@@ -1026,12 +1026,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a13);
         pk.pack(a14);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 15: ptr[14].convert(a14);
@@ -1052,27 +1052,27 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*15));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*15));
         o->via.array.size = 15;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
     }
     
     A0& a0;
@@ -1120,12 +1120,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a14);
         pk.pack(a15);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 16: ptr[15].convert(a15);
@@ -1147,28 +1147,28 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*16));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*16));
         o->via.array.size = 16;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
     }
     
     A0& a0;
@@ -1218,12 +1218,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a15);
         pk.pack(a16);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 17: ptr[16].convert(a16);
@@ -1246,29 +1246,29 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*17));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*17));
         o->via.array.size = 17;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
     }
     
     A0& a0;
@@ -1320,12 +1320,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a16);
         pk.pack(a17);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 18: ptr[17].convert(a17);
@@ -1349,30 +1349,30 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*18));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*18));
         o->via.array.size = 18;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
     }
     
     A0& a0;
@@ -1426,12 +1426,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a17);
         pk.pack(a18);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 19: ptr[18].convert(a18);
@@ -1456,31 +1456,31 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*19));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*19));
         o->via.array.size = 19;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
     }
     
     A0& a0;
@@ -1536,12 +1536,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a18);
         pk.pack(a19);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 20: ptr[19].convert(a19);
@@ -1567,32 +1567,32 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*20));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*20));
         o->via.array.size = 20;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
     }
     
     A0& a0;
@@ -1650,12 +1650,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a19);
         pk.pack(a20);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 21: ptr[20].convert(a20);
@@ -1682,33 +1682,33 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*21));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*21));
         o->via.array.size = 21;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
     }
     
     A0& a0;
@@ -1768,12 +1768,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a20);
         pk.pack(a21);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 22: ptr[21].convert(a21);
@@ -1801,34 +1801,34 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*22));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*22));
         o->via.array.size = 22;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
     }
     
     A0& a0;
@@ -1890,12 +1890,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a21);
         pk.pack(a22);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 23: ptr[22].convert(a22);
@@ -1924,35 +1924,35 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*23));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*23));
         o->via.array.size = 23;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
     }
     
     A0& a0;
@@ -2016,12 +2016,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a22);
         pk.pack(a23);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 24: ptr[23].convert(a23);
@@ -2051,36 +2051,36 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*24));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*24));
         o->via.array.size = 24;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
     }
     
     A0& a0;
@@ -2146,12 +2146,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a23);
         pk.pack(a24);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 25: ptr[24].convert(a24);
@@ -2182,37 +2182,37 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*25));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*25));
         o->via.array.size = 25;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
     }
     
     A0& a0;
@@ -2280,12 +2280,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a24);
         pk.pack(a25);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 26: ptr[25].convert(a25);
@@ -2317,38 +2317,38 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*26));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*26));
         o->via.array.size = 26;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
     }
     
     A0& a0;
@@ -2418,12 +2418,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a25);
         pk.pack(a26);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 27: ptr[26].convert(a26);
@@ -2456,39 +2456,39 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*27));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*27));
         o->via.array.size = 27;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
     }
     
     A0& a0;
@@ -2560,12 +2560,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a26);
         pk.pack(a27);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 28: ptr[27].convert(a27);
@@ -2599,40 +2599,40 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*28));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*28));
         o->via.array.size = 28;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
-        o->via.array.ptr[27] = msgpack::object(a27, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
+        o->via.array.ptr[27] = clmdep_msgpack::object(a27, z);
     }
     
     A0& a0;
@@ -2706,12 +2706,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a27);
         pk.pack(a28);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 29: ptr[28].convert(a28);
@@ -2746,41 +2746,41 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*29));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*29));
         o->via.array.size = 29;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
-        o->via.array.ptr[27] = msgpack::object(a27, z);
-        o->via.array.ptr[28] = msgpack::object(a28, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
+        o->via.array.ptr[27] = clmdep_msgpack::object(a27, z);
+        o->via.array.ptr[28] = clmdep_msgpack::object(a28, z);
     }
     
     A0& a0;
@@ -2856,12 +2856,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a28);
         pk.pack(a29);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 30: ptr[29].convert(a29);
@@ -2897,42 +2897,42 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*30));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*30));
         o->via.array.size = 30;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
-        o->via.array.ptr[27] = msgpack::object(a27, z);
-        o->via.array.ptr[28] = msgpack::object(a28, z);
-        o->via.array.ptr[29] = msgpack::object(a29, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
+        o->via.array.ptr[27] = clmdep_msgpack::object(a27, z);
+        o->via.array.ptr[28] = clmdep_msgpack::object(a28, z);
+        o->via.array.ptr[29] = clmdep_msgpack::object(a29, z);
     }
     
     A0& a0;
@@ -3010,12 +3010,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a29);
         pk.pack(a30);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 31: ptr[30].convert(a30);
@@ -3052,43 +3052,43 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*31));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*31));
         o->via.array.size = 31;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
-        o->via.array.ptr[27] = msgpack::object(a27, z);
-        o->via.array.ptr[28] = msgpack::object(a28, z);
-        o->via.array.ptr[29] = msgpack::object(a29, z);
-        o->via.array.ptr[30] = msgpack::object(a30, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
+        o->via.array.ptr[27] = clmdep_msgpack::object(a27, z);
+        o->via.array.ptr[28] = clmdep_msgpack::object(a28, z);
+        o->via.array.ptr[29] = clmdep_msgpack::object(a29, z);
+        o->via.array.ptr[30] = clmdep_msgpack::object(a30, z);
     }
     
     A0& a0;
@@ -3168,12 +3168,12 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
         pk.pack(a30);
         pk.pack(a31);
     }
-    void msgpack_unpack(msgpack::object const& o)
+    void msgpack_unpack(clmdep_msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
-            msgpack::object *ptr = o.via.array.ptr;
+            clmdep_msgpack::object *ptr = o.via.array.ptr;
             switch(size) {
             default:
             case 32: ptr[31].convert(a31);
@@ -3211,44 +3211,44 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*32));
+        o->type = clmdep_msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<clmdep_msgpack::object*>(z.allocate_align(sizeof(clmdep_msgpack::object)*32));
         o->via.array.size = 32;
         
-        o->via.array.ptr[0] = msgpack::object(a0, z);
-        o->via.array.ptr[1] = msgpack::object(a1, z);
-        o->via.array.ptr[2] = msgpack::object(a2, z);
-        o->via.array.ptr[3] = msgpack::object(a3, z);
-        o->via.array.ptr[4] = msgpack::object(a4, z);
-        o->via.array.ptr[5] = msgpack::object(a5, z);
-        o->via.array.ptr[6] = msgpack::object(a6, z);
-        o->via.array.ptr[7] = msgpack::object(a7, z);
-        o->via.array.ptr[8] = msgpack::object(a8, z);
-        o->via.array.ptr[9] = msgpack::object(a9, z);
-        o->via.array.ptr[10] = msgpack::object(a10, z);
-        o->via.array.ptr[11] = msgpack::object(a11, z);
-        o->via.array.ptr[12] = msgpack::object(a12, z);
-        o->via.array.ptr[13] = msgpack::object(a13, z);
-        o->via.array.ptr[14] = msgpack::object(a14, z);
-        o->via.array.ptr[15] = msgpack::object(a15, z);
-        o->via.array.ptr[16] = msgpack::object(a16, z);
-        o->via.array.ptr[17] = msgpack::object(a17, z);
-        o->via.array.ptr[18] = msgpack::object(a18, z);
-        o->via.array.ptr[19] = msgpack::object(a19, z);
-        o->via.array.ptr[20] = msgpack::object(a20, z);
-        o->via.array.ptr[21] = msgpack::object(a21, z);
-        o->via.array.ptr[22] = msgpack::object(a22, z);
-        o->via.array.ptr[23] = msgpack::object(a23, z);
-        o->via.array.ptr[24] = msgpack::object(a24, z);
-        o->via.array.ptr[25] = msgpack::object(a25, z);
-        o->via.array.ptr[26] = msgpack::object(a26, z);
-        o->via.array.ptr[27] = msgpack::object(a27, z);
-        o->via.array.ptr[28] = msgpack::object(a28, z);
-        o->via.array.ptr[29] = msgpack::object(a29, z);
-        o->via.array.ptr[30] = msgpack::object(a30, z);
-        o->via.array.ptr[31] = msgpack::object(a31, z);
+        o->via.array.ptr[0] = clmdep_msgpack::object(a0, z);
+        o->via.array.ptr[1] = clmdep_msgpack::object(a1, z);
+        o->via.array.ptr[2] = clmdep_msgpack::object(a2, z);
+        o->via.array.ptr[3] = clmdep_msgpack::object(a3, z);
+        o->via.array.ptr[4] = clmdep_msgpack::object(a4, z);
+        o->via.array.ptr[5] = clmdep_msgpack::object(a5, z);
+        o->via.array.ptr[6] = clmdep_msgpack::object(a6, z);
+        o->via.array.ptr[7] = clmdep_msgpack::object(a7, z);
+        o->via.array.ptr[8] = clmdep_msgpack::object(a8, z);
+        o->via.array.ptr[9] = clmdep_msgpack::object(a9, z);
+        o->via.array.ptr[10] = clmdep_msgpack::object(a10, z);
+        o->via.array.ptr[11] = clmdep_msgpack::object(a11, z);
+        o->via.array.ptr[12] = clmdep_msgpack::object(a12, z);
+        o->via.array.ptr[13] = clmdep_msgpack::object(a13, z);
+        o->via.array.ptr[14] = clmdep_msgpack::object(a14, z);
+        o->via.array.ptr[15] = clmdep_msgpack::object(a15, z);
+        o->via.array.ptr[16] = clmdep_msgpack::object(a16, z);
+        o->via.array.ptr[17] = clmdep_msgpack::object(a17, z);
+        o->via.array.ptr[18] = clmdep_msgpack::object(a18, z);
+        o->via.array.ptr[19] = clmdep_msgpack::object(a19, z);
+        o->via.array.ptr[20] = clmdep_msgpack::object(a20, z);
+        o->via.array.ptr[21] = clmdep_msgpack::object(a21, z);
+        o->via.array.ptr[22] = clmdep_msgpack::object(a22, z);
+        o->via.array.ptr[23] = clmdep_msgpack::object(a23, z);
+        o->via.array.ptr[24] = clmdep_msgpack::object(a24, z);
+        o->via.array.ptr[25] = clmdep_msgpack::object(a25, z);
+        o->via.array.ptr[26] = clmdep_msgpack::object(a26, z);
+        o->via.array.ptr[27] = clmdep_msgpack::object(a27, z);
+        o->via.array.ptr[28] = clmdep_msgpack::object(a28, z);
+        o->via.array.ptr[29] = clmdep_msgpack::object(a29, z);
+        o->via.array.ptr[30] = clmdep_msgpack::object(a30, z);
+        o->via.array.ptr[31] = clmdep_msgpack::object(a31, z);
     }
     
     A0& a0;
@@ -3492,7 +3492,7 @@ inline define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_CPP03_DEFINE_ARRAY_HPP

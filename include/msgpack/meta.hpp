@@ -23,7 +23,7 @@
 
 #include <type_traits>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -52,7 +52,7 @@ struct gen_seq<0, Is...> : seq<Is...> {};
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // !defined(MSGPACK_USE_CPP03)
 

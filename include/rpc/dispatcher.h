@@ -67,7 +67,7 @@ public:
     //! \throws std::runtime_error If the messagepack does not contain a
     //! a call or the types of the parameters are not convertible to the called
     //! functions' parameters.
-    void dispatch(msgpack::sbuffer const &msg);
+    void dispatch(RPCLIB_MSGPACK::sbuffer const &msg);
 
     //! \brief Processes a message that contains a call according to
     //! the Msgpack-RPC spec.
@@ -77,19 +77,19 @@ public:
     //! as response for the client.
     //! \throws std::runtime_error If the types of the parameters are not
     //! convertible to the called functions' parameters.
-    detail::response dispatch(msgpack::object const &msg,
+    detail::response dispatch(RPCLIB_MSGPACK::object const &msg,
                               bool suppress_exceptions = false);
 
     //! \brief This functor type unifies the interfaces of functions that are
     //!        called remotely
-    using adaptor_type = std::function<std::unique_ptr<msgpack::object_handle>(
-        msgpack::object const &)>;
+    using adaptor_type = std::function<std::unique_ptr<RPCLIB_MSGPACK::object_handle>(
+        RPCLIB_MSGPACK::object const &)>;
 
     //! \brief This is the type of messages as per the msgpack-rpc spec.
-    using call_t = std::tuple<int8_t, uint32_t, std::string, msgpack::object>;
+    using call_t = std::tuple<int8_t, uint32_t, std::string, RPCLIB_MSGPACK::object>;
 
     //! \brief This is the type of notification messages.
-    using notification_t = std::tuple<int8_t, std::string, msgpack::object>;
+    using notification_t = std::tuple<int8_t, std::string, RPCLIB_MSGPACK::object>;
 
 private:
     //! \brief Checks the argument count and throws an exception if
@@ -98,14 +98,14 @@ private:
                                   std::size_t expected);
 
     //! \brief Dispatches a call (which will have a response).
-    detail::response dispatch_call(msgpack::object const &msg,
+    detail::response dispatch_call(RPCLIB_MSGPACK::object const &msg,
                                    bool suppress_exceptions = false);
 
     //! \brief Dispatches a notification (which will not have a response)
-    detail::response dispatch_notification(msgpack::object const &msg,
+    detail::response dispatch_notification(RPCLIB_MSGPACK::object const &msg,
                                            bool suppress_exceptions = false);
 
-    template <typename T> msgpack::object pack(T &&arg);
+    template <typename T> RPCLIB_MSGPACK::object pack(T &&arg);
 
     enum class request_type { call = 0, notification = 2 };
 

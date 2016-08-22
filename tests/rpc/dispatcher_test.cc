@@ -29,7 +29,7 @@ public:
     }
 
     template <typename A> void raw_call(A &&msg_array) {
-        msgpack::sbuffer msg;
+        RPCLIB_MSGPACK::sbuffer msg;
         msg.write(reinterpret_cast<const char *>(msg_array), sizeof(msg_array));
         dispatcher.dispatch(msg);
     }
@@ -162,10 +162,10 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
-    auto msg = make_unpacked(0, 0, "bar", msgpack::type::nil());
+    auto msg = make_unpacked(0, 0, "bar", RPCLIB_MSGPACK::type::nil());
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error() !=
-                std::shared_ptr<msgpack::object_handle>());
+                std::shared_ptr<RPCLIB_MSGPACK::object_handle>());
 }
 
 TEST_F(dispatch_test, bad_format_msgpack_returns_empty) {

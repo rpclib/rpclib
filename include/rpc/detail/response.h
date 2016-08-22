@@ -29,21 +29,21 @@ public:
     template <typename T> static response make_error(uint32_t id, T &&error);
 
 
-    //! \brief Constructs a response from msgpack::object (useful when
+    //! \brief Constructs a response from RPCLIB_MSGPACK::object (useful when
     //! reading a response from a stream).
-    response(msgpack::object_handle o);
+    response(RPCLIB_MSGPACK::object_handle o);
 
-    //! \brief Gets the response data as a msgpack::sbuffer.
-    msgpack::sbuffer get_data() const;
+    //! \brief Gets the response data as a RPCLIB_MSGPACK::sbuffer.
+    RPCLIB_MSGPACK::sbuffer get_data() const;
 
     //! \brief Moves the specified object_handle into the response
     //! as a result.
     //! \param r The result to capture.
-    void capture_result(msgpack::object_handle &r);
+    void capture_result(RPCLIB_MSGPACK::object_handle &r);
 
     //! \brief Moves the specified object_handle into the response as an error.
     //! \param e The error to capture.
-    void capture_error(msgpack::object_handle &e);
+    void capture_error(RPCLIB_MSGPACK::object_handle &e);
 
     //! \brief Returns the call id/index used to identify which call
     //! this response corresponds to.
@@ -51,10 +51,10 @@ public:
 
     //! \brief Returns the error object stored in the response. Can
     //! be empty.
-    std::shared_ptr<msgpack::object_handle> get_error() const;
+    std::shared_ptr<RPCLIB_MSGPACK::object_handle> get_error() const;
 
     //! \brief Returns the result stored in the response. Can be empty.
-    std::shared_ptr<msgpack::object_handle> get_result() const;
+    std::shared_ptr<RPCLIB_MSGPACK::object_handle> get_result() const;
 
     //! \brief Gets an empty response which means "no response" (not to be
     //! confused with void return, i.e. this means literally
@@ -66,7 +66,7 @@ public:
 
     //! \brief The type of a response, according to the msgpack-rpc spec
     using response_type =
-        std::tuple<uint32_t, uint32_t, msgpack::object, msgpack::object>;
+        std::tuple<uint32_t, uint32_t, RPCLIB_MSGPACK::object, RPCLIB_MSGPACK::object>;
 
 private:
     //! \brief Default constructor for responses.
@@ -76,25 +76,25 @@ private:
     // I really wish to avoid shared_ptr here but at this point asio does not
     // work with move-only handlers in post() and I need to capture responses
     // in lambdas.
-    std::shared_ptr<msgpack::object_handle> error_;
-    std::shared_ptr<msgpack::object_handle> result_;
+    std::shared_ptr<RPCLIB_MSGPACK::object_handle> error_;
+    std::shared_ptr<RPCLIB_MSGPACK::object_handle> result_;
     bool empty_;
     RPCLIB_CREATE_LOG_CHANNEL(response)
 };
 
 template <typename T>
 inline response response::make_result(uint32_t id, T &&result) {
-    auto z = std::make_unique<msgpack::zone>();
-    msgpack::object o(std::forward<T>(result), *z);
+    auto z = std::make_unique<RPCLIB_MSGPACK::zone>();
+    RPCLIB_MSGPACK::object o(std::forward<T>(result), *z);
     response inst;
     inst.id_ = id;
-    inst.result_ = std::make_shared<msgpack::object_handle>(o, std::move(z));
+    inst.result_ = std::make_shared<RPCLIB_MSGPACK::object_handle>(o, std::move(z));
     return inst;
 }
 
 template <>
 inline response
-response::make_result(uint32_t id, std::unique_ptr<msgpack::object_handle> &&r) {
+response::make_result(uint32_t id, std::unique_ptr<RPCLIB_MSGPACK::object_handle> &&r) {
     response inst;
     inst.id_ = id;
     inst.result_ = std::move(r);
@@ -103,11 +103,11 @@ response::make_result(uint32_t id, std::unique_ptr<msgpack::object_handle> &&r) 
 
 template <typename T>
 inline response response::make_error(uint32_t id, T &&error) {
-    auto z = std::make_unique<msgpack::zone>();
-    msgpack::object o(std::forward<T>(error), *z);
+    auto z = std::make_unique<RPCLIB_MSGPACK::zone>();
+    RPCLIB_MSGPACK::object o(std::forward<T>(error), *z);
     response inst;
     inst.id_ = id;
-    inst.error_ = std::make_shared<msgpack::object_handle>(o, std::move(z));
+    inst.error_ = std::make_shared<RPCLIB_MSGPACK::object_handle>(o, std::move(z));
     return inst;
 }
 

@@ -8,13 +8,13 @@ namespace detail {
 
 using detail::response;
 
-void dispatcher::dispatch(msgpack::sbuffer const &msg) {
-    msgpack::unpacked unpacked;
-    msgpack::unpack(&unpacked, msg.data(), msg.size());
+void dispatcher::dispatch(RPCLIB_MSGPACK::sbuffer const &msg) {
+    RPCLIB_MSGPACK::unpacked unpacked;
+    RPCLIB_MSGPACK::unpack(&unpacked, msg.data(), msg.size());
     dispatch(unpacked.get());
 }
 
-response dispatcher::dispatch(msgpack::object const &msg,
+response dispatcher::dispatch(RPCLIB_MSGPACK::object const &msg,
                               bool suppress_exceptions) {
     switch (msg.via.array.size) {
     case 3:
@@ -26,7 +26,7 @@ response dispatcher::dispatch(msgpack::object const &msg,
     }
 }
 
-response dispatcher::dispatch_call(msgpack::object const &msg,
+response dispatcher::dispatch_call(RPCLIB_MSGPACK::object const &msg,
                                    bool suppress_exceptions) {
     call_t the_call;
     msg.convert(&the_call);
@@ -85,7 +85,7 @@ response dispatcher::dispatch_call(msgpack::object const &msg,
                                name, args.via.array.size));
 }
 
-response dispatcher::dispatch_notification(msgpack::object const &msg,
+response dispatcher::dispatch_notification(RPCLIB_MSGPACK::object const &msg,
                                            bool suppress_exceptions) {
     notification_t the_call;
     msg.convert(&the_call);

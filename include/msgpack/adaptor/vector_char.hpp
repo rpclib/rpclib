@@ -24,7 +24,7 @@
 
 #include <vector>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -34,18 +34,18 @@ namespace adaptor {
 
 template <typename Alloc>
 struct convert<std::vector<char, Alloc> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::vector<char, Alloc>& v) const {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, std::vector<char, Alloc>& v) const {
         switch (o.type) {
-        case msgpack::type::BIN:
+        case clmdep_msgpack::type::BIN:
             v.resize(o.via.bin.size);
             std::memcpy(&v.front(), o.via.bin.ptr, o.via.bin.size);
             break;
-        case msgpack::type::STR:
+        case clmdep_msgpack::type::STR:
             v.resize(o.via.str.size);
             std::memcpy(&v.front(), o.via.str.ptr, o.via.str.size);
             break;
         default:
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
             break;
         }
         return o;
@@ -55,7 +55,7 @@ struct convert<std::vector<char, Alloc> > {
 template <typename Alloc>
 struct pack<std::vector<char, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<char, Alloc>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const std::vector<char, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_bin(size);
         o.pack_bin_body(&v.front(), size);
@@ -66,9 +66,9 @@ struct pack<std::vector<char, Alloc> > {
 
 template <typename Alloc>
 struct object<std::vector<char, Alloc> > {
-    void operator()(msgpack::object& o, const std::vector<char, Alloc>& v) const {
+    void operator()(clmdep_msgpack::object& o, const std::vector<char, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
-        o.type = msgpack::type::BIN;
+        o.type = clmdep_msgpack::type::BIN;
         o.via.bin.ptr = &v.front();
         o.via.bin.size = size;
     }
@@ -76,9 +76,9 @@ struct object<std::vector<char, Alloc> > {
 
 template <typename Alloc>
 struct object_with_zone<std::vector<char, Alloc> > {
-    void operator()(msgpack::object::with_zone& o, const std::vector<char, Alloc>& v) const {
+    void operator()(clmdep_msgpack::object::with_zone& o, const std::vector<char, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
-        o.type = msgpack::type::BIN;
+        o.type = clmdep_msgpack::type::BIN;
         char* ptr = static_cast<char*>(o.zone.allocate_align(size));
         o.via.bin.ptr = ptr;
         o.via.bin.size = size;
@@ -92,6 +92,6 @@ struct object_with_zone<std::vector<char, Alloc> > {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_TYPE_VECTOR_CHAR_HPP

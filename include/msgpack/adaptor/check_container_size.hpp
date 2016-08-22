@@ -21,7 +21,7 @@
 #include "msgpack/versioning.hpp"
 #include <stdexcept>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -70,6 +70,6 @@ inline uint32_t checked_get_container_size(T size) {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_CHECK_CONTAINER_SIZE_HPP

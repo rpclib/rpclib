@@ -8,12 +8,13 @@ import fileinput
 import glob2
 import re
 
-targets = ['asio', 'fmt'] # msgpack is on the interface
+targets = ['asio', 'fmt', 'msgpack'] # msgpack is on the interface
 
 files = []
-types = ['.cpp', '.cc', '.h', '.hpp', '.hh', '.ipp']
+types = ['.cpp', '.cc', '.h', '.hpp', '.hh', '.ipp', '.inl']
 for t in types:
     files.extend(glob2.glob('../dependencies/**/*' + t))
+    files.extend(glob2.glob('../include/msgpack/**/*' + t))
 
 for f in files:
     print('Processing', f)
@@ -25,16 +26,17 @@ for f in files:
                 line = line.replace(t + '::', 'clmdep_' + t + '::')
                 line = line.replace('using ' + t, 'using clmdep_' + t)
                 line = line.replace('asio_', 'clmdep_asio_')
-                line = line.replace('clmdep_rpcdep_', 'rpcdep_')
+                line = line.replace('clmdep_clmdep_', 'clmdep_')
             print(line, end='')
 
-usages = { 'asio': 'RPCLIB_ASIO', 'fmt': 'RPCLIB_FMT' }
+usages = { 'asio': 'RPCLIB_ASIO', 'fmt': 'RPCLIB_FMT', 'msgpack': 'RPCLIB_MSGPACK' }
 
 files = []
-types = ['.h', '.cc']
+types = ['.h', '.cc', '.inl']
 for t in types:
     files.extend(glob2.glob('../include/**/*' + t))
     files.extend(glob2.glob('../lib/**/*' + t))
+    files.extend(glob2.glob('../tests/**/*' + t))
 
 for f in files:
     print('Processing', f)

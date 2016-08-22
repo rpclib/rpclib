@@ -56,7 +56,7 @@ public:
                 }));
     }
 
-    void write(msgpack::sbuffer &&data) {
+    void write(RPCLIB_MSGPACK::sbuffer &&data) {
         write_queue_.push_back(std::move(data));
         if (write_queue_.size() > 1) {
             return; // there is an ongoing write chain so don't start another
@@ -76,7 +76,7 @@ protected:
     std::condition_variable cv_exit_;
 
 private:
-    std::deque<msgpack::sbuffer> write_queue_;
+    std::deque<RPCLIB_MSGPACK::sbuffer> write_queue_;
     RPCLIB_CREATE_LOG_CHANNEL(async_writer)
 };
 

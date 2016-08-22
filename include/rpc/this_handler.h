@@ -61,7 +61,7 @@ public:
     friend class rpc::detail::server_session;
 
 private:
-    msgpack::object_handle error_, resp_;
+    RPCLIB_MSGPACK::object_handle error_, resp_;
     bool resp_enabled_ = true;
 };
 }

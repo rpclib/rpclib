@@ -39,7 +39,7 @@
 #include <boost/variant.hpp>
 #include <boost/operators.hpp>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -61,7 +61,7 @@ struct basic_variant :
         boost::string_ref, // STR
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
         std::vector<char>, // BIN
-        msgpack::type::raw_ref, // BIN
+        clmdep_msgpack::type::raw_ref, // BIN
         ext,               // EXT
         ext_ref,           // EXT
         boost::recursive_wrapper<std::vector<basic_variant<STR, BIN, EXT> > >, // ARRAY
@@ -80,7 +80,7 @@ struct basic_variant :
         boost::string_ref, // STR
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
         std::vector<char>, // BIN
-        msgpack::type::raw_ref, // BIN
+        clmdep_msgpack::type::raw_ref, // BIN
         ext,               // EXT
         ext_ref,           // EXT
         boost::recursive_wrapper<std::vector<basic_variant<STR, BIN, EXT> > >, // ARRAY
@@ -272,11 +272,11 @@ namespace adaptor {
 #if !defined (MSGPACK_USE_CPP03)
 
 template <typename STR, typename BIN, typename EXT>
-struct as<msgpack::type::basic_variant<STR, BIN, EXT> > {
-    msgpack::type::basic_variant<STR, BIN, EXT> operator()(msgpack::object const& o) const {
+struct as<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > {
+    clmdep_msgpack::type::basic_variant<STR, BIN, EXT> operator()(clmdep_msgpack::object const& o) const {
         switch(o.type) {
         case type::NIL:
-            return o.as<msgpack::type::nil>();
+            return o.as<clmdep_msgpack::type::nil>();
         case type::BOOLEAN:
             return o.as<bool>();
         case type::POSITIVE_INTEGER:
@@ -292,13 +292,13 @@ struct as<msgpack::type::basic_variant<STR, BIN, EXT> > {
         case type::EXT:
             return o.as<EXT>();
         case type::ARRAY:
-            return o.as<std::vector<msgpack::type::basic_variant<STR, BIN, EXT> > >();
+            return o.as<std::vector<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > >();
         case type::MAP:
-            return o.as<std::multimap<msgpack::type::basic_variant<STR, BIN, EXT>, msgpack::type::basic_variant<STR, BIN, EXT> > >();
+            return o.as<std::multimap<clmdep_msgpack::type::basic_variant<STR, BIN, EXT>, clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > >();
         default:
             break;
         }
-        return msgpack::type::basic_variant<STR, BIN, EXT>();
+        return clmdep_msgpack::type::basic_variant<STR, BIN, EXT>();
     }
 };
 
@@ -306,13 +306,13 @@ struct as<msgpack::type::basic_variant<STR, BIN, EXT> > {
 
 
 template <typename STR, typename BIN, typename EXT>
-struct convert<msgpack::type::basic_variant<STR, BIN, EXT> > {
-    msgpack::object const& operator()(
-        msgpack::object const& o,
-        msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
+struct convert<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > {
+    clmdep_msgpack::object const& operator()(
+        clmdep_msgpack::object const& o,
+        clmdep_msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         switch(o.type) {
         case type::NIL:
-            v = o.as<msgpack::type::nil>();
+            v = o.as<clmdep_msgpack::type::nil>();
             break;
         case type::BOOLEAN:
             v = o.as<bool>();
@@ -336,10 +336,10 @@ struct convert<msgpack::type::basic_variant<STR, BIN, EXT> > {
             v = o.as<EXT>();
             break;
         case type::ARRAY:
-            v = o.as<std::vector<msgpack::type::basic_variant<STR, BIN, EXT> > >();
+            v = o.as<std::vector<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > >();
             break;
         case type::MAP:
-            v = o.as<std::multimap<msgpack::type::basic_variant<STR, BIN, EXT>, msgpack::type::basic_variant<STR, BIN, EXT> > >();
+            v = o.as<std::multimap<clmdep_msgpack::type::basic_variant<STR, BIN, EXT>, clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > >();
             break;
         default:
             break;
@@ -363,9 +363,9 @@ struct pack_imp : boost::static_visitor<void> {
 } // namespace detail
 
 template <typename STR, typename BIN, typename EXT>
-struct pack<msgpack::type::basic_variant<STR, BIN, EXT> > {
+struct pack<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::pack_imp<Stream>(o), v);
         return o;
     }
@@ -374,8 +374,8 @@ struct pack<msgpack::type::basic_variant<STR, BIN, EXT> > {
 namespace detail {
 
 struct object_imp : boost::static_visitor<void> {
-    void operator()(msgpack::type::nil const& v) const {
-        object<msgpack::type::nil>()(o_, v);
+    void operator()(clmdep_msgpack::type::nil const& v) const {
+        object<clmdep_msgpack::type::nil>()(o_, v);
     }
     void operator()(bool const& v) const {
         object<bool>()(o_, v);
@@ -391,17 +391,17 @@ struct object_imp : boost::static_visitor<void> {
     }
     template <typename T>
     void operator()(T const&) const {
-        throw msgpack::type_error();
+        throw clmdep_msgpack::type_error();
     }
-    object_imp(msgpack::object& o):o_(o) {}
-    msgpack::object& o_;
+    object_imp(clmdep_msgpack::object& o):o_(o) {}
+    clmdep_msgpack::object& o_;
 };
 
 } // namespace detail
 
 template <typename STR, typename BIN, typename EXT>
-struct object<msgpack::type::basic_variant<STR, BIN, EXT> > {
-    void operator()(msgpack::object& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
+struct object<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > {
+    void operator()(clmdep_msgpack::object& o, const clmdep_msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::object_imp(o), v);
     }
 };
@@ -413,15 +413,15 @@ struct object_with_zone_imp : boost::static_visitor<void> {
     void operator()(T const& v) const {
         object_with_zone<T>()(o_, v);
     }
-    object_with_zone_imp(msgpack::object::with_zone& o):o_(o) {}
-    msgpack::object::with_zone& o_;
+    object_with_zone_imp(clmdep_msgpack::object::with_zone& o):o_(o) {}
+    clmdep_msgpack::object::with_zone& o_;
 };
 
 } // namespace detail
 
 template <typename STR, typename BIN, typename EXT>
-struct object_with_zone<msgpack::type::basic_variant<STR, BIN, EXT> > {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
+struct object_with_zone<clmdep_msgpack::type::basic_variant<STR, BIN, EXT> > {
+    void operator()(clmdep_msgpack::object::with_zone& o, const clmdep_msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::object_with_zone_imp(o), v);
     }
 };
@@ -432,7 +432,7 @@ struct object_with_zone<msgpack::type::basic_variant<STR, BIN, EXT> > {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_USE_BOOST
 #endif // MSGPACK_TYPE_BOOST_MSGPACK_VARIANT_HPP

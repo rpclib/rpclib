@@ -34,7 +34,7 @@
 #include <boost/fusion/include/mpl.hpp>
 #include <boost/mpl/size.hpp>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -47,7 +47,7 @@ namespace adaptor {
 template <typename T>
 struct as<
     T,
-    typename msgpack::enable_if<
+    typename clmdep_msgpack::enable_if<
         boost::fusion::traits::is_sequence<T>::value &&
         boost::mpl::fold<
             T,
@@ -55,7 +55,7 @@ struct as<
             boost::mpl::if_ <
                 boost::mpl::and_<
                     boost::mpl::_1,
-                    msgpack::has_as<boost::mpl::_2>
+                    clmdep_msgpack::has_as<boost::mpl::_2>
                 >,
                 boost::mpl::bool_<true>,
                 boost::mpl::bool_<false>
@@ -63,15 +63,15 @@ struct as<
         >::type::value
     >::type
 > {
-    T operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    T operator()(clmdep_msgpack::object const& o) const {
+        if (o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         if (o.via.array.size != checked_get_container_size(boost::mpl::size<T>::value)) {
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
         }
         using tuple_t = decltype(to_tuple(std::declval<T>(), gen_seq<boost::mpl::size<T>::value>()));
         return to_t(
             o.as<tuple_t>(),
-            msgpack::gen_seq<boost::mpl::size<T>::value>());
+            clmdep_msgpack::gen_seq<boost::mpl::size<T>::value>());
     }
     template<std::size_t... Is, typename U>
     static std::tuple<
@@ -90,11 +90,11 @@ struct as<
 #endif // !defined (MSGPACK_USE_CPP03)
 
 template <typename T>
-struct convert<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
-    msgpack::object const& operator()(msgpack::object const& o, T& v) const {
-        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+struct convert<T, typename clmdep_msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, T& v) const {
+        if (o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         if (o.via.array.size != checked_get_container_size(boost::fusion::size(v))) {
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
         }
         uint32_t index = 0;
         boost::fusion::for_each(v, convert_imp(o, index));
@@ -102,21 +102,21 @@ struct convert<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence
     }
 private:
     struct convert_imp {
-        convert_imp(msgpack::object const& obj, uint32_t& index):obj_(obj), index_(index) {}
+        convert_imp(clmdep_msgpack::object const& obj, uint32_t& index):obj_(obj), index_(index) {}
         template <typename U>
         void operator()(U& v) const {
-            msgpack::adaptor::convert<U>()(obj_.via.array.ptr[index_++], v);
+            clmdep_msgpack::adaptor::convert<U>()(obj_.via.array.ptr[index_++], v);
         }
     private:
-        msgpack::object const& obj_;
+        clmdep_msgpack::object const& obj_;
         uint32_t& index_;
     };
 };
 
 template <typename T>
-struct pack<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+struct pack<T, typename clmdep_msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const T& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const T& v) const {
         uint32_t size = checked_get_container_size(boost::fusion::size(v));
         o.pack_array(size);
         boost::fusion::for_each(v, pack_imp<Stream>(o));
@@ -125,34 +125,34 @@ struct pack<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>
 private:
     template <typename Stream>
     struct pack_imp {
-        pack_imp(msgpack::packer<Stream>& stream):stream_(stream) {}
+        pack_imp(clmdep_msgpack::packer<Stream>& stream):stream_(stream) {}
         template <typename U>
         void operator()(U const& v) const {
             stream_.pack(v);
         }
     private:
-        msgpack::packer<Stream>& stream_;
+        clmdep_msgpack::packer<Stream>& stream_;
     };
 };
 
 template <typename T>
-struct object_with_zone<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
-    void operator()(msgpack::object::with_zone& o, const T& v) const {
+struct object_with_zone<T, typename clmdep_msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+    void operator()(clmdep_msgpack::object::with_zone& o, const T& v) const {
         uint32_t size = checked_get_container_size(boost::fusion::size(v));
-        o.type = msgpack::type::ARRAY;
-        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+        o.type = clmdep_msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<clmdep_msgpack::object*>(o.zone.allocate_align(sizeof(clmdep_msgpack::object)*size));
         o.via.array.size = size;
         uint32_t count = 0;
         boost::fusion::for_each(v, with_zone_imp(o, count));
     }
 private:
     struct with_zone_imp {
-        with_zone_imp(msgpack::object::with_zone const& obj, uint32_t& count):obj_(obj), count_(count) {}
+        with_zone_imp(clmdep_msgpack::object::with_zone const& obj, uint32_t& count):obj_(obj), count_(count) {}
         template <typename U>
         void operator()(U const& v) const {
-            obj_.via.array.ptr[count_++] = msgpack::object(v, obj_.zone);
+            obj_.via.array.ptr[count_++] = clmdep_msgpack::object(v, obj_.zone);
         }
-        msgpack::object::with_zone const& obj_;
+        clmdep_msgpack::object::with_zone const& obj_;
         uint32_t& count_;
     };
 };
@@ -163,6 +163,6 @@ private:
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_TYPE_BOOST_FUSION_HPP

@@ -23,16 +23,16 @@ public:
 
     //! \brief Returns the error object that the server
     //! provided.
-    virtual msgpack::object_handle& get_error();
+    virtual RPCLIB_MSGPACK::object_handle& get_error();
 
 private:
     friend class client;
     rpc_error(std::string const &what_arg, std::string const &function_name,
-              msgpack::object_handle o);
+              RPCLIB_MSGPACK::object_handle o);
 
 private:
     std::string func_name_;
-    msgpack::object_handle ob_h_;
+    RPCLIB_MSGPACK::object_handle ob_h_;
 };
 } /* rpc */
 

@@ -20,7 +20,7 @@
 
 #include "msgpack/object_fwd.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -35,23 +35,23 @@ namespace adaptor {
 
 template <typename T, typename Enabler = void>
 struct convert {
-    msgpack::object const& operator()(msgpack::object const& o, T& v) const;
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, T& v) const;
 };
 
 template <typename T, typename Enabler = void>
 struct pack {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, T const& v) const;
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, T const& v) const;
 };
 
 template <typename T, typename Enabler = void>
 struct object {
-    void operator()(msgpack::object& o, T const& v) const;
+    void operator()(clmdep_msgpack::object& o, T const& v) const;
 };
 
 template <typename T, typename Enabler = void>
 struct object_with_zone {
-    void operator()(msgpack::object::with_zone& o, T const& v) const;
+    void operator()(clmdep_msgpack::object::with_zone& o, T const& v) const;
 };
 
 } // namespace adaptor
@@ -60,25 +60,25 @@ struct object_with_zone {
 
 template <typename T>
 inline
-msgpack::object const& operator>> (msgpack::object const& o, T& v) {
+clmdep_msgpack::object const& operator>> (clmdep_msgpack::object const& o, T& v) {
     return adaptor::convert<T>()(o, v);
 }
 
 template <typename Stream, typename T>
 inline
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, T const& v) {
+clmdep_msgpack::packer<Stream>& operator<< (clmdep_msgpack::packer<Stream>& o, T const& v) {
     return adaptor::pack<T>()(o, v);
 }
 
 template <typename T>
 inline
-void operator<< (msgpack::object& o, T const& v) {
+void operator<< (clmdep_msgpack::object& o, T const& v) {
     adaptor::object<T>()(o, v);
 }
 
 template <typename T>
 inline
-void operator<< (msgpack::object::with_zone& o, T const& v) {
+void operator<< (clmdep_msgpack::object::with_zone& o, T const& v) {
     adaptor::object_with_zone<T>()(o, v);
 }
 
@@ -86,7 +86,7 @@ void operator<< (msgpack::object::with_zone& o, T const& v) {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_ADAPTOR_BASE_HPP

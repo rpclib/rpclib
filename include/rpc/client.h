@@ -49,12 +49,12 @@ public:
     //! \tparam Args The types of the arguments. Each type in this parameter
     //! pack have to be serializable by msgpack.
     //!
-    //! \returns A msgpack::object containing the result of the function (if
+    //! \returns A RPCLIB_MSGPACK::object containing the result of the function (if
     //! any). To obtain a typed value, use the msgpack API.
     //!
     //! \throws rpc::rpc_error if the server responds with an error.
     template <typename... Args>
-    msgpack::object_handle call(std::string const &func_name, Args... args);
+    RPCLIB_MSGPACK::object_handle call(std::string const &func_name, Args... args);
 
     //! \brief Calls a function asynchronously with the given name and
     //! arguments.
@@ -71,9 +71,9 @@ public:
     //! \tparam Args The types of the arguments.
     //!
     //! \returns A std::future, possibly holding a future result
-    //! (which is a msgpack::object).
+    //! (which is a RPCLIB_MSGPACK::object).
     template <typename... Args>
-    std::future<msgpack::object_handle> async_call(std::string const &func_name,
+    std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name,
                                                    Args... args);
 
     //! \brief Sends a notification with the given name and arguments (if any).
@@ -102,15 +102,15 @@ public:
 
 private:
     //! \brief Type of a promise holding a future response.
-    using rsp_promise = std::promise<msgpack::object_handle>;
+    using rsp_promise = std::promise<RPCLIB_MSGPACK::object_handle>;
 
     enum class request_type { call = 0, notification = 2 };
 
     void wait_conn();
-    void post(std::shared_ptr<msgpack::sbuffer> buffer, int idx,
+    void post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
               std::string const& func_name,
               std::shared_ptr<rsp_promise> p);
-    void post(msgpack::sbuffer *buffer);
+    void post(RPCLIB_MSGPACK::sbuffer *buffer);
     int get_next_call_idx();
 
 private:

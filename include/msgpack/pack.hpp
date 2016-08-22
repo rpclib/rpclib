@@ -28,7 +28,7 @@
 
 #include "sysdep.h"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -1093,6 +1093,6 @@ inline void packer<Stream>::pack_imp_int64(T d)
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif /* msgpack/pack.hpp */

@@ -22,7 +22,7 @@
 #include "msgpack/object_fwd.hpp"
 #include <vector>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -32,11 +32,11 @@ namespace adaptor {
 
 template <typename Alloc>
 struct convert<std::vector<bool, Alloc> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::vector<bool, Alloc>& v) const {
-        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, std::vector<bool, Alloc>& v) const {
+        if (o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
         if (o.via.array.size > 0) {
             v.resize(o.via.array.size);
-            msgpack::object* p = o.via.array.ptr;
+            clmdep_msgpack::object* p = o.via.array.ptr;
             for (typename std::vector<bool, Alloc>::iterator it = v.begin(), end = v.end();
                  it != end;
                  ++it) {
@@ -51,7 +51,7 @@ struct convert<std::vector<bool, Alloc> > {
 template <typename Alloc>
 struct pack<std::vector<bool, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<bool, Alloc>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const std::vector<bool, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
         for(typename std::vector<bool, Alloc>::const_iterator it(v.begin()), it_end(v.end());
@@ -64,20 +64,20 @@ struct pack<std::vector<bool, Alloc> > {
 
 template <typename Alloc>
 struct object_with_zone<std::vector<bool, Alloc> > {
-    void operator()(msgpack::object::with_zone& o, const std::vector<bool, Alloc>& v) const {
-        o.type = msgpack::type::ARRAY;
+    void operator()(clmdep_msgpack::object::with_zone& o, const std::vector<bool, Alloc>& v) const {
+        o.type = clmdep_msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
-            msgpack::object* const pend = p + size;
+            clmdep_msgpack::object* p = static_cast<clmdep_msgpack::object*>(o.zone.allocate_align(sizeof(clmdep_msgpack::object)*size));
+            clmdep_msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
             typename std::vector<bool, Alloc>::const_iterator it(v.begin());
             do {
-                *p = msgpack::object(static_cast<bool>(*it), o.zone);
+                *p = clmdep_msgpack::object(static_cast<bool>(*it), o.zone);
                 ++p;
                 ++it;
             } while(p < pend);
@@ -91,6 +91,6 @@ struct object_with_zone<std::vector<bool, Alloc> > {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_TYPE_VECTOR_BOOL_HPP

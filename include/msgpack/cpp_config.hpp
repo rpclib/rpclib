@@ -43,7 +43,7 @@
 
 #include <memory>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -98,7 +98,7 @@ struct is_same<T, T> : true_type {};
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #else  // __cplusplus < 201103L
@@ -106,7 +106,7 @@ struct is_same<T, T> : true_type {};
 #include <memory>
 #include <tuple>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -125,7 +125,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // __cplusplus < 201103L

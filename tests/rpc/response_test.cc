@@ -27,10 +27,10 @@ TEST(response, writing) {
     auto obj = make_unpacked(1, 42, "foo", "bar");
     response r(std::move(obj));
     auto buf1 = r.get_data();
-    response::response_type same_obj(1, 42, msgpack::object("foo"),
-                                     msgpack::object("bar"));
-    msgpack::sbuffer buf2;
-    msgpack::pack(buf2, same_obj);
+    response::response_type same_obj(1, 42, RPCLIB_MSGPACK::object("foo"),
+                                     RPCLIB_MSGPACK::object("bar"));
+    RPCLIB_MSGPACK::sbuffer buf2;
+    RPCLIB_MSGPACK::pack(buf2, same_obj);
 
     EXPECT_EQ(buf1.size(), buf2.size());
     EXPECT_EQ(0, memcmp(buf2.data(), buf2.data(), buf1.size()));

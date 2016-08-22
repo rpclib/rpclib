@@ -7,10 +7,10 @@
 
 namespace rpc {
 namespace detail {
-template <typename T> msgpack::object_handle pack(T &&o) {
-    auto z = std::make_unique<msgpack::zone>();
-    msgpack::object obj(std::forward<T>(o), *z);
-    return msgpack::object_handle(obj, std::move(z));
+template <typename T> RPCLIB_MSGPACK::object_handle pack(T &&o) {
+    auto z = std::make_unique<RPCLIB_MSGPACK::zone>();
+    RPCLIB_MSGPACK::object obj(std::forward<T>(o), *z);
+    return RPCLIB_MSGPACK::object_handle(obj, std::move(z));
 }
 } /* detail */
 } /* rpc  */

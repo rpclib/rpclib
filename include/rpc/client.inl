@@ -1,7 +1,7 @@
 namespace rpc {
 
 template <typename... Args>
-msgpack::object_handle client::call(std::string const &func_name,
+RPCLIB_MSGPACK::object_handle client::call(std::string const &func_name,
                                     Args... args) {
     RPCLIB_CREATE_LOG_CHANNEL(client)
     auto future = async_call(func_name, std::forward<Args>(args)...);
@@ -10,11 +10,11 @@ msgpack::object_handle client::call(std::string const &func_name,
 }
 
 template <typename... Args>
-std::future<msgpack::object_handle>
+std::future<RPCLIB_MSGPACK::object_handle>
 client::async_call(std::string const &func_name, Args... args) {
     RPCLIB_CREATE_LOG_CHANNEL(client)
     wait_conn();
-    using msgpack::object;
+    using RPCLIB_MSGPACK::object;
     LOG_DEBUG("Calling {}", func_name);
 
     auto args_obj = std::make_tuple(args...);
@@ -23,12 +23,12 @@ client::async_call(std::string const &func_name, Args... args) {
         std::make_tuple(static_cast<uint8_t>(client::request_type::call), idx,
                         func_name, args_obj);
 
-    auto buffer = std::make_shared<msgpack::sbuffer>();
-    msgpack::pack(*buffer, call_obj);
+    auto buffer = std::make_shared<RPCLIB_MSGPACK::sbuffer>();
+    RPCLIB_MSGPACK::pack(*buffer, call_obj);
 
     // TODO: Change to move semantics when asio starts supporting move-only
     // handlers in post(). [sztomi, 2016-02-14]
-    auto p = std::make_shared<std::promise<msgpack::object_handle>>();
+    auto p = std::make_shared<std::promise<RPCLIB_MSGPACK::object_handle>>();
     auto ft = p->get_future();
 
     post(buffer, idx, func_name, p);
@@ -52,8 +52,8 @@ void client::send(std::string const &func_name, Args... args) {
         static_cast<uint8_t>(client::request_type::notification), func_name,
         args_obj);
 
-    auto buffer = new msgpack::sbuffer;
-    msgpack::pack(*buffer, call_obj);
+    auto buffer = new RPCLIB_MSGPACK::sbuffer;
+    RPCLIB_MSGPACK::pack(*buffer, call_obj);
 
     post(buffer);
 }

@@ -21,7 +21,7 @@
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -45,8 +45,8 @@ namespace adaptor {
 
 template <>
 struct convert<type::nil> {
-    msgpack::object const& operator()(msgpack::object const& o, type::nil&) const {
-        if(o.type != msgpack::type::NIL) { throw msgpack::type_error(); }
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, type::nil&) const {
+        if(o.type != clmdep_msgpack::type::NIL) { throw clmdep_msgpack::type_error(); }
         return o;
     }
 };
@@ -54,7 +54,7 @@ struct convert<type::nil> {
 template <>
 struct pack<type::nil> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::nil&) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const type::nil&) const {
         o.pack_nil();
         return o;
     }
@@ -62,24 +62,24 @@ struct pack<type::nil> {
 
 template <>
 struct object<type::nil> {
-    void operator()(msgpack::object& o, type::nil) const {
-        o.type = msgpack::type::NIL;
+    void operator()(clmdep_msgpack::object& o, type::nil) const {
+        o.type = clmdep_msgpack::type::NIL;
     }
 };
 
 template <>
 struct object_with_zone<type::nil> {
-    void operator()(msgpack::object::with_zone& o, type::nil v) const {
-        static_cast<msgpack::object&>(o) << v;
+    void operator()(clmdep_msgpack::object::with_zone& o, type::nil v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
 } // namespace adaptror
 
 template <>
-inline void msgpack::object::as<void>() const
+inline void clmdep_msgpack::object::as<void>() const
 {
-    msgpack::type::nil v;
+    clmdep_msgpack::type::nil v;
     convert(v);
 }
 
@@ -87,6 +87,6 @@ inline void msgpack::object::as<void>() const
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_TYPE_NIL_HPP
