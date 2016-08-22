@@ -28,7 +28,7 @@ include(TargetArch)
 
 set(RPCLIB_VERSION_MAJOR 1)
 set(RPCLIB_VERSION_MINOR 0)
-set(RPCLIB_VERSION_PATCH 1)
+set(RPCLIB_VERSION_PATCH 0)
 
 target_architecture(TARGET_ARCH)
 
