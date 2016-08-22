@@ -5,21 +5,21 @@ $SRC = "src"
 $BUILD_DIR = "build"
 $CMAKE_FLAGS = "-DRPCLIB_BUILD_TESTS=OFF"
 
-Remove-Item -Force -Recurse $RELEASE_OUTPUT_DIR 
+Remove-Item -Force -Recurse $RELEASE_OUTPUT_DIR
 
 mkdir $RELEASE_OUTPUT_DIR
 pushd $RELEASE_OUTPUT_DIR
 
-git clone --depth=1 --branch=dev https://github.com/rpclib/rpclib.git $SRC
+git clone --depth=1 https://github.com/rpclib/rpclib.git $SRC
 
 $archs = @("x86"; "x64")
 $configs = @("Debug"; "Release")
 $runtimes = @("Static"; "Dynamic")
 
 $runtime_suffixes = @{
-	"DynamicRelease"="MD"; 
-	"DynamicDebug"="MDd"; 
-	"StaticRelease"="MT"; 
+	"DynamicRelease"="MD";
+	"DynamicDebug"="MDd";
+	"StaticRelease"="MT";
 	"StaticDebug"="MTd"
 }
 
@@ -41,16 +41,16 @@ function build_config($arch, $runtime, $config) {
 	echo "Build directory: $special_build_dir"
 	mkdir $special_build_dir
 	pushd $special_build_dir
-	
+
 	$suffix = $runtime_suffixes["$runtime$config"]
 	$gen = $arch_generators[$arch]
 	$flags = $extra_cmake_flags[$suffix]
 	$name_suff = "{0}-{1}" -f $suffix.ToLower(),$arch
 	$name_suff.replace(' ', '')
-	
+
 	cmake ../$SRC -G $gen $CMAKE_FLAGS $flags -DRPCLIB_NAME_SUFFIX="$name_suff"
 	cmake --build . --config $config
-	
+
 	popd
 }
 
