@@ -193,7 +193,7 @@ client::~client() {
 
 function_proxy<client> client::get_function(std::string const &func_name)
 {
-    return function_proxy<client>(func_name, this);
+    return { func_name, this };
 }
 
 }
