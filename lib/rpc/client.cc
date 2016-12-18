@@ -61,13 +61,13 @@ struct client::impl {
             RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
-                    pac_.buffer_consumed(length);
                     if (length >= pac_.buffer_capacity()) {
                         auto new_size = static_cast<std::size_t>(
                             pac_.buffer_capacity() * buffer_grow_factor);
                         LOG_INFO("Resizing buffer to {}", new_size);
                         pac_.reserve_buffer(new_size);
                     }
+                    pac_.buffer_consumed(length);
 
                     LOG_TRACE("Read chunk of size {}", length);
                     RPCLIB_MSGPACK::unpacked result;

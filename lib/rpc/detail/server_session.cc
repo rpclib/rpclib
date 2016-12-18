@@ -8,6 +8,9 @@
 namespace rpc {
 namespace detail {
 
+static constexpr uint32_t default_buffer_size = 65535;
+static constexpr double buffer_grow_factor = 1.5;
+
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
                                RPCLIB_ASIO::ip::tcp::socket socket,
                                std::shared_ptr<dispatcher> disp,
@@ -37,6 +40,12 @@ void server_session::do_read() {
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
+                if (length >= pac_.buffer_capacity()) {
+                    auto new_size = static_cast<std::size_t>(
+                        pac_.buffer_capacity() * buffer_grow_factor);
+                    LOG_INFO("Resizing buffer to {}", new_size);
+                    pac_.reserve_buffer(new_size);
+                }
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
                 while (pac_.next(&result) && !exit_) {
