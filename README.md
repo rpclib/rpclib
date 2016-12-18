@@ -72,15 +72,15 @@ release (I'm hesitant to call it release candidate because there are known outst
 
   * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) by Takatoshi Kondo ([website](http://msgpack.org/))
   * [asio](https://github.com/chriskohlhoff/asio) by Christopher Kohlhoff ([website](http://think-async.com/Asio))
-  * [cppformat](https://github.com/cppformat/cppformat) (now renamed `fmtlib` by Victor Zverovich ([website](http://fmtlib.net))
+  * [cppformat](https://github.com/fmtlib/fmt) (now renamed `fmtlib` by Victor Zverovich ([website](http://fmtlib.net))
   * [googletest](https://github.com/google/googletest) by Google
   * [wheels](https://github.com/rmartinho/wheels) by Martinho Fernandes
 
 Shoutouts to
 
-  * [Appveyor](http://www.appveyor.com)
+  * [Appveyor](https://www.appveyor.com/)
   * [Travis CI](https://travis-ci.org)
-  * [Coveralls.io](http://coveralls.io)
+  * [Coveralls.io](https://coveralls.io/)
   * [Coverity](http://www.coverity.com)
   * [ASan & TSan](https://github.com/google/sanitizers) helped spotting and resolving many bugs.
 

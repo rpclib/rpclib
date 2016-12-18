@@ -12,7 +12,7 @@ CMAKE_FLAGS="-DRPCLIB_BUILD_TESTS=OFF -DRPCLIB_BUILD_EXAMPLES=OFF"
 # create dirs
 mkdir -p $RELEASE_OUTPUT_DIR && cd $RELEASE_OUTPUT_DIR
 
-git clone --depth=1 --branch=dev https://github.com/rpclib/rpclib.git $SRC
+git clone --depth=1 https://github.com/rpclib/rpclib.git $SRC
 
 # 64-bit
 mkdir -p $BUILD_DIR && cd $BUILD_DIR

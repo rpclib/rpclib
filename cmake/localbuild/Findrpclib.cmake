@@ -8,17 +8,17 @@
 set(RPCLIB_INCLUDE_DIR "${RPCLIB_ROOT_DIR}/include")
 
 if(RPCLIB_INCLUDE_DIR)
-    file(READ 
-        "${RPCLIB_INCLUDE_DIR}/rpc/version.h" 
+    file(READ
+        "${RPCLIB_INCLUDE_DIR}/rpc/version.h"
         RPCLIB_VERSION_CONTENTS)
-    string(REGEX REPLACE 
-        ".*#define RPCLIB_VERSION_MAJOR ([0-9]+).*" "\\1" 
+    string(REGEX REPLACE
+        ".*#define RPCLIB_VERSION_MAJOR ([0-9]+).*" "\\1"
         RPCLIB_VERSION_MAJOR "${RPCLIB_VERSION_CONTENTS}")
-    string(REGEX REPLACE 
-        ".*#define RPCLIB_VERSION_MINOR ([0-9]+).*" "\\1" 
+    string(REGEX REPLACE
+        ".*#define RPCLIB_VERSION_MINOR ([0-9]+).*" "\\1"
         RPCLIB_VERSION_MINOR "${RPCLIB_VERSION_CONTENTS}")
-    string(REGEX REPLACE 
-        ".*#define RPCLIB_VERSION_PATCH ([0-9]+).*" "\\1" 
+    string(REGEX REPLACE
+        ".*#define RPCLIB_VERSION_PATCH ([0-9]+).*" "\\1"
         RPCLIB_VERSION_PATCH "${RPCLIB_VERSION_CONTENTS}")
     set(RPCLIB_VERSION_STR
         "${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}")
@@ -35,3 +35,10 @@ endif()
 
 set(RPCLIB_FOUND "1")
 set(RPCLIB_LIBS "${RPCLIB_PROJECT_NAME}")
+
+set(RPCLIB_COMPILE_DEFINITIONS
+    "ASIO_STANDALONE"
+    "RPCLIB_ASIO=clmdep_asio"
+    "RPCLIB_FMT=clmdep_fmt"
+    "RPCLIB_MSGPACK=clmdep_msgpack"
+)

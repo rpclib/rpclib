@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 #
 ################################################################################
 
-option(RPCLIB_BUILD_TESTS "Build unit RPCLIB_BUILD_TESTS." ON)
+option(RPCLIB_BUILD_TESTS "Build unit RPCLIB_BUILD_TESTS." OFF)
 option(RPCLIB_GENERATE_COMPDB "Generate compilation database. Useful for YCM." OFF)
 option(RPCLIB_BUILD_EXAMPLES "Build examples." OFF)
 option(RPCLIB_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
@@ -90,7 +90,7 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
         if (RPCLIB_ENABLE_LOGGING)
-            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES} rt")
+            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES}")
         endif()
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -110,13 +110,13 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
         if (RPCLIB_ENABLE_LOGGING)
-            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES} rt")
+            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES}")
         endif()
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 
-        set(RPCLIB_BUILD_DEFINITIONS
-            "${RPCLIB_BUILD_DEFINITIONS}"
+        set(RPCLIB_COMPILE_DEFINITIONS
+            "${RPCLIB_COMPILE_DEFINITIONS}"
             "WIN32_LEAN_AND_MEAN"
             "NOMINMAX"
             "VC_EXTRALEAN"
@@ -132,8 +132,8 @@ function(set_rpclib_flags TARGET)
 
     endif()
 
-    set(RPCLIB_BUILD_DEFINITIONS
-        "${RPCLIB_BUILD_DEFINITIONS}"
+    set(RPCLIB_COMPILE_DEFINITIONS
+        "${RPCLIB_COMPILE_DEFINITIONS}"
         "${RPCLIB_ARCH_DEF}"
         "${RPCLIB_OS_DEF}"
         "ASIO_STANDALONE"
@@ -143,8 +143,8 @@ function(set_rpclib_flags TARGET)
         )
 
     if(RPCLIB_ENABLE_LOGGING)
-        set(RPCLIB_BUILD_DEFINITIONS
-            "${RPCLIB_BUILD_DEFINITIONS};RPCLIB_ENABLE_LOGGING")
+        set(RPCLIB_COMPILE_DEFINITIONS
+            "${RPCLIB_COMPILE_DEFINITIONS};RPCLIB_ENABLE_LOGGING")
     endif()
 
     if(RPCLIB_BUILD_FLAGS)
@@ -153,10 +153,10 @@ function(set_rpclib_flags TARGET)
                 COMPILE_FLAGS "${RPCLIB_BUILD_FLAGS}")
     endif()
 
-    if(RPCLIB_BUILD_DEFINITIONS)
+    if(RPCLIB_COMPILE_DEFINITIONS)
         set_target_properties(${TARGET}
                 PROPERTIES
-                COMPILE_DEFINITIONS "${RPCLIB_BUILD_DEFINITIONS}")
+                COMPILE_DEFINITIONS "${RPCLIB_COMPILE_DEFINITIONS}")
     endif()
 
     if(RPCLIB_ENABLE_COVERAGE)
@@ -260,7 +260,7 @@ install(DIRECTORY include/
     PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include)
+install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/rpc)
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -344,7 +344,7 @@ set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
 set(CPACK_PACKAGE_VERSION_MAJOR "${RPCLIB_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${RPCLIB_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_BUILD "${RPCLIB_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${RPCLIB_VERSION_PATCH}")
 set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/output/pkg")
 set(CPACK_PACKAGE_EXECUTABLES "librpc" "rpc")
 set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${RPCLIB_DEB_ARCH}")
@@ -358,7 +358,7 @@ endif()
 if(WIN32)
     #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
     #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}")
     set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} rpclib")
     #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
     set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/rpc")
