@@ -14,8 +14,8 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_ENUM_PARAMS_WITH_DEFAULTS_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_ENUM_PARAMS_WITH_DEFAULTS_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/repetition/enum_binary_params.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/repetition/enum_binary_params.hpp>
 #
 # /* MSGPACK_PP_ENUM_PARAMS_WITH_DEFAULTS */
 #

@@ -14,8 +14,8 @@
 # ifndef MSGPACK_PREPROCESSOR_CONTROL_DETAIL_EDG_WHILE_HPP
 # define MSGPACK_PREPROCESSOR_CONTROL_DETAIL_EDG_WHILE_HPP
 #
-# include <msgpack/preprocessor/control/if.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # define MSGPACK_PP_WHILE_1(p, o, s) MSGPACK_PP_WHILE_1_I(p, o, s)
 # define MSGPACK_PP_WHILE_2(p, o, s) MSGPACK_PP_WHILE_2_I(p, o, s)

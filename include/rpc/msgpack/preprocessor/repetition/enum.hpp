@@ -14,14 +14,14 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_ENUM_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_ENUM_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/debug/error.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
-# include <msgpack/preprocessor/punctuation/comma_if.hpp>
-# include <msgpack/preprocessor/repetition/repeat.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
-# include <msgpack/preprocessor/tuple/rem.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/debug/error.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/comma_if.hpp>
+# include <rpc/msgpack/preprocessor/repetition/repeat.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/tuple/rem.hpp>
 #
 # /* MSGPACK_PP_ENUM */
 #

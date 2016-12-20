@@ -12,11 +12,11 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_TRANSFORM_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_TRANSFORM_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/seq/fold_left.hpp>
-# include <msgpack/preprocessor/seq/seq.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
-# include <msgpack/preprocessor/tuple/rem.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/seq/fold_left.hpp>
+# include <rpc/msgpack/preprocessor/seq/seq.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/tuple/rem.hpp>
 #
 # /* MSGPACK_PP_SEQ_TRANSFORM */
 #

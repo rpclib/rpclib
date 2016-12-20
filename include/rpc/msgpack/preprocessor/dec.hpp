@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_DEC_HPP
 # define MSGPACK_PREPROCESSOR_DEC_HPP
 #
-# include <msgpack/preprocessor/arithmetic/dec.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/dec.hpp>
 #
 # endif

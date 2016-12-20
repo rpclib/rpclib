@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_CONTROL_IIF_HPP
 # define MSGPACK_PREPROCESSOR_CONTROL_IIF_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # if ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MWCC()
 #    define MSGPACK_PP_IIF(bit, t, f) MSGPACK_PP_IIF_I(bit, t, f)

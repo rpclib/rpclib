@@ -40,7 +40,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_KCC MSGPACK_COMP_KCC_DETECTION
 #   endif
 #   define MSGPACK_COMP_KCC_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_KCC_NAME "Kai C++"

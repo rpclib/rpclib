@@ -45,7 +45,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_HPACC MSGPACK_COMP_HPACC_DETECTION
 #   endif
 #   define MSGPACK_COMP_HPACC_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_HPACC_NAME "HP aC++"

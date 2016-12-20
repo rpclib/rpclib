@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_EMPTY_HPP
 # define MSGPACK_PREPROCESSOR_EMPTY_HPP
 #
-# include <msgpack/preprocessor/facilities/empty.hpp>
+# include <rpc/msgpack/preprocessor/facilities/empty.hpp>
 #
 # endif

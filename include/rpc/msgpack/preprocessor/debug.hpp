@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_DEBUG_HPP
 # define MSGPACK_PREPROCESSOR_DEBUG_HPP
 #
-# include <msgpack/preprocessor/debug/assert.hpp>
-# include <msgpack/preprocessor/debug/line.hpp>
+# include <rpc/msgpack/preprocessor/debug/assert.hpp>
+# include <rpc/msgpack/preprocessor/debug/line.hpp>
 #
 # endif

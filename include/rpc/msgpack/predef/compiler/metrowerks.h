@@ -61,7 +61,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_MWERKS MSGPACK_COMP_MWERKS_DETECTION
 #   endif
 #   define MSGPACK_COMP_MWERKS_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_MWERKS_NAME "Metrowerks CodeWarrior"

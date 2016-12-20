@@ -75,7 +75,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_MSVC MSGPACK_COMP_MSVC_DETECTION
 #   endif
 #   define MSGPACK_COMP_MSVC_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_MSVC_NAME "Microsoft Visual C/C++"

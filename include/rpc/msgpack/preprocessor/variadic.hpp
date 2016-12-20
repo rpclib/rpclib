@@ -13,11 +13,11 @@
 # ifndef MSGPACK_PREPROCESSOR_VARIADIC_HPP
 # define MSGPACK_PREPROCESSOR_VARIADIC_HPP
 #
-# include <msgpack/preprocessor/variadic/elem.hpp>
-# include <msgpack/preprocessor/variadic/size.hpp>
-# include <msgpack/preprocessor/variadic/to_array.hpp>
-# include <msgpack/preprocessor/variadic/to_list.hpp>
-# include <msgpack/preprocessor/variadic/to_seq.hpp>
-# include <msgpack/preprocessor/variadic/to_tuple.hpp>
+# include <rpc/msgpack/preprocessor/variadic/elem.hpp>
+# include <rpc/msgpack/preprocessor/variadic/size.hpp>
+# include <rpc/msgpack/preprocessor/variadic/to_array.hpp>
+# include <rpc/msgpack/preprocessor/variadic/to_list.hpp>
+# include <rpc/msgpack/preprocessor/variadic/to_seq.hpp>
+# include <rpc/msgpack/preprocessor/variadic/to_tuple.hpp>
 #
 # endif

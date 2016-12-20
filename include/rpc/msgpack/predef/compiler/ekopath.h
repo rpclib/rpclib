@@ -41,7 +41,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_PATH MSGPACK_COMP_PATH_DETECTION
 #   endif
 #   define MSGPACK_COMP_PATH_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_PATH_NAME "EKOpath"

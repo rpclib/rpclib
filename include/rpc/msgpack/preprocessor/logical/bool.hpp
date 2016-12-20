@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_LOGICAL_BOOL_HPP
 # define MSGPACK_PREPROCESSOR_LOGICAL_BOOL_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_BOOL */
 #

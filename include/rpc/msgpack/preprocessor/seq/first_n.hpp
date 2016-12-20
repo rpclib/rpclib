@@ -12,11 +12,11 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_FIRST_N_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_FIRST_N_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/control/if.hpp>
-# include <msgpack/preprocessor/seq/detail/split.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/seq/detail/split.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
 #
 # /* MSGPACK_PP_SEQ_FIRST_N */
 #

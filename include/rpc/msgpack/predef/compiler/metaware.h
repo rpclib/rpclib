@@ -37,7 +37,7 @@ MetaWare High C/C++ compiler.
 #       define MSGPACK_COMP_HIGHC MSGPACK_COMP_HIGHC_DETECTION
 #   endif
 #   define MSGPACK_COMP_HIGHC_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_HIGHC_NAME "MetaWare High C/C++"

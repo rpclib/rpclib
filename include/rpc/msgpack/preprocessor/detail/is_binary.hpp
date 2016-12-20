@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_DETAIL_IS_BINARY_HPP
 # define MSGPACK_PREPROCESSOR_DETAIL_IS_BINARY_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/detail/check.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/detail/check.hpp>
 #
 # /* MSGPACK_PP_IS_BINARY */
 #

@@ -14,9 +14,9 @@
 # ifndef MSGPACK_PREPROCESSOR_COMPARISON_EQUAL_HPP
 # define MSGPACK_PREPROCESSOR_COMPARISON_EQUAL_HPP
 #
-# include <msgpack/preprocessor/comparison/not_equal.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/logical/compl.hpp>
+# include <rpc/msgpack/preprocessor/comparison/not_equal.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/logical/compl.hpp>
 #
 # /* MSGPACK_PP_EQUAL */
 #

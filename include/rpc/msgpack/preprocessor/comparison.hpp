@@ -14,11 +14,11 @@
 # ifndef MSGPACK_PREPROCESSOR_COMPARISON_HPP
 # define MSGPACK_PREPROCESSOR_COMPARISON_HPP
 #
-# include <msgpack/preprocessor/comparison/equal.hpp>
-# include <msgpack/preprocessor/comparison/greater.hpp>
-# include <msgpack/preprocessor/comparison/greater_equal.hpp>
-# include <msgpack/preprocessor/comparison/less.hpp>
-# include <msgpack/preprocessor/comparison/less_equal.hpp>
-# include <msgpack/preprocessor/comparison/not_equal.hpp>
+# include <rpc/msgpack/preprocessor/comparison/equal.hpp>
+# include <rpc/msgpack/preprocessor/comparison/greater.hpp>
+# include <rpc/msgpack/preprocessor/comparison/greater_equal.hpp>
+# include <rpc/msgpack/preprocessor/comparison/less.hpp>
+# include <rpc/msgpack/preprocessor/comparison/less_equal.hpp>
+# include <rpc/msgpack/preprocessor/comparison/not_equal.hpp>
 #
 # endif

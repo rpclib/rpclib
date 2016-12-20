@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_FACILITIES_IDENTITY_HPP
 # define MSGPACK_PREPROCESSOR_FACILITIES_IDENTITY_HPP
 #
-# include <msgpack/preprocessor/facilities/empty.hpp>
+# include <rpc/msgpack/preprocessor/facilities/empty.hpp>
 #
 # /* MSGPACK_PP_IDENTITY */
 #

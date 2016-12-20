@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_ASSERT_MSG_HPP
 # define MSGPACK_PREPROCESSOR_ASSERT_MSG_HPP
 #
-# include <msgpack/preprocessor/debug/assert.hpp>
+# include <rpc/msgpack/preprocessor/debug/assert.hpp>
 #
 # endif

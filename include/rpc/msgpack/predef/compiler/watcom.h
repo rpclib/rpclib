@@ -40,7 +40,7 @@ Version number available as major, and minor.
 #       define MSGPACK_COMP_WATCOM MSGPACK_COMP_WATCOM_DETECTION
 #   endif
 #   define MSGPACK_COMP_WATCOM_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_WATCOM_NAME "Watcom C++"

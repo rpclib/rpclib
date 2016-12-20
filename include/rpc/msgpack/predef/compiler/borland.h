@@ -47,7 +47,7 @@ Version number available as major, minor, and patch.
 #       undef MSGPACK_COMP_BORLAND
 #       define MSGPACK_COMP_BORLAND MSGPACK_COMP_BORLAND_DETECTION
 #   endif
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_BORLAND_NAME "Borland C++"

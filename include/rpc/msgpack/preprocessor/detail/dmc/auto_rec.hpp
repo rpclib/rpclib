@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_DETAIL_AUTO_REC_HPP
 # define MSGPACK_PREPROCESSOR_DETAIL_AUTO_REC_HPP
 #
-# include <msgpack/preprocessor/control/iif.hpp>
+# include <rpc/msgpack/preprocessor/control/iif.hpp>
 #
 # /* MSGPACK_PP_AUTO_REC */
 #

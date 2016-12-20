@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_ARITHMETIC_DEC_HPP
 # define MSGPACK_PREPROCESSOR_ARITHMETIC_DEC_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_DEC */
 #

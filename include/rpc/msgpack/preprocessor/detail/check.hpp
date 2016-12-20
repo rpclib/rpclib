@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_DETAIL_CHECK_HPP
 # define MSGPACK_PREPROCESSOR_DETAIL_CHECK_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_CHECK */
 #

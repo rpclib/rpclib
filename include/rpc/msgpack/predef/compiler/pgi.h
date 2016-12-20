@@ -44,7 +44,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #       define MSGPACK_COMP_PGI MSGPACK_COMP_PGI_DETECTION
 #   endif
 #   define MSGPACK_COMP_PGI_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_PGI_NAME "Portland Group C/C++"

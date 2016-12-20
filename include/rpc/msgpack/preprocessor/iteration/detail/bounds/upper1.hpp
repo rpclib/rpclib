@@ -9,7 +9,7 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# include <msgpack/preprocessor/slot/detail/shared.hpp>
+# include <rpc/msgpack/preprocessor/slot/detail/shared.hpp>
 #
 # undef MSGPACK_PP_ITERATION_FINISH_1
 #

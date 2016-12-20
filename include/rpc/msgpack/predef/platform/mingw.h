@@ -53,7 +53,7 @@ Version number available as major, minor, and patch.
 #       undef MSGPACK_PLAT_MINGW
 #       define MSGPACK_PLAT_MINGW MSGPACK_PLAT_MINGW_DETECTION
 #   endif
-#   include <msgpack/predef/detail/platform_detected.h>
+#   include <rpc/msgpack/predef/detail/platform_detected.h>
 #endif
 
 #define MSGPACK_PLAT_MINGW_NAME "MinGW"

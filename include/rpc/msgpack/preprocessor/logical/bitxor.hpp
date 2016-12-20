@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_LOGICAL_BITXOR_HPP
 # define MSGPACK_PREPROCESSOR_LOGICAL_BITXOR_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_BITXOR */
 #

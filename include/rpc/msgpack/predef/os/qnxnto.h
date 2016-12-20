@@ -48,7 +48,7 @@ version 4 is specifically detected.
 
 #if MSGPACK_OS_QNX
 #   define MSGPACK_OS_QNX_AVAILABLE
-#   include <msgpack/predef/detail/os_detected.h>
+#   include <rpc/msgpack/predef/detail/os_detected.h>
 #endif
 
 #define MSGPACK_OS_QNX_NAME "QNX"

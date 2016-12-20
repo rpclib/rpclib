@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_LIMITS_HPP
 # define MSGPACK_PREPROCESSOR_LIMITS_HPP
 #
-# include <msgpack/preprocessor/config/limits.hpp>
+# include <rpc/msgpack/preprocessor/config/limits.hpp>
 #
 # endif

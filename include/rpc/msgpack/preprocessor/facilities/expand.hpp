@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_FACILITIES_EXPAND_HPP
 # define MSGPACK_PREPROCESSOR_FACILITIES_EXPAND_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # if ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MWCC() && ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_DMC()
 #    define MSGPACK_PP_EXPAND(x) MSGPACK_PP_EXPAND_I(x)

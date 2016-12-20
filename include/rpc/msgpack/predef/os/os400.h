@@ -34,7 +34,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #if MSGPACK_OS_OS400
 #   define MSGPACK_OS_OS400_AVAILABLE
-#   include <msgpack/predef/detail/os_detected.h>
+#   include <rpc/msgpack/predef/detail/os_detected.h>
 #endif
 
 #define MSGPACK_OS_OS400_NAME "IBM OS/400"

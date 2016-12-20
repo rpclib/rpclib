@@ -12,9 +12,9 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_TO_ARRAY_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_TO_ARRAY_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/seq/enum.hpp>
-# include <msgpack/preprocessor/seq/size.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/seq/enum.hpp>
+# include <rpc/msgpack/preprocessor/seq/size.hpp>
 #
 # /* MSGPACK_PP_SEQ_TO_ARRAY */
 #

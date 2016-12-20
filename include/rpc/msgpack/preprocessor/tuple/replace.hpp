@@ -12,13 +12,13 @@
 # ifndef MSGPACK_PREPROCESSOR_TUPLE_REPLACE_HPP
 # define MSGPACK_PREPROCESSOR_TUPLE_REPLACE_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # if MSGPACK_PP_VARIADICS
 #
-# include <msgpack/preprocessor/array/replace.hpp>
-# include <msgpack/preprocessor/array/to_tuple.hpp>
-# include <msgpack/preprocessor/tuple/to_array.hpp>
+# include <rpc/msgpack/preprocessor/array/replace.hpp>
+# include <rpc/msgpack/preprocessor/array/to_tuple.hpp>
+# include <rpc/msgpack/preprocessor/tuple/to_array.hpp>
 #
 # /* MSGPACK_PP_TUPLE_REPLACE */
 #

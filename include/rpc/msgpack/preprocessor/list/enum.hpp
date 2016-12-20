@@ -14,9 +14,9 @@
 # ifndef MSGPACK_PREPROCESSOR_LIST_ENUM_HPP
 # define MSGPACK_PREPROCESSOR_LIST_ENUM_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/list/for_each_i.hpp>
-# include <msgpack/preprocessor/punctuation/comma_if.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/list/for_each_i.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/comma_if.hpp>
 #
 # /* MSGPACK_PP_LIST_ENUM */
 #

@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_MIN_HPP
 # define MSGPACK_PREPROCESSOR_MIN_HPP
 #
-# include <msgpack/preprocessor/selection/min.hpp>
+# include <rpc/msgpack/preprocessor/selection/min.hpp>
 #
 # endif

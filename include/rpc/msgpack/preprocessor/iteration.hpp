@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_ITERATION_HPP
 # define MSGPACK_PREPROCESSOR_ITERATION_HPP
 #
-# include <msgpack/preprocessor/iteration/iterate.hpp>
-# include <msgpack/preprocessor/iteration/local.hpp>
-# include <msgpack/preprocessor/iteration/self.hpp>
+# include <rpc/msgpack/preprocessor/iteration/iterate.hpp>
+# include <rpc/msgpack/preprocessor/iteration/local.hpp>
+# include <rpc/msgpack/preprocessor/iteration/self.hpp>
 #
 # endif

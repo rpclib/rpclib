@@ -14,8 +14,8 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_DETAIL_EDG_FOR_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_DETAIL_EDG_FOR_HPP
 #
-# include <msgpack/preprocessor/control/if.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # define MSGPACK_PP_FOR_1(s, p, o, m) MSGPACK_PP_FOR_1_I(s, p, o, m)
 # define MSGPACK_PP_FOR_2(s, p, o, m) MSGPACK_PP_FOR_2_I(s, p, o, m)

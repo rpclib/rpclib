@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_POP_FRONT_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_POP_FRONT_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/seq/seq.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/seq/seq.hpp>
 #
 # /* MSGPACK_PP_SEQ_POP_FRONT */
 #

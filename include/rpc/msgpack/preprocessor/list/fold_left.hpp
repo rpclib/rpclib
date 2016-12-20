@@ -14,10 +14,10 @@
 # ifndef MSGPACK_PREPROCESSOR_LIST_FOLD_LEFT_HPP
 # define MSGPACK_PREPROCESSOR_LIST_FOLD_LEFT_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/control/while.hpp>
-# include <msgpack/preprocessor/debug/error.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/control/while.hpp>
+# include <rpc/msgpack/preprocessor/debug/error.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
 #
 # /* MSGPACK_PP_LIST_FOLD_LEFT */
 #
@@ -34,11 +34,11 @@
 # define MSGPACK_PP_LIST_FOLD_LEFT_2ND_D MSGPACK_PP_LIST_FOLD_LEFT_D
 #
 # if MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_EDG()
-#    include <msgpack/preprocessor/list/detail/edg/fold_left.hpp>
+#    include <rpc/msgpack/preprocessor/list/detail/edg/fold_left.hpp>
 # elif MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_DMC()
-#    include <msgpack/preprocessor/list/detail/dmc/fold_left.hpp>
+#    include <rpc/msgpack/preprocessor/list/detail/dmc/fold_left.hpp>
 # else
-#    include <msgpack/preprocessor/list/detail/fold_left.hpp>
+#    include <rpc/msgpack/preprocessor/list/detail/fold_left.hpp>
 # endif
 #
 # define MSGPACK_PP_LIST_FOLD_LEFT_CHECK_MSGPACK_PP_NIL 1

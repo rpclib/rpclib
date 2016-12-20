@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_SLOT_COUNTER_HPP
 # define MSGPACK_PREPROCESSOR_SLOT_COUNTER_HPP
 #
-# include <msgpack/preprocessor/slot/detail/def.hpp>
+# include <rpc/msgpack/preprocessor/slot/detail/def.hpp>
 #
 # /* MSGPACK_PP_COUNTER */
 #

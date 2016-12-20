@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_CONTROL_DEDUCE_D_HPP
 # define MSGPACK_PREPROCESSOR_CONTROL_DEDUCE_D_HPP
 #
-# include <msgpack/preprocessor/control/while.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/control/while.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
 #
 # /* MSGPACK_PP_DEDUCE_D */
 #

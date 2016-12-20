@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_DEDUCE_R_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_DEDUCE_R_HPP
 #
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
-# include <msgpack/preprocessor/repetition/for.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/repetition/for.hpp>
 #
 # /* MSGPACK_PP_DEDUCE_R */
 #

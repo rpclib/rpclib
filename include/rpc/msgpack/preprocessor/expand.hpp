@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_EXPAND_HPP
 # define MSGPACK_PREPROCESSOR_EXPAND_HPP
 #
-# include <msgpack/preprocessor/facilities/expand.hpp>
+# include <rpc/msgpack/preprocessor/facilities/expand.hpp>
 #
 # endif

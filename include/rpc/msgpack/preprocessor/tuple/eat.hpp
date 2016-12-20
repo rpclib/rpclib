@@ -15,7 +15,7 @@
 # ifndef MSGPACK_PREPROCESSOR_TUPLE_EAT_HPP
 # define MSGPACK_PREPROCESSOR_TUPLE_EAT_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_EAT */
 #

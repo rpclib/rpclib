@@ -14,8 +14,8 @@
 # ifndef MSGPACK_PREPROCESSOR_CONTROL_DETAIL_MSVC_WHILE_HPP
 # define MSGPACK_PREPROCESSOR_CONTROL_DETAIL_MSVC_WHILE_HPP
 #
-# include <msgpack/preprocessor/control/if.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # define MSGPACK_PP_WHILE_1(p, o, s) MSGPACK_PP_IF(p(2, s), MSGPACK_PP_WHILE_2, s MSGPACK_PP_TUPLE_EAT_3)(p, o, o(2, s))
 # define MSGPACK_PP_WHILE_2(p, o, s) MSGPACK_PP_IF(p(3, s), MSGPACK_PP_WHILE_3, s MSGPACK_PP_TUPLE_EAT_3)(p, o, o(3, s))

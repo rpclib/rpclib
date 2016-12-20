@@ -12,13 +12,13 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_FOR_EACH_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_FOR_EACH_HPP
 #
-# include <msgpack/preprocessor/arithmetic/dec.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/repetition/for.hpp>
-# include <msgpack/preprocessor/seq/seq.hpp>
-# include <msgpack/preprocessor/seq/size.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
-# include <msgpack/preprocessor/tuple/rem.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/dec.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/repetition/for.hpp>
+# include <rpc/msgpack/preprocessor/seq/seq.hpp>
+# include <rpc/msgpack/preprocessor/seq/size.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/tuple/rem.hpp>
 #
 # /* MSGPACK_PP_SEQ_FOR_EACH */
 #

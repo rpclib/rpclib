@@ -55,7 +55,7 @@ Version number available as major, minor, and patch.
 
 #if MSGPACK_OS_AIX
 #   define MSGPACK_OS_AIX_AVAILABLE
-#   include <msgpack/predef/detail/os_detected.h>
+#   include <rpc/msgpack/predef/detail/os_detected.h>
 #endif
 
 #define MSGPACK_OS_AIX_NAME "IBM AIX"

@@ -16,7 +16,7 @@ for f in files:
     print('Processing', f)
     with fileinput.FileInput(f, inplace=True) as fi:
         for line in fi:
-            line = re.sub('#include (<|")(msgpack)', '#include \\1rpc/\\2', line)
+            line = re.sub('#(\s*)include (<|")(msgpack)', '#\\1include \\2rpc/\\3', line)
             print(line, end='')
 
 print('done')

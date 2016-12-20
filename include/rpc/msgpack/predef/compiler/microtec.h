@@ -37,7 +37,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #       define MSGPACK_COMP_MRI MSGPACK_COMP_MRI_DETECTION
 #   endif
 #   define MSGPACK_COMP_MRI_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_MRI_NAME "Microtec C/C++"

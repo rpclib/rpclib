@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_IF_HPP
 # define MSGPACK_PREPROCESSOR_IF_HPP
 #
-# include <msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
 #
 # endif

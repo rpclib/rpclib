@@ -41,7 +41,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #       define MSGPACK_COMP_LLVM MSGPACK_COMP_LLVM_DETECTION
 #   endif
 #   define MSGPACK_COMP_LLVM_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_LLVM_NAME "LLVM"

@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_SLOT_SLOT_HPP
 # define MSGPACK_PREPROCESSOR_SLOT_SLOT_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/slot/detail/def.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/slot/detail/def.hpp>
 #
 # /* MSGPACK_PP_ASSIGN_SLOT */
 #

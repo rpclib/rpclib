@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_FACILITIES_EMPTY_HPP
 # define MSGPACK_PREPROCESSOR_FACILITIES_EMPTY_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_EMPTY */
 #

@@ -12,12 +12,12 @@
 # ifndef MSGPACK_PREPROCESSOR_FACILITIES_IS_EMPTY_VARIADIC_HPP
 # define MSGPACK_PREPROCESSOR_FACILITIES_IS_EMPTY_VARIADIC_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # if MSGPACK_PP_VARIADICS
 #
-# include <msgpack/preprocessor/punctuation/is_begin_parens.hpp>
-# include <msgpack/preprocessor/facilities/detail/is_empty.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/is_begin_parens.hpp>
+# include <rpc/msgpack/preprocessor/facilities/detail/is_empty.hpp>
 #
 #if MSGPACK_PP_VARIADICS_MSVC && _MSC_VER <= 1400
 #

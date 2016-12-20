@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_REPEAT_HPP
 # define MSGPACK_PREPROCESSOR_REPEAT_HPP
 #
-# include <msgpack/preprocessor/repetition/repeat.hpp>
+# include <rpc/msgpack/preprocessor/repetition/repeat.hpp>
 #
 # endif

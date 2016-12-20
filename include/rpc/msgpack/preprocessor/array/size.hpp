@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_ARRAY_SIZE_HPP
 # define MSGPACK_PREPROCESSOR_ARRAY_SIZE_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
 #
 # /* MSGPACK_PP_ARRAY_SIZE */
 #

@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_STRINGIZE_HPP
 # define MSGPACK_PREPROCESSOR_STRINGIZE_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_STRINGIZE */
 #

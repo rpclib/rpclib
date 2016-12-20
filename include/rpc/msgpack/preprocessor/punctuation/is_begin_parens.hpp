@@ -12,7 +12,7 @@
 # ifndef MSGPACK_PREPROCESSOR_IS_BEGIN_PARENS_HPP
 # define MSGPACK_PREPROCESSOR_IS_BEGIN_PARENS_HPP
 
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 
 #if MSGPACK_PP_VARIADICS
 

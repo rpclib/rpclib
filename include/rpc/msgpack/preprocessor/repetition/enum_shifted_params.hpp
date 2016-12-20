@@ -14,12 +14,12 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_ENUM_SHIFTED_PARAMS_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_ENUM_SHIFTED_PARAMS_HPP
 #
-# include <msgpack/preprocessor/arithmetic/dec.hpp>
-# include <msgpack/preprocessor/arithmetic/inc.hpp>
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/punctuation/comma_if.hpp>
-# include <msgpack/preprocessor/repetition/repeat.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/dec.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/inc.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/comma_if.hpp>
+# include <rpc/msgpack/preprocessor/repetition/repeat.hpp>
 #
 # /* MSGPACK_PP_ENUM_SHIFTED_PARAMS */
 #

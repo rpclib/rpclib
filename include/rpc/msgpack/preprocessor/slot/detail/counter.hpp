@@ -11,7 +11,7 @@
 #
 # define MSGPACK_PP_VALUE MSGPACK_PP_COUNTER + 1
 #
-# include <msgpack/preprocessor/slot/detail/shared.hpp>
+# include <rpc/msgpack/preprocessor/slot/detail/shared.hpp>
 #
 # undef MSGPACK_PP_COUNTER
 #

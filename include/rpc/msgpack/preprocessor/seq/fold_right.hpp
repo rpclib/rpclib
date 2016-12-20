@@ -12,11 +12,11 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_FOLD_RIGHT_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_FOLD_RIGHT_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
-# include <msgpack/preprocessor/seq/fold_left.hpp>
-# include <msgpack/preprocessor/seq/reverse.hpp>
-# include <msgpack/preprocessor/seq/seq.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/seq/fold_left.hpp>
+# include <rpc/msgpack/preprocessor/seq/reverse.hpp>
+# include <rpc/msgpack/preprocessor/seq/seq.hpp>
 #
 # /* MSGPACK_PP_SEQ_FOLD_RIGHT */
 #

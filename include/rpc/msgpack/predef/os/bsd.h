@@ -84,7 +84,7 @@ of BSD. If the above variants is detected the corresponding macro is also set.]
 
 #if MSGPACK_OS_BSD
 #   define MSGPACK_OS_BSD_AVAILABLE
-#   include <msgpack/predef/detail/os_detected.h>
+#   include <rpc/msgpack/predef/detail/os_detected.h>
 #endif
 
 #define MSGPACK_OS_BSD_NAME "BSD"

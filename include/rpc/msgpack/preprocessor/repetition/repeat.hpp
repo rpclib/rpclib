@@ -14,11 +14,11 @@
 # ifndef MSGPACK_PREPROCESSOR_REPETITION_REPEAT_HPP
 # define MSGPACK_PREPROCESSOR_REPETITION_REPEAT_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/debug/error.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/debug/error.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # /* MSGPACK_PP_REPEAT */
 #

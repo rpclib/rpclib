@@ -14,9 +14,9 @@
 # ifndef MSGPACK_PREPROCESSOR_CONTROL_DETAIL_WHILE_HPP
 # define MSGPACK_PREPROCESSOR_CONTROL_DETAIL_WHILE_HPP
 #
-# include <msgpack/preprocessor/control/iif.hpp>
-# include <msgpack/preprocessor/logical/bool.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/control/iif.hpp>
+# include <rpc/msgpack/preprocessor/logical/bool.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # define MSGPACK_PP_WHILE_1(p, o, s) MSGPACK_PP_WHILE_1_C(MSGPACK_PP_BOOL(p##(2, s)), p, o, s)
 # define MSGPACK_PP_WHILE_2(p, o, s) MSGPACK_PP_WHILE_2_C(MSGPACK_PP_BOOL(p##(3, s)), p, o, s)

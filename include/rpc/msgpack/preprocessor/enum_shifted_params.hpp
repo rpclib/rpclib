@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_ENUM_SHIFTED_PARAMS_HPP
 # define MSGPACK_PREPROCESSOR_ENUM_SHIFTED_PARAMS_HPP
 #
-# include <msgpack/preprocessor/repetition/enum_shifted_params.hpp>
+# include <rpc/msgpack/preprocessor/repetition/enum_shifted_params.hpp>
 #
 # endif

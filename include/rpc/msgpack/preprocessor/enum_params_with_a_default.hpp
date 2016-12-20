@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_ENUM_PARAMS_WITH_A_DEFAULT_HPP
 # define MSGPACK_PREPROCESSOR_ENUM_PARAMS_WITH_A_DEFAULT_HPP
 #
-# include <msgpack/preprocessor/repetition/enum_params_with_a_default.hpp>
+# include <rpc/msgpack/preprocessor/repetition/enum_params_with_a_default.hpp>
 #
 # endif

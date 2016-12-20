@@ -47,7 +47,7 @@ Version number available as major, and minor.
 #       define MSGPACK_COMP_MPW MSGPACK_COMP_MPW_DETECTION
 #   endif
 #   define MSGPACK_COMP_MPW_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_MPW_NAME "MPW C++"

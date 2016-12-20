@@ -10,7 +10,7 @@
 # ifndef MSGPACK_PREPROCESSOR_DETAIL_SPLIT_HPP
 # define MSGPACK_PREPROCESSOR_DETAIL_SPLIT_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_SPLIT */
 #

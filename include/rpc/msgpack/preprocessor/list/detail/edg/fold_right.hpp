@@ -14,9 +14,9 @@
 # ifndef MSGPACK_PREPROCESSOR_LIST_DETAIL_EDG_FOLD_RIGHT_HPP
 # define MSGPACK_PREPROCESSOR_LIST_DETAIL_EDG_FOLD_RIGHT_HPP
 #
-# include <msgpack/preprocessor/control/iif.hpp>
-# include <msgpack/preprocessor/list/adt.hpp>
-# include <msgpack/preprocessor/tuple/eat.hpp>
+# include <rpc/msgpack/preprocessor/control/iif.hpp>
+# include <rpc/msgpack/preprocessor/list/adt.hpp>
+# include <rpc/msgpack/preprocessor/tuple/eat.hpp>
 #
 # define MSGPACK_PP_LIST_FOLD_RIGHT_1(o, s, l) MSGPACK_PP_LIST_FOLD_RIGHT_1_D(o, s, l)
 # define MSGPACK_PP_LIST_FOLD_RIGHT_2(o, s, l) MSGPACK_PP_LIST_FOLD_RIGHT_2_D(o, s, l)

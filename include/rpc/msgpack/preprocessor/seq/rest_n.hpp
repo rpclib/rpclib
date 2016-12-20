@@ -12,11 +12,11 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_REST_N_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_REST_N_HPP
 #
-# include <msgpack/preprocessor/arithmetic/inc.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/facilities/identity.hpp>
-# include <msgpack/preprocessor/seq/detail/split.hpp>
-# include <msgpack/preprocessor/tuple/elem.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/inc.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/facilities/identity.hpp>
+# include <rpc/msgpack/preprocessor/seq/detail/split.hpp>
+# include <rpc/msgpack/preprocessor/tuple/elem.hpp>
 #
 # /* MSGPACK_PP_SEQ_REST_N */
 #

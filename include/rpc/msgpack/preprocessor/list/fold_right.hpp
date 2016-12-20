@@ -14,10 +14,10 @@
 # ifndef MSGPACK_PREPROCESSOR_LIST_FOLD_RIGHT_HPP
 # define MSGPACK_PREPROCESSOR_LIST_FOLD_RIGHT_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/control/while.hpp>
-# include <msgpack/preprocessor/debug/error.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/control/while.hpp>
+# include <rpc/msgpack/preprocessor/debug/error.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
 #
 # if 0
 #    define MSGPACK_PP_LIST_FOLD_RIGHT(op, state, list)
@@ -32,9 +32,9 @@
 # define MSGPACK_PP_LIST_FOLD_RIGHT_2ND_D MSGPACK_PP_LIST_FOLD_RIGHT_D
 #
 # if MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_EDG()
-#    include <msgpack/preprocessor/list/detail/edg/fold_right.hpp>
+#    include <rpc/msgpack/preprocessor/list/detail/edg/fold_right.hpp>
 # else
-#    include <msgpack/preprocessor/list/detail/fold_right.hpp>
+#    include <rpc/msgpack/preprocessor/list/detail/fold_right.hpp>
 # endif
 #
 # endif

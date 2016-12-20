@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_WHILE_HPP
 # define MSGPACK_PREPROCESSOR_WHILE_HPP
 #
-# include <msgpack/preprocessor/control/while.hpp>
+# include <rpc/msgpack/preprocessor/control/while.hpp>
 #
 # endif

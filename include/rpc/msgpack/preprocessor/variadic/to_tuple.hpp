@@ -13,7 +13,7 @@
 # ifndef MSGPACK_PREPROCESSOR_VARIADIC_TO_TUPLE_HPP
 # define MSGPACK_PREPROCESSOR_VARIADIC_TO_TUPLE_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_VARIADIC_TO_TUPLE */
 #

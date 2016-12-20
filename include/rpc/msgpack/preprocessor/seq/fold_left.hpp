@@ -12,13 +12,13 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_FOLD_LEFT_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_FOLD_LEFT_HPP
 #
-# include <msgpack/preprocessor/arithmetic/dec.hpp>
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/control/if.hpp>
-# include <msgpack/preprocessor/debug/error.hpp>
-# include <msgpack/preprocessor/detail/auto_rec.hpp>
-# include <msgpack/preprocessor/seq/seq.hpp>
-# include <msgpack/preprocessor/seq/size.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/dec.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/control/if.hpp>
+# include <rpc/msgpack/preprocessor/debug/error.hpp>
+# include <rpc/msgpack/preprocessor/detail/auto_rec.hpp>
+# include <rpc/msgpack/preprocessor/seq/seq.hpp>
+# include <rpc/msgpack/preprocessor/seq/size.hpp>
 #
 # /* MSGPACK_PP_SEQ_FOLD_LEFT */
 #

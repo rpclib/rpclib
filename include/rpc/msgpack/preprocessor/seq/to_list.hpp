@@ -13,9 +13,9 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_TO_LIST_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_TO_LIST_HPP
 #
-# include <msgpack/preprocessor/punctuation/comma.hpp>
-# include <msgpack/preprocessor/punctuation/paren.hpp>
-# include <msgpack/preprocessor/seq/detail/binary_transform.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/comma.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/paren.hpp>
+# include <rpc/msgpack/preprocessor/seq/detail/binary_transform.hpp>
 #
 # /* MSGPACK_PP_SEQ_TO_LIST */
 #

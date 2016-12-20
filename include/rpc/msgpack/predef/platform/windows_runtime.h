@@ -33,7 +33,7 @@ http://www.boost.org/LICENSE_1_0.txt)
  
 #if MSGPACK_PLAT_WINDOWS_RUNTIME
 #   define MSGPACK_PLAT_WINDOWS_RUNTIME_AVALIABLE
-#   include <msgpack/predef/detail/platform_detected.h>
+#   include <rpc/msgpack/predef/detail/platform_detected.h>
 #endif
 
 #define MSGPACK_PLAT_WINDOWS_RUNTIME_NAME "Windows Runtime"

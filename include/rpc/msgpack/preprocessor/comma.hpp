@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_COMMA_HPP
 # define MSGPACK_PREPROCESSOR_COMMA_HPP
 #
-# include <msgpack/preprocessor/punctuation/comma.hpp>
+# include <rpc/msgpack/preprocessor/punctuation/comma.hpp>
 #
 # endif

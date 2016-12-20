@@ -13,8 +13,8 @@
 # ifndef MSGPACK_PREPROCESSOR_VARIADIC_TO_SEQ_HPP
 # define MSGPACK_PREPROCESSOR_VARIADIC_TO_SEQ_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/tuple/to_seq.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/tuple/to_seq.hpp>
 #
 # /* MSGPACK_PP_VARIADIC_TO_SEQ */
 #

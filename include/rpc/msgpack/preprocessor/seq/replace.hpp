@@ -12,10 +12,10 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_REPLACE_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_REPLACE_HPP
 #
-# include <msgpack/preprocessor/arithmetic/inc.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
-# include <msgpack/preprocessor/seq/first_n.hpp>
-# include <msgpack/preprocessor/seq/rest_n.hpp>
+# include <rpc/msgpack/preprocessor/arithmetic/inc.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/seq/first_n.hpp>
+# include <rpc/msgpack/preprocessor/seq/rest_n.hpp>
 #
 # /* MSGPACK_PP_SEQ_REPLACE */
 #

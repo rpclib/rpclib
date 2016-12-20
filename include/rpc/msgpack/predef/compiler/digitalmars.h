@@ -40,7 +40,7 @@ Version number available as major, minor, and patch.
 #       define MSGPACK_COMP_DMC MSGPACK_COMP_DMC_DETECTION
 #   endif
 #   define MSGPACK_COMP_DMC_AVAILABLE
-#   include <msgpack/predef/detail/comp_detected.h>
+#   include <rpc/msgpack/predef/detail/comp_detected.h>
 #endif
 
 #define MSGPACK_COMP_DMC_NAME "Digital Mars"

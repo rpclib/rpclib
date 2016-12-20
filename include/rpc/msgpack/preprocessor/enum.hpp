@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_ENUM_HPP
 # define MSGPACK_PREPROCESSOR_ENUM_HPP
 #
-# include <msgpack/preprocessor/repetition/enum.hpp>
+# include <rpc/msgpack/preprocessor/repetition/enum.hpp>
 #
 # endif
