@@ -18,7 +18,7 @@
 #ifndef MSGPACK_CHECK_CONTAINER_SIZE_HPP
 #define MSGPACK_CHECK_CONTAINER_SIZE_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 #include <stdexcept>
 
 namespace clmdep_msgpack {

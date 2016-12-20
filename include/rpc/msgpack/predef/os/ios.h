@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OS_IOS_H
 #define MSGPACK_PREDEF_OS_IOS_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_OS_IOS`]
@@ -44,7 +44,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_OS_IOS_NAME "iOS"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_IOS,MSGPACK_OS_IOS_NAME)
 
 

@@ -18,10 +18,10 @@
 #ifndef MSGPACK_OBJECT_HPP
 #define MSGPACK_OBJECT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/pack.hpp"
-#include "msgpack/zone.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/pack.hpp"
+#include "rpc/msgpack/zone.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
 #include <cstring>
 #include <stdexcept>
@@ -832,6 +832,6 @@ inline std::ostream& operator<< (std::ostream& s, const clmdep_msgpack::object& 
 
 }  // namespace clmdep_msgpack
 
-#include "msgpack/type.hpp"
+#include "rpc/msgpack/type.hpp"
 
 #endif /* msgpack/object.hpp */

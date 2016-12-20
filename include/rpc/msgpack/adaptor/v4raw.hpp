@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_V4RAW_HPP
 #define MSGPACK_TYPE_V4RAW_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 #include <cstring>
 #include <string>
 

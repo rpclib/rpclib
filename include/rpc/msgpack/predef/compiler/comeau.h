@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_COMPILER_COMEAU_H
 #define MSGPACK_PREDEF_COMPILER_COMEAU_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 #define MSGPACK_COMP_COMO MSGPACK_VERSION_NUMBER_NOT_AVAILABLE
 
@@ -50,11 +50,11 @@ Version number available as major, minor, and patch.
 
 #define MSGPACK_COMP_COMO_NAME "Comeau C++"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_COMO,MSGPACK_COMP_COMO_NAME)
 
 #ifdef MSGPACK_COMP_COMO_EMULATED
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_COMO_EMULATED,MSGPACK_COMP_COMO_NAME)
 #endif
 

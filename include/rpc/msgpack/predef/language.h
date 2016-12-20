@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_LANGUAGE_H
 #define MSGPACK_PREDEF_LANGUAGE_H
 
-#include <msgpack/predef/language/stdc.h>
-#include <msgpack/predef/language/stdcpp.h>
-#include <msgpack/predef/language/objc.h>
+#include <rpc/msgpack/predef/language/stdc.h>
+#include <rpc/msgpack/predef/language/stdcpp.h>
+#include <rpc/msgpack/predef/language/objc.h>
 
 #endif

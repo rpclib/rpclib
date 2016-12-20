@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_DETAIL_ENDIAN_COMPAT_H
 #define MSGPACK_PREDEF_DETAIL_ENDIAN_COMPAT_H
 
-#include <msgpack/predef/other/endian.h>
+#include <rpc/msgpack/predef/other/endian.h>
 
 #if MSGPACK_ENDIAN_BIG_BYTE
 #   define MSGPACK_BIG_ENDIAN

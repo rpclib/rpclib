@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_X86_32_H
 #define MSGPACK_PREDEF_ARCHITECTURE_X86_32_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_ARCH_X86_32`]
@@ -79,9 +79,9 @@ If available versions \[3-6\] are specifically detected.
 
 #define MSGPACK_ARCH_X86_32_NAME "Intel x86-32"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_X86_32,MSGPACK_ARCH_X86_32_NAME)
 
-#include <msgpack/predef/architecture/x86.h>
+#include <rpc/msgpack/predef/architecture/x86.h>
 
 #endif

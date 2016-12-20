@@ -26,12 +26,12 @@
 #define MSGPACK_PP_VARIADICS
 #endif
 
-#include <msgpack/preprocessor.hpp>
+#include <rpc/msgpack/preprocessor.hpp>
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/msgpack_tuple.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/msgpack_tuple.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
 #define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
     MSGPACK_PP_IF( \

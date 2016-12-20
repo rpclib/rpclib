@@ -16,7 +16,7 @@
 
 #if MSGPACK_PP_VARIADICS
 
-#include <msgpack/preprocessor/punctuation/detail/is_begin_parens.hpp>
+#include <rpc/msgpack/preprocessor/punctuation/detail/is_begin_parens.hpp>
 
 #if MSGPACK_PP_VARIADICS_MSVC && _MSC_VER <= 1400
 

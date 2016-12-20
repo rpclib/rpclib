@@ -18,10 +18,10 @@
 #ifndef MSGPACK_CPP03_DEFINE_ARRAY_HPP
 #define MSGPACK_CPP03_DEFINE_ARRAY_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/msgpack_tuple.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/msgpack_tuple.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
 #define MSGPACK_DEFINE_ARRAY(...) \
     template <typename Packer> \

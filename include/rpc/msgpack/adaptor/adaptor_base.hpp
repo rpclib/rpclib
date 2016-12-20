@@ -18,7 +18,7 @@
 #ifndef MSGPACK_ADAPTOR_BASE_HPP
 #define MSGPACK_ADAPTOR_BASE_HPP
 
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
 namespace clmdep_msgpack {
 

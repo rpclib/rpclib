@@ -18,7 +18,7 @@
 #ifndef MSGPACK_ZBUFFER_HPP
 #define MSGPACK_ZBUFFER_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #include <stdexcept>
 #include <zlib.h>

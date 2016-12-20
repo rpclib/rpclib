@@ -9,23 +9,23 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OS_H
 #define MSGPACK_PREDEF_OS_H
 
-#include <msgpack/predef/os/aix.h>
-#include <msgpack/predef/os/amigaos.h>
-#include <msgpack/predef/os/android.h>
-#include <msgpack/predef/os/beos.h>
-#include <msgpack/predef/os/bsd.h>
-#include <msgpack/predef/os/cygwin.h>
-#include <msgpack/predef/os/haiku.h>
-#include <msgpack/predef/os/hpux.h>
-#include <msgpack/predef/os/irix.h>
-#include <msgpack/predef/os/ios.h>
-#include <msgpack/predef/os/linux.h>
-#include <msgpack/predef/os/macos.h>
-#include <msgpack/predef/os/os400.h>
-#include <msgpack/predef/os/qnxnto.h>
-#include <msgpack/predef/os/solaris.h>
-#include <msgpack/predef/os/unix.h>
-#include <msgpack/predef/os/vms.h>
-#include <msgpack/predef/os/windows.h>
+#include <rpc/msgpack/predef/os/aix.h>
+#include <rpc/msgpack/predef/os/amigaos.h>
+#include <rpc/msgpack/predef/os/android.h>
+#include <rpc/msgpack/predef/os/beos.h>
+#include <rpc/msgpack/predef/os/bsd.h>
+#include <rpc/msgpack/predef/os/cygwin.h>
+#include <rpc/msgpack/predef/os/haiku.h>
+#include <rpc/msgpack/predef/os/hpux.h>
+#include <rpc/msgpack/predef/os/irix.h>
+#include <rpc/msgpack/predef/os/ios.h>
+#include <rpc/msgpack/predef/os/linux.h>
+#include <rpc/msgpack/predef/os/macos.h>
+#include <rpc/msgpack/predef/os/os400.h>
+#include <rpc/msgpack/predef/os/qnxnto.h>
+#include <rpc/msgpack/predef/os/solaris.h>
+#include <rpc/msgpack/predef/os/unix.h>
+#include <rpc/msgpack/predef/os/vms.h>
+#include <rpc/msgpack/predef/os/windows.h>
 
 #endif

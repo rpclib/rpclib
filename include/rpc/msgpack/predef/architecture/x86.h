@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_X86_H
 #define MSGPACK_PREDEF_ARCHITECTURE_X86_H
 
-#include <msgpack/predef/architecture/x86/32.h>
-#include <msgpack/predef/architecture/x86/64.h>
+#include <rpc/msgpack/predef/architecture/x86/32.h>
+#include <rpc/msgpack/predef/architecture/x86/64.h>
 
 /*`
 [heading `MSGPACK_ARCH_X86`]
@@ -32,7 +32,7 @@ a category to indicate that either `MSGPACK_ARCH_X86_32` or
 
 #define MSGPACK_ARCH_X86_NAME "Intel x86"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_X86,MSGPACK_ARCH_X86_NAME)
 
 #endif

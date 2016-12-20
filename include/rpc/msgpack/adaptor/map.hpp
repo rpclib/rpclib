@@ -18,9 +18,9 @@
 #ifndef MSGPACK_TYPE_MAP_HPP
 #define MSGPACK_TYPE_MAP_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 
 #include <map>
 #include <vector>

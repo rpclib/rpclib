@@ -18,7 +18,7 @@
 #ifndef MSGPACK_SYSDEP_H
 #define MSGPACK_SYSDEP_H
 
-#include <msgpack/predef.h>
+#include <rpc/msgpack/predef.h>
 
 #include <stdlib.h>
 #include <stddef.h>

@@ -18,9 +18,9 @@
 #ifndef MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 #define MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/object.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
 namespace clmdep_msgpack {
 

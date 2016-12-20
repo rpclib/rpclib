@@ -12,14 +12,14 @@
 #ifndef MSGPACK_PREPROCESSOR_REMOVE_PARENS_HPP
 #define MSGPACK_PREPROCESSOR_REMOVE_PARENS_HPP
 
-#include <msgpack/preprocessor/config/config.hpp>
+#include <rpc/msgpack/preprocessor/config/config.hpp>
 
 #if MSGPACK_PP_VARIADICS
 
-#include <msgpack/preprocessor/control/iif.hpp>
-#include <msgpack/preprocessor/facilities/identity.hpp>
-#include <msgpack/preprocessor/punctuation/is_begin_parens.hpp>
-#include <msgpack/preprocessor/tuple/enum.hpp>
+#include <rpc/msgpack/preprocessor/control/iif.hpp>
+#include <rpc/msgpack/preprocessor/facilities/identity.hpp>
+#include <rpc/msgpack/preprocessor/punctuation/is_begin_parens.hpp>
+#include <rpc/msgpack/preprocessor/tuple/enum.hpp>
 
 #define MSGPACK_PP_REMOVE_PARENS(param) \
     MSGPACK_PP_IIF \

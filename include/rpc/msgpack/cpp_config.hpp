@@ -18,7 +18,7 @@
 #ifndef MSGPACK_CPP_CONFIG_HPP
 #define MSGPACK_CPP_CONFIG_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #if !defined(MSGPACK_USE_CPP03)
 # if defined(_MSC_VER)

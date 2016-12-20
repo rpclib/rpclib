@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_LIBRARY_H
 #define MSGPACK_PREDEF_LIBRARY_H
 
-#include <msgpack/predef/library/c.h>
-#include <msgpack/predef/library/std.h>
+#include <rpc/msgpack/predef/library/c.h>
+#include <rpc/msgpack/predef/library/std.h>
 
 #endif

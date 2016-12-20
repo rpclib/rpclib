@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_COMPILER_MPW_H
 #define MSGPACK_PREDEF_COMPILER_MPW_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_COMP_MPW`]
@@ -52,11 +52,11 @@ Version number available as major, and minor.
 
 #define MSGPACK_COMP_MPW_NAME "MPW C++"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_MPW,MSGPACK_COMP_MPW_NAME)
 
 #ifdef MSGPACK_COMP_MPW_EMULATED
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_MPW_EMULATED,MSGPACK_COMP_MPW_NAME)
 #endif
 

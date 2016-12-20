@@ -8,6 +8,6 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_LIBRARY_C__PREFIX_H
 #define MSGPACK_PREDEF_LIBRARY_C__PREFIX_H
 
-#include <msgpack/predef/detail/_cassert.h>
+#include <rpc/msgpack/predef/detail/_cassert.h>
 
 #endif

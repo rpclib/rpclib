@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_ALPHA_H
 #define MSGPACK_PREDEF_ARCHITECTURE_ALPHA_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_ARCH_ALPHA`]
@@ -53,7 +53,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_ARCH_ALPHA_NAME "DEC Alpha"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_ALPHA,MSGPACK_ARCH_ALPHA_NAME)
 
 

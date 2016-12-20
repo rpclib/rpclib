@@ -18,11 +18,11 @@
 #ifndef MSGPACK_CPP11_DEFINE_ARRAY_HPP
 #define MSGPACK_CPP11_DEFINE_ARRAY_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
 // for MSGPACK_ADD_ENUM
-#include "msgpack/adaptor/int.hpp"
+#include "rpc/msgpack/adaptor/int.hpp"
 
 #include <type_traits>
 #include <tuple>

@@ -20,21 +20,21 @@
 
 #if defined(MSGPACK_USE_BOOST)
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
-#include "msgpack/adaptor/boost/string_ref.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/adaptor/boost/string_ref.hpp"
 
-#include "msgpack/adaptor/nil.hpp"
-#include "msgpack/adaptor/bool.hpp"
-#include "msgpack/adaptor/int.hpp"
-#include "msgpack/adaptor/float.hpp"
-#include "msgpack/adaptor/string.hpp"
-#include "msgpack/adaptor/vector_char.hpp"
-#include "msgpack/adaptor/raw.hpp"
-#include "msgpack/adaptor/ext.hpp"
-#include "msgpack/adaptor/vector.hpp"
-#include "msgpack/adaptor/map.hpp"
+#include "rpc/msgpack/adaptor/nil.hpp"
+#include "rpc/msgpack/adaptor/bool.hpp"
+#include "rpc/msgpack/adaptor/int.hpp"
+#include "rpc/msgpack/adaptor/float.hpp"
+#include "rpc/msgpack/adaptor/string.hpp"
+#include "rpc/msgpack/adaptor/vector_char.hpp"
+#include "rpc/msgpack/adaptor/raw.hpp"
+#include "rpc/msgpack/adaptor/ext.hpp"
+#include "rpc/msgpack/adaptor/vector.hpp"
+#include "rpc/msgpack/adaptor/map.hpp"
 
 #include <boost/variant.hpp>
 #include <boost/operators.hpp>

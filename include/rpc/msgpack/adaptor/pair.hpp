@@ -18,9 +18,9 @@
 #ifndef MSGPACK_TYPE_PAIR_HPP
 #define MSGPACK_TYPE_PAIR_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/meta.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/meta.hpp"
 
 #include <utility>
 

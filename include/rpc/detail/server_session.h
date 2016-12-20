@@ -5,7 +5,7 @@
 
 #include "asio.hpp"
 #include "rpc/detail/log.h"
-#include "msgpack.hpp"
+#include "rpc/msgpack.hpp"
 #include <memory>
 #include <vector>
 

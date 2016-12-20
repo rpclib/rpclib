@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_BOOL_HPP
 #define MSGPACK_TYPE_BOOL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
 namespace clmdep_msgpack {
 

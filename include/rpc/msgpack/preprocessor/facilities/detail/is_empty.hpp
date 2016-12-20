@@ -12,7 +12,7 @@
 #ifndef MSGPACK_PREPROCESSOR_DETAIL_IS_EMPTY_HPP
 #define MSGPACK_PREPROCESSOR_DETAIL_IS_EMPTY_HPP
 
-#include <msgpack/preprocessor/punctuation/is_begin_parens.hpp>
+#include <rpc/msgpack/preprocessor/punctuation/is_begin_parens.hpp>
 
 #if MSGPACK_PP_VARIADICS_MSVC
 

@@ -18,13 +18,13 @@
 #ifndef MSGPACK_TYPE_BOOST_FUSION_HPP
 #define MSGPACK_TYPE_BOOST_FUSION_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
-#include "msgpack/meta.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/meta.hpp"
 
 #if !defined (MSGPACK_USE_CPP03)
-#include "msgpack/adaptor/cpp11/tuple.hpp"
+#include "rpc/msgpack/adaptor/cpp11/tuple.hpp"
 #endif // #if !defined (MSGPACK_USE_CPP03)
 
 #include <boost/fusion/support/is_sequence.hpp>

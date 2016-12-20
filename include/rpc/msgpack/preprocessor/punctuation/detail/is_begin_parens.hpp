@@ -14,7 +14,7 @@
 
 #if MSGPACK_PP_VARIADICS_MSVC
 
-#include <msgpack/preprocessor/facilities/empty.hpp>
+#include <rpc/msgpack/preprocessor/facilities/empty.hpp>
 
 #define MSGPACK_PP_DETAIL_VD_IBP_CAT(a, b) MSGPACK_PP_DETAIL_VD_IBP_CAT_I(a, b)
 #define MSGPACK_PP_DETAIL_VD_IBP_CAT_I(a, b) MSGPACK_PP_DETAIL_VD_IBP_CAT_II(a ## b)

@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_INT_HPP
 #define MSGPACK_TYPE_INT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 #include <limits>
 
 namespace clmdep_msgpack {

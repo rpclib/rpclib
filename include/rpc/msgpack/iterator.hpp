@@ -20,7 +20,7 @@
 #define MSGPACK_ITERATOR_HPP
 #if !defined(MSGPACK_USE_CPP03)
 
-#include <msgpack/object_fwd.hpp>
+#include <rpc/msgpack/object_fwd.hpp>
 
 namespace clmdep_msgpack
 {

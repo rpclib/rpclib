@@ -8,9 +8,9 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_PLAT_WINDOWS_STORE_H
 #define MSGPACK_PREDEF_PLAT_WINDOWS_STORE_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
-#include <msgpack/predef/os/windows.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
+#include <rpc/msgpack/predef/os/windows.h>
 
 /*`
 [heading `MSGPACK_PLAT_WINDOWS_STORE`]
@@ -36,7 +36,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_PLAT_WINDOWS_STORE_NAME "Windows Store"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_PLAT_WINDOWS_STORE,MSGPACK_PLAT_WINDOWS_STORE_NAME)
 
 #endif

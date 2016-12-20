@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_SUPERH_H
 #define MSGPACK_PREDEF_ARCHITECTURE_SUPERH_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_ARCH_SH`]
@@ -61,7 +61,7 @@ If available versions \[1-5\] are specifically detected.
 
 #define MSGPACK_ARCH_SH_NAME "SuperH"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_SH,MSGPACK_ARCH_SH_NAME)
 
 

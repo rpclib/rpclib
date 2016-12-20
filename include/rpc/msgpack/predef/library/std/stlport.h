@@ -8,10 +8,10 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_LIBRARY_STD_STLPORT_H
 #define MSGPACK_PREDEF_LIBRARY_STD_STLPORT_H
 
-#include <msgpack/predef/library/std/_prefix.h>
+#include <rpc/msgpack/predef/library/std/_prefix.h>
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_LIB_STD_STLPORT`]
@@ -53,7 +53,7 @@ Version number available as major, minor, and patch.
 
 #define MSGPACK_LIB_STD_STLPORT_NAME "STLport"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_LIB_STD_STLPORT,MSGPACK_LIB_STD_STLPORT_NAME)
 
 

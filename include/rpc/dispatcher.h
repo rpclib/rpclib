@@ -8,7 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "msgpack.hpp"
+#include "rpc/msgpack.hpp"
 
 #include "rpc/detail/call.h"
 #include "rpc/detail/func_tools.h"

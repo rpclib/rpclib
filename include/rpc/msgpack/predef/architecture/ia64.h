@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_IA64_H
 #define MSGPACK_PREDEF_ARCHITECTURE_IA64_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_ARCH_IA64`]
@@ -43,7 +43,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_ARCH_IA64_NAME "Intel Itanium 64"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_IA64,MSGPACK_ARCH_IA64_NAME)
 
 #endif

@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OS_UNIX_H
 #define MSGPACK_PREDEF_OS_UNIX_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_OS_UNIX`]
@@ -69,7 +69,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_OS_SVR4_NAME "SVR4 Environment"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_UNIX,MSGPACK_OS_UNIX_NAME)
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_SVR4,MSGPACK_OS_SVR4_NAME)
 

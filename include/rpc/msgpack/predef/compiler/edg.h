@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_COMPILER_EDG_H
 #define MSGPACK_PREDEF_COMPILER_EDG_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_COMP_EDG`]
@@ -45,11 +45,11 @@ Version number available as major, minor, and patch.
 
 #define MSGPACK_COMP_EDG_NAME "EDG C++ Frontend"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_EDG,MSGPACK_COMP_EDG_NAME)
 
 #ifdef MSGPACK_COMP_EDG_EMULATED
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_EDG_EMULATED,MSGPACK_COMP_EDG_NAME)
 #endif
 

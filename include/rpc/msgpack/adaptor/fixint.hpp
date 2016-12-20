@@ -18,9 +18,9 @@
 #ifndef MSGPACK_TYPE_FIXINT_HPP
 #define MSGPACK_TYPE_FIXINT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/int.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/int.hpp"
 
 namespace clmdep_msgpack {
 

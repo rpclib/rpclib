@@ -19,9 +19,9 @@
 #ifndef MSGPACK_CPP11_UNIQUE_PTR_HPP
 #define MSGPACK_CPP11_UNIQUE_PTR_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 
 #include <memory>
 

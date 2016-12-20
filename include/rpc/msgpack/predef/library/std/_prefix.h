@@ -18,6 +18,6 @@ for embedded users. And since it's not a header impacted by TR1
 there's no magic needed for inclusion in the face of the
 Boost.TR1 library.
 */
-#include <msgpack/predef/detail/_exception.h>
+#include <rpc/msgpack/predef/detail/_exception.h>
 
 #endif

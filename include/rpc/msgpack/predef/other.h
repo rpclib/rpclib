@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OTHER_H
 #define MSGPACK_PREDEF_OTHER_H
 
-#include <msgpack/predef/other/endian.h>
-/*#include <msgpack/predef/other/.h>*/
+#include <rpc/msgpack/predef/other/endian.h>
+/*#include <rpc/msgpack/predef/other/.h>*/
 
 #endif

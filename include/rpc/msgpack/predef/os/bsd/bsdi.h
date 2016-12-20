@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OS_BSD_BSDI_H
 #define MSGPACK_PREDEF_OS_BSD_BSDI_H
 
-#include <msgpack/predef/os/bsd.h>
+#include <rpc/msgpack/predef/os/bsd.h>
 
 /*`
 [heading `MSGPACK_OS_BSD_BSDI`]
@@ -42,7 +42,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_OS_BSD_BSDI_NAME "BSDi BSD/OS"
 
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_BSD_BSDI,MSGPACK_OS_BSD_BSDI_NAME)
 
 #endif

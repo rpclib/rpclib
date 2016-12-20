@@ -18,8 +18,8 @@
 #ifndef MSGPACK_PACK_HPP
 #define MSGPACK_PACK_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/cpp_config.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/cpp_config.hpp"
 
 #include <stdexcept>
 #include <limits>

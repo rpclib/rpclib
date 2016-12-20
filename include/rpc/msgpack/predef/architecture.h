@@ -8,23 +8,23 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_H
 #define MSGPACK_PREDEF_ARCHITECTURE_H
 
-#include <msgpack/predef/architecture/alpha.h>
-#include <msgpack/predef/architecture/arm.h>
-#include <msgpack/predef/architecture/blackfin.h>
-#include <msgpack/predef/architecture/convex.h>
-#include <msgpack/predef/architecture/ia64.h>
-#include <msgpack/predef/architecture/m68k.h>
-#include <msgpack/predef/architecture/mips.h>
-#include <msgpack/predef/architecture/parisc.h>
-#include <msgpack/predef/architecture/ppc.h>
-#include <msgpack/predef/architecture/pyramid.h>
-#include <msgpack/predef/architecture/rs6k.h>
-#include <msgpack/predef/architecture/sparc.h>
-#include <msgpack/predef/architecture/superh.h>
-#include <msgpack/predef/architecture/sys370.h>
-#include <msgpack/predef/architecture/sys390.h>
-#include <msgpack/predef/architecture/x86.h>
-#include <msgpack/predef/architecture/z.h>
-/*#include <msgpack/predef/architecture/.h>*/
+#include <rpc/msgpack/predef/architecture/alpha.h>
+#include <rpc/msgpack/predef/architecture/arm.h>
+#include <rpc/msgpack/predef/architecture/blackfin.h>
+#include <rpc/msgpack/predef/architecture/convex.h>
+#include <rpc/msgpack/predef/architecture/ia64.h>
+#include <rpc/msgpack/predef/architecture/m68k.h>
+#include <rpc/msgpack/predef/architecture/mips.h>
+#include <rpc/msgpack/predef/architecture/parisc.h>
+#include <rpc/msgpack/predef/architecture/ppc.h>
+#include <rpc/msgpack/predef/architecture/pyramid.h>
+#include <rpc/msgpack/predef/architecture/rs6k.h>
+#include <rpc/msgpack/predef/architecture/sparc.h>
+#include <rpc/msgpack/predef/architecture/superh.h>
+#include <rpc/msgpack/predef/architecture/sys370.h>
+#include <rpc/msgpack/predef/architecture/sys390.h>
+#include <rpc/msgpack/predef/architecture/x86.h>
+#include <rpc/msgpack/predef/architecture/z.h>
+/*#include <rpc/msgpack/predef/architecture/.h>*/
 
 #endif
