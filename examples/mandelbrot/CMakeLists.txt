@@ -7,8 +7,6 @@ find_package(SFML COMPONENTS graphics window system REQUIRED)
 
 include_directories(${RPCLIB_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 
-message("${RPCLIB_COMPILE_DEFINITIONS}")
-
 add_executable(mandelbrot_server mandelbrot_server.cc)
 target_link_libraries(mandelbrot_server ${RPCLIB_LIBS})
 set_target_properties(
