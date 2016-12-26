@@ -223,7 +223,7 @@ set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
 target_link_libraries(${OUTPUT_LIBRARY_NAME})
 
 # When building via conan, respect the compilation settings.
-if (${CONAN_LINK_RUNTIME} STREQUAL "/MT")
+if ("${CONAN_LINK_RUNTIME}" STREQUAL "/MT")
     set(RPCLIB_MSVC_STATIC_RUNTIME ON)
 endif()
 
