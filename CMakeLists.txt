@@ -165,12 +165,6 @@ function(set_rpclib_flags TARGET)
                 LINK_FLAGS "-lgcov --coverage")
     endif()
 
-	if(NOT RPCLIB_NAME_SUFFIX)
-		set_target_properties(${TARGET}
-					PROPERTIES
-					DEBUG_POSTFIX "d")
-	endif()
-
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
 
 endfunction()
