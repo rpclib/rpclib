@@ -31,9 +31,9 @@ response dispatcher::dispatch_call(RPCLIB_MSGPACK::object const &msg,
     call_t the_call;
     msg.convert(&the_call);
 
-    auto &&type = std::get<0>(the_call);
     // TODO: proper validation of protocol (and responding to it)
-    assert(type == 0);
+    // auto &&type = std::get<0>(the_call);
+    // assert(type == 0);
 
     auto &&id = std::get<1>(the_call);
     auto &&name = std::get<2>(the_call);
@@ -90,9 +90,9 @@ response dispatcher::dispatch_notification(RPCLIB_MSGPACK::object const &msg,
     notification_t the_call;
     msg.convert(&the_call);
 
-    auto &&type = std::get<0>(the_call);
     // TODO: proper validation of protocol (and responding to it)
-    assert(type == static_cast<uint8_t>(request_type::notification));
+    // auto &&type = std::get<0>(the_call);
+    // assert(type == static_cast<uint8_t>(request_type::notification));
 
     auto &&name = std::get<1>(the_call);
     auto &&args = std::get<2>(the_call);
