@@ -62,17 +62,9 @@ struct client::impl {
             RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
-                    if (pac_.buffer_capacity() <
-                        static_cast<std::size_t>(0.2 * current_buf_size_)) {
-                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
-                        current_buf_size_ = static_cast<std::size_t>(
-                            current_buf_size_ * buffer_grow_factor);
-                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
-                        pac_.reserve_buffer(current_buf_size_);
-                    }
+                    LOG_TRACE("Read chunk of size {}", length);
                     pac_.buffer_consumed(length);
 
-                    LOG_TRACE("Read chunk of size {}", length);
                     RPCLIB_MSGPACK::unpacked result;
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
@@ -93,6 +85,16 @@ struct client::impl {
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
                     }
+
+                    if (pac_.buffer_capacity() <
+                        static_cast<std::size_t>(0.2 * current_buf_size_)) {
+                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
+                        current_buf_size_ = static_cast<std::size_t>(
+                            current_buf_size_ * buffer_grow_factor);
+                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
+                        pac_.reserve_buffer(current_buf_size_);
+                    }
+
                     do_read();
                 } else if (ec == RPCLIB_ASIO::error::eof) {
                     LOG_WARN("The server closed the connection.");
