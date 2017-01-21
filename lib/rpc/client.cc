@@ -30,6 +30,7 @@ struct client::impl {
           call_idx_(0),
           addr_(addr),
           port_(port),
+          current_buf_size_(default_buffer_size),
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
@@ -61,12 +62,12 @@ struct client::impl {
             RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
-                    if (length > pac_.buffer_capacity() - pac_.nonparsed_size()) {
-                        auto new_size = static_cast<std::size_t>(
-                            pac_.buffer_capacity() * buffer_grow_factor);
-                        LOG_INFO("Buffer capacity: {}", pac_.buffer_capacity());
-                        LOG_INFO("Resizing buffer to {}", new_size);
-                        pac_.reserve_buffer(new_size);
+                    if (length > pac_.buffer_capacity()) {
+                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
+                        current_buf_size_ = static_cast<std::size_t>(
+                            current_buf_size_ * buffer_grow_factor);
+                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
+                        pac_.reserve_buffer(current_buf_size_);
                     }
                     pac_.buffer_consumed(length);
 
@@ -123,6 +124,7 @@ struct client::impl {
     std::string addr_;
     uint16_t port_;
     RPCLIB_MSGPACK::unpacker pac_;
+    std::size_t current_buf_size_;
     std::atomic_bool is_connected_;
     std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;
