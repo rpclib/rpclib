@@ -62,7 +62,7 @@ struct client::impl {
             RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
-                    if (length > pac_.buffer_capacity()) {
+                    if (length >= pac_.buffer_capacity()) {
                         LOG_INFO("Buffer capacity: {}", current_buf_size_);
                         current_buf_size_ = static_cast<std::size_t>(
                             current_buf_size_ * buffer_grow_factor);
