@@ -114,7 +114,7 @@ private:
     int get_next_call_idx();
 
 private:
-    static constexpr uint32_t default_buffer_size = 128 * 1024;
+    static constexpr uint32_t default_buffer_size = 65535;
     static constexpr double buffer_grow_factor = 1.5;
     RPCLIB_DECL_PIMPL(768)
 };
