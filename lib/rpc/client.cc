@@ -101,7 +101,7 @@ struct client::impl {
                     state_ = client::connection_state::disconnected;
                     LOG_WARN("The connection was reset.");
                 } else {
-                    LOG_ERROR("Unhandled error code: {}", ec);
+                    LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
                 }
             });
     }
