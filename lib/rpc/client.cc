@@ -76,21 +76,13 @@ struct client::impl {
                                     "rpc::rpc_error during call",
                                     std::get<0>(c), RPCLIB_MSGPACK::clone(r.get_error()->get()));
                             }
-                            std::get<1>(c).set_value(
-                                std::move(*r.get_result()));
+                            std::get<1>(c).set_value(std::move(*r.get_result()));
                         } catch (...) {
                             std::get<1>(c).set_exception(
                                 std::current_exception());
                         }
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
-                    }
-
-                    if (pac_.parsed_size() == pac_.nonparsed_size()) {
-                        LOG_INFO("All packs finished, reseting buffer");
-                        pac_.reset();
-                        pac_.reserve_buffer(default_buffer_size);
-                        current_buf_size_ = default_buffer_size;
                     }
 
                     if (pac_.buffer_capacity() <
