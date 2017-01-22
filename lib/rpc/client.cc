@@ -86,6 +86,13 @@ struct client::impl {
                             [this, id]() { ongoing_calls_.erase(id); });
                     }
 
+                    if (pac_.parsed_size() == pac_.nonparsed_size()) {
+                        LOG_INFO("All packs finished, reseting buffer");
+                        pac_.reset();
+                        pac_.reserve_buffer(default_buffer_size);
+                        current_buf_size_ = default_buffer_size;
+                    }
+
                     if (pac_.buffer_capacity() <
                         static_cast<std::size_t>(0.2 * current_buf_size_)) {
                         LOG_INFO("Buffer capacity: {}", current_buf_size_);
