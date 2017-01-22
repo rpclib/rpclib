@@ -21,6 +21,7 @@ server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
       read_strand_(*io),
       disp_(disp),
       pac_(),
+      current_buf_size_(default_buffer_size),
       suppress_exceptions_(suppress_exceptions) {
     pac_.reserve_buffer(default_buffer_size); // TODO: make this configurable
                                               // [sztomi 2016-01-13]
@@ -40,12 +41,6 @@ void server_session::do_read() {
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
             if (!ec) {
-                if (length >= pac_.buffer_capacity()) {
-                    auto new_size = static_cast<std::size_t>(
-                        pac_.buffer_capacity() * buffer_grow_factor);
-                    LOG_INFO("Resizing buffer to {}", new_size);
-                    pac_.reserve_buffer(new_size);
-                }
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
                 while (pac_.next(&result) && !exit_) {
@@ -113,6 +108,14 @@ void server_session::do_read() {
                 }
 
                 if (!exit_) {
+                    if (pac_.buffer_capacity() <
+                        static_cast<std::size_t>(0.2 * current_buf_size_)) {
+                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
+                        current_buf_size_ = static_cast<std::size_t>(
+                            current_buf_size_ * buffer_grow_factor);
+                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
+                        pac_.reserve_buffer(current_buf_size_);
+                    }
                     do_read();
                 }
             }

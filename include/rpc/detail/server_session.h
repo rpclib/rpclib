@@ -36,6 +36,7 @@ private:
     RPCLIB_ASIO::strand read_strand_;
     std::shared_ptr<dispatcher> disp_;
     RPCLIB_MSGPACK::unpacker pac_;
+    std::size_t current_buf_size_;
     RPCLIB_MSGPACK::sbuffer output_buf_;
     const bool suppress_exceptions_;
     static const uint32_t default_buffer_size = 65535;
