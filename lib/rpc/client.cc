@@ -69,16 +69,16 @@ struct client::impl {
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
-                        auto &c = ongoing_calls_[id];
+                        auto &current_call = ongoing_calls_[id];
                         try {
                             if (r.get_error()) {
                                 throw rpc_error(
                                     "rpc::rpc_error during call",
-                                    std::get<0>(c), RPCLIB_MSGPACK::clone(r.get_error()->get()));
+                                    std::get<0>(current_call), RPCLIB_MSGPACK::clone(r.get_error()->get()));
                             }
-                            std::get<1>(c).set_value(std::move(*r.get_result()));
+                            std::get<1>(current_call).set_value(std::move(*r.get_result()));
                         } catch (...) {
-                            std::get<1>(c).set_exception(
+                            std::get<1>(current_call).set_exception(
                                 std::current_exception());
                         }
                         strand_.post(

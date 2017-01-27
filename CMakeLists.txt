@@ -132,6 +132,10 @@ function(set_rpclib_flags TARGET)
 
     endif()
 
+    if (RPCLIB_EXTRA_BUILD_FLAGS)
+        set(RPCLIB_BUILD_FLAGS "${RPCLIB_EXTRA_BUILD_FLAGS}")
+    endif()
+
     set(RPCLIB_COMPILE_DEFINITIONS
         "${RPCLIB_COMPILE_DEFINITIONS}"
         "${RPCLIB_ARCH_DEF}"
