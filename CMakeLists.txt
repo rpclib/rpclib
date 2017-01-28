@@ -212,9 +212,10 @@ add_library(${OUTPUT_LIBRARY_NAME}
     lib/rpc/rpc_error.cc
     lib/rpc/detail/server_session.cc
     lib/rpc/detail/response.cc
+    lib/rpc/detail/client_error.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
-    ${RPCLIB_HEADERS} include/rpc/detail/client_error.h lib/rpc/detail/client_error.cc)
+    ${RPCLIB_HEADERS})
 
 set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
 
@@ -290,7 +291,8 @@ if(RPCLIB_BUILD_TESTS)
         tests/rpc/server_test.cc
         tests/rpc/this_handler_test.cc
         tests/rpc/this_session_test.cc
-        tests/rpc/this_server_test.cc include/rpc/detail/client_error.h lib/rpc/detail/client_error.cc)
+        tests/rpc/server_session_test.cc
+        tests/rpc/this_server_test.cc)
 
     include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 

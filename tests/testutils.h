@@ -50,6 +50,16 @@ struct MockDummy : IDummy {
     MOCK_METHOD1(dummy_void_singlearg, void(int));
     MOCK_METHOD2(dummy_void_multiarg, void(int, int));
 };
+
+inline std::string get_blob(std::size_t size) {
+    std::string s;
+    s.resize(size);
+    for (auto &c : s) {
+        c = static_cast<unsigned char>(rand() % 256);
+    }
+    return s;
+}
+
 }
 }
 
