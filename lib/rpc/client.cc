@@ -60,8 +60,9 @@ struct client::impl {
 
     void do_read() {
         LOG_TRACE("do_read");
+        constexpr std::size_t max_read_bytes = default_buffer_size;
         writer_->socket_.async_read_some(
-            RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
+            RPCLIB_ASIO::buffer(pac_.buffer(), max_read_bytes),
             [this](std::error_code ec, std::size_t length) {
                 if (!ec) {
                     LOG_TRACE("Read chunk of size {}", length);
@@ -88,12 +89,12 @@ struct client::impl {
                             [this, id]() { ongoing_calls_.erase(id); });
                     }
 
-                    if (pac_.buffer_capacity() < default_buffer_size) {
-                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
-                        current_buf_size_ = static_cast<std::size_t>(
-                                                    current_buf_size_ * buffer_grow_factor) + default_buffer_size;
-                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
-                        pac_.reserve_buffer(current_buf_size_);
+                    // resizing strategy: if the remaining buffer size is
+                    // less than the maximum bytes requested from asio,
+                    // resize by growth factor + max_read_bytes.
+                    if (pac_.buffer_capacity() < max_read_bytes) {
+                        LOG_INFO("Reserving bytes: {}", max_read_bytes - pac_.buffer_capacity());
+                        pac_.reserve_buffer(max_read_bytes - pac_.buffer_capacity());
                     }
                     LOG_DEBUG("buffer capacity: {}", pac_.buffer_capacity());
 
