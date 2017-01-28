@@ -93,8 +93,8 @@ struct client::impl {
                     // less than the maximum bytes requested from asio,
                     // resize by growth factor + max_read_bytes.
                     if (pac_.buffer_capacity() < max_read_bytes) {
-                        LOG_INFO("Reserving bytes: {}", max_read_bytes - pac_.buffer_capacity());
-                        pac_.reserve_buffer(max_read_bytes - pac_.buffer_capacity());
+                        LOG_INFO("Reserving bytes: {}", max_read_bytes);
+                        pac_.reserve_buffer(max_read_bytes);
                     }
                     LOG_DEBUG("buffer capacity: {}", pac_.buffer_capacity());
 
