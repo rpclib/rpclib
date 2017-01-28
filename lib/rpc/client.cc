@@ -66,6 +66,14 @@ struct client::impl {
                 if (!ec) {
                     LOG_TRACE("Read chunk of size {}", length);
                     pac_.buffer_consumed(length);
+                    if (pac_.buffer_capacity() < length) {
+                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
+                        current_buf_size_ = static_cast<std::size_t>(
+                                                    current_buf_size_ * buffer_grow_factor) + default_buffer_size;
+                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
+                        pac_.reserve_buffer(current_buf_size_);
+                    }
+
 
                     RPCLIB_MSGPACK::unpacked result;
                     while (pac_.next(&result)) {
@@ -85,15 +93,6 @@ struct client::impl {
                         }
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
-                    }
-
-                    if (pac_.buffer_capacity() <
-                        static_cast<std::size_t>(0.2 * current_buf_size_)) {
-                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
-                        current_buf_size_ = static_cast<std::size_t>(
-                            current_buf_size_ * buffer_grow_factor) + default_buffer_size;
-                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
-                        pac_.reserve_buffer(current_buf_size_);
                     }
 
                     do_read();
