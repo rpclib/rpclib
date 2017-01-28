@@ -88,7 +88,7 @@ struct client::impl {
                             [this, id]() { ongoing_calls_.erase(id); });
                     }
 
-                    if (pac_.buffer_capacity() < length) {
+                    if (pac_.buffer_capacity() < default_buffer_size) {
                         LOG_INFO("Buffer capacity: {}", current_buf_size_);
                         current_buf_size_ = static_cast<std::size_t>(
                                                     current_buf_size_ * buffer_grow_factor) + default_buffer_size;
