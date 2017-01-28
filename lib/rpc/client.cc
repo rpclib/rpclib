@@ -32,7 +32,6 @@ struct client::impl {
           port_(port),
           pac_([](RPCLIB_MSGPACK::type::object_type, std::size_t, void*){
               return true; }),
-          current_buf_size_(default_buffer_size),
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
@@ -91,13 +90,11 @@ struct client::impl {
 
                     // resizing strategy: if the remaining buffer size is
                     // less than the maximum bytes requested from asio,
-                    // resize by growth factor + max_read_bytes.
+                    // then reserve max_read_bytes to the buffer.
                     if (pac_.buffer_capacity() < max_read_bytes) {
-                        LOG_INFO("Reserving bytes: {}", max_read_bytes);
+                        LOG_TRACE("Reserving extra buffer: {}", max_read_bytes);
                         pac_.reserve_buffer(max_read_bytes);
                     }
-                    LOG_DEBUG("buffer capacity: {}", pac_.buffer_capacity());
-
                     do_read();
                 } else if (ec == RPCLIB_ASIO::error::eof) {
                     LOG_WARN("The server closed the connection.");
@@ -130,7 +127,6 @@ struct client::impl {
     std::string addr_;
     uint16_t port_;
     RPCLIB_MSGPACK::unpacker pac_;
-    std::size_t current_buf_size_;
     std::atomic_bool is_connected_;
     std::condition_variable conn_finished_;
     std::mutex mut_connection_finished_;

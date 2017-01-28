@@ -9,7 +9,6 @@ namespace rpc {
 namespace detail {
 
 static constexpr uint32_t default_buffer_size = 65535;
-static constexpr double buffer_grow_factor = 1.5;
 
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
                                RPCLIB_ASIO::ip::tcp::socket socket,
@@ -21,7 +20,6 @@ server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
       read_strand_(*io),
       disp_(disp),
       pac_(),
-      current_buf_size_(default_buffer_size),
       suppress_exceptions_(suppress_exceptions) {
     pac_.reserve_buffer(default_buffer_size); // TODO: make this configurable
                                               // [sztomi 2016-01-13]
@@ -37,6 +35,7 @@ void server_session::close() {
 
 void server_session::do_read() {
     auto self(shared_from_this());
+    constexpr std::size_t max_read_bytes = default_buffer_size;
     socket_.async_read_some(
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
@@ -108,13 +107,12 @@ void server_session::do_read() {
                 }
 
                 if (!exit_) {
-                    if (pac_.buffer_capacity() <
-                        static_cast<std::size_t>(0.2 * current_buf_size_)) {
-                        LOG_INFO("Buffer capacity: {}", current_buf_size_);
-                        current_buf_size_ = static_cast<std::size_t>(
-                            current_buf_size_ * buffer_grow_factor);
-                        LOG_INFO("Resizing buffer to {}", current_buf_size_);
-                        pac_.reserve_buffer(current_buf_size_);
+                    // resizing strategy: if the remaining buffer size is
+                    // less than the maximum bytes requested from asio,
+                    // then reserve max_read_bytes to the buffer.
+                    if (pac_.buffer_capacity() < max_read_bytes) {
+                        LOG_TRACE("Reserving extra buffer: {}", max_read_bytes);
+                        pac_.reserve_buffer(max_read_bytes);
                     }
                     do_read();
                 }

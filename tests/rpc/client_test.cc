@@ -17,6 +17,7 @@ public:
                [this](int x) { md.dummy_void_singlearg(x); });
         s.bind("dummy_void_multiarg",
                [this](int x, int y) { md.dummy_void_multiarg(x, y); });
+        s.bind("large_return", [](std::size_t bytes){ get_blob(bytes); });
         s.async_run();
     }
 
@@ -47,4 +48,14 @@ TEST_F(client_test, notification) {
     client.send("dummy_void_zeroarg");
     client.wait_all_responses();
     std::this_thread::sleep_for(50ms);
+}
+
+TEST_F(client_test, large_return) {
+    rpc::client client("127.0.0.1", test_port);
+    std::size_t blob_size = 32 << 10;
+    for (int i = 0; i < 4; ++i) {
+        client.call("large_return", blob_size);
+        blob_size *= 2;
+    }
+    // no crash is enough
 }
