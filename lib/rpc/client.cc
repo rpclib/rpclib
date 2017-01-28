@@ -91,7 +91,7 @@ struct client::impl {
                         static_cast<std::size_t>(0.2 * current_buf_size_)) {
                         LOG_INFO("Buffer capacity: {}", current_buf_size_);
                         current_buf_size_ = static_cast<std::size_t>(
-                            current_buf_size_ * buffer_grow_factor);
+                            current_buf_size_ * buffer_grow_factor) + default_buffer_size;
                         LOG_INFO("Resizing buffer to {}", current_buf_size_);
                         pac_.reserve_buffer(current_buf_size_);
                     }
