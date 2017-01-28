@@ -73,6 +73,7 @@ struct client::impl {
                         LOG_INFO("Resizing buffer to {}", current_buf_size_);
                         pac_.reserve_buffer(current_buf_size_);
                     }
+                    LOG_DEBUG("buffer capacity: {}", pac_.buffer_capacity())
 
 
                     RPCLIB_MSGPACK::unpacked result;
