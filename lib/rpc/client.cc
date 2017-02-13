@@ -62,7 +62,9 @@ struct client::impl {
         constexpr std::size_t max_read_bytes = default_buffer_size;
         writer_->socket_.async_read_some(
             RPCLIB_ASIO::buffer(pac_.buffer(), max_read_bytes),
-            [this](std::error_code ec, std::size_t length) {
+            // I don't think max_read_bytes needs to be captured explicitly
+            // (since it's constexpr), but MSVC insists.
+            [this, max_read_bytes](std::error_code ec, std::size_t length) {
                 if (!ec) {
                     LOG_TRACE("Read chunk of size {}", length);
                     pac_.buffer_consumed(length);

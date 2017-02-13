@@ -38,7 +38,10 @@ void server_session::do_read() {
     constexpr std::size_t max_read_bytes = default_buffer_size;
     socket_.async_read_some(
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
-        read_strand_.wrap([this, self](std::error_code ec, std::size_t length) {
+        // I don't think max_read_bytes needs to be captured explicitly
+        // (since it's constexpr), but MSVC insists.
+        read_strand_.wrap([this, self, max_read_bytes](std::error_code ec,
+                                                       std::size_t length) {
             if (!ec) {
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
