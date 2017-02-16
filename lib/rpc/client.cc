@@ -1,5 +1,6 @@
 #include "rpc/client.h"
 #include "rpc/rpc_error.h"
+#include "rpc/config.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -21,6 +22,9 @@ using RPCLIB_ASIO::ip::tcp;
 using namespace rpc::detail;
 
 namespace rpc {
+
+static constexpr double buffer_grow_factor = BUFFER_GROW_FACTOR;
+static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
 
 struct client::impl {
     impl(client *parent, std::string const &addr, uint16_t port)
@@ -92,10 +96,19 @@ struct client::impl {
 
                     // resizing strategy: if the remaining buffer size is
                     // less than the maximum bytes requested from asio,
-                    // then reserve max_read_bytes to the buffer.
+                    // then resize to (current_size * buffer_grow_factor).
+                    //
+                    // msgpack sbuffer has some unusual function names:
+                    // - buffer_capacity = remaining capacity (not total)
+                    // - reserve_buffer = adds n bytes (not set the buffer size)
+                    // - message_size = number of parsed bytes
+                    // - nonparsed_size = number of non-parsed bytes
                     if (pac_.buffer_capacity() < max_read_bytes) {
-                        LOG_TRACE("Reserving extra buffer: {}", max_read_bytes);
-                        pac_.reserve_buffer(max_read_bytes);
+                        auto current_size = pac_.nonparsed_size() + pac_.message_size();
+                        auto bytes_to_add(pac_.buffer_capacity() -
+                                          current_size * buffer_grow_factor);
+                        LOG_TRACE("Reserving extra buffer: {}", bytes_to_add);
+                        pac_.reserve_buffer(bytes_to_add);
                     }
                     do_read();
                 } else if (ec == RPCLIB_ASIO::error::eof) {
