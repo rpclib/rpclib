@@ -38,7 +38,6 @@ private:
     RPCLIB_MSGPACK::unpacker pac_;
     RPCLIB_MSGPACK::sbuffer output_buf_;
     const bool suppress_exceptions_;
-    static const uint32_t default_buffer_size = 65535;
     RPCLIB_CREATE_LOG_CHANNEL(session)
 };
 } /* detail */
