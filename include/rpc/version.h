@@ -3,8 +3,12 @@
 #ifndef VERSION_H_UMZFBKB4
 #define VERSION_H_UMZFBKB4
 
-#define RPCLIB_VERSION_MAJOR 1
-#define RPCLIB_VERSION_MINOR 0
-#define RPCLIB_VERSION_BUILD 0
+namespace rpc {
+
+static constexpr unsigned VERSION_MAJOR = 1;
+static constexpr unsigned VERSION_MINOR = 0;
+static constexpr unsigned VERSION_PATCH = 0;
+
+} /* rpc */
 
 #endif /* end of include guard: VERSION_H_UMZFBKB4 */

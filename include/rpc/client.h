@@ -2,6 +2,7 @@
 
 #include <future>
 
+#include "rpc/config.h"
 #include "rpc/detail/log.h"
 #include "rpc/detail/pimpl.h"
 #include "rpc/msgpack.hpp"
