@@ -3,7 +3,7 @@
 #ifndef CONFIG_H_L7IVDSPZ
 #define CONFIG_H_L7IVDSPZ
 
-#include <stdlib.h>
+#include <cstddef>
 
 namespace rpc
 {
