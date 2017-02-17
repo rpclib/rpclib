@@ -52,7 +52,7 @@ TEST_F(client_test, notification) {
 
 TEST_F(client_test, large_return) {
     rpc::client client("127.0.0.1", test_port);
-    std::size_t blob_size = 32 << 10;
+    std::size_t blob_size = 2 << 10 << 10;
     for (int i = 0; i < 4; ++i) {
         client.call("large_return", blob_size);
         blob_size *= 2;
