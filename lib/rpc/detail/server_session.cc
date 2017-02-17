@@ -125,8 +125,8 @@ void server_session::do_read() {
                     // - nonparsed_size = number of non-parsed bytes
                     if (pac_.buffer_capacity() < max_read_bytes) {
                         auto current_size = pac_.nonparsed_size() + pac_.message_size();
-                        auto bytes_to_add(pac_.buffer_capacity() -
-                                          current_size * buffer_grow_factor);
+                        auto bytes_to_add(current_size * buffer_grow_factor -
+                                          pac_.buffer_capacity());
                         LOG_TRACE("Reserving extra buffer: {}", bytes_to_add);
                         pac_.reserve_buffer(bytes_to_add);
                     }
