@@ -33,8 +33,6 @@ struct client::impl {
           call_idx_(0),
           addr_(addr),
           port_(port),
-          pac_([](RPCLIB_MSGPACK::type::object_type, std::size_t, void*){
-              return true; }),
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
