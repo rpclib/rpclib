@@ -11,7 +11,6 @@
 namespace rpc {
 namespace detail {
 
-static constexpr double buffer_grow_factor = BUFFER_GROW_FACTOR;
 static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
 
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
@@ -116,19 +115,12 @@ void server_session::do_read() {
                 if (!exit_) {
                     // resizing strategy: if the remaining buffer size is
                     // less than the maximum bytes requested from asio,
-                    // then resize to (current_size * buffer_grow_factor).
-                    //
-                    // msgpack sbuffer has some unusual function names:
-                    // - buffer_capacity = remaining capacity (not total)
-                    // - reserve_buffer = adds n bytes (not set the buffer size)
-                    // - message_size = number of parsed bytes
-                    // - nonparsed_size = number of non-parsed bytes
+                    // then request max_read_bytes. This prompts the unpacker
+                    // to resize its buffer doubling its size
+                    // (https://github.com/msgpack/msgpack-c/issues/567#issuecomment-280810018)
                     if (pac_.buffer_capacity() < max_read_bytes) {
-                        auto current_size = pac_.nonparsed_size() + pac_.message_size();
-                        auto bytes_to_add(current_size * buffer_grow_factor -
-                                          pac_.buffer_capacity());
-                        LOG_TRACE("Reserving extra buffer: {}", bytes_to_add);
-                        pac_.reserve_buffer(bytes_to_add);
+                        LOG_TRACE("Reserving extra buffer: {}", max_read_bytes);
+                        pac_.reserve_buffer(max_read_bytes);
                     }
                     do_read();
                 }
