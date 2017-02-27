@@ -329,7 +329,7 @@ int main() {
 int main() {
     rpc::client c("127.0.0.1", 8080);
 
-    auto a_future = c.call_async("add", 2, 3); // non-blocking, returns std::future
+    auto a_future = c.async_call("add", 2, 3); // non-blocking, returns std::future
 
     std::cout << "I can do something here immediately" << std::endl;
 
