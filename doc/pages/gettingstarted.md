@@ -8,8 +8,8 @@ This chapter details the steps of getting everything in place to be able to use 
 
 `rpclib` uses some C++14 features, and as such, requires a recent compiler. The following compilers are tried and tested with `rpclib` at the moment:
 
-  * g++ 5.0
-  * clang++ 3.7
+  * g++ 5.4
+  * clang++ 3.8
   * MSVC 2015 Update 3
 
 Newer versions of these compilers are expected to work, of course.
