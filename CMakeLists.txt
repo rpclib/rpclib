@@ -75,11 +75,7 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread -std=c++14 -stdlib=libc++")
-
-        set_target_properties(${TARGET}
-                PROPERTIES
-                LINK_FLAGS "-lc++ -lc++abi")
+            -pthread -std=c++14")
 
         if(RPCLIB_FORCE_M32)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
