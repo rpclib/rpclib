@@ -24,6 +24,11 @@ option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF
 #
 ################################################################################
 
+set(RPCLIB_CXX_STANDARD 11)
+
+set(CMAKE_CXX_STANDARD ${RPCLIB_CXX_STANDARD})
+add_definitions(-DRPCLIB_CXX_STANDARD=${RPCLIB_CXX_STANDARD})
+
 include(TargetArch)
 
 set(RPCLIB_VERSION_MAJOR 1)
@@ -75,7 +80,7 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread -std=c++14 -stdlib=libc++")
+            -pthread -stdlib=libc++")
 
         set_target_properties(${TARGET}
                 PROPERTIES
@@ -95,7 +100,7 @@ function(set_rpclib_flags TARGET)
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
-        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread -std=c++14")
+        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
 
         if(RPCLIB_ENABLE_COVERAGE)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")

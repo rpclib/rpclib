@@ -10,7 +10,6 @@
 #include "testutils.h"
 
 using namespace rpc::testutils;
-using namespace std::literals::chrono_literals;
 
 const int test_port = 8080;
 
@@ -19,11 +18,11 @@ public:
     server_workers_test()
         : s("127.0.0.1", test_port), long_count(0), short_count(0) {
         s.bind("long_func", [this]() {
-            std::this_thread::sleep_for(500ms);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             ++long_count;
         });
         s.bind("short_func", [this]() {
-            std::this_thread::sleep_for(100ms);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             ++short_count;
         });
     }
