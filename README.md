@@ -63,8 +63,11 @@ int main() {
 
 # Status
 
-Most planned 1.0.0 features are done and tested; what you are seeing here is a preview of the
-release (I'm hesitant to call it release candidate because there are known outstanding issues).
+All planned 1.0.0 features are done and tested; the current state is production-ready.
+
+# Who uses rpclib?
+
+  * [Microsoft AirSim](https://github.com/Microsoft/AirSim)
 
 # Thanks
 
