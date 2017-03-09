@@ -7,7 +7,6 @@
 #include <chrono>
 
 using namespace rpc::testutils;
-using namespace std::literals::chrono_literals;
 
 class client_test : public testing::Test {
 public:
@@ -22,7 +21,7 @@ public:
     }
 
 protected:
-    static const int test_port = 8080;
+    static const int test_port = RPCLIB_DEFAULT_PORT;
     MockDummy md;
     rpc::server s;
     std::atomic_bool is_running_;
@@ -47,7 +46,7 @@ TEST_F(client_test, notification) {
     rpc::client client("127.0.0.1", test_port);
     client.send("dummy_void_zeroarg");
     client.wait_all_responses();
-    std::this_thread::sleep_for(50ms);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
 TEST_F(client_test, large_return) {

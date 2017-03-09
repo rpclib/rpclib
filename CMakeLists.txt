@@ -17,6 +17,7 @@ option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
+set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
 
 ################################################################################
 #
@@ -140,6 +141,7 @@ function(set_rpclib_flags TARGET)
         "RPCLIB_ASIO=clmdep_asio"
         "RPCLIB_FMT=clmdep_fmt"
         "RPCLIB_MSGPACK=clmdep_msgpack"
+        "RPCLIB_DEFAULT_PORT=${RPCLIB_DEFAULT_PORT}"
         )
 
     if(RPCLIB_ENABLE_LOGGING)
