@@ -21,7 +21,7 @@ public:
     }
 
 protected:
-    static const int test_port = 8080;
+    static const int test_port = RPCLIB_DEFAULT_PORT;
     MockDummy md;
     rpc::server s;
     std::atomic_bool is_running_;

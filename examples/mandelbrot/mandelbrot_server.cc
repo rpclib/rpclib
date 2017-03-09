@@ -31,7 +31,7 @@ int main() {
     int maxN = 255;
     double minR = -1.5, maxR = 0.8, minI = -1.0, maxI = 1.0;
 
-    rpc::server srv(8080);
+    rpc::server srv(RPCLIB_DEFAULT_PORT);
 
     srv.bind("get_time", []() {
         time_t rawtime;

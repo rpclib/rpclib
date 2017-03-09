@@ -11,7 +11,7 @@
 
 using namespace rpc::testutils;
 
-const int test_port = 8080;
+const int test_port = RPCLIB_DEFAULT_PORT;
 
 class server_workers_test : public testing::Test {
 public:
@@ -149,7 +149,7 @@ TEST_F(server_error_handling, wrong_arg_count_void_zeroarg) {
 class dispatch_unicode : public testing::Test {
 public:
     dispatch_unicode()
-        : s("127.0.0.1", 8080), str_utf8("árvíztűrő tükörfúrógép") {
+        : s("127.0.0.1", test_port), str_utf8("árvíztűrő tükörfúrógép") {
         s.bind("utf", [](std::string const &p) { return p; });
         s.async_run();
     }
@@ -165,7 +165,7 @@ TEST_F(dispatch_unicode, narrow_unicode) {
 }
 
 TEST(server_misc, single_param_ctor) {
-    rpc::server s(8080);
+    rpc::server s(test_port);
     s.async_run();
-    rpc::client c("127.0.0.1", 8080);
+    rpc::client c("127.0.0.1", test_port);
 }

@@ -11,7 +11,7 @@
 
 using namespace rpc::testutils;
 
-const uint16_t test_port = 8080;
+const uint16_t test_port = RPCLIB_DEFAULT_PORT;
 
 class this_handler_test : public testing::Test {
 public:
