@@ -15,7 +15,7 @@ void dispatcher::bind(std::string const &name, F func,
         std::make_pair(name, [func, name](RPCLIB_MSGPACK::object const &args) {
             enforce_arg_count(name, 0, args.via.array.size);
             func();
-            return std::make_unique<RPCLIB_MSGPACK::object_handle>();
+            return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>();
         }));
 }
 
@@ -33,7 +33,7 @@ void dispatcher::bind(std::string const &name, F func,
             args_type args_real;
             args.convert(&args_real);
             detail::call(func, args_real);
-            return std::make_unique<RPCLIB_MSGPACK::object_handle>();
+            return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>();
         }));
 }
 
@@ -46,9 +46,9 @@ void dispatcher::bind(std::string const &name, F func,
     funcs_.insert(std::make_pair(name, [func,
                                         name](RPCLIB_MSGPACK::object const &args) {
         enforce_arg_count(name, 0, args.via.array.size);
-        auto z = std::make_unique<RPCLIB_MSGPACK::zone>();
+        auto z = rpc::detail::make_unique<RPCLIB_MSGPACK::zone>();
         auto result = RPCLIB_MSGPACK::object(func(), *z);
-        return std::make_unique<RPCLIB_MSGPACK::object_handle>(result, std::move(z));
+        return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>(result, std::move(z));
     }));
 }
 
@@ -65,9 +65,9 @@ void dispatcher::bind(std::string const &name, F func,
         enforce_arg_count(name, args_count, args.via.array.size);
         args_type args_real;
         args.convert(&args_real);
-        auto z = std::make_unique<RPCLIB_MSGPACK::zone>();
+        auto z = rpc::detail::make_unique<RPCLIB_MSGPACK::zone>();
         auto result = RPCLIB_MSGPACK::object(detail::call(func, args_real), *z);
-        return std::make_unique<RPCLIB_MSGPACK::object_handle>(result, std::move(z));
+        return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>(result, std::move(z));
     }));
 }
 }
