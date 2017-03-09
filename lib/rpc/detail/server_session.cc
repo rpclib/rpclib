@@ -53,9 +53,9 @@ void server_session::do_read() {
                     output_buf_.clear();
 
                     // any worker thread can take this call
+                    auto z = std::shared_ptr<RPCLIB_MSGPACK::zone>(result.zone().release());
                     io_->post([
-                        this, msg, z = std::shared_ptr<RPCLIB_MSGPACK::zone>(
-                                       result.zone().release())
+                        this, msg, z
                     ]() {
                         this_handler().clear();
                         this_session().clear();
