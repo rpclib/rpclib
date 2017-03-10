@@ -1,13 +1,17 @@
 
 # rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/rpclib/rpclib.svg?branch=dev)](https://travis-ci.org/sztomi/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://coveralls.io/repos/github/rpclib/rpclib/badge.svg)](https://coveralls.io/github/rpclib/rpclib?branch=dev) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/rpclib/Lobby)
 
-`rpclib` is a RPC library for C++, providing both a client and server implementation. It is built using modern C++14, and as such, requires a recent compiler. Using the library, you can:
+`rpclib` is a RPC library for C++, providing both a client and server implementation. It is built using modern C++14, and as such, requires a recent compiler. Main highlights:
 
-  * Expose functions of your program to be called via RPC with minimal boilerplate
-  * Or call function through RPC with a syntax that is as natural as C++ permits (without code
-    generation)
+  * Expose functions of your program to be called via RPC (from any language
+    implementing msgpack-rpc)
+  * Call functions through RPC (of programs written in any language)
+  * No IDL to learn
+  * No code generation step to integrate in your build, just C++
 
 # What does it look like?
+
+Two short examples of the "look&feel" of the library:
 
 ## Server
 
@@ -67,6 +71,9 @@ All planned 1.0.0 features are done and tested; the current state is production-
 
 # Who uses rpclib?
 
+This list is updated as I learn about more people using the library; let me
+know if you don't want your project listed here.
+
   * [Microsoft AirSim](https://github.com/Microsoft/AirSim)
 
 # Thanks
@@ -75,7 +82,7 @@ All planned 1.0.0 features are done and tested; the current state is production-
 
   * [MessagePack implementation for C and C++](https://github.com/msgpack/msgpack-c) by Takatoshi Kondo ([website](http://msgpack.org/))
   * [asio](https://github.com/chriskohlhoff/asio) by Christopher Kohlhoff ([website](http://think-async.com/Asio))
-  * [cppformat](https://github.com/fmtlib/fmt) (now renamed `fmtlib` by Victor Zverovich ([website](http://fmtlib.net))
+  * [cppformat](https://github.com/fmtlib/fmt) (now renamed `fmtlib`, by Victor Zverovich ([website](http://fmtlib.net))
   * [googletest](https://github.com/google/googletest) by Google
   * [wheels](https://github.com/rmartinho/wheels) by Martinho Fernandes
 
