@@ -1,5 +1,6 @@
 #include "rpc/client.h"
 #include "rpc/rpc_error.h"
+#include "rpc/config.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -22,6 +23,8 @@ using namespace rpc::detail;
 
 namespace rpc {
 
+static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
+
 struct client::impl {
     impl(client *parent, std::string const &addr, uint16_t port)
         : parent_(parent),
@@ -30,8 +33,6 @@ struct client::impl {
           call_idx_(0),
           addr_(addr),
           port_(port),
-          pac_([](RPCLIB_MSGPACK::type::object_type, std::size_t, void*){
-              return true; }),
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
@@ -92,7 +93,9 @@ struct client::impl {
 
                     // resizing strategy: if the remaining buffer size is
                     // less than the maximum bytes requested from asio,
-                    // then reserve max_read_bytes to the buffer.
+                    // then request max_read_bytes. This prompts the unpacker
+                    // to resize its buffer doubling its size
+                    // (https://github.com/msgpack/msgpack-c/issues/567#issuecomment-280810018)
                     if (pac_.buffer_capacity() < max_read_bytes) {
                         LOG_TRACE("Reserving extra buffer: {}", max_read_bytes);
                         pac_.reserve_buffer(max_read_bytes);

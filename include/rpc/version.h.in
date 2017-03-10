@@ -3,8 +3,12 @@
 #ifndef VERSION_H_IN_LZK5UJ7E
 #define VERSION_H_IN_LZK5UJ7E
 
-#define RPCLIB_VERSION_MAJOR @RPCLIB_VERSION_MAJOR@
-#define RPCLIB_VERSION_MINOR @RPCLIB_VERSION_MINOR@
-#define RPCLIB_VERSION_PATCH @RPCLIB_VERSION_PATCH@
+namespace rpc {
+
+static constexpr unsigned VERSION_MAJOR = @RPCLIB_VERSION_MAJOR@;
+static constexpr unsigned VERSION_MINOR = @RPCLIB_VERSION_MINOR@;
+static constexpr unsigned VERSION_PATCH = @RPCLIB_VERSION_PATCH@;
+
+} /* rpc */
 
 #endif /* end of include guard: VERSION_H_IN_LZK5UJ7E */

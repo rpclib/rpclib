@@ -3,9 +3,10 @@
 #ifndef SERVER_H_S0HB5KXY
 #define SERVER_H_S0HB5KXY
 
+#include "rpc/config.h"
 #include "rpc/msgpack.hpp"
-
 #include "rpc/dispatcher.h"
+
 #include "rpc/detail/pimpl.h"
 
 namespace rpc {
@@ -31,7 +32,7 @@ public:
     //! \param port The port number to listen on.
     explicit server(uint16_t port);
 
-    //! \brief Constructs a server that listens on the specified address on 
+    //! \brief Constructs a server that listens on the specified address on
     //! the specified port.
     //!
     //! \param port The port number to listen on.

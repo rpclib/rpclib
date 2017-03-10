@@ -4,13 +4,15 @@
 #define SESSION_H_5KG6ZMAB
 
 #include "asio.hpp"
-#include "rpc/detail/log.h"
-#include "rpc/msgpack.hpp"
 #include <memory>
 #include <vector>
 
-#include "rpc/detail/async_writer.h"
+#include "rpc/config.h"
+#include "rpc/msgpack.hpp"
+
 #include "rpc/dispatcher.h"
+#include "rpc/detail/async_writer.h"
+#include "rpc/detail/log.h"
 
 namespace rpc {
 
@@ -38,7 +40,6 @@ private:
     RPCLIB_MSGPACK::unpacker pac_;
     RPCLIB_MSGPACK::sbuffer output_buf_;
     const bool suppress_exceptions_;
-    static const uint32_t default_buffer_size = 65535;
     RPCLIB_CREATE_LOG_CHANNEL(session)
 };
 } /* detail */

@@ -170,3 +170,4 @@ TEST(server_misc, single_param_ctor) {
     s.async_run();
     rpc::client c("127.0.0.1", 8080);
 }
+

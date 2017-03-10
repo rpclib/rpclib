@@ -30,6 +30,8 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
+  - g++-5 --version
+  - gcc-5 --version
   - cd $CI_HOME
   - git submodule init
   - git submodule update --init --recursive

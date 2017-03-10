@@ -32,10 +32,10 @@ Use this class to connect to msgpack-rpc servers and call their exposed function
 |---------|-------------|
 |  | [client](#classrpc_1_1client_1aafbcbb90607bb189bf75a2020ee14eb8)(std::string const &addr, uint16_t port)
 |  | [~client](#classrpc_1_1client_1a87e0788aaa7a95dfc0e1b9c15dfe4163)()
-| msgpack::object_handle | [call](#classrpc_1_1client_1a97f1406c306d8d6abff5f5a2e455ab72)(std::string const &func_name, Args...args)
-| std::future< msgpack::object_handle > | [async_call](#classrpc_1_1client_1a786fcf533f716b1f75deed60452bb75c)(std::string const &func_name, Args...args)
-| void | [send](#classrpc_1_1client_1a668d7e045da563fe4855df9c6b7a0737)(std::string const &func_name, Args...args)
-| connection_state | [get_connection_state](#classrpc_1_1client_1a109a04851e70742f53549f4039de21a7)() const 
+| RPCLIB_MSGPACK::object_handle | [call](#classrpc_1_1client_1aedc166b5a80820be198ef134f522b049)(std::string const &func_name, Args... args)
+| std::future< RPCLIB_MSGPACK::object_handle > | [async_call](#classrpc_1_1client_1a2e3702a314c8c0a00bfac652b82d16cc)(std::string const &func_name, Args... args)
+| void | [send](#classrpc_1_1client_1a5f5ad1d1d0630178a51ae219cd831b44)(std::string const &func_name, Args... args)
+| connection_state | [get_connection_state](#classrpc_1_1client_1a710037bce0d9b80127a98eb6cd54caf1)() const
 | void | [wait_all_responses](#classrpc_1_1client_1ac37437bc05b70588c079079b957eb15f)()
 
 
@@ -66,9 +66,9 @@ Destructor.
 During destruction, the connection to the server is gracefully closed. This means that any outstanding reads and writes are completed first. 
 
 
-<h4 id="classrpc_1_1client_1a97f1406c306d8d6abff5f5a2e455ab72" class="doxy">rpc::client::call</h4>
+<h4 id="classrpc_1_1client_1aedc166b5a80820be198ef134f522b049" class="doxy">rpc::client::call</h4>
 ```cpp
-msgpack::object_handle rpc::client::call(std::string const &func_name, Args...args);
+RPCLIB_MSGPACK::object_handle rpc::client::call(std::string const &func_name, Args... args);
 ```
 
 Calls a function with the given name and arguments (if any). 
@@ -82,12 +82,12 @@ Calls a function with the given name and arguments (if any).
 `args` A variable number of arguments to pass to the called function.
 
 ##### Return value
-A msgpack::object containing the result of the function (if any). To obtain a typed value, use the msgpack API.
+A RPCLIB_MSGPACK::object containing the result of the function (if any). To obtain a typed value, use the msgpack API.
 
 
-<h4 id="classrpc_1_1client_1a786fcf533f716b1f75deed60452bb75c" class="doxy">rpc::client::async_call</h4>
+<h4 id="classrpc_1_1client_1a2e3702a314c8c0a00bfac652b82d16cc" class="doxy">rpc::client::async_call</h4>
 ```cpp
-std::future< msgpack::object_handle > rpc::client::async_call(std::string const &func_name, Args...args);
+std::future< RPCLIB_MSGPACK::object_handle > rpc::client::async_call(std::string const &func_name, Args... args);
 ```
 
 Calls a function asynchronously with the given name and arguments. 
@@ -104,12 +104,12 @@ Calls a function asynchronously with the given name and arguments.
 A call is performed asynchronously in the context of the client, i.e. this is not to be confused with parallel execution on the server. This function differs from `call` in that it does not wait for the result of the function. Instead, it returns a std::future that can be used to retrieve the result later.
 
 ##### Return value
-A std::future, possibly holding a future result (which is a msgpack::object). 
+A std::future, possibly holding a future result (which is a RPCLIB_MSGPACK::object). 
 
 
-<h4 id="classrpc_1_1client_1a668d7e045da563fe4855df9c6b7a0737" class="doxy">rpc::client::send</h4>
+<h4 id="classrpc_1_1client_1a5f5ad1d1d0630178a51ae219cd831b44" class="doxy">rpc::client::send</h4>
 ```cpp
-void rpc::client::send(std::string const &func_name, Args...args);
+void rpc::client::send(std::string const &func_name, Args... args);
 ```
 
 Sends a notification with the given name and arguments (if any). 
@@ -128,9 +128,9 @@ Notifications are a special kind of calls. They can be used to notify the server
 !!! warn
     This function returns immediately (possibly before the notification is written to the socket).
 
-<h4 id="classrpc_1_1client_1a109a04851e70742f53549f4039de21a7" class="doxy">rpc::client::get_connection_state</h4>
+<h4 id="classrpc_1_1client_1a710037bce0d9b80127a98eb6cd54caf1" class="doxy">rpc::client::get_connection_state</h4>
 ```cpp
-connection_state rpc::client::get_connection_state() const ;
+connection_state rpc::client::get_connection_state() const;
 ```
 
 Returns the current connection state. 
@@ -160,21 +160,21 @@ This type allows clients to handle arbitrary error objects as the msgpack-rpc sp
 
 | | |
 |---------|-------------|
-| std::string | [get_function_name](#classrpc_1_1rpc__error_1a54f9582763c4efd63d7b85232333cd71)() const 
-| msgpack::object_handle & | [get_error](#classrpc_1_1rpc__error_1a2ba49857c07928d4f436d1bab0444e66)()
+| std::string | [get_function_name](#classrpc_1_1rpc__error_1ac45388bcde0a436b888c907015df01e2)() const
+| RPCLIB_MSGPACK::object_handle & | [get_error](#classrpc_1_1rpc__error_1a88ab8f211393ae62813042a797c08663)()
 
 
-<h4 id="classrpc_1_1rpc__error_1a54f9582763c4efd63d7b85232333cd71" class="doxy">rpc::rpc_error::get_function_name</h4>
+<h4 id="classrpc_1_1rpc__error_1ac45388bcde0a436b888c907015df01e2" class="doxy">rpc::rpc_error::get_function_name</h4>
 ```cpp
-std::string rpc::rpc_error::get_function_name() const ;
+std::string rpc::rpc_error::get_function_name() const;
 ```
 
 Returns the name of the function that was called on the server while the error occurred. 
 
 
-<h4 id="classrpc_1_1rpc__error_1a2ba49857c07928d4f436d1bab0444e66" class="doxy">rpc::rpc_error::get_error</h4>
+<h4 id="classrpc_1_1rpc__error_1a88ab8f211393ae62813042a797c08663" class="doxy">rpc::rpc_error::get_error</h4>
 ```cpp
-msgpack::object_handle & rpc::rpc_error::get_error();
+RPCLIB_MSGPACK::object_handle & rpc::rpc_error::get_error();
 ```
 
 Returns the error object that the server provided. 

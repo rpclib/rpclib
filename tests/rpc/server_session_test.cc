@@ -22,7 +22,7 @@ protected:
 };
 
 TEST_F(server_session_test, consume_big_param) {
-    std::size_t blob_size = 32 << 10;
+    std::size_t blob_size = 2 << 10 << 10;
     for (int i = 0; i < 4; ++i) {
         c.call("consume_big_param", get_blob(blob_size));
         blob_size *= 2;

@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "rpc/config.h"
 #include "rpc/msgpack.hpp"
 
 #include "rpc/detail/util.h"
