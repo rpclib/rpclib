@@ -9,9 +9,7 @@
   * No IDL to learn
   * No code generation step to integrate in your build, just C++
 
-# What does it look like?
-
-Two short examples of the "look&feel" of the library:
+# Look&feel
 
 ## Server
 
