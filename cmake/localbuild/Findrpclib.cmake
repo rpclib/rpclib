@@ -41,4 +41,5 @@ set(RPCLIB_COMPILE_DEFINITIONS
     "RPCLIB_ASIO=clmdep_asio"
     "RPCLIB_FMT=clmdep_fmt"
     "RPCLIB_MSGPACK=clmdep_msgpack"
+    "RPCLIB_CXX_STANDARD=14"
 )
