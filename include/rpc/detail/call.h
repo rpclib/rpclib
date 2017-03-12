@@ -13,7 +13,9 @@ namespace detail {
 
 //! \brief Calls a functor with argument provided directly
 template <typename Functor, typename Arg>
-decltype(auto) call(Functor f, Arg &&arg) {
+auto call(Functor f, Arg &&arg)
+    -> decltype(f(std::forward<Arg>(arg)))
+{
     return f(std::forward<Arg>(arg));
 }
 
@@ -43,10 +45,13 @@ template <size_t N>
 struct call_helper
 {
     template <typename Functor, typename... ArgsT, typename... ArgsF>
-    static decltype(auto) call(
+    static auto call(
             Functor f,
             std::tuple<ArgsT...>& args_t,
             ArgsF&&... args_f)
+    -> decltype(call_helper<N-1>::call(
+                f, args_t, std::get<N-1>(args_t),
+                std::forward<ArgsF>(args_f)...))
     {
         return call_helper<N-1>::call(
                 f,
@@ -61,10 +66,11 @@ template <>
 struct call_helper<0>
 {
     template <typename Functor, typename... ArgsT, typename... ArgsF>
-    static decltype(auto) call(
+    static auto call(
             Functor f,
             std::tuple<ArgsT...>&,
             ArgsF&&... args_f)
+    -> decltype(f(std::forward<ArgsF>(args_f)...))
     {
         return f(std::forward<ArgsF>(args_f)...);
     }
@@ -72,7 +78,9 @@ struct call_helper<0>
 
 //! \brief Calls a functor with arguments provided as a tuple
 template <typename Functor, typename... ArgsT>
-decltype(auto) call(Functor f, std::tuple<ArgsT...>& args_t) {
+auto call(Functor f, std::tuple<ArgsT...>& args_t)
+    -> decltype(call_helper<sizeof...(ArgsT)>::call(f, args_t))
+{
     return call_helper<sizeof...(ArgsT)>::call(f, args_t);
 }
 
