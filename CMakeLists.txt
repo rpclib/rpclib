@@ -18,6 +18,11 @@ option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
 set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
+set(RPCLIB_CXX_STANDARD 14 CACHE STRING "C++ version used to build rpclib (Currently: Only 14 supported)")
+
+if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14)
+    message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
+endif()
 
 ################################################################################
 #
@@ -142,6 +147,7 @@ function(set_rpclib_flags TARGET)
         "RPCLIB_FMT=clmdep_fmt"
         "RPCLIB_MSGPACK=clmdep_msgpack"
         "RPCLIB_DEFAULT_PORT=${RPCLIB_DEFAULT_PORT}"
+        "RPCLIB_CXX_STANDARD=${RPCLIB_CXX_STANDARD}"
         )
 
     if(RPCLIB_ENABLE_LOGGING)
