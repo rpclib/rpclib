@@ -25,7 +25,7 @@ if you are using the library for anything serious. You can also let the world kn
 
 # The MIT License
 
-Copyright (c) 2015-2016, Tamás Szelei
+Copyright (c) 2015-2017, Tamás Szelei
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
