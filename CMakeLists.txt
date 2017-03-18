@@ -17,6 +17,13 @@ option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
+
+################################################################################
+#
+# Other configuration values
+#
+################################################################################
+
 set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
 set(RPCLIB_CXX_STANDARD 11 CACHE STRING "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
 
