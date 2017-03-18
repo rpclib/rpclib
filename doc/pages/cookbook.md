@@ -352,6 +352,29 @@ int main() {
 }
 ```
 
+### Applying a timeout to synchronous calls
+
+```cpp
+#include "rpc/client.h"
+
+int main() {
+    rpc::client c("127.0.0.1", 8080);
+
+    try {
+        // default timeout is 5000 milliseconds
+        const uint64_t short_timeout = 50;
+        client.set_timeout(short_timeout);
+        client.call("sleep", short_timeout + 10);
+    } catch (rpc::timeout &t) {
+        // will display a message like
+        // rpc::timeout: Timeout of 50ms while calling RPC function 'sleep'
+        std::cout << t.what() << std::endl;
+    }
+
+    return 0;
+}
+```
+
 ## Where to go from here
 
 If you want to know even more about `rpclib`, look behind the abstractions in the [Internals](internals.md) chapter which explains the internal workings and design decisions.
