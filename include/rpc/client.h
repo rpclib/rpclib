@@ -92,6 +92,22 @@ public:
     template <typename... Args>
     void send(std::string const &func_name, Args... args);
 
+    //! \brief Returns the timeout setting of this client in milliseconds.
+    //!
+    //! The timeout is applied to synchronous calls. If the timeout expires
+    //! without receiving a response from the server, rpc::timeout exceptio
+    //! will be thrown.
+    //!
+    //! \note The timeout has no effect on async calls. For those,
+    //! the preferred timeout mechanism remains using std::future.
+    //!
+    //! The default value for timeout is 5000ms (5 seconds).
+    uint64_t get_timeout() const;
+
+    //! \brief Sets the timeout for global calls. For more information,
+    //! see client::get_timeout().
+    void set_timeout(uint64_t value);
+
     //! \brief Enum representing the connection states of the client.
     enum class connection_state { initial, connected, disconnected, reset };
 
@@ -113,6 +129,7 @@ private:
               std::shared_ptr<rsp_promise> p);
     void post(RPCLIB_MSGPACK::sbuffer *buffer);
     int get_next_call_idx();
+    void throw_timeout(std::string const& func_name);
 
 private:
     static constexpr double buffer_grow_factor = 1.8;

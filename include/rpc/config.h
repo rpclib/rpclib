@@ -22,4 +22,5 @@ static constexpr std::size_t DEFAULT_BUFFER_SIZE = 1024 << 10;
 #define RPCLIB_MSGPACK clmdep_msgpack
 #endif /* ifndef RPCLIB_MSGPACK */
 
+
 #endif /* end of include guard: CONFIG_H_L7IVDSPZ */

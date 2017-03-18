@@ -1,6 +1,6 @@
 #include "rpc/client.h"
-#include "rpc/rpc_error.h"
 #include "rpc/config.h"
+#include "rpc/rpc_error.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -36,7 +36,8 @@ struct client::impl {
           is_connected_(false),
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
-              &io_, RPCLIB_ASIO::ip::tcp::socket(io_))) {
+              &io_, RPCLIB_ASIO::ip::tcp::socket(io_))),
+          timeout_(5000) {
         pac_.reserve_buffer(default_buffer_size);
     }
 
@@ -70,7 +71,6 @@ struct client::impl {
                     LOG_TRACE("Read chunk of size {}", length);
                     pac_.buffer_consumed(length);
 
-
                     RPCLIB_MSGPACK::unpacked result;
                     while (pac_.next(&result)) {
                         auto r = response(std::move(result));
@@ -78,14 +78,16 @@ struct client::impl {
                         auto &current_call = ongoing_calls_[id];
                         try {
                             if (r.get_error()) {
-                                throw rpc_error(
-                                    "rpc::rpc_error during call",
-                                    std::get<0>(current_call), RPCLIB_MSGPACK::clone(r.get_error()->get()));
+                                throw rpc_error("rpc::rpc_error during call",
+                                                std::get<0>(current_call),
+                                                RPCLIB_MSGPACK::clone(
+                                                    r.get_error()->get()));
                             }
-                            std::get<1>(current_call).set_value(std::move(*r.get_result()));
+                            std::get<1>(current_call)
+                                .set_value(std::move(*r.get_result()));
                         } catch (...) {
-                            std::get<1>(current_call).set_exception(
-                                std::current_exception());
+                            std::get<1>(current_call)
+                                .set_exception(std::current_exception());
                         }
                         strand_.post(
                             [this, id]() { ongoing_calls_.erase(id); });
@@ -107,11 +109,13 @@ struct client::impl {
                 } else if (ec == RPCLIB_ASIO::error::connection_reset) {
                     // Yes, this should be connection_state::reset,
                     // but on windows, disconnection results in reset. May be
-                    // asio bug, may be a windows socket pecularity. Should be investigated later.
+                    // asio bug, may be a windows socket pecularity. Should be
+                    // investigated later.
                     state_ = client::connection_state::disconnected;
                     LOG_WARN("The connection was reset.");
                 } else {
-                    LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
+                    LOG_ERROR("Unhandled error code: {} | '{}'", ec,
+                              ec.message());
                 }
             });
     }
@@ -120,9 +124,12 @@ struct client::impl {
 
     //! \brief Waits for the write queue and writes any buffers to the network
     //! connection. Should be executed throught strand_.
-    void write(RPCLIB_MSGPACK::sbuffer item) { writer_->write(std::move(item)); }
+    void write(RPCLIB_MSGPACK::sbuffer item) {
+        writer_->write(std::move(item));
+    }
 
-    using call_t = std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
+    using call_t =
+        std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
 
     client *parent_;
     RPCLIB_ASIO::io_service io_;
@@ -138,6 +145,7 @@ struct client::impl {
     std::thread io_thread_;
     std::atomic<client::connection_state> state_;
     std::shared_ptr<detail::async_writer> writer_;
+    uint64_t timeout_;
     RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
@@ -188,10 +196,24 @@ client::connection_state client::get_connection_state() const {
     return pimpl->get_connection_state();
 }
 
+uint64_t client::get_timeout() const {
+    return pimpl->timeout_;
+}
+
+void client::set_timeout(uint64_t value) {
+    pimpl->timeout_ = value;
+}
+
 void client::wait_all_responses() {
     for (auto &c : pimpl->ongoing_calls_) {
         c.second.second.get_future().wait();
     }
+}
+
+void client::throw_timeout(std::string const& func_name) {
+    throw rpc::timeout(
+        RPCLIB_FMT::format("Timeout of {}ms while calling RPC function '{}'",
+                           get_timeout(), func_name));
 }
 
 client::~client() {
