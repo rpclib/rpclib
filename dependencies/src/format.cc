@@ -436,7 +436,7 @@ class BasicArgFormatter : public ArgVisitor<Impl, void> {
  protected:
   BasicWriter<Char> &writer() { return writer_; }
   FormatSpec &spec() { return spec_; }
-  
+
   void write(bool value) {
     const char *str_value = value ? "true" : "false";
     Arg::StringValue<char> str = { str_value, strlen(str_value) };
@@ -475,20 +475,20 @@ class BasicArgFormatter : public ArgVisitor<Impl, void> {
     typedef typename BasicWriter<Char>::CharPtr CharPtr;
     Char fill = internal::CharTraits<Char>::cast(spec_.fill());
     CharPtr out = CharPtr();
-    const unsigned CHAR_WIDTH = 1;
-    if (spec_.width_ > CHAR_WIDTH) {
+    const unsigned FMT_CHAR_WIDTH = 1;
+    if (spec_.width_ > FMT_CHAR_WIDTH) {
       out = writer_.grow_buffer(spec_.width_);
       if (spec_.align_ == ALIGN_RIGHT) {
-        std::fill_n(out, spec_.width_ - CHAR_WIDTH, fill);
-        out += spec_.width_ - CHAR_WIDTH;
+        std::fill_n(out, spec_.width_ - FMT_CHAR_WIDTH, fill);
+        out += spec_.width_ - FMT_CHAR_WIDTH;
       } else if (spec_.align_ == ALIGN_CENTER) {
         out = writer_.fill_padding(out, spec_.width_,
-                                   internal::check(CHAR_WIDTH), fill);
+                                   internal::check(FMT_CHAR_WIDTH), fill);
       } else {
-        std::fill_n(out + CHAR_WIDTH, spec_.width_ - CHAR_WIDTH, fill);
+        std::fill_n(out + FMT_CHAR_WIDTH, spec_.width_ - FMT_CHAR_WIDTH, fill);
       }
     } else {
-      out = writer_.grow_buffer(CHAR_WIDTH);
+      out = writer_.grow_buffer(FMT_CHAR_WIDTH);
     }
     *out = internal::CharTraits<Char>::cast(value);
   }
@@ -1184,7 +1184,7 @@ const Char *clmdep_fmt::BasicFormatter<Char>::format(
       spec.fill_ = '0';
       ++s;
     }
-    
+
     // Parse width.
     if ('0' <= *s && *s <= '9') {
       spec.width_ = parse_nonnegative_int(s);
