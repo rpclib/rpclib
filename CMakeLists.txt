@@ -17,6 +17,12 @@ option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
 option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
 option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
+set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
+set(RPCLIB_CXX_STANDARD 11 CACHE STRING "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
+
+if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
+    message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
+endif()
 
 ################################################################################
 #
@@ -75,7 +81,12 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread -std=c++14")
+            -pthread")
+        if(RPCLIB_CXX_STANDARD EQUAL 14)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+        elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+        endif()
 
         if(RPCLIB_FORCE_M32)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
@@ -91,7 +102,12 @@ function(set_rpclib_flags TARGET)
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
-        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread -std=c++14")
+        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
+        if(RPCLIB_CXX_STANDARD EQUAL 14)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+        elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+        endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
@@ -140,6 +156,8 @@ function(set_rpclib_flags TARGET)
         "RPCLIB_ASIO=clmdep_asio"
         "RPCLIB_FMT=clmdep_fmt"
         "RPCLIB_MSGPACK=clmdep_msgpack"
+        "RPCLIB_DEFAULT_PORT=${RPCLIB_DEFAULT_PORT}"
+        "RPCLIB_CXX_STANDARD=${RPCLIB_CXX_STANDARD}"
         )
 
     if(RPCLIB_ENABLE_LOGGING)
@@ -322,6 +340,7 @@ if(RPCLIB_BUILD_EXAMPLES)
     set(RPCLIB_ROOT_DIR "${PROJECT_SOURCE_DIR}")
     set(RPCLIB_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
     set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/localbuild")
+    set(ENV{RPCLIB_DEFAULT_PORT} "${RPCLIB_DEFAULT_PORT}")
     #add_subdirectory(examples/server)
     #add_subdirectory(examples/client)
     add_subdirectory(examples/echo)

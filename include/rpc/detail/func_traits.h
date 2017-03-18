@@ -45,7 +45,7 @@ struct func_traits<R (C::*)(Args...) const> : func_traits<R (*)(Args...)> {};
 template <typename R, typename... Args> struct func_traits<R (*)(Args...)> {
     using result_type = R;
     using arg_count = std::integral_constant<std::size_t, sizeof...(Args)>;
-    using args_type = std::tuple<std::decay_t<Args>...>;
+    using args_type = std::tuple<typename std::decay<Args>::type...>;
 };
 
 template <typename T>

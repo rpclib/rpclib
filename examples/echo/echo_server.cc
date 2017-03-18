@@ -1,7 +1,7 @@
 #include "rpc/server.h"
 
 int main() {
-    rpc::server srv(8080);
+    rpc::server srv(RPCLIB_DEFAULT_PORT);
 
     srv.bind("echo", [](std::string const& s) {
         return s;
