@@ -21,10 +21,12 @@ branches:
     - dev
 
 env:
-  - BUILD_CXX_STANDARD: 11
-  - BUILD_CXX_STANDARD: 14
   global:
     - CI_HOME=`pwd`
+
+env:
+  - BUILD_CXX_STANDARD="11"
+  - BUILD_CXX_STANDARD="14"
 
 addons:
   apt:
