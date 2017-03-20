@@ -1,8 +1,19 @@
-dist: trusty
 language: cpp
+
+os:
+  - linux
+  - osx
+
 compiler:
-  #- clang
+  - clang++
   - g++
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+    - os: osx
+      osx_image: xcode8.2
 
 branches:
   only:
@@ -10,6 +21,8 @@ branches:
     - dev
 
 env:
+  - BUILD_CXX_STANDARD="11"
+  - BUILD_CXX_STANDARD="14"
   global:
     - CI_HOME=`pwd`
 
@@ -17,11 +30,12 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.7
+      - llvm-toolchain-precise
       - george-edison55-precise-backports
     packages:
       - gcc-5
       - g++-5
+      - clang-3.9
       - cmake
       - cmake-data
 
@@ -30,23 +44,13 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
-  - g++-5 --version
-  - gcc-5 --version
   - cd $CI_HOME
-  - git submodule init
-  - git submodule update --init --recursive
-  - mkdir build14 && cd build14
-  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=14 ..
+  - mkdir build && cd build
+  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$BUILD_CXX_STANDARD ..
   - make -j2
-  - cd ..
-  - mkdir build11 && cd build11
-  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=11 ..
-  - make -j2
-  - cd ..
 
 after_success:
-  - ./build14/output/bin/rpc_test
-  - ./build11/output/bin/rpc_test
+  - ./build/output/bin/rpc_test
   - coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5
 
 
