@@ -49,7 +49,10 @@ install:
 script:
   - echo $CXX
   - cd $CI_HOME
-  - mkdir build && cd build
+  - ls
+  - if [ -d build ]; then rm -rf build; fi
+  - mkdir build
+  - cd build
   - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$BUILD_CXX_STANDARD ..
   - make -j2
 
