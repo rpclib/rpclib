@@ -46,6 +46,7 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
+  - echo $CXX
   - cd $CI_HOME
   - mkdir build && cd build
   - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$BUILD_CXX_STANDARD ..
