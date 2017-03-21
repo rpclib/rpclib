@@ -48,8 +48,9 @@ install:
 
 script:
   - echo $CXX
-  - cd $CI_HOME
   - ls
+  - pwd
+  - cd rpclib/rpclib
   - if [ -d build ]; then rm -rf build; fi
   - mkdir build
   - cd build
