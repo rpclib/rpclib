@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - dev
+    - osx_support
 
 env:
   global:
