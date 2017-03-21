@@ -50,7 +50,6 @@ script:
   - echo $CXX
   - ls
   - pwd
-  - cd rpclib/rpclib
   - if [ -d build ]; then rm -rf build; fi
   - mkdir build
   - cd build
