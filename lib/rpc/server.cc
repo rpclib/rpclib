@@ -79,13 +79,14 @@ struct server::impl {
 RPCLIB_CREATE_LOG_CHANNEL(server)
 
 server::server(uint16_t port)
-    : pimpl(this, port), disp_(std::make_shared<dispatcher>()) {
+    : pimpl(new server::impl(this, port)), disp_(std::make_shared<dispatcher>()) {
     LOG_INFO("Created server on localhost:{}", port);
     pimpl->start_accept();
 }
 
 server::server(std::string const &address, uint16_t port)
-    : pimpl(this, address, port), disp_(std::make_shared<dispatcher>()) {
+    : pimpl(new server::impl(this, address, port)),
+    disp_(std::make_shared<dispatcher>()) {
     LOG_INFO("Created server on address {}:{}", address, port);
     pimpl->start_accept();
 }

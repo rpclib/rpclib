@@ -150,7 +150,7 @@ struct client::impl {
 };
 
 client::client(std::string const &addr, uint16_t port)
-    : pimpl(this, addr, port) {
+    : pimpl(new client::impl(this, addr, port)) {
     tcp::resolver resolver(pimpl->io_);
     auto endpoint_it =
         resolver.resolve({pimpl->addr_, std::to_string(pimpl->port_)});
@@ -210,7 +210,7 @@ void client::wait_all_responses() {
     }
 }
 
-void client::throw_timeout(std::string const& func_name) {
+RPCLIB_NORETURN void client::throw_timeout(std::string const& func_name) {
     throw rpc::timeout(
         RPCLIB_FMT::format("Timeout of {}ms while calling RPC function '{}'",
                            get_timeout(), func_name));

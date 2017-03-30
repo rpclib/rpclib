@@ -1,6 +1,7 @@
 #pragma once
 
 #include <future>
+#include <memory>
 
 #include "rpc/config.h"
 #include "rpc/detail/log.h"
@@ -129,11 +130,11 @@ private:
               std::shared_ptr<rsp_promise> p);
     void post(RPCLIB_MSGPACK::sbuffer *buffer);
     int get_next_call_idx();
-    void throw_timeout(std::string const& func_name);
+    RPCLIB_NORETURN void throw_timeout(std::string const& func_name);
 
 private:
     static constexpr double buffer_grow_factor = 1.8;
-    RPCLIB_DECL_PIMPL(768)
+    RPCLIB_DECLARE_PIMPL()
 };
 }
 
