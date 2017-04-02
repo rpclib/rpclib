@@ -11,7 +11,7 @@
 
 using namespace rpc::testutils;
 
-const uint16_t test_port = 8080;
+static RPCLIB_CONSTEXPR uint16_t test_port = rpc::constants::DEFAULT_PORT;
 
 class this_handler_test : public testing::Test {
 public:
@@ -79,21 +79,19 @@ TEST_F(this_handler_test, set_special_response) {
 }
 
 TEST_F(this_handler_test, disable_response) {
-    using namespace std::chrono_literals;
     s.bind("noresp", []() { rpc::this_handler().disable_response(); });
     s.async_run();
 
     rpc::client c("127.0.0.1", test_port);
     auto f = c.async_call("noresp");
-    EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
+    EXPECT_EQ(f.wait_for(std::chrono::milliseconds(50)), std::future_status::timeout);
 }
 
 TEST_F(this_handler_test, enable_response) {
-    using namespace std::chrono_literals;
     s.bind("noresp", []() { rpc::this_handler().disable_response(); });
     s.async_run();
 
     rpc::client c("127.0.0.1", test_port);
     auto f = c.async_call("noresp");
-    EXPECT_EQ(f.wait_for(50ms), std::future_status::timeout);
+    EXPECT_EQ(f.wait_for(std::chrono::milliseconds(50)), std::future_status::timeout);
 }

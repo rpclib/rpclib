@@ -20,6 +20,20 @@ option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF
 
 ################################################################################
 #
+# Other configuration values
+#
+################################################################################
+
+set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
+set(RPCLIB_DEFAULT_BUFFER_SIZE "1024 << 10" CACHE STRING "Default buffer size")
+set(RPCLIB_CXX_STANDARD 11 CACHE STRING "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
+
+if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
+    message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
+endif()
+
+################################################################################
+#
 # Compile & install the library
 #
 ################################################################################
@@ -75,7 +89,12 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread -std=c++14")
+            -pthread")
+        if(RPCLIB_CXX_STANDARD EQUAL 14)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+        elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+        endif()
 
         if(RPCLIB_FORCE_M32)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
@@ -91,7 +110,12 @@ function(set_rpclib_flags TARGET)
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
-        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread -std=c++14")
+        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
+        if(RPCLIB_CXX_STANDARD EQUAL 14)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+        elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+        endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
@@ -176,6 +200,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 configure_file(
     "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
     "${PROJECT_BINARY_DIR}/version.h")
+
+configure_file(
+    "${PROJECT_SOURCE_DIR}/include/rpc/config.h.in"
+    "${PROJECT_BINARY_DIR}/config.h")
 
 include_directories(include)
 include_directories(include/rpc)
@@ -322,6 +350,7 @@ if(RPCLIB_BUILD_EXAMPLES)
     set(RPCLIB_ROOT_DIR "${PROJECT_SOURCE_DIR}")
     set(RPCLIB_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
     set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/localbuild")
+    set(ENV{RPCLIB_DEFAULT_PORT} "${RPCLIB_DEFAULT_PORT}")
     #add_subdirectory(examples/server)
     #add_subdirectory(examples/client)
     add_subdirectory(examples/echo)

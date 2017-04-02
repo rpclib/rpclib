@@ -4,7 +4,7 @@
 #include "rpc/rpc_error.h"
 
 int main() {
-    rpc::client c("localhost", 8080);
+    rpc::client c("localhost", rpc::constants::DEFAULT_PORT);
 
     try {
         std::cout << "add(2, 3) = ";

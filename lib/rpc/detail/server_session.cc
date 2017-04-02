@@ -11,7 +11,7 @@
 namespace rpc {
 namespace detail {
 
-static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
+static constexpr std::size_t default_buffer_size = rpc::constants::DEFAULT_BUFFER_SIZE;
 
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
                                RPCLIB_ASIO::ip::tcp::socket socket,
@@ -53,9 +53,9 @@ void server_session::do_read() {
                     output_buf_.clear();
 
                     // any worker thread can take this call
+                    auto z = std::shared_ptr<RPCLIB_MSGPACK::zone>(result.zone().release());
                     io_->post([
-                        this, msg, z = std::shared_ptr<RPCLIB_MSGPACK::zone>(
-                                       result.zone().release())
+                        this, msg, z
                     ]() {
                         this_handler().clear();
                         this_session().clear();

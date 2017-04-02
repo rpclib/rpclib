@@ -10,8 +10,8 @@ void bad(int x) {
 }
 
 int main() {
-    // Create a server that listens on port 8080
-    rpc::server srv("0.0.0.0", 8080);
+    // Create a server that listens on port 8080, or whatever the user selected
+    rpc::server srv("0.0.0.0", rpc::constants::DEFAULT_PORT);
 
     // Binding the name "foo" to free function foo.
     // note: the signature is automatically captured

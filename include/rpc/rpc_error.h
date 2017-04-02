@@ -34,6 +34,18 @@ private:
     std::string func_name_;
     RPCLIB_MSGPACK::object_handle ob_h_;
 };
+
+class timeout : public std::runtime_error {
+public:
+    const char *what() const noexcept override;
+
+private:
+    friend class client;
+    explicit timeout(std::string const &what_arg);
+    std::string formatted;
+};
+
 } /* rpc */
+
 
 #endif /* end of include guard: RPC_ERROR_H_NEOOSTKY */

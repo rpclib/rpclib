@@ -8,6 +8,7 @@ branches:
   only:
     - master
     - dev
+    - osx_support
 
 env:
   global:
@@ -35,13 +36,18 @@ script:
   - cd $CI_HOME
   - git submodule init
   - git submodule update --init --recursive
-  - mkdir build && cd build
-  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON ..
+  - mkdir build14 && cd build14
+  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=14 ..
   - make -j2
+  - cd ..
+  - mkdir build11 && cd build11
+  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=11 ..
+  - make -j2
+  - cd ..
 
 after_success:
-  - ./output/bin/rpc_test
-  - cd ..
+  - ./build14/output/bin/rpc_test
+  - ./build11/output/bin/rpc_test
   - coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5
 
 

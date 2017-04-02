@@ -16,7 +16,7 @@ public:
     }
 
 protected:
-    static const int test_port = 8080;
+    static const int test_port = rpc::constants::DEFAULT_PORT;
     rpc::server s;
     rpc::client c;
 };
