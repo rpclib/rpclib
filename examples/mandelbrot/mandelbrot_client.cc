@@ -8,7 +8,7 @@
 int main() {
     const int width = 1024, height = 768;
 
-    rpc::client c("127.0.0.1", RPCLIB_DEFAULT_PORT);
+    rpc::client c("127.0.0.1", rpc::constants::DEFAULT_PORT);
 
     std::cout << "Calling get_mandelbrot asynchronically" << std::endl;
     auto result_obj = c.async_call("get_mandelbrot", width, height);

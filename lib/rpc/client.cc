@@ -23,7 +23,7 @@ using namespace rpc::detail;
 
 namespace rpc {
 
-static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
+static constexpr uint32_t default_buffer_size = rpc::constants::DEFAULT_BUFFER_SIZE;
 
 struct client::impl {
     impl(client *parent, std::string const &addr, uint16_t port)

@@ -11,7 +11,7 @@
 namespace rpc {
 namespace detail {
 
-static constexpr uint32_t default_buffer_size = DEFAULT_BUFFER_SIZE;
+static constexpr std::size_t default_buffer_size = rpc::constants::DEFAULT_BUFFER_SIZE;
 
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
                                RPCLIB_ASIO::ip::tcp::socket socket,

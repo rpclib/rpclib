@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-    rpc::client c("localhost", RPCLIB_DEFAULT_PORT);
+    rpc::client c("localhost", rpc::constants::DEFAULT_PORT);
 
     std::string text;
     while (std::getline(std::cin, text)) {

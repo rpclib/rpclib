@@ -25,6 +25,7 @@ option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF
 ################################################################################
 
 set(RPCLIB_DEFAULT_PORT 8080 CACHE STRING "Default port used for running tests and examples")
+set(RPCLIB_DEFAULT_BUFFER_SIZE "1024 << 10" CACHE STRING "Default buffer size")
 set(RPCLIB_CXX_STANDARD 11 CACHE STRING "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
 
 if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
@@ -163,8 +164,6 @@ function(set_rpclib_flags TARGET)
         "RPCLIB_ASIO=clmdep_asio"
         "RPCLIB_FMT=clmdep_fmt"
         "RPCLIB_MSGPACK=clmdep_msgpack"
-        "RPCLIB_DEFAULT_PORT=${RPCLIB_DEFAULT_PORT}"
-        "RPCLIB_CXX_STANDARD=${RPCLIB_CXX_STANDARD}"
         )
 
     if(RPCLIB_ENABLE_LOGGING)
@@ -201,6 +200,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 configure_file(
     "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
     "${PROJECT_BINARY_DIR}/version.h")
+
+configure_file(
+    "${PROJECT_SOURCE_DIR}/include/rpc/config.h.in"
+    "${PROJECT_BINARY_DIR}/config.h")
 
 include_directories(include)
 include_directories(include/rpc)

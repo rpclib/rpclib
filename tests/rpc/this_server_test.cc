@@ -9,7 +9,7 @@
 using namespace rpc::testutils;
 using namespace rpc;
 
-const uint16_t test_port = RPCLIB_DEFAULT_PORT;
+static RPCLIB_CONSTEXPR uint16_t test_port = rpc::constants::DEFAULT_PORT;
 
 class this_server_test : public testing::Test {
 public:

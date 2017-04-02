@@ -4,7 +4,6 @@
 #define CONFIG_H_L7IVDSPZ
 
 #include <cstddef>
-#include <cstdint>
 
 #include "rpc/compatibility.h"
 
@@ -13,8 +12,8 @@ namespace rpc
 
 //! \brief
 struct constants RPCLIB_FINAL {
-    static RPCLIB_CONSTEXPR std::size_t DEFAULT_BUFFER_SIZE = 1024 << 10;
-    static RPCLIB_CONSTEXPR std::uint16_t DEFAULT_PORT = 8080;
+    static RPCLIB_CONSTEXPR std::size_t DEFAULT_BUFFER_SIZE = @RPCLIB_DEFAULT_BUFFER_SIZE@;
+    static RPCLIB_CONSTEXPR std::uint16_t DEFAULT_PORT = @RPCLIB_DEFAULT_PORT@;
 };
 
 } /* rpc */
@@ -29,6 +28,6 @@ struct constants RPCLIB_FINAL {
 #define RPCLIB_MSGPACK clmdep_msgpack
 #endif /* ifndef RPCLIB_MSGPACK */
 
-#define RPCLIB_CXX_STANDARD 11
+#define RPCLIB_CXX_STANDARD @RPCLIB_CXX_STANDARD@
 
 #endif /* end of include guard: CONFIG_H_L7IVDSPZ */

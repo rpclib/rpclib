@@ -16,7 +16,7 @@ public:
     }
 
 protected:
-    static const int test_port = RPCLIB_DEFAULT_PORT;
+    static const int test_port = rpc::constants::DEFAULT_PORT;
     rpc::server s;
     rpc::client c;
 };

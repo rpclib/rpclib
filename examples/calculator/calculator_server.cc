@@ -24,7 +24,7 @@ struct multiplier {
 };
 
 int main() {
-    rpc::server srv(RPCLIB_DEFAULT_PORT);
+    rpc::server srv(rpc::constants::DEFAULT_PORT);
     subtractor s;
     multiplier m;
 
