@@ -16,14 +16,14 @@ pages:
   - 'Contributing': 'contributing.md'
   - 'Reference': 'reference.md'
 
-theme_dir: rpclib-cinder
-extra_css: ['extra.css']
+theme: material
 
 markdown_extensions:
   - toc:
       permalink: False
-      baselevel: 1
+      baselevel: 2
   - admonition
   - attr_list
+  - codehilite
 
 copyright: "Copyright &copy; 2016 Tamás Szelei"

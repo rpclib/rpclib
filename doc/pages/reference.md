@@ -35,6 +35,8 @@ Use this class to connect to msgpack-rpc servers and call their exposed function
 | RPCLIB_MSGPACK::object_handle | [call](#classrpc_1_1client_1aedc166b5a80820be198ef134f522b049)(std::string const &func_name, Args... args)
 | std::future< RPCLIB_MSGPACK::object_handle > | [async_call](#classrpc_1_1client_1a2e3702a314c8c0a00bfac652b82d16cc)(std::string const &func_name, Args... args)
 | void | [send](#classrpc_1_1client_1a5f5ad1d1d0630178a51ae219cd831b44)(std::string const &func_name, Args... args)
+| uint64_t | [get_timeout](#classrpc_1_1client_1a7976c427e3e0a87a15931737df624712)() const
+| void | [set_timeout](#classrpc_1_1client_1adc950350ae3c955c38fe18d16a6fd6af)(uint64_t value)
 | connection_state | [get_connection_state](#classrpc_1_1client_1a710037bce0d9b80127a98eb6cd54caf1)() const
 | void | [wait_all_responses](#classrpc_1_1client_1ac37437bc05b70588c079079b957eb15f)()
 
@@ -127,6 +129,27 @@ Notifications are a special kind of calls. They can be used to notify the server
 
 !!! warn
     This function returns immediately (possibly before the notification is written to the socket).
+
+<h4 id="classrpc_1_1client_1a7976c427e3e0a87a15931737df624712" class="doxy">rpc::client::get_timeout</h4>
+```cpp
+uint64_t rpc::client::get_timeout() const;
+```
+
+Returns the timeout setting of this client in milliseconds. 
+
+##### Details
+The timeout is applied to synchronous calls. If the timeout expires without receiving a response from the server, 
+
+!!! warn
+    The timeout has no effect on async calls. For those, the preferred timeout mechanism remains using std::future.
+
+<h4 id="classrpc_1_1client_1adc950350ae3c955c38fe18d16a6fd6af" class="doxy">rpc::client::set_timeout</h4>
+```cpp
+void rpc::client::set_timeout(uint64_t value);
+```
+
+Sets the timeout for global calls. For more information, see 
+
 
 <h4 id="classrpc_1_1client_1a710037bce0d9b80127a98eb6cd54caf1" class="doxy">rpc::client::get_connection_state</h4>
 ```cpp
@@ -455,5 +478,32 @@ Gracefully exits the session (i.e. ongoing writes and reads are completed; queue
 
 !!! warn
     Use this function if you need to close the connection from a handler. 
+
+
+## rpc::timeout
+
+```cpp
+#include ""
+```
+### Description
+
+
+
+
+
+### Public functions
+
+| | |
+|---------|-------------|
+| const char * | [what](#classrpc_1_1timeout_1ad782f083798c650188b5927a226c3b04)() const noexcept override
+
+
+<h4 id="classrpc_1_1timeout_1ad782f083798c650188b5927a226c3b04" class="doxy">rpc::timeout::what</h4>
+```cpp
+const char * rpc::timeout::what() const noexcept override;
+```
+
+
+
 
 

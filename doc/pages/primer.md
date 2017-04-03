@@ -1,5 +1,3 @@
-# Primer
-
 Welcome to the Primer! This document is a tutorial introduction to `rpclib` for absolute beginners. If you are new to the library and prefer detailed instructions and explanation, you are in the right place. If short examples with less explanation work better for you, you might want to check out the [Cookbook](cookbook.md)!
 
 The tutorial is sturctured as follows: in the first part, writing servers is explained with one simple and one more advanced example.  In the second part, the corresponding clients are implemented.
@@ -28,7 +26,7 @@ applications will be implemented step-by-step.
 
 Our first server application will expose four functions: `add`, `subtract`, `multiply`, `divide`. For the sake of this example, the functions are implemented as various callable entities.
 
-```cpp
+``` cpp
 #include "rpc/server.h"
 
 double divide(double a, double b) { return a / b; }
