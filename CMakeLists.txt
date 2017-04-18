@@ -40,9 +40,9 @@ endif()
 
 include(TargetArch)
 
-set(RPCLIB_VERSION_MAJOR 1)
+set(RPCLIB_VERSION_MAJOR 2)
 set(RPCLIB_VERSION_MINOR 0)
-set(RPCLIB_VERSION_PATCH 0)
+set(RPCLIB_VERSION_PATCH 1)
 
 target_architecture(TARGET_ARCH)
 
@@ -204,6 +204,10 @@ configure_file(
 configure_file(
     "${PROJECT_SOURCE_DIR}/include/rpc/config.h.in"
     "${PROJECT_BINARY_DIR}/config.h")
+
+configure_file(
+    "${PROJECT_SOURCE_DIR}/doc/pages/versions.md.in"
+    "${PROJECT_SOURCE_DIR}/doc/pages/versions.md")
 
 include_directories(include)
 include_directories(include/rpc)
