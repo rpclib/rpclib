@@ -1,5 +1,19 @@
 # Changelog
 
+### 2.0.1
+
+This is minor release that does not affect the library itself, just the version
+number constants that were forgot in 2.0.0. The documentation has some minor updates
+and a huge change in looks.
+
+Released on 2017-04-19.
+
+Changes since 2.0.0:
+
+  * Bumped version number
+  * Updated documentation looks
+
+
 ### 2.0.0
 
 This is an interface-breaking release (hence the major version number increase).
