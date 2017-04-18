@@ -1,5 +1,3 @@
-# Internals
-
 This chapter describes the internal design of `rpclib` and provides some insight into the
 engineering tradeoffs considered.
 

@@ -8,8 +8,6 @@
         width: 230px;
     }​
 </style>
-# Reference
-
 This document is a detailed and (hopefully) complete reference of the public interface of `rpclib`.
 For a tutorial, take a look at the [Primer](primer.md). Also, you can find many examples in the [Cookbook](cookbook.md).
 

@@ -1,5 +1,3 @@
-# Compiling `rpclib`
-
 Compiling `rpclib` is a fairly normal and unsurprising experience if you have used cmake-based projects. This document details the advanced building options as well as building the documentation which you might find useful if you want to reproduce everything locally.
 
 ## Default configuration

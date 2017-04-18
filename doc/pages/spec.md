@@ -1,7 +1,7 @@
 # MessagePack-RPC Protocol specification
 
 This specification was copied from https://github.com/msgpack-rpc/msgpack-rpc/blob/master/spec.md
-(without the "sales pitch" part). Also slightly edited to make things clearer and clean up typos.
+(without the "sales pitch" part).
 
 The protocol consists of a request message and the corresponding response message or a notification message (without a response). The server must send a response message in reply with the request message.
 

@@ -1,5 +1,3 @@
-# Roadmap
-
 This chapter is about features that are planned in the upcoming versions of `rpclib`. Keep in mind
 that this serves merely as a draft of current ideas; something being here is not guaranteed to ever
 be implmented; and anything that's *not* here can be implemented at any time.

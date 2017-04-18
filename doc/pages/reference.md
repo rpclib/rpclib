@@ -8,8 +8,6 @@
         width: 230px;
     }​
 </style>
-# Reference
-
 This document is a detailed and (hopefully) complete reference of the public interface of `rpclib`.
 For a tutorial, take a look at the [Primer](primer.md). Also, you can find many examples in the [Cookbook](cookbook.md).
 
@@ -148,7 +146,7 @@ The timeout is applied to synchronous calls. If the timeout expires without rece
 void rpc::client::set_timeout(uint64_t value);
 ```
 
-Sets the timeout for global calls. For more information, see 
+Sets the timeout for synchronous calls. For more information, see 
 
 
 <h4 id="classrpc_1_1client_1a710037bce0d9b80127a98eb6cd54caf1" class="doxy">rpc::client::get_connection_state</h4>

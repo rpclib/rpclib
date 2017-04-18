@@ -1,5 +1,3 @@
-# Contributing
-
 This project is MIT-licensed and the development is open. All contributions are welcome. This
 document provides information on why, how and what to contribute.
 

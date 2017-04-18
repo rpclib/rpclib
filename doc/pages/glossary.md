@@ -1,5 +1,3 @@
-# Glossary
-
 This is a collection of terms used in the documentation and API of rpclib.
 
 ### Server
