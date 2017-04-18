@@ -1,7 +1,10 @@
 UTILS=../utils
 DDIR=doxygen/xml
 
-all: reference.md
+all: mkdocs
+
+mkdocs: reference.md
+	docker run --rm -it -v `pwd`:/docs squidfunk/mkdocs-material build
 
 $(DDIR)/index.xml: Doxyfile $(wildcard ../include/rpc/*.h)
 	doxygen Doxyfile
