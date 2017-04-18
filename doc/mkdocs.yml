@@ -25,5 +25,9 @@ markdown_extensions:
   - admonition
   - attr_list
   - codehilite
+  - pymdownx.magiclink
 
 copyright: "Copyright &copy; 2016 Tamás Szelei"
+
+extra_css:
+  - 'extra.css'
