@@ -15,6 +15,7 @@ pages:
     - 'Roadmap': 'roadmap.md'
   - 'Contributing': 'contributing.md'
   - 'Reference': 'reference.md'
+  - 'Versions': 'versions.md'
 
 theme: material
 
