@@ -10,6 +10,9 @@
 
 namespace rpc {
 
+template <typename>
+class function_proxy;
+
 //! \brief Implements a client that connects to a msgpack-rpc server and is
 //! able to call functions synchronously or asynchronously. This is the main
 //! interfacing point for implementing client applications.
@@ -77,6 +80,13 @@ public:
     template <typename... Args>
     std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name,
                                                    Args... args);
+
+    //! \brief Returns a proxy object representing the function for later calls
+    //!
+    //! \param func_name The name of the function to call.
+    //!
+    //! \returns A proxy object repsenting the function
+    function_proxy<client> get_function(std::string const &func_name);
 
     //! \brief Sends a notification with the given name and arguments (if any).
     //!

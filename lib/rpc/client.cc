@@ -17,6 +17,8 @@
 #include "rpc/detail/dev_utils.h"
 #include "rpc/detail/response.h"
 
+#include "rpc/function_proxy.h"
+
 using namespace RPCLIB_ASIO;
 using RPCLIB_ASIO::ip::tcp;
 using namespace rpc::detail;
@@ -220,4 +222,10 @@ client::~client() {
     pimpl->io_.stop();
     pimpl->io_thread_.join();
 }
+
+function_proxy<client> client::get_function(std::string const &func_name)
+{
+    return { func_name, this };
+}
+
 }
