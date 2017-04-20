@@ -32,3 +32,6 @@ copyright: "Copyright &copy; 2016 Tamás Szelei"
 
 extra_css:
   - 'extra.css'
+
+repo_name: 'rpclib/rpclib'
+repo_url: 'https://github.com/rpclib/rpclib'
