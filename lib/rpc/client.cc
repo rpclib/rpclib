@@ -165,8 +165,13 @@ client::client(std::string const &addr, uint16_t port)
 
 void client::wait_conn() {
     std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
+
     if (!pimpl->is_connected_) {
-        pimpl->conn_finished_.wait(lock);
+        auto timeout2=std::chrono::milliseconds(pimpl->timeout_);
+        auto result=pimpl->conn_finished_.wait_for(lock, timeout2);
+        if(result == std::cv_status::timeout){
+          throw_timeout("rpc::client::wait_conn timed out");
+        }
     }
 }
 
