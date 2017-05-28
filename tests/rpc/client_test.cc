@@ -67,17 +67,16 @@ TEST_F(client_test, large_return) {
 
 TEST_F(client_test, timeout_setting_works) {
     rpc::client client("127.0.0.1", test_port);
-    const uint64_t default_timeout = 5000;
-    EXPECT_EQ(client.get_timeout(), default_timeout);
+    EXPECT_FALSE(client.get_timeout());
 
     const uint64_t short_timeout = 50;
     client.set_timeout(short_timeout);
 
-    EXPECT_EQ(client.get_timeout(), short_timeout);
+    EXPECT_EQ(*client.get_timeout(), short_timeout);
     EXPECT_THROW(client.call("sleep", short_timeout + 1), rpc::timeout);
 
     client.set_timeout(short_timeout * 2);
-    EXPECT_EQ(client.get_timeout(), short_timeout * 2);
+    EXPECT_EQ(*client.get_timeout(), short_timeout * 2);
     EXPECT_NO_THROW(client.call("sleep", short_timeout + 1));
 }
 
@@ -91,7 +90,14 @@ TEST_F(client_test, timeout_right_msg) {
     } catch (rpc::timeout &t) {
         auto expected_msg = RPCLIB_FMT::format(
             "rpc::timeout: Timeout of {}ms while calling RPC function '{}'",
-            client.get_timeout(), "sleep");
+            *client.get_timeout(), "sleep");
         EXPECT_TRUE(str_match(t.what(), expected_msg));
     }
+}
+
+TEST(client_test2, timeout_while_connection) {
+    rpc::client client("localhost", rpc::constants::DEFAULT_PORT);
+    client.set_timeout(50);
+    // this client never connects, so this tests the timout in wait_conn()
+    EXPECT_THROW(client.call("whatev"), rpc::timeout);
 }
