@@ -1,17 +1,18 @@
 #include "rpc/detail/server_session.h"
 
+#include "rpc/config.h"
 #include "rpc/server.h"
 #include "rpc/this_handler.h"
 #include "rpc/this_server.h"
 #include "rpc/this_session.h"
-#include "rpc/config.h"
 
 #include "rpc/detail/log.h"
 
 namespace rpc {
 namespace detail {
 
-static constexpr std::size_t default_buffer_size = rpc::constants::DEFAULT_BUFFER_SIZE;
+static constexpr std::size_t default_buffer_size =
+    rpc::constants::DEFAULT_BUFFER_SIZE;
 
 server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
                                RPCLIB_ASIO::ip::tcp::socket socket,
@@ -33,11 +34,14 @@ void server_session::start() { do_read(); }
 void server_session::close() {
     LOG_INFO("Closing session.");
     exit_ = true;
-    write_strand_.post([this]() { socket_.close(); });
+    write_strand_.post([this]() {
+        socket_.close();
+        parent_->close_session(shared_from_base<server_session>());
+    });
 }
 
 void server_session::do_read() {
-    auto self(shared_from_this());
+    auto self(shared_from_base<server_session>());
     constexpr std::size_t max_read_bytes = default_buffer_size;
     socket_.async_read_some(
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
@@ -53,10 +57,9 @@ void server_session::do_read() {
                     output_buf_.clear();
 
                     // any worker thread can take this call
-                    auto z = std::shared_ptr<RPCLIB_MSGPACK::zone>(result.zone().release());
-                    io_->post([
-                        this, msg, z
-                    ]() {
+                    auto z = std::shared_ptr<RPCLIB_MSGPACK::zone>(
+                        result.zone().release());
+                    io_->post([this, msg, z]() {
                         this_handler().clear();
                         this_session().clear();
                         this_server().cancel_stop();
@@ -124,6 +127,12 @@ void server_session::do_read() {
                     }
                     do_read();
                 }
+            } else if (ec == RPCLIB_ASIO::error::eof ||
+                       ec == RPCLIB_ASIO::error::connection_reset) {
+                LOG_INFO("Client disconnected");
+                self->close();
+            } else {
+                LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
             }
         }));
     if (exit_) {

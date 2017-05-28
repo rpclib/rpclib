@@ -114,4 +114,11 @@ void server::stop() { pimpl->stop(); }
 
 void server::close_sessions() { pimpl->close_sessions(); }
 
+void server::close_session(std::shared_ptr<detail::server_session> const &s) {
+  auto it = std::find(begin(pimpl->sessions_), end(pimpl->sessions_), s);
+  if (it != end(pimpl->sessions_)) {
+    pimpl->sessions_.erase(it);
+  }
+}
+
 } /* rpc */

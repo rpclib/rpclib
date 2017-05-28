@@ -68,6 +68,12 @@ public:
     friend class rpc::client;
 
 protected:
+    template <typename Derived>
+    std::shared_ptr<Derived> shared_from_base() {
+        return std::static_pointer_cast<Derived>(shared_from_this());
+    }
+
+protected:
     RPCLIB_ASIO::ip::tcp::socket socket_;
     RPCLIB_ASIO::strand write_strand_;
     std::atomic_bool exit_{false};

@@ -95,7 +95,11 @@ public:
     friend class detail::server_session;
 
 private:
-	RPCLIB_DECLARE_PIMPL()
+    //! \brief Closes a specific session.
+    void close_session(std::shared_ptr<detail::server_session> const& s);
+
+private:
+	  RPCLIB_DECLARE_PIMPL()
     std::shared_ptr<detail::dispatcher> disp_;
 };
 
