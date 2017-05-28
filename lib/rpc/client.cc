@@ -37,7 +37,7 @@ struct client::impl {
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
               &io_, RPCLIB_ASIO::ip::tcp::socket(io_))),
-          timeout_(5000) {
+          timeout_(nonstd::nullopt) {
         pac_.reserve_buffer(default_buffer_size);
     }
 
@@ -145,7 +145,7 @@ struct client::impl {
     std::thread io_thread_;
     std::atomic<client::connection_state> state_;
     std::shared_ptr<detail::async_writer> writer_;
-    uint64_t timeout_;
+    nonstd::optional<int64_t> timeout_;
     RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
@@ -166,7 +166,17 @@ client::client(std::string const &addr, uint16_t port)
 void client::wait_conn() {
     std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
     if (!pimpl->is_connected_) {
-        pimpl->conn_finished_.wait(lock);
+        if (auto timeout = pimpl->timeout_) {
+            auto result = pimpl->conn_finished_.wait_for(
+                lock, std::chrono::milliseconds(*timeout));
+            if (result == std::cv_status::timeout) {
+                throw rpc::timeout(RPCLIB_FMT::format(
+                    "Timeout of {}ms while connecting to {}:{}", *get_timeout(),
+                    pimpl->addr_, pimpl->port_));
+            }
+        } else {
+            pimpl->conn_finished_.wait(lock);
+        }
     }
 }
 
@@ -196,11 +206,11 @@ client::connection_state client::get_connection_state() const {
     return pimpl->get_connection_state();
 }
 
-uint64_t client::get_timeout() const {
+nonstd::optional<int64_t> client::get_timeout() const {
     return pimpl->timeout_;
 }
 
-void client::set_timeout(uint64_t value) {
+void client::set_timeout(int64_t value) {
     pimpl->timeout_ = value;
 }
 
@@ -213,11 +223,12 @@ void client::wait_all_responses() {
 RPCLIB_NORETURN void client::throw_timeout(std::string const& func_name) {
     throw rpc::timeout(
         RPCLIB_FMT::format("Timeout of {}ms while calling RPC function '{}'",
-                           get_timeout(), func_name));
+                           *get_timeout(), func_name));
 }
 
 client::~client() {
     pimpl->io_.stop();
     pimpl->io_thread_.join();
 }
+
 }

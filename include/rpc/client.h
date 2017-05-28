@@ -3,6 +3,8 @@
 #include <future>
 #include <memory>
 
+#include "nonstd/optional.hpp"
+
 #include "rpc/config.h"
 #include "rpc/detail/log.h"
 #include "rpc/detail/pimpl.h"
@@ -96,18 +98,18 @@ public:
     //! \brief Returns the timeout setting of this client in milliseconds.
     //!
     //! The timeout is applied to synchronous calls. If the timeout expires
-    //! without receiving a response from the server, rpc::timeout exceptio
+    //! without receiving a response from the server, rpc::timeout exception
     //! will be thrown.
     //!
     //! \note The timeout has no effect on async calls. For those,
     //! the preferred timeout mechanism remains using std::future.
     //!
     //! The default value for timeout is 5000ms (5 seconds).
-    uint64_t get_timeout() const;
+    nonstd::optional<int64_t> get_timeout() const;
 
     //! \brief Sets the timeout for synchronous calls. For more information,
     //! see client::get_timeout().
-    void set_timeout(uint64_t value);
+    void set_timeout(int64_t value);
 
     //! \brief Enum representing the connection states of the client.
     enum class connection_state { initial, connected, disconnected, reset };
