@@ -126,7 +126,7 @@ void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
             client_error::code::wrong_arity,
             RPCLIB_FMT::format(
                 "Function '{0}' was called with an invalid number of "
-                "arguments. Expected: {1}, got: {2}",
+                "arguments. Expected: {2}, got: {1}",
                 func, expected, found));
     }
 }
