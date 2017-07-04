@@ -24,17 +24,25 @@ namespace rpc {
 struct server::impl {
     impl(server *parent, std::string const &address, uint16_t port)
         : parent_(parent),
-          io_(),
-          acceptor_(io_,
+          io_(std::make_shared<io_service>()),
+          acceptor_(*io_,
                     tcp::endpoint(ip::address::from_string(address), port)),
-          socket_(io_),
+          socket_(*io_),
           suppress_exceptions_(false) {}
 
     impl(server *parent, uint16_t port)
         : parent_(parent),
-          io_(),
-          acceptor_(io_, tcp::endpoint(tcp::v4(), port)),
-          socket_(io_),
+          io_(std::make_shared<io_service>()),
+          acceptor_(*io_, tcp::endpoint(tcp::v4(), port)),
+          socket_(*io_),
+          suppress_exceptions_(false) {}
+
+    impl(std::shared_ptr<io_service> io, server *parent, std::string const &address, uint16_t port)
+        : parent_(parent),
+          io_(std::move(io)),
+          acceptor_(*io_,
+                    tcp::endpoint(ip::address::from_string(address), port)),
+          socket_(*io_),
           suppress_exceptions_(false) {}
 
     void start_accept() {
@@ -42,7 +50,7 @@ struct server::impl {
             if (!ec) {
                 LOG_INFO("Accepted connection.");
                 auto s = std::make_shared<server_session>(
-                    parent_, &io_, std::move(socket_), parent_->disp_,
+                    parent_, io_.get(), std::move(socket_), parent_->disp_,
                     suppress_exceptions_);
                 s->start();
                 sessions_.push_back(s);
@@ -62,12 +70,12 @@ struct server::impl {
     }
 
     void stop() {
-        io_.stop();
+        io_->stop();
         loop_workers_.join_all();
     }
 
     server *parent_;
-    io_service io_;
+    std::shared_ptr<io_service> io_;
     ip::tcp::acceptor acceptor_;
     ip::tcp::socket socket_;
     rpc::detail::thread_group loop_workers_;
@@ -91,6 +99,14 @@ server::server(std::string const &address, uint16_t port)
     pimpl->start_accept();
 }
 
+server::server(std::shared_ptr<RPCLIB_ASIO::io_service> io, std::string const &address,
+               uint16_t port)
+    : pimpl(new server::impl(std::move(io), this, address, port)),
+    disp_(std::make_shared<dispatcher>()) {
+    LOG_INFO("Created server on address {}:{}", address, port);
+    pimpl->start_accept();
+}
+
 server::~server() {
     pimpl->stop();
 }
@@ -99,13 +115,13 @@ void server::suppress_exceptions(bool suppress) {
     pimpl->suppress_exceptions_ = suppress;
 }
 
-void server::run() { pimpl->io_.run(); }
+void server::run() { pimpl->io_->run(); }
 
 void server::async_run(std::size_t worker_threads) {
     pimpl->loop_workers_.create_threads(worker_threads, [this]() {
         name_thread("server");
         LOG_INFO("Starting");
-        pimpl->io_.run();
+        pimpl->io_->run();
         LOG_INFO("Exiting");
     });
 }

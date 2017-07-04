@@ -9,6 +9,10 @@
 
 #include "rpc/detail/pimpl.h"
 
+namespace RPCLIB_ASIO {
+    class io_service;
+}
+
 namespace rpc {
 
 namespace detail {
@@ -37,6 +41,12 @@ public:
     //!
     //! \param port The port number to listen on.
     server(std::string const &address, uint16_t port);
+
+    //! \brief Constructs a server that uses the specified io_service to listen
+    //! on the specified address and port.
+    //!
+    //! \param port The port number to listen on.
+    server(std::shared_ptr<RPCLIB_ASIO::io_service>, std::string const &address, uint16_t port);
 
     //! \brief Destructor.
     //!
