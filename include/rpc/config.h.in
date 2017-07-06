@@ -4,6 +4,7 @@
 #define CONFIG_H_L7IVDSPZ
 
 #include <cstddef>
+#include <cstdint>
 
 #include "rpc/compatibility.h"
 
@@ -28,6 +29,8 @@ struct constants RPCLIB_FINAL {
 #define RPCLIB_MSGPACK clmdep_msgpack
 #endif /* ifndef RPCLIB_MSGPACK */
 
+#ifndef RPCLIB_CXX_STANDARD
 #define RPCLIB_CXX_STANDARD @RPCLIB_CXX_STANDARD@
+#endif
 
 #endif /* end of include guard: CONFIG_H_L7IVDSPZ */

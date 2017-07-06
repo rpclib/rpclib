@@ -563,6 +563,7 @@ class bad_optional_access : public std::logic_error
 public:
   explicit bad_optional_access()
   : logic_error( "bad optional access" ) {}
+  ~bad_optional_access();
 };
 
 /// optional
@@ -731,13 +732,11 @@ public:
 
     optional_constexpr value_type const && operator *() const optional_refref_qual
     {
-        assert( has_value() );
         return std::move( contained.value() );
     }
 
     optional_constexpr14 value_type && operator *() optional_refref_qual
     {
-        assert( has_value() );
         return std::move( contained.value() );
     }
 

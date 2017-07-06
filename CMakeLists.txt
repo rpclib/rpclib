@@ -40,9 +40,9 @@ endif()
 
 include(TargetArch)
 
-set(RPCLIB_VERSION_MAJOR 2)
+set(RPCLIB_VERSION_MAJOR 3)
 set(RPCLIB_VERSION_MINOR 0)
-set(RPCLIB_VERSION_PATCH 1)
+set(RPCLIB_VERSION_PATCH 0)
 
 target_architecture(TARGET_ARCH)
 
@@ -89,7 +89,7 @@ function(set_rpclib_flags TARGET)
         set(RPCLIB_BUILD_FLAGS
             "-Wall -pedantic -Weverything -Wno-c++98-compat\
             -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -pthread")
+            -Wno-undef -pthread")
         if(RPCLIB_CXX_STANDARD EQUAL 14)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
         elseif(RPCLIB_CXX_STANDARD EQUAL 11)
@@ -100,12 +100,6 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
         elseif(RPCLIB_FORCE_M64)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
-        endif()
-
-        set(RPCLIB_DEP_LIBRARIES "pthread")
-
-        if (RPCLIB_ENABLE_LOGGING)
-            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES}")
         endif()
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -125,12 +119,6 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
         elseif(RPCLIB_FORCE_M64)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
-        endif()
-
-        set(RPCLIB_DEP_LIBRARIES "pthread")
-
-        if (RPCLIB_ENABLE_LOGGING)
-            set(RPCLIB_DEP_LIBRARIES "${RPCLIB_DEP_LIBRARIES}")
         endif()
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
@@ -189,7 +177,18 @@ function(set_rpclib_flags TARGET)
                 LINK_FLAGS "-lgcov --coverage")
     endif()
 
+    set(RPCLIB_DEP_LIBRARIES "pthread")
+
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
+    target_include_directories(
+        ${TARGET}
+        PUBLIC include
+        PRIVATE include/rpc
+    )
+    target_include_directories(
+        ${TARGET} SYSTEM
+        PRIVATE dependencies/include
+    )
 
 endfunction()
 
@@ -199,19 +198,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/bin)
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
-    "${PROJECT_BINARY_DIR}/version.h")
+    "${PROJECT_SOURCE_DIR}/include/rpc/version.h")
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/include/rpc/config.h.in"
-    "${PROJECT_BINARY_DIR}/config.h")
+    "${PROJECT_SOURCE_DIR}/include/rpc/config.h")
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/doc/pages/versions.md.in"
     "${PROJECT_SOURCE_DIR}/doc/pages/versions.md")
-
-include_directories(include)
-include_directories(include/rpc)
-include_directories(SYSTEM dependencies/include)
 
 file(GLOB_RECURSE RPCLIB_HEADERS
     include/rpc/*.h
@@ -241,9 +236,11 @@ add_library(${OUTPUT_LIBRARY_NAME}
     lib/rpc/detail/server_session.cc
     lib/rpc/detail/response.cc
     lib/rpc/detail/client_error.cc
+    lib/rpc/nonstd/optional.cc
     ${DEP_SOURCES}
     ${DEP_HEADERS}
     ${RPCLIB_HEADERS})
+
 
 set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
 
@@ -322,10 +319,10 @@ if(RPCLIB_BUILD_TESTS)
         tests/rpc/server_session_test.cc
         tests/rpc/this_server_test.cc)
 
-    include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/tests")
 
     add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
     set_rpclib_flags(${TEST_PROJECT_NAME})
+    target_include_directories(${TEST_PROJECT_NAME} SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/tests")
     target_link_libraries(
         ${TEST_PROJECT_NAME}
         ${OUTPUT_LIBRARY_NAME}
