@@ -169,3 +169,11 @@ TEST(server_misc, single_param_ctor) {
     s.async_run();
     rpc::client c("127.0.0.1", test_port);
 }
+
+TEST(server_misc, server_is_moveable) {
+    rpc::server s(test_port);
+    s.bind("foo", [](){});
+    std::vector<rpc::server> vec;
+    vec.push_back(std::move(s));
+    EXPECT_THROW(vec[0].bind("foo", [](){}), std::logic_error);
+}

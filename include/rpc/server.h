@@ -24,6 +24,7 @@ class server_session;
 //! The server does not start listening right after construction in order
 //! to allow binding functions before that. Use the `run` or `async_run`
 //! functions to start listening on the port.
+//! This class is not copyable, but moveable.
 class server {
 public:
     //! \brief Constructs a server that listens on the localhost on the
@@ -31,6 +32,12 @@ public:
     //!
     //! \param port The port number to listen on.
     explicit server(uint16_t port);
+
+    //! \brief Move constructor. This is implemented by calling the
+    //! move assignment operator.
+    //!
+    //! \param other The other instance to move from.
+    server(server&& other) noexcept;
 
     //! \brief Constructs a server that listens on the specified address on
     //! the specified port.
@@ -43,6 +50,12 @@ public:
     //! When the server is destroyed, all ongoin sessions are closed gracefully.
     ~server();
 
+    //! \brief Move assignment operator.
+    //!
+    //! \param other The other instance to move from.
+    //! \return The result of the assignment.
+    server& operator=(server&& other);
+
     //! \brief Starts the server loop. This is a blocking call.
     //!
     //! First and foremost, running the event loop causes the server to start
@@ -50,7 +63,7 @@ public:
     //! and calls are made by clients, the server executes the calls as part
     //! of this call. This means that the handlers are executed on the thread
     //! that calls `run`. Reads and writes are initiated by this function
-    //% internally as well.
+    //! internally as well.
     void run();
 
     //! \brief Starts the server loop on one or more threads. This is a
