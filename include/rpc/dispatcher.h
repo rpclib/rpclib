@@ -98,6 +98,8 @@ private:
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
 
+    void enforce_unique_name(std::string const &func);
+
     //! \brief Dispatches a call (which will have a response).
     detail::response dispatch_call(RPCLIB_MSGPACK::object const &msg,
                                    bool suppress_exceptions = false);

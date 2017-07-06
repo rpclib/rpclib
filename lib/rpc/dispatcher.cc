@@ -131,5 +131,14 @@ void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
     }
 }
 
+void dispatcher::enforce_unique_name(std::string const &func) {
+    auto pos = funcs_.find(func);
+    if (pos != end(funcs_)) {
+        throw std::logic_error(
+            RPCLIB_FMT::format("Function name already bound: '{}'. "
+                               "Please use unique function names", func));
+    }
+}
+
 }
 } /* rpc */

@@ -174,3 +174,18 @@ TEST_F(dispatch_test, bad_format_msgpack_returns_empty) {
     EXPECT_TRUE(response.is_empty());
 }
 
+TEST_F(dispatch_test, unique_names_zeroarg) {
+    dispatcher.bind("foo", &dummy_void_zeroarg);
+    EXPECT_THROW(dispatcher.bind("foo", &dummy_void_zeroarg), std::logic_error);
+}
+
+TEST_F(dispatch_test, unique_names_singlearg) {
+    dispatcher.bind("foo", &dummy_void_singlearg);
+    EXPECT_THROW(dispatcher.bind("foo", &dummy_void_singlearg), std::logic_error);
+}
+
+TEST_F(dispatch_test, unique_names_multiarg) {
+    dispatcher.bind("foo", &dummy_void_multiarg);
+    EXPECT_THROW(dispatcher.bind("foo", &dummy_void_multiarg), std::logic_error);
+}
+
