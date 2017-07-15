@@ -102,6 +102,8 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
         endif()
 
+        set(RPCLIB_DEP_LIBRARIES "pthread")
+
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
         set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
@@ -120,6 +122,8 @@ function(set_rpclib_flags TARGET)
         elseif(RPCLIB_FORCE_M64)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
         endif()
+
+        set(RPCLIB_DEP_LIBRARIES "pthread")
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 
@@ -170,14 +174,6 @@ function(set_rpclib_flags TARGET)
                 PROPERTIES
                 COMPILE_DEFINITIONS "${RPCLIB_COMPILE_DEFINITIONS}")
     endif()
-
-    if(RPCLIB_ENABLE_COVERAGE)
-        set_target_properties(${TARGET}
-                PROPERTIES
-                LINK_FLAGS "-lgcov --coverage")
-    endif()
-
-    set(RPCLIB_DEP_LIBRARIES "pthread")
 
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
     target_include_directories(
