@@ -1,5 +1,20 @@
 # Changelog
 
+### 2.1.0
+
+This is mainly a bugfix release.
+
+Released on 2017-07-15.
+
+Changes since 2.0.1:
+
+  * Fixed an issue where the server did not properly release closed connections (#125)
+  * Fixed issues related to timeouts (#114, #115, #116)
+  * There is no longer a default timeout
+  * Fixed warnings when compiling with clang
+  * Fixed the dispatcher silently accepting multiple functions with the same name (#128)
+  * Changed minimum support g++ version to 4.8 from 4.9 (thanks to reddit user *attomsk* for letting me know)
+
 ### 2.0.1
 
 This is minor release that does not affect the library itself, just the version
