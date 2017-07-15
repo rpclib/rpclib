@@ -97,7 +97,9 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
+             set_target_properties(${TARGET}
+                     PROPERTIES
+                     LINK_FLAGS "-lgcov --coverage")
         endif()
 
         if(RPCLIB_FORCE_M32)
@@ -118,7 +120,9 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
+            set_target_properties(${TARGET}
+                    PROPERTIES
+                    LINK_FLAGS "-lgcov --coverage")
         endif()
 
         if(RPCLIB_FORCE_M32)

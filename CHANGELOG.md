@@ -1,5 +1,16 @@
 # Changelog
 
+### 2.1.1
+
+This release fixes an embarrassing build breakage.
+
+Released on 2017-07-15.
+
+Changes since 2.1.1:
+
+  * Fixes building with coverage using clang
+
+
 ### 2.1.0
 
 This is mainly a bugfix release.
