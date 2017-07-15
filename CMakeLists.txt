@@ -96,6 +96,10 @@ function(set_rpclib_flags TARGET)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
         endif()
 
+        if(RPCLIB_ENABLE_COVERAGE)
+            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -g --coverage -O0")
+        endif()
+
         if(RPCLIB_FORCE_M32)
             set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
         elseif(RPCLIB_FORCE_M64)
