@@ -40,8 +40,8 @@ endif()
 
 include(TargetArch)
 
-set(RPCLIB_VERSION_MAJOR 3)
-set(RPCLIB_VERSION_MINOR 0)
+set(RPCLIB_VERSION_MAJOR 2)
+set(RPCLIB_VERSION_MINOR 1)
 set(RPCLIB_VERSION_PATCH 0)
 
 target_architecture(TARGET_ARCH)
