@@ -293,7 +293,7 @@ install(DIRECTORY include/
     PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_BINARY_DIR}/version.h DESTINATION include/rpc)
+install(FILES ${PROJECT_SOURCE_DIR}/include/rpc/version.h DESTINATION include/rpc)
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
