@@ -3,7 +3,7 @@
 #ifndef MANDELBROT_H_I0UEF3KR
 #define MANDELBROT_H_I0UEF3KR
 
-#include "msgpack.hpp"
+#include "rpc/msgpack.hpp"
 #include <vector>
 
 struct pixel {
