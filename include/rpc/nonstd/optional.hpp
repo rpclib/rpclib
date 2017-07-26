@@ -21,6 +21,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <utility>
+#include <functional>
 
 #define  optional_lite_VERSION "2.0.0"
 
@@ -1066,7 +1067,7 @@ using namespace optional_lite;
 namespace std {
 
 template< class T >
-class hash< nonstd::optional<T> >
+struct hash< nonstd::optional<T> >
 {
 public:
     std::size_t operator()( nonstd::optional<T> const & v ) const optional_noexcept
