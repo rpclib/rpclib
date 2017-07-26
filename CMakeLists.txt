@@ -185,9 +185,9 @@ function(set_rpclib_flags TARGET)
 
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
     target_include_directories(
-        ${TARGET}
-        PUBLIC include
-        PRIVATE include/rpc
+        ${TARGET} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/rpc>
+        $<INSTALL_INTERFACE:include>
     )
     target_include_directories(
         ${TARGET} SYSTEM
@@ -285,7 +285,7 @@ if (RPCLIB_MSVC_STATIC_RUNTIME)
 
 endif()
 
-install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
+install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib EXPORT rpclibTargets)
 install(DIRECTORY include/
     DESTINATION include
     FILES_MATCHING
@@ -293,7 +293,6 @@ install(DIRECTORY include/
     PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_SOURCE_DIR}/include/rpc/version.h DESTINATION include/rpc)
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -364,6 +363,43 @@ if(RPCLIB_BUILD_EXAMPLES)
 endif()
 
 
+################################################################################
+#
+# Cmake Package
+#
+################################################################################
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake"
+  VERSION ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}
+  COMPATIBILITY AnyNewerVersion
+)
+
+set(CONFIG_PACKAGE_LOCATION lib/cmake/rpclib)
+set(INCLUDE_INSTALL_DIR include/ )
+
+configure_package_config_file(cmake/rpclibConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfig.cmake
+  INSTALL_DESTINATION ${CONFIG_PACKAGE_LOCATION}
+  PATH_VARS INCLUDE_INSTALL_DIR
+)
+
+export(EXPORT rpclibTargets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibTargets.cmake"
+  NAMESPACE rpclib::
+)
+
+install(EXPORT rpclibTargets
+  FILE rpclibTargets.cmake
+  NAMESPACE rpclib::
+  DESTINATION ${CONFIG_PACKAGE_LOCATION}
+)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake
+  DESTINATION ${CONFIG_PACKAGE_LOCATION}
+)
 ################################################################################
 #
 # CPack
