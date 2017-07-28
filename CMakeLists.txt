@@ -86,14 +86,15 @@ function(set_rpclib_flags TARGET)
     # but feel free to add similar flags to GCC
     if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
 
-        set(RPCLIB_BUILD_FLAGS
-            "-Wall -pedantic -Weverything -Wno-c++98-compat\
-            -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -Wno-undef -pthread")
+        list(APPEND RPCLIB_BUILD_FLAGS
+            -Wall -pedantic -Weverything -Wno-c++98-compat
+            -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
+            -Wno-undef -pthread)
+
         if(RPCLIB_CXX_STANDARD EQUAL 14)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+            target_compile_options(${TARGET} PUBLIC -std=c++14)
         elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+            target_compile_options(${TARGET} PUBLIC -std=c++11)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
@@ -103,20 +104,20 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_FORCE_M32)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+            list(APPEND RPCLIB_BUILD_FLAGS -m32)
         elseif(RPCLIB_FORCE_M64)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+            list(APPEND RPCLIB_BUILD_FLAGS -m64)
         endif()
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
     elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
-        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
+        list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
         if(RPCLIB_CXX_STANDARD EQUAL 14)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+            target_compile_options(${TARGET} PUBLIC -std=c++14)
         elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+            target_compile_options(${TARGET} PUBLIC -std=c++11)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
@@ -126,9 +127,9 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_FORCE_M32)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+            list(APPEND RPCLIB_BUILD_FLAGS -m32)
         elseif(RPCLIB_FORCE_M64)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+            list(APPEND RPCLIB_BUILD_FLAGS -m64)
         endif()
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
@@ -153,7 +154,7 @@ function(set_rpclib_flags TARGET)
     endif()
 
     if (RPCLIB_EXTRA_BUILD_FLAGS)
-        set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} ${RPCLIB_EXTRA_BUILD_FLAGS}")
+        list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
     endif()
 
     set(RPCLIB_COMPILE_DEFINITIONS
@@ -172,9 +173,7 @@ function(set_rpclib_flags TARGET)
     endif()
 
     if(RPCLIB_BUILD_FLAGS)
-        set_target_properties(${TARGET}
-                PROPERTIES
-                COMPILE_FLAGS "${RPCLIB_BUILD_FLAGS}")
+        target_compile_options(${TARGET} PRIVATE ${RPCLIB_BUILD_FLAGS})
     endif()
 
     if(RPCLIB_COMPILE_DEFINITIONS)
