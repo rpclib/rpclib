@@ -84,7 +84,7 @@ function(set_rpclib_flags TARGET)
     # clang is the compiler used for developing mainly, so
     # this is where I set the highest warning level
     # but feel free to add similar flags to GCC
-    if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
         list(APPEND RPCLIB_BUILD_FLAGS
             -Wall -pedantic -Weverything -Wno-c++98-compat
@@ -111,7 +111,7 @@ function(set_rpclib_flags TARGET)
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
-    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
         list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
         if(RPCLIB_CXX_STANDARD EQUAL 14)
@@ -134,7 +134,7 @@ function(set_rpclib_flags TARGET)
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
-    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
         set(RPCLIB_COMPILE_DEFINITIONS
             "${RPCLIB_COMPILE_DEFINITIONS}"
