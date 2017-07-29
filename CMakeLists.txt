@@ -84,6 +84,8 @@ function(set_rpclib_flags TARGET)
     # clang is the compiler used for developing mainly, so
     # this is where I set the highest warning level
     # but feel free to add similar flags to GCC
+    set(RPCLIB_BUILD_FLAGS "") # reset flags
+    
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
         list(APPEND RPCLIB_BUILD_FLAGS
