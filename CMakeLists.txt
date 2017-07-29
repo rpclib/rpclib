@@ -400,6 +400,26 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake
   DESTINATION ${CONFIG_PACKAGE_LOCATION}
 )
+
+################################################################################
+#
+# Pkg-config
+#
+################################################################################
+if(NOT MSVC)  # Don't install pkg-config files when building with MSVC
+  # Variables for pkg-config files
+  set(prefix "${CMAKE_INSTALL_PREFIX}")
+  set(exec_prefix "")
+  set(libdir "${CMAKE_INSTALL_PREFIX}/lib")
+  set(includedir "${CMAKE_INSTALL_PREFIX}/include")
+  set(rpclib_version ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH})
+  get_target_property(rpclib_cflags ${OUTPUT_LIBRARY_NAME} COMPILE_OPTIONS)
+  string(REPLACE ";" " " rpclib_cflags "${rpclib_cflags}") # Convert list to string
+
+  configure_file(rpclib.pc.in "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" @ONLY)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" DESTINATION "${libdir}/pkgconfig")
+endif()
+
 ################################################################################
 #
 # CPack
