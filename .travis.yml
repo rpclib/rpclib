@@ -18,7 +18,7 @@ compiler:
 addons:
   apt:
     sources:
-      - llvm-toolchain-precise
+      - llvm-toolchain-precise-3.8
       - ubuntu-toolchain-r-test
       - george-edison55-precise-backports
     packages:
