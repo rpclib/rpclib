@@ -25,6 +25,7 @@ addons:
       - g++-5
       - gcc-5
       - clang-3.8
+      - cmake
 
 install:
   - if [ "$CXX" == "g++" ];     then export CXX="g++-5" CC="gcc-5"; fi
