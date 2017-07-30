@@ -20,12 +20,14 @@ addons:
     sources:
       - llvm-toolchain-precise
       - ubuntu-toolchain-r-test
+      - george-edison55-precise-backports
     packages:
       - libsfml-dev
       - g++-5
       - gcc-5
       - clang-3.8
       - cmake
+      - cmake-data
 
 install:
   - if [ "$CXX" == "g++" ];     then export CXX="g++-5" CC="gcc-5"; fi
