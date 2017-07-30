@@ -4,12 +4,6 @@ os:
   - linux
   - osx
 
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      sudo: false
-
 env:
   matrix:
       - RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Debug
@@ -24,6 +18,7 @@ compiler:
 addons:
   apt:
     sources:
+      - llvm-toolchain-precise
       - ubuntu-toolchain-r-test
     packages:
       - libsfml-dev
