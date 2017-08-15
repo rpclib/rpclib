@@ -84,16 +84,19 @@ function(set_rpclib_flags TARGET)
     # clang is the compiler used for developing mainly, so
     # this is where I set the highest warning level
     # but feel free to add similar flags to GCC
-    if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    set(RPCLIB_BUILD_FLAGS "") # reset flags
+    
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
-        set(RPCLIB_BUILD_FLAGS
-            "-Wall -pedantic -Weverything -Wno-c++98-compat\
-            -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes\
-            -Wno-undef -pthread")
+        list(APPEND RPCLIB_BUILD_FLAGS
+            -Wall -pedantic -Weverything -Wno-c++98-compat
+            -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
+            -Wno-undef -pthread)
+
         if(RPCLIB_CXX_STANDARD EQUAL 14)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+            target_compile_options(${TARGET} PUBLIC -std=c++14)
         elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+            target_compile_options(${TARGET} PUBLIC -std=c++11)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
@@ -103,20 +106,20 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_FORCE_M32)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+            list(APPEND RPCLIB_BUILD_FLAGS -m32)
         elseif(RPCLIB_FORCE_M64)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+            list(APPEND RPCLIB_BUILD_FLAGS -m64)
         endif()
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
-    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-        set(RPCLIB_BUILD_FLAGS "-Wall -pedantic -pthread")
+        list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
         if(RPCLIB_CXX_STANDARD EQUAL 14)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++14")
+            target_compile_options(${TARGET} PUBLIC -std=c++14)
         elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -std=c++11")
+            target_compile_options(${TARGET} PUBLIC -std=c++11)
         endif()
 
         if(RPCLIB_ENABLE_COVERAGE)
@@ -126,14 +129,14 @@ function(set_rpclib_flags TARGET)
         endif()
 
         if(RPCLIB_FORCE_M32)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m32")
+            list(APPEND RPCLIB_BUILD_FLAGS -m32)
         elseif(RPCLIB_FORCE_M64)
-            set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} -m64")
+            list(APPEND RPCLIB_BUILD_FLAGS -m64)
         endif()
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
-    elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
         set(RPCLIB_COMPILE_DEFINITIONS
             "${RPCLIB_COMPILE_DEFINITIONS}"
@@ -153,7 +156,7 @@ function(set_rpclib_flags TARGET)
     endif()
 
     if (RPCLIB_EXTRA_BUILD_FLAGS)
-        set(RPCLIB_BUILD_FLAGS "${RPCLIB_BUILD_FLAGS} ${RPCLIB_EXTRA_BUILD_FLAGS}")
+        list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
     endif()
 
     set(RPCLIB_COMPILE_DEFINITIONS
@@ -172,9 +175,7 @@ function(set_rpclib_flags TARGET)
     endif()
 
     if(RPCLIB_BUILD_FLAGS)
-        set_target_properties(${TARGET}
-                PROPERTIES
-                COMPILE_FLAGS "${RPCLIB_BUILD_FLAGS}")
+        target_compile_options(${TARGET} PRIVATE ${RPCLIB_BUILD_FLAGS})
     endif()
 
     if(RPCLIB_COMPILE_DEFINITIONS)
@@ -185,9 +186,9 @@ function(set_rpclib_flags TARGET)
 
     target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
     target_include_directories(
-        ${TARGET}
-        PUBLIC include
-        PRIVATE include/rpc
+        ${TARGET} PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
     )
     target_include_directories(
         ${TARGET} SYSTEM
@@ -285,7 +286,7 @@ if (RPCLIB_MSVC_STATIC_RUNTIME)
 
 endif()
 
-install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib)
+install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib EXPORT rpclibTargets)
 install(DIRECTORY include/
     DESTINATION include
     FILES_MATCHING
@@ -293,7 +294,6 @@ install(DIRECTORY include/
     PATTERN "*.hpp"
     PATTERN "*.inl"
     PATTERN "*.in" EXCLUDE)
-install(FILES ${PROJECT_SOURCE_DIR}/include/rpc/version.h DESTINATION include/rpc)
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
@@ -335,12 +335,11 @@ if(RPCLIB_BUILD_TESTS)
     # Set less strict warning for tests, since google test is not quite
     # warning-clean
     if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-        get_target_property(ORIGINAL_FLAGS ${TEST_PROJECT_NAME} COMPILE_FLAGS)
-        set_target_properties(${TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS
-            "${ORIGINAL_FLAGS} -Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function \
-            -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default \
-            -Wno-missing-variable-declarations -Wno-deprecated -Wno-unused-macros -Wno-undef \
-            -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion")
+        get_target_property(ORIGINAL_FLAGS ${TEST_PROJECT_NAME} COMPILE_OPTION)
+        target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function
+            -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default
+            -Wno-missing-variable-declarations -Wno-deprecated -Wno-unused-macros -Wno-undef
+            -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion)
     endif()
 
 endif()
@@ -363,6 +362,63 @@ if(RPCLIB_BUILD_EXAMPLES)
     add_subdirectory(examples/calculator)
 endif()
 
+
+################################################################################
+#
+# Cmake Package
+#
+################################################################################
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake"
+  VERSION ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}
+  COMPATIBILITY AnyNewerVersion
+)
+
+set(CONFIG_PACKAGE_LOCATION lib/cmake/rpclib)
+set(INCLUDE_INSTALL_DIR include/ )
+
+configure_package_config_file(cmake/rpclibConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfig.cmake
+  INSTALL_DESTINATION ${CONFIG_PACKAGE_LOCATION}
+  PATH_VARS INCLUDE_INSTALL_DIR
+)
+
+export(EXPORT rpclibTargets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibTargets.cmake"
+  NAMESPACE rpclib::
+)
+
+install(EXPORT rpclibTargets
+  FILE rpclibTargets.cmake
+  NAMESPACE rpclib::
+  DESTINATION ${CONFIG_PACKAGE_LOCATION}
+)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake
+  DESTINATION ${CONFIG_PACKAGE_LOCATION}
+)
+
+################################################################################
+#
+# Pkg-config
+#
+################################################################################
+if(NOT MSVC)  # Don't install pkg-config files when building with MSVC
+  # Variables for pkg-config files
+  set(prefix "${CMAKE_INSTALL_PREFIX}")
+  set(exec_prefix "")
+  set(libdir "${CMAKE_INSTALL_PREFIX}/lib")
+  set(includedir "${CMAKE_INSTALL_PREFIX}/include")
+  set(rpclib_version ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH})
+  get_target_property(rpclib_cflags ${OUTPUT_LIBRARY_NAME} COMPILE_OPTIONS)
+  string(REPLACE ";" " " rpclib_cflags "${rpclib_cflags}") # Convert list to string
+
+  configure_file(rpclib.pc.in "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" @ONLY)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" DESTINATION "${libdir}/pkgconfig")
+endif()
 
 ################################################################################
 #
