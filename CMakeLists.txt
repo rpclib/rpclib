@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(rpc)
+cmake_minimum_required(VERSION 3.9.2)
+project(rpc 
+  VERSION 3.0.0)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -14,8 +15,6 @@ option(RPCLIB_GENERATE_COMPDB "Generate compilation database. Useful for YCM." O
 option(RPCLIB_BUILD_EXAMPLES "Build examples." OFF)
 option(RPCLIB_ENABLE_LOGGING "ALlow logging in the library for debug purposes. Also usable in a release build." OFF)
 option(RPCLIB_ENABLE_COVERAGE "Generate coverage information" OFF)
-option(RPCLIB_FORCE_M64 "Force -m64 in CXXFLAGS" OFF)
-option(RPCLIB_FORCE_M32 "Force -m32 in CXXFLAGS" OFF)
 option(RPCLIB_MSVC_STATIC_RUNTIME "MSVC only: build with /MT instead of /MD" OFF)
 
 ################################################################################
@@ -37,36 +36,6 @@ endif()
 # Compile & install the library
 #
 ################################################################################
-
-include(TargetArch)
-
-set(RPCLIB_VERSION_MAJOR 2)
-set(RPCLIB_VERSION_MINOR 1)
-set(RPCLIB_VERSION_PATCH 0)
-
-target_architecture(TARGET_ARCH)
-
-if(RPCLIB_FORCE_M32)
-    message(STATUS "Compiling for 32-bit")
-    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X86")
-    set(RPCLIB_TARGET_ARCH "x86")
-    set(RPCLIB_DEB_ARCH "i386")
-elseif(RPCLIB_FORCE_M64)
-    message(STATUS "Compiling for 64-bit")
-    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X64")
-    set(RPCLIB_TARGET_ARCH "x64")
-    set(RPCLIB_DEB_ARCH "amd64")
-elseif (${TARGET_ARCH} STREQUAL "i386")
-    message(STATUS "Compiling for 32-bit")
-    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X86")
-    set(RPCLIB_TARGET_ARCH "x86")
-    set(RPCLIB_DEB_ARCH "i386")
-elseif(${TARGET_ARCH} STREQUAL "x86_64")
-    message(STATUS "Compiling for 64-bit")
-    set(RPCLIB_ARCH_DEF "RPCLIB_ARCH_X64")
-    set(RPCLIB_TARGET_ARCH "x64")
-    set(RPCLIB_DEB_ARCH "amd64")
-endif()
 
 if (WIN32)
     set(RPCLIB_OS_DEF "RPCLIB_WIN32")
@@ -105,12 +74,6 @@ function(set_rpclib_flags TARGET)
                      LINK_FLAGS "-lgcov --coverage")
         endif()
 
-        if(RPCLIB_FORCE_M32)
-            list(APPEND RPCLIB_BUILD_FLAGS -m32)
-        elseif(RPCLIB_FORCE_M64)
-            list(APPEND RPCLIB_BUILD_FLAGS -m64)
-        endif()
-
         set(RPCLIB_DEP_LIBRARIES "pthread")
 
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -126,12 +89,6 @@ function(set_rpclib_flags TARGET)
             set_target_properties(${TARGET}
                     PROPERTIES
                     LINK_FLAGS "-lgcov --coverage")
-        endif()
-
-        if(RPCLIB_FORCE_M32)
-            list(APPEND RPCLIB_BUILD_FLAGS -m32)
-        elseif(RPCLIB_FORCE_M64)
-            list(APPEND RPCLIB_BUILD_FLAGS -m64)
         endif()
 
         set(RPCLIB_DEP_LIBRARIES "pthread")
@@ -220,17 +177,11 @@ file(GLOB_RECURSE DEP_HEADERS
     dependencies/include/*.h
     dependencies/include/*.hpp)
 
-if(RPCLIB_NAME_SUFFIX)
-    set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME}-${RPCLIB_NAME_SUFFIX})
-else()
-    set(OUTPUT_LIBRARY_NAME ${CMAKE_PROJECT_NAME})
-endif()
-
 set(DEP_SOURCES
     dependencies/src/format.cc
     dependencies/src/posix.cc)
 
-add_library(${OUTPUT_LIBRARY_NAME}
+add_library(${PROJECT_NAME}
     lib/rpc/dispatcher.cc
     lib/rpc/server.cc
     lib/rpc/client.cc
@@ -246,10 +197,9 @@ add_library(${OUTPUT_LIBRARY_NAME}
     ${DEP_HEADERS}
     ${RPCLIB_HEADERS})
 
+set_rpclib_flags(${PROJECT_NAME})
 
-set_rpclib_flags(${OUTPUT_LIBRARY_NAME})
-
-target_link_libraries(${OUTPUT_LIBRARY_NAME})
+target_link_libraries(${PROJECT_NAME})
 
 # When building via conan, respect the compilation settings.
 if ("${CONAN_LINK_RUNTIME}" STREQUAL "/MT")
@@ -286,7 +236,7 @@ if (RPCLIB_MSVC_STATIC_RUNTIME)
 
 endif()
 
-install(TARGETS ${OUTPUT_LIBRARY_NAME} DESTINATION lib EXPORT rpclibTargets)
+install(TARGETS ${PROJECT_NAME} DESTINATION lib EXPORT rpclibTargets)
 install(DIRECTORY include/
     DESTINATION include
     FILES_MATCHING
@@ -297,7 +247,7 @@ install(DIRECTORY include/
 
 if(RPCLIB_GENERATE_COMPDB)
     set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
-    add_custom_command(TARGET ${OUTPUT_LIBRARY_NAME} POST_BUILD
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E
                        copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_BINARY_DIR}/../compile_commands.json)
 endif()
@@ -329,7 +279,7 @@ if(RPCLIB_BUILD_TESTS)
     target_include_directories(${TEST_PROJECT_NAME} SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/tests")
     target_link_libraries(
         ${TEST_PROJECT_NAME}
-        ${OUTPUT_LIBRARY_NAME}
+        ${PROJECT_NAME}
         ${RPCLIB_DEP_LIBRARIES})
 
     # Set less strict warning for tests, since google test is not quite
@@ -372,7 +322,7 @@ endif()
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/cmake/rpclibConfigVersion.cmake"
-  VERSION ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}
+  VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
@@ -412,48 +362,11 @@ if(NOT MSVC)  # Don't install pkg-config files when building with MSVC
   set(exec_prefix "")
   set(libdir "${CMAKE_INSTALL_PREFIX}/lib")
   set(includedir "${CMAKE_INSTALL_PREFIX}/include")
-  set(rpclib_version ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH})
-  get_target_property(rpclib_cflags ${OUTPUT_LIBRARY_NAME} COMPILE_OPTIONS)
+  set(rpclib_version ${PROJECT_VERSION})
+  get_target_property(rpclib_cflags ${PROJECT_NAME} COMPILE_OPTIONS)
   string(REPLACE ";" " " rpclib_cflags "${rpclib_cflags}") # Convert list to string
 
   configure_file(rpclib.pc.in "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" @ONLY)
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" DESTINATION "${libdir}/pkgconfig")
 endif()
 
-################################################################################
-#
-# CPack
-#
-################################################################################
-
-include(InstallRequiredSystemLibraries)
-
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modern msgpack-rpc library for C++")
-set(CPACK_PACKAGE_DESCRIPTION "rpclib is a modern msgpack-rpc library for C++. It allows connecting applications through a network channel where they can talk to each other using the msgpack-rpc protocol. It provides both a client and server, which can be used independently.")
-set(CPACK_PACKAGE_VENDOR "Tamás Szelei")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
-set(CPACK_PACKAGE_VERSION_MAJOR "${RPCLIB_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${RPCLIB_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${RPCLIB_VERSION_PATCH}")
-set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/output/pkg")
-set(CPACK_PACKAGE_EXECUTABLES "librpc" "rpc")
-set(CPACK_PACKAGE_NAME "lib${CMAKE_PROJECT_NAME}_${RPCLIB_DEB_ARCH}")
-set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${RPCLIB_DEB_ARCH})
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tamás Szelei")
-set(CPACK_DEBIAN_PACKAGE_CONTACT "Tamás Szelei")
-if(WIN32)
-    set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
-endif()
-
-if(WIN32)
-    #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
-    #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "librpc ${RPCLIB_VERSION_MAJOR}.${RPCLIB_VERSION_MINOR}.${RPCLIB_VERSION_PATCH}")
-    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} rpclib")
-    #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\github.com/sztomi/rpc")
-    #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
-    set(CPACK_NSIS_MODIFY_PATH ON)
-endif()
-include(CPack)

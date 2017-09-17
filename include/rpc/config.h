@@ -30,7 +30,7 @@ struct constants RPCLIB_FINAL {
 #endif /* ifndef RPCLIB_MSGPACK */
 
 #ifndef RPCLIB_CXX_STANDARD
-#define RPCLIB_CXX_STANDARD 14
+#define RPCLIB_CXX_STANDARD 11
 #endif
 
 #endif /* end of include guard: CONFIG_H_L7IVDSPZ */
