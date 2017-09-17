@@ -4,6 +4,7 @@ project(rpc VERSION 3.0.0)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(policies)
+include(msvc_support)
 
 #
 # Options
@@ -27,6 +28,9 @@ option(RPCLIB_MSVC_STATIC_RUNTIME
   "MSVC only: build with /MT instead of /MD" 
   OFF)
 
+# Perform steps and checks required for MSVC support
+rpclib_msvc_support()
+
 #
 # Other configuration values
 #
@@ -36,6 +40,13 @@ set(RPCLIB_DEFAULT_BUFFER_SIZE "1024 << 10"
   CACHE STRING "Default buffer size")
 set(RPCLIB_CXX_STANDARD 11 CACHE STRING 
   "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
+
+if(RPCLIB_GENERATE_COMPDB)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
+  add_custom_command(PROJECT_NAME ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E
+    copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_BINARY_DIR}/../compile_commands.json)
+endif()
 
 if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND 
    NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
@@ -96,23 +107,7 @@ add_library(${PROJECT_NAME}
 
 set(RPCLIB_BUILD_FLAGS "") # reset flags
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-
-  target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "WIN32_LEAN_AND_MEAN"
-    "NOMINMAX"
-    "VC_EXTRALEAN"
-    "_CRT_SECURE_NO_WARNINGS"
-    "_CRT_NONSTDC_NO_DEPRECATE"
-    "_WIN32_WINNT=0x0501"
-    "_GNU_SOURCE"
-    "ASIO_HAS_STD_ADDRESSOF"
-    "ASIO_HAS_STD_ARRAY"
-    "ASIO_HAS_CSTDINT"
-    "ASIO_HAS_STD_SHARED_PTR"
-    "ASIO_HAS_STD_TYPE_TRAITS")
-
-else()
+if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(${PROJECT_NAME} PUBLIC 
     -std=c++${RPCLIB_CXX_STANDARD})
 endif()
@@ -126,11 +121,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     -Wno-undef -pthread)
 endif()
 
-
 if(RPCLIB_ENABLE_COVERAGE)
-  if(MSVC)
-    message(FATAL_ERROR "Coverage is only supported with non-MS compilers")
-  endif()
   target_compile_options(${PROJECT_NAME} PUBLIC "--coverage")
   # yes, this is ugly as "--coverage" is not a library, but a flag.
   # however, this does not work with the LINK_FLAGS target property
@@ -177,41 +168,6 @@ target_include_directories(
   PRIVATE ${RPCLIB_DEPENDENCIES}/include
   )
 
-# When building via conan, respect the compilation settings.
-if ("${CONAN_LINK_RUNTIME}" STREQUAL "/MT")
-  set(RPCLIB_MSVC_STATIC_RUNTIME ON)
-endif()
-
-# MSVC static runtime support
-#
-# While this pollutes global flags (when using add_library), you would not want to
-# build with a disparity anyway. (also, CMake still has no support for this, so you
-# would end up doing something like this yourself).
-if (RPCLIB_MSVC_STATIC_RUNTIME)
-  # Set compiler options.
-  set(variables
-    CMAKE_C_FLAGS_DEBUG
-    CMAKE_C_FLAGS_MINSIZEREL
-    CMAKE_C_FLAGS_RELEASE
-    CMAKE_C_FLAGS_RELWITHDEBINFO
-    CMAKE_CXX_FLAGS_DEBUG
-    CMAKE_CXX_FLAGS_MINSIZEREL
-    CMAKE_CXX_FLAGS_RELEASE
-    CMAKE_CXX_FLAGS_RELWITHDEBINFO
-    )
-
-  message(STATUS
-    "MSVC -> forcing use of statically-linked runtime."
-    )
-
-  foreach(variable ${variables})
-    if(${variable} MATCHES "/MD")
-      string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
-    endif()
-  endforeach()
-
-endif()
-
 install(TARGETS ${PROJECT_NAME} DESTINATION lib EXPORT rpclibTargets)
 install(DIRECTORY include/
   DESTINATION include
@@ -220,15 +176,6 @@ install(DIRECTORY include/
   PATTERN "*.hpp"
   PATTERN "*.inl"
   PATTERN "*.in" EXCLUDE)
-
-if(RPCLIB_GENERATE_COMPDB)
-
-  set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
-  add_custom_command(PROJECT_NAME ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E
-    copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_BINARY_DIR}/../compile_commands.json)
-
-endif()
 
 #
 # Unit tests

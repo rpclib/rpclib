@@ -19,8 +19,7 @@
     PRIVATE "${RPCLIB_DEPENDENCIES}/include")
   target_link_libraries(
     ${TEST_PROJECT_NAME}
-    ${PROJECT_NAME}
-    ${RPCLIB_DEP_LIBRARIES})
+    ${PROJECT_NAME})
 
   # Set less strict warning for tests, since google test is not quite
   # warning-clean
