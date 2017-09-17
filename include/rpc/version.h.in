@@ -5,9 +5,9 @@
 
 namespace rpc {
 
-static constexpr unsigned VERSION_MAJOR = @RPCLIB_VERSION_MAJOR@;
-static constexpr unsigned VERSION_MINOR = @RPCLIB_VERSION_MINOR@;
-static constexpr unsigned VERSION_PATCH = @RPCLIB_VERSION_PATCH@;
+static constexpr unsigned VERSION_MAJOR = @rpc_VERSION_MAJOR@;
+static constexpr unsigned VERSION_MINOR = @rpc_VERSION_MINOR@;
+static constexpr unsigned VERSION_PATCH = @rpc_VERSION_PATCH@;
 
 } /* rpc */
 
