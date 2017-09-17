@@ -54,109 +54,6 @@ elseif (APPLE)
 endif()
 
 set(RPCLIB_DEPENDENCIES "${CMAKE_CURRENT_LIST_DIR}/dependencies")
-# This function sets the rpclib-specific flags that are used for
-# development. You do not need this in your project. Instead,
-# Findrpclib.cmake supplies a (possibly empty) RPCLIB_EXTRA_FLAGS variable
-# that you should append to your build flags.
-function(set_rpclib_flags TARGET)
-  # clang is the compiler used for developing mainly, so
-  # this is where I set the highest warning level
-  # but feel free to add similar flags to GCC
-  set(RPCLIB_BUILD_FLAGS "") # reset flags
-
-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-
-    list(APPEND RPCLIB_BUILD_FLAGS
-      -Wall -pedantic -Weverything -Wno-c++98-compat
-      -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-      -Wno-undef -pthread)
-
-    if(RPCLIB_CXX_STANDARD EQUAL 14)
-      target_compile_options(${TARGET} PUBLIC -std=c++14)
-    elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-      target_compile_options(${TARGET} PUBLIC -std=c++11)
-    endif()
-
-    set(RPCLIB_DEP_LIBRARIES "pthread")
-
-  elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-
-    list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
-    if(RPCLIB_CXX_STANDARD EQUAL 14)
-      target_compile_options(${TARGET} PUBLIC -std=c++14)
-    elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-      target_compile_options(${TARGET} PUBLIC -std=c++11)
-    endif()
-
-    set(RPCLIB_DEP_LIBRARIES "pthread")
-
-  elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-
-    target_compile_definitions(${TARGET} PRIVATE
-      "WIN32_LEAN_AND_MEAN"
-      "NOMINMAX"
-      "VC_EXTRALEAN"
-      "_CRT_SECURE_NO_WARNINGS"
-      "_CRT_NONSTDC_NO_DEPRECATE"
-      "_WIN32_WINNT=0x0501"
-      "_GNU_SOURCE"
-      "ASIO_HAS_STD_ADDRESSOF"
-      "ASIO_HAS_STD_ARRAY"
-      "ASIO_HAS_CSTDINT"
-      "ASIO_HAS_STD_SHARED_PTR"
-      "ASIO_HAS_STD_TYPE_TRAITS")
-
-  endif()
-
-  if(RPCLIB_ENABLE_COVERAGE)
-    if(MSVC)
-      message(FATAL_ERROR "Coverage is only supported with non-MS compilers")
-    endif()
-    target_compile_options(${TARGET} PUBLIC "--coverage")
-    # yes, this is ugly as "--coverage" is not a library, but a flag
-    # however, this does not work with the LINK_FLAGS target property
-    list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
-  endif()
-
-  if (RPCLIB_EXTRA_BUILD_FLAGS)
-    list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
-  endif()
-
-  target_compile_definitions(${TARGET} PRIVATE
-    "${RPCLIB_COMPILE_DEFINITIONS}"
-    "${RPCLIB_ARCH_DEF}"
-    "${RPCLIB_OS_DEF}"
-    "ASIO_STANDALONE"
-    "RPCLIB_ASIO=clmdep_asio"
-    "RPCLIB_FMT=clmdep_fmt")
-  target_compile_definitions(${TARGET} PUBLIC 
-    "RPCLIB_MSGPACK=clmdep_msgpack")
-
-  if(RPCLIB_ENABLE_LOGGING)
-    target_compile_definitions(${TARGET} PRIVATE "RPCLIB_ENABLE_LOGGING")
-  endif()
-
-  if(RPCLIB_BUILD_FLAGS)
-    target_compile_options(${TARGET} PRIVATE ${RPCLIB_BUILD_FLAGS})
-  endif()
-
-  if(RPCLIB_COMPILE_DEFINITIONS)
-    set_target_properties(${TARGET}
-      PROPERTIES
-      COMPILE_DEFINITIONS "${RPCLIB_COMPILE_DEFINITIONS}")
-  endif()
-
-  target_link_libraries(${TARGET} ${RPCLIB_DEP_LIBRARIES})
-  target_include_directories(
-    ${TARGET} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    )
-  target_include_directories(
-    ${TARGET} SYSTEM
-    PRIVATE ${RPCLIB_DEPENDENCIES}/include
-    )
-endfunction()
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/include/rpc/version.h.in"
@@ -197,7 +94,103 @@ add_library(${PROJECT_NAME}
   ${DEP_HEADERS}
   ${RPCLIB_HEADERS})
 
-set_rpclib_flags(${PROJECT_NAME})
+# clang is the compiler used for developing mainly, so
+# this is where I set the highest warning level
+# but feel free to add similar flags to GCC
+set(RPCLIB_BUILD_FLAGS "") # reset flags
+
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+
+  list(APPEND RPCLIB_BUILD_FLAGS
+    -Wall -pedantic -Weverything -Wno-c++98-compat
+    -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
+    -Wno-undef -pthread)
+
+  if(RPCLIB_CXX_STANDARD EQUAL 14)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14)
+  elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
+  endif()
+
+  set(RPCLIB_DEP_LIBRARIES "pthread")
+
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+
+  list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
+  if(RPCLIB_CXX_STANDARD EQUAL 14)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14)
+  elseif(RPCLIB_CXX_STANDARD EQUAL 11)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
+  endif()
+
+  set(RPCLIB_DEP_LIBRARIES "pthread")
+
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+
+  target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "WIN32_LEAN_AND_MEAN"
+    "NOMINMAX"
+    "VC_EXTRALEAN"
+    "_CRT_SECURE_NO_WARNINGS"
+    "_CRT_NONSTDC_NO_DEPRECATE"
+    "_WIN32_WINNT=0x0501"
+    "_GNU_SOURCE"
+    "ASIO_HAS_STD_ADDRESSOF"
+    "ASIO_HAS_STD_ARRAY"
+    "ASIO_HAS_CSTDINT"
+    "ASIO_HAS_STD_SHARED_PTR"
+    "ASIO_HAS_STD_TYPE_TRAITS")
+
+endif()
+
+if(RPCLIB_ENABLE_COVERAGE)
+  if(MSVC)
+    message(FATAL_ERROR "Coverage is only supported with non-MS compilers")
+  endif()
+  target_compile_options(${PROJECT_NAME} PUBLIC "--coverage")
+  # yes, this is ugly as "--coverage" is not a library, but a flag
+  # however, this does not work with the LINK_FLAGS target property
+  list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
+endif()
+
+if (RPCLIB_EXTRA_BUILD_FLAGS)
+  list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  "${RPCLIB_COMPILE_DEFINITIONS}"
+  "${RPCLIB_ARCH_DEF}"
+  "${RPCLIB_OS_DEF}"
+  "ASIO_STANDALONE"
+  "RPCLIB_ASIO=clmdep_asio"
+  "RPCLIB_FMT=clmdep_fmt")
+target_compile_definitions(${PROJECT_NAME} PUBLIC 
+  "RPCLIB_MSGPACK=clmdep_msgpack")
+
+if(RPCLIB_ENABLE_LOGGING)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE "RPCLIB_ENABLE_LOGGING")
+endif()
+
+if(RPCLIB_BUILD_FLAGS)
+  target_compile_options(${PROJECT_NAME} PRIVATE ${RPCLIB_BUILD_FLAGS})
+endif()
+
+if(RPCLIB_COMPILE_DEFINITIONS)
+  set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+    COMPILE_DEFINITIONS "${RPCLIB_COMPILE_DEFINITIONS}")
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${RPCLIB_DEP_LIBRARIES})
+target_include_directories(
+  ${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  )
+target_include_directories(
+  ${PROJECT_NAME} SYSTEM
+  PRIVATE ${RPCLIB_DEPENDENCIES}/include
+  )
 
 # When building via conan, respect the compilation settings.
 if ("${CONAN_LINK_RUNTIME}" STREQUAL "/MT")
@@ -246,7 +239,7 @@ install(DIRECTORY include/
 if(RPCLIB_GENERATE_COMPDB)
 
   set(CMAKE_EXPORT_COMPILE_COMMANDS "ON") # for YCM
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+  add_custom_command(PROJECT_NAME ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E
     copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_BINARY_DIR}/../compile_commands.json)
 
