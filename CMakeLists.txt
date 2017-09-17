@@ -94,38 +94,9 @@ add_library(${PROJECT_NAME}
   ${DEP_HEADERS}
   ${RPCLIB_HEADERS})
 
-# clang is the compiler used for developing mainly, so
-# this is where I set the highest warning level
-# but feel free to add similar flags to GCC
 set(RPCLIB_BUILD_FLAGS "") # reset flags
 
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-
-  list(APPEND RPCLIB_BUILD_FLAGS
-    -Wall -pedantic -Weverything -Wno-c++98-compat
-    -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-    -Wno-undef -pthread)
-
-  if(RPCLIB_CXX_STANDARD EQUAL 14)
-    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14)
-  elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
-  endif()
-
-  set(RPCLIB_DEP_LIBRARIES "pthread")
-
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-
-  list(APPEND RPCLIB_BUILD_FLAGS -Wall -pedantic -pthread)
-  if(RPCLIB_CXX_STANDARD EQUAL 14)
-    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14)
-  elseif(RPCLIB_CXX_STANDARD EQUAL 11)
-    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
-  endif()
-
-  set(RPCLIB_DEP_LIBRARIES "pthread")
-
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
   target_compile_definitions(${PROJECT_NAME} PRIVATE
     "WIN32_LEAN_AND_MEAN"
@@ -141,14 +112,27 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     "ASIO_HAS_STD_SHARED_PTR"
     "ASIO_HAS_STD_TYPE_TRAITS")
 
+else()
+  target_compile_options(${PROJECT_NAME} PUBLIC 
+    -std=c++${RPCLIB_CXX_STANDARD})
 endif()
+
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  # clang is the compiler used for developing mainly, so
+  # this is where I set the highest warning level
+  list(APPEND RPCLIB_BUILD_FLAGS
+    -Wall -pedantic -Weverything -Wno-c++98-compat
+    -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
+    -Wno-undef -pthread)
+endif()
+
 
 if(RPCLIB_ENABLE_COVERAGE)
   if(MSVC)
     message(FATAL_ERROR "Coverage is only supported with non-MS compilers")
   endif()
   target_compile_options(${PROJECT_NAME} PUBLIC "--coverage")
-  # yes, this is ugly as "--coverage" is not a library, but a flag
+  # yes, this is ugly as "--coverage" is not a library, but a flag.
   # however, this does not work with the LINK_FLAGS target property
   list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
 endif()
@@ -164,6 +148,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
   "ASIO_STANDALONE"
   "RPCLIB_ASIO=clmdep_asio"
   "RPCLIB_FMT=clmdep_fmt")
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC 
   "RPCLIB_MSGPACK=clmdep_msgpack")
 
@@ -264,7 +249,6 @@ if(RPCLIB_BUILD_EXAMPLES)
   add_subdirectory(examples/mandelbrot)
   add_subdirectory(examples/calculator)
 endif()
-
 
 #
 # Cmake Package
