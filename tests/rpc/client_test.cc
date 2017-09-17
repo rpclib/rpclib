@@ -4,8 +4,8 @@
 #include "rpc/server.h"
 #include "rpc/rpc_error.h"
 #include "testutils.h"
-#include "format.h"
 
+#include <sstream>
 #include <chrono>
 #include <thread>
 
@@ -88,10 +88,12 @@ TEST_F(client_test, timeout_right_msg) {
         client.call("sleep", short_timeout + 10);
         FAIL() << "There was no exception thrown.";
     } catch (rpc::timeout &t) {
-        auto expected_msg = RPCLIB_FMT::format(
-            "rpc::timeout: Timeout of {}ms while calling RPC function '{}'",
-            *client.get_timeout(), "sleep");
-        EXPECT_TRUE(str_match(t.what(), expected_msg));
+        std::stringstream ss;
+        ss 
+          << "rpc::timeout: Timeout of " 
+          << *client.get_timeout()
+          << "ms while calling RPC function 'sleep'";
+        EXPECT_TRUE(str_match(t.what(), ss.str()));
     }
 }
 
