@@ -53,6 +53,7 @@ elseif (APPLE)
   set(RPCLIB_OS_DEF "RPCLIB_MAC")
 endif()
 
+set(RPCLIB_DEPENDENCIES "${CMAKE_CURRENT_LIST_DIR}/dependencies")
 # This function sets the rpclib-specific flags that are used for
 # development. You do not need this in your project. Instead,
 # Findrpclib.cmake supplies a (possibly empty) RPCLIB_EXTRA_FLAGS variable
@@ -153,7 +154,7 @@ function(set_rpclib_flags TARGET)
     )
   target_include_directories(
     ${TARGET} SYSTEM
-    PRIVATE dependencies/include
+    PRIVATE ${RPCLIB_DEPENDENCIES}/include
     )
 endfunction()
 
@@ -173,12 +174,12 @@ file(GLOB_RECURSE RPCLIB_HEADERS
   include/rpc/*.h
   include/msgpack/*.hpp)
 file(GLOB_RECURSE DEP_HEADERS
-  dependencies/include/*.h
-  dependencies/include/*.hpp)
+  ${RPCLIB_DEPENDENCIES}/include/*.h
+  ${RPCLIB_DEP_LIBRARIDEPENDENCIES}/include/*.hpp)
 
 set(DEP_SOURCES
-  dependencies/src/format.cc
-  dependencies/src/posix.cc)
+  ${RPCLIB_DEPENDENCIES}/src/format.cc
+  ${RPCLIB_DEPENDENCIES}/src/posix.cc)
 
 add_library(${PROJECT_NAME}
   lib/rpc/dispatcher.cc
@@ -255,40 +256,7 @@ endif()
 # Unit tests
 #
 if(RPCLIB_BUILD_TESTS)
-  set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
-  set(TEST_SOURCES
-    dependencies/src/gmock-gtest-all.cc
-    tests/testmain.cc
-    tests/testutils.h
-    tests/rpc/dispatcher_test.cc
-    tests/rpc/client_test.cc
-    tests/rpc/response_test.cc
-    tests/rpc/server_test.cc
-    tests/rpc/this_handler_test.cc
-    tests/rpc/this_session_test.cc
-    tests/rpc/server_session_test.cc
-    tests/rpc/this_server_test.cc)
-
-
-  add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
-  target_include_directories(${TEST_PROJECT_NAME} 
-    SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/tests"
-    PRIVATE "dependencies/include")
-  target_link_libraries(
-    ${TEST_PROJECT_NAME}
-    ${PROJECT_NAME}
-    ${RPCLIB_DEP_LIBRARIES})
-
-  # Set less strict warning for tests, since google test is not quite
-  # warning-clean
-  if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-    get_target_property(ORIGINAL_FLAGS ${TEST_PROJECT_NAME} COMPILE_OPTION)
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wno-sign-conversion -Wno-weak-vtables -Wno-unused-member-function
-      -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default
-      -Wno-missing-variable-declarations -Wno-deprecated -Wno-unused-macros -Wno-undef
-      -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion)
-  endif()
-
+  add_subdirectory(tests)
 endif()
 
 #
