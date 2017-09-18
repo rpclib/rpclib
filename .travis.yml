@@ -2,12 +2,9 @@ language: c++
 
 os:
   - linux
-  - osx
 
 env:
   matrix:
-      - RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Debug
-      - RPCLIB_CXX_STANDARD=11 BUILD_TYPE=Debug
       - RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Release
       - RPCLIB_CXX_STANDARD=11 BUILD_TYPE=Release
 
@@ -32,9 +29,7 @@ addons:
 install:
   - if [ "$CXX" == "g++" ];     then export CXX="g++-5" CC="gcc-5"; fi
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update                ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install sfml llvm@3.8 gcc@5 ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then pip install --user cpp-coveralls ; fi
+  - pip install --user cpp-coveralls
   - pip install --user conan
   - conan remote add conan-community https://api.bintray.com/conan/conan-community/conan
 
@@ -42,11 +37,10 @@ script:
   - mkdir build ; cd build
   - conan install .. -r conan-community
   - . ./activate.sh
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export COV=OFF ;else export COV=ON ; fi
   - cmake -DRPCLIB_ENABLE_COVERAGE=$COV -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$RPCLIB_CXX_STANDARD -DCMAKE_INSTALL_PREFIX=../install ..
   - cmake --build . --config $BUILD_TYPE
   - cmake --build . --target install
 
 after_success:
   - ./output/bin/rpc_test
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5 ; fi
+  - coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5
