@@ -49,6 +49,7 @@ void server_session::do_read() {
         // (since it's constexpr), but MSVC insists.
         read_strand_.wrap([this, self, max_read_bytes](std::error_code ec,
                                                        std::size_t length) {
+            if (exit_) { return; }
             if (!ec) {
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
