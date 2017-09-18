@@ -32,7 +32,7 @@ TEST_F(server_session_test, consume_big_param) {
 }
 
 TEST_F(server_session_test, connection_closed_properly) {
-    for (unsigned counter = 0; counter < 2000; ++counter) {
+    for (unsigned counter = 0; counter < 1000; ++counter) {
         rpc::client client("localhost", rpc::constants::DEFAULT_PORT);
         auto response = client.call("func");
     }
