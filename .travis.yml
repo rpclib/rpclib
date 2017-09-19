@@ -1,7 +1,6 @@
 language: c++
-
-os:
-  - linux
+os: linux 
+dist: trusty
 
 env:
   matrix:
@@ -12,23 +11,7 @@ compiler:
   - gcc
   - clang
 
-addons:
-  apt:
-    sources:
-      - llvm-toolchain-precise-3.8
-      - ubuntu-toolchain-r-test
-      - george-edison55-precise-backports
-    packages:
-      - libsfml-dev
-      - g++-5
-      - gcc-5
-      - clang-3.8
-      - cmake
-      - cmake-data
-
 install:
-  - if [ "$CXX" == "g++" ];     then export CXX="g++-5" CC="gcc-5"; fi
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
   - pip install --user cpp-coveralls
   - pip install --user conan
   - pip install --user requests==2.5.3
