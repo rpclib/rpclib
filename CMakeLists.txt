@@ -110,6 +110,12 @@ set(RPCLIB_BUILD_FLAGS "") # reset flags
 if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(${PROJECT_NAME} PUBLIC 
     -std=c++${RPCLIB_CXX_STANDARD})
+  if(RPCLIB_ENABLE_COVERAGE)
+    target_compile_options(${PROJECT_NAME} PRIVATE "--coverage -O0 -g")
+    # yes, this is ugly as "--coverage" is not a library, but a flag.
+    # however, this does not work with the LINK_FLAGS target property
+    list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
+  endif()
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -119,13 +125,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     -Wall -pedantic -Weverything -Wno-c++98-compat
     -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
     -Wno-undef -pthread)
-endif()
-
-if(RPCLIB_ENABLE_COVERAGE)
-  target_compile_options(${PROJECT_NAME} PUBLIC "-g --coverage -O0")
-  # yes, this is ugly as "--coverage" is not a library, but a flag.
-  # however, this does not work with the LINK_FLAGS target property
-  list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
 endif()
 
 if (RPCLIB_EXTRA_BUILD_FLAGS)
