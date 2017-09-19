@@ -111,7 +111,7 @@ if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(${PROJECT_NAME} PUBLIC 
     -std=c++${RPCLIB_CXX_STANDARD})
   if(RPCLIB_ENABLE_COVERAGE)
-    target_compile_options(${PROJECT_NAME} PRIVATE "--coverage -O0 -g")
+    target_compile_options(${PROJECT_NAME} PRIVATE --coverage -O0 -g)
     # yes, this is ugly as "--coverage" is not a library, but a flag.
     # however, this does not work with the LINK_FLAGS target property
     list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
