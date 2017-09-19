@@ -1,35 +1,26 @@
 language: c++
+os: linux 
+dist: trusty
+sudo: required
 
-os:
-  - linux
+matrix:
+  include:
+    - compiler: gcc
+      env: RPCLIB_CXX_STANDARD=11 BUILD_TYPE=Release COVERAGE="ON"
+    - compiler: gcc
+      env: RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Release COVERAGE="OFF"
+    - compiler: clang
+      env: RPCLIB_CXX_STANDARD=11 BUILD_TYPE=Release COVERAGE="OFF"
+    - compiler: clang
+      env: RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Release COVERAGE="OFF"
 
-env:
-  matrix:
-      - RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Release
-      - RPCLIB_CXX_STANDARD=11 BUILD_TYPE=Release
-
-compiler:
-  - gcc
-  - clang
-
-addons:
-  apt:
-    sources:
-      - llvm-toolchain-precise-3.8
-      - ubuntu-toolchain-r-test
-      - george-edison55-precise-backports
-    packages:
-      - libsfml-dev
-      - g++-5
-      - gcc-5
-      - clang-3.8
-      - cmake
-      - cmake-data
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
 
 install:
-  - if [ "$CXX" == "g++" ];     then export CXX="g++-5" CC="gcc-5"; fi
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
-  - pip install --user cpp-coveralls
+  - sudo apt-get install -qq g++-5
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
   - pip install --user conan
   - pip install --user requests==2.5.3
   - conan remote add conan-community https://api.bintray.com/conan/conan-community/conan
@@ -38,10 +29,11 @@ script:
   - mkdir build ; cd build
   - conan install .. -r conan-community
   - . ./activate.sh
-  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$RPCLIB_CXX_STANDARD -DCMAKE_INSTALL_PREFIX=../install ..
+  - cmake -DRPCLIB_ENABLE_COVERAGE=$COVERAGE -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$RPCLIB_CXX_STANDARD -DCMAKE_INSTALL_PREFIX=../install ..
   - cmake --build . --config $BUILD_TYPE
   - cmake --build . --target install
 
 after_success:
-  - ./output/bin/rpc_test
-  - coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5
+  - ./tests/rpc_test
+  - lcov --capture --directory . --output-file coverage.info
+  - bash <(curl -s https://codecov.io/bash)

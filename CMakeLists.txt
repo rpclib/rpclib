@@ -5,6 +5,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(policies)
 include(msvc_support)
+include(coverage)
 
 #
 # Options
@@ -28,9 +29,6 @@ option(RPCLIB_MSVC_STATIC_RUNTIME
   "MSVC only: build with /MT instead of /MD" 
   OFF)
 
-# Perform steps and checks required for MSVC support
-rpclib_msvc_support()
-
 #
 # Other configuration values
 #
@@ -52,6 +50,8 @@ if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND
    NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
   message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
 endif()
+
+set(CMAKE_CXX_STANDARD ${RPCLIB_CXX_STANDARD})
 
 #
 # Compile & install the library
@@ -105,17 +105,13 @@ add_library(${PROJECT_NAME}
   ${DEP_HEADERS}
   ${RPCLIB_HEADERS})
 
+# Perform steps and checks required for MSVC support
+rpclib_msvc_support()
+
 set(RPCLIB_BUILD_FLAGS "") # reset flags
 
-if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  target_compile_options(${PROJECT_NAME} PUBLIC 
-    -std=c++${RPCLIB_CXX_STANDARD})
-  if(RPCLIB_ENABLE_COVERAGE)
-    target_compile_options(${PROJECT_NAME} PRIVATE --coverage -O0 -g)
-    # yes, this is ugly as "--coverage" is not a library, but a flag.
-    # however, this does not work with the LINK_FLAGS target property
-    list(APPEND RPCLIB_DEP_LIBRARIES "--coverage")
-  endif()
+if(RPCLIB_ENABLE_COVERAGE)
+  enable_coverage(${PROJECT_NAME})
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -131,16 +127,17 @@ if (RPCLIB_EXTRA_BUILD_FLAGS)
   list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-  "${RPCLIB_COMPILE_DEFINITIONS}"
-  "${RPCLIB_ARCH_DEF}"
-  "${RPCLIB_OS_DEF}"
-  "ASIO_STANDALONE"
-  "RPCLIB_ASIO=clmdep_asio"
-  "RPCLIB_FMT=clmdep_fmt")
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC 
-  "RPCLIB_MSGPACK=clmdep_msgpack")
+target_compile_definitions(${PROJECT_NAME} 
+  PRIVATE
+    "${RPCLIB_COMPILE_DEFINITIONS}"
+    "${RPCLIB_ARCH_DEF}"
+    "ASIO_STANDALONE"
+    "RPCLIB_ASIO=clmdep_asio"
+    "RPCLIB_FMT=clmdep_fmt"
+  PUBLIC
+    "${RPCLIB_OS_DEF}"
+    "RPCLIB_MSGPACK=clmdep_msgpack"
+  )
 
 if(RPCLIB_ENABLE_LOGGING)
   target_compile_definitions(${PROJECT_NAME} PRIVATE "RPCLIB_ENABLE_LOGGING")

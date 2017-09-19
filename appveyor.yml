@@ -14,6 +14,7 @@ configuration:
 environment:
   matrix:
     - CMAKE_PLATFORM: "Visual Studio 14 2015"
+    - CMAKE_PLATFORM: "Visual Studio 15 2017"
 
 install: true
 
@@ -23,8 +24,6 @@ build_script:
   - git submodule update --init --recursive
   - md build
   - cd build
-  - cmake -DRPCLIB_ENABLE_COVERAGE=ON -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
-  - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
-  - msbuild %MSBuildOptions% rpc.sln
-  - .\output\bin\Release\rpc_test.exe
+  - cmake -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
+  - cmake --build . --config %CONFIGURATION%
+  - .\tests\Release\rpc_test.exe

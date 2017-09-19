@@ -1,3 +1,5 @@
+include(coverage)
+
 set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
 set(TEST_SOURCES
   ${RPCLIB_DEPENDENCIES}/src/gmock-gtest-all.cc
@@ -33,3 +35,6 @@ if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     -Wno-exit-time-destructors -Wno-switch-enum -Wno-format-nonliteral -Wno-unused-parameter -Wno-disabled-macro-expansion)
 endif()
 
+if(RPCLIB_ENABLE_COVERAGE)
+  enable_coverage(${TEST_PROJECT_NAME})
+endif()
