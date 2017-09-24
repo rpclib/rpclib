@@ -3,10 +3,6 @@ os: linux
 dist: trusty
 sudo: required
 
-compiler:
-  - gcc
-  - clang
-
 matrix:
   include:
     - compiler: gcc
