@@ -33,5 +33,6 @@ script:
   - cmake --build . --target install
 
 after_success:
-  - ./output/bin/rpc_test
-  - coveralls --exclude dependencies --exclude test --exclude include/rpc/msgpack --exclude include/rcp/msgpack.hpp --gcov /usr/bin/gcov-5
+  - ./tests/rpc_test
+  - lcov --capture --directory . --output-file coverage.info
+  - bash <(curl -s https://codecov.io/bash)
