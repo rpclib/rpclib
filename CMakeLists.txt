@@ -127,16 +127,17 @@ if (RPCLIB_EXTRA_BUILD_FLAGS)
   list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-  "${RPCLIB_COMPILE_DEFINITIONS}"
-  "${RPCLIB_ARCH_DEF}"
-  "${RPCLIB_OS_DEF}"
-  "ASIO_STANDALONE"
-  "RPCLIB_ASIO=clmdep_asio"
-  "RPCLIB_FMT=clmdep_fmt")
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC 
-  "RPCLIB_MSGPACK=clmdep_msgpack")
+target_compile_definitions(${PROJECT_NAME} 
+  PRIVATE
+    "${RPCLIB_COMPILE_DEFINITIONS}"
+    "${RPCLIB_ARCH_DEF}"
+    "ASIO_STANDALONE"
+    "RPCLIB_ASIO=clmdep_asio"
+    "RPCLIB_FMT=clmdep_fmt"
+  PUBLIC
+    "${RPCLIB_OS_DEF}"
+    "RPCLIB_MSGPACK=clmdep_msgpack"
+  )
 
 if(RPCLIB_ENABLE_LOGGING)
   target_compile_definitions(${PROJECT_NAME} PRIVATE "RPCLIB_ENABLE_LOGGING")
