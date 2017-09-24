@@ -6,10 +6,11 @@ function(enable_coverage TARGET)
     else()
       set(COVERAGE_LIB -lgcov)
     endif()
+
     set_target_properties(${TARGET}
       PROPERTIES
       COMPILE_FLAGS --coverage
-      LINK_FLAGS    ${COVERAGE_LIB} --coverage
+      LINK_FLAGS    "${COVERAGE_LIB} --coverage"
       )
   endif()
 endfunction()
