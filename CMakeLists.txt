@@ -29,9 +29,6 @@ option(RPCLIB_MSVC_STATIC_RUNTIME
   "MSVC only: build with /MT instead of /MD" 
   OFF)
 
-# Perform steps and checks required for MSVC support
-rpclib_msvc_support()
-
 #
 # Other configuration values
 #
@@ -107,6 +104,9 @@ add_library(${PROJECT_NAME}
   ${DEP_SOURCES}
   ${DEP_HEADERS}
   ${RPCLIB_HEADERS})
+
+# Perform steps and checks required for MSVC support
+rpclib_msvc_support()
 
 set(RPCLIB_BUILD_FLAGS "") # reset flags
 
