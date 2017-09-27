@@ -112,7 +112,7 @@ private:
     void close_session(std::shared_ptr<detail::server_session> const& s);
 
 private:
-	  RPCLIB_DECLARE_PIMPL()
+	RPCLIB_DECLARE_PIMPL()
     std::shared_ptr<detail::dispatcher> disp_;
 };
 

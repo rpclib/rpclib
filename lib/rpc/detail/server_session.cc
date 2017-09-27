@@ -53,7 +53,7 @@ void server_session::do_read() {
             if (!ec) {
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
-                while (pac_.next(&result) && !exit_) {
+                while (pac_.next(result) && !exit_) {
                     auto msg = result.get();
                     output_buf_.clear();
 

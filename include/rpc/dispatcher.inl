@@ -34,7 +34,7 @@ void dispatcher::bind(std::string const &name, F func,
             constexpr int args_count = std::tuple_size<args_type>::value;
             enforce_arg_count(name, args_count, args.via.array.size);
             args_type args_real;
-            args.convert(&args_real);
+            args.convert(args_real);
             detail::call(func, args_real);
             return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>();
         }));
@@ -69,7 +69,7 @@ void dispatcher::bind(std::string const &name, F func,
         constexpr int args_count = std::tuple_size<args_type>::value;
         enforce_arg_count(name, args_count, args.via.array.size);
         args_type args_real;
-        args.convert(&args_real);
+        args.convert(args_real);
         auto z = rpc::detail::make_unique<RPCLIB_MSGPACK::zone>();
         auto result = RPCLIB_MSGPACK::object(detail::call(func, args_real), *z);
         return rpc::detail::make_unique<RPCLIB_MSGPACK::object_handle>(result, std::move(z));

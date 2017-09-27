@@ -18,9 +18,7 @@ inline RPCLIB_MSGPACK::unpacked make_unpacked(Types... items) {
     auto obj = std::make_tuple(items...);
     RPCLIB_MSGPACK::sbuffer buf;
     RPCLIB_MSGPACK::pack(buf, obj);
-    RPCLIB_MSGPACK::unpacked msg;
-    RPCLIB_MSGPACK::unpack(&msg, buf.data(), buf.size());
-    return msg;
+    return RPCLIB_MSGPACK::unpack(buf.data(), buf.size());
 }
 
 //! \brief Creates a packed messagepack containing its arguments and returns the

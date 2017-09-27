@@ -3,31 +3,23 @@
  *
  * Copyright (C) 2014 KONDO Takatoshi
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *    Distributed under the Boost Software License, Version 1.0.
+ *    (See accompanying file LICENSE_1_0.txt or copy at
+ *    http://www.boost.org/LICENSE_1_0.txt)
  */
 #ifndef MSGPACK_VERSIONING_HPP
 #define MSGPACK_VERSIONING_HPP
 
 #if !defined(MSGPACK_DEFAULT_API_VERSION)
-#define MSGPACK_DEFAULT_API_VERSION 1
+#define MSGPACK_DEFAULT_API_VERSION 2
 #endif
 
 #define MSGPACK_DEFAULT_API_NS MSGPACK_DETAIL_PP_CAT(v, MSGPACK_DEFAULT_API_VERSION)
 
 #if   MSGPACK_DEFAULT_API_VERSION == 1
 #define MSGPACK_DETAIL_PP_ENABLE_NS_v1 ()
-//#elif MSGPACK_DEFAULT_API_VERSION == 2
-//#define MSGPACK_DETAIL_PP_ENABLE_NS_v2 ()
+#elif MSGPACK_DEFAULT_API_VERSION == 2
+#define MSGPACK_DETAIL_PP_ENABLE_NS_v2 ()
 #else
 #error
 #endif
@@ -44,12 +36,12 @@
 #if defined(_MSC_VER)
 
 #define MSGPACK_DETAIL_PP_MSVC_VA_ARGS_WORKAROUND(define, args) define args
-#define MSGPACK_DETAIL_PP_CHECK(...) MSGPACK_DETAIL_PP_MSVC_VA_ARGS_WORKAROUND(MSGPACK_DETAIL_PP_CHECK_N, (__VA_ARGS__, 0))
+#define MSGPACK_DETAIL_PP_CHECK(...) MSGPACK_DETAIL_PP_MSVC_VA_ARGS_WORKAROUND(MSGPACK_DETAIL_PP_CHECK_N, (__VA_ARGS__, 0, 0))
 #define MSGPACK_DETAIL_PP_CHECK_N(x, n, ...) n
 
 #else  // defined(__MSC_VER)
 
-#define MSGPACK_DETAIL_PP_CHECK(...) MSGPACK_DETAIL_PP_CHECK_N(__VA_ARGS__, 0)
+#define MSGPACK_DETAIL_PP_CHECK(...) MSGPACK_DETAIL_PP_CHECK_N(__VA_ARGS__, 0, 0)
 #define MSGPACK_DETAIL_PP_CHECK_N(x, n, ...) n
 
 #endif // defined(__MSC_VER)

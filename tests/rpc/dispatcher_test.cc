@@ -162,7 +162,7 @@ TEST_F(dispatch_test, argcount_verified_void_nonzero_arg_too_many) {
 
 TEST_F(dispatch_test, unbound_func_error_response) {
     dispatcher.bind("foo", &dummy_void_singlearg);
-    auto msg = make_unpacked(0, 0, "bar", RPCLIB_MSGPACK::type::nil());
+    auto msg = make_unpacked(0, 0, "bar", RPCLIB_MSGPACK::type::nil_t());
     auto response = dispatcher.dispatch(msg.get());
     EXPECT_TRUE(response.get_error() !=
                 std::shared_ptr<RPCLIB_MSGPACK::object_handle>());

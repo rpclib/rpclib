@@ -32,5 +32,6 @@
 # include <rpc/msgpack/preprocessor/stringize.hpp>
 # include <rpc/msgpack/preprocessor/tuple.hpp>
 # include <rpc/msgpack/preprocessor/variadic.hpp>
+# include <rpc/msgpack/preprocessor/wstringize.hpp>
 #
 # endif

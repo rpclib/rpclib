@@ -9,8 +9,7 @@ namespace detail {
 using detail::response;
 
 void dispatcher::dispatch(RPCLIB_MSGPACK::sbuffer const &msg) {
-    RPCLIB_MSGPACK::unpacked unpacked;
-    RPCLIB_MSGPACK::unpack(&unpacked, msg.data(), msg.size());
+    auto unpacked = RPCLIB_MSGPACK::unpack(msg.data(), msg.size());
     dispatch(unpacked.get());
 }
 
@@ -29,7 +28,7 @@ response dispatcher::dispatch(RPCLIB_MSGPACK::object const &msg,
 response dispatcher::dispatch_call(RPCLIB_MSGPACK::object const &msg,
                                    bool suppress_exceptions) {
     call_t the_call;
-    msg.convert(&the_call);
+    msg.convert(the_call);
 
     // TODO: proper validation of protocol (and responding to it)
     // auto &&type = std::get<0>(the_call);
@@ -88,7 +87,7 @@ response dispatcher::dispatch_call(RPCLIB_MSGPACK::object const &msg,
 response dispatcher::dispatch_notification(RPCLIB_MSGPACK::object const &msg,
                                            bool suppress_exceptions) {
     notification_t the_call;
-    msg.convert(&the_call);
+    msg.convert(the_call);
 
     // TODO: proper validation of protocol (and responding to it)
     // auto &&type = std::get<0>(the_call);

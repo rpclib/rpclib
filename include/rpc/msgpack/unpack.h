@@ -3,17 +3,9 @@
  *
  * Copyright (C) 2008-2009 FURUHASHI Sadayuki
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *    Distributed under the Boost Software License, Version 1.0.
+ *    (See accompanying file LICENSE_1_0.txt or copy at
+ *    http://www.boost.org/LICENSE_1_0.txt)
  */
 #ifndef MSGPACK_UNPACKER_H
 #define MSGPACK_UNPACKER_H
@@ -155,6 +147,18 @@ MSGPACK_DLLEXPORT
 msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* pac);
 
 /**
+ * Deserializes one object and set the number of parsed bytes involved.
+ * Returns true if it successes. Otherwise false is returned.
+ * @param mpac    pointer to an initialized msgpack_unpacker object.
+ * @param result  pointer to an initialized msgpack_unpacked object.
+ * @param p_bytes pointer to variable that will be set with the number of parsed bytes.
+ */
+MSGPACK_DLLEXPORT
+msgpack_unpack_return msgpack_unpacker_next_with_size(msgpack_unpacker* mpac,
+                                                      msgpack_unpacked* result,
+                                                      size_t *p_bytes);
+
+/**
  * Initializes a msgpack_unpacked object.
  * The initialized object must be destroyed by msgpack_unpacked_destroy(msgpack_unpacker*).
  * Use the object with msgpack_unpacker_next(msgpack_unpacker*, msgpack_unpacked*) or
@@ -275,4 +279,3 @@ static inline msgpack_zone* msgpack_unpacked_release_zone(msgpack_unpacked* resu
 #endif
 
 #endif /* msgpack/unpack.h */
-

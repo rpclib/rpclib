@@ -72,7 +72,7 @@ struct client::impl {
                     pac_.buffer_consumed(length);
 
                     RPCLIB_MSGPACK::unpacked result;
-                    while (pac_.next(&result)) {
+                    while (pac_.next(result)) {
                         auto r = response(std::move(result));
                         auto id = r.get_id();
                         auto &current_call = ongoing_calls_[id];
