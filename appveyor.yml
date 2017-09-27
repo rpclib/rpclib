@@ -24,10 +24,6 @@ build_script:
   - git submodule update --init --recursive
   - md build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
-  - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
-  - dir
-  - tree
-  - msbuild %MSBuildOptions% rpc.sln
-  - .\test\Release\rpc_test.exe
+  - cmake -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
+  - cmake --build . --config %CONFIGURATION%
+  - .\test\%CONFIGURATION%\rpc_test.exe
