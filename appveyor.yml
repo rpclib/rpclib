@@ -26,4 +26,4 @@ build_script:
   - cd build
   - cmake -DRPCLIB_BUILD_TESTS=ON -G "%CMAKE_PLATFORM%" ..
   - cmake --build . --config %CONFIGURATION%
-  - .\test\%CONFIGURATION%\rpc_test.exe
+  - .\test\Release\rpc_test.exe
