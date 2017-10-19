@@ -270,6 +270,27 @@ int main() {
 }
 ```
 
+### Storing per-session data
+
+```cpp
+#include <unordered_map>
+#include "rpc/server.h"
+#include "rpc/this_session.h"
+
+int main() {
+    rpc::server srv(8080); // listen on TCP port 8080
+    std::unordered_map<rpc::session_id_t, std::string> data;
+
+    srv.bind("store_me_maybe", [](std::string const& value) {
+        auto id = rpc::this_session().id();
+        data[id] = value;
+    });
+
+    srv.run(); // blocking call
+    return 0;
+}
+```
+
 ## Client examples
 
 ### Creating a client

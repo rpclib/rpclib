@@ -11,6 +11,8 @@
 namespace rpc
 {
 
+using session_id_t = std::intptr_t;
+
 //! \brief Constants used in the library
 struct constants RPCLIB_FINAL {
     static RPCLIB_CONSTEXPR std::size_t DEFAULT_BUFFER_SIZE = @RPCLIB_DEFAULT_BUFFER_SIZE@;

@@ -63,6 +63,7 @@ void server_session::do_read() {
                     io_->post([this, msg, z]() {
                         this_handler().clear();
                         this_session().clear();
+                        this_session().set_id(reinterpret_cast<session_id_t>(this));
                         this_server().cancel_stop();
 
                         auto resp = disp_->dispatch(msg, suppress_exceptions_);

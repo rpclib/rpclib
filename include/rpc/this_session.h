@@ -25,12 +25,21 @@ public:
     //! handler.
     void post_exit();
 
+    //! \brief Returns an ID that uniquely identifies a session. 
+    //! \note This is not an ID for the client. If the client disconnects
+    //! and reconnects, this ID may change. That being said, you can
+    //! use this ID to store client-specific information *for the duration
+    //! of the session.
+    session_id_t id() const;
+
     friend class rpc::detail::server_session;
 
 private:
     void clear();
+    void set_id(session_id_t value);
 
     std::atomic_bool exit_{false};
+    session_id_t id_{0};
 };
 
 //! \brief A thread-local object that can be used to control the currently

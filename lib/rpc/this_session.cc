@@ -16,5 +16,13 @@ void this_session_t::clear() {
     exit_ = false;
 }
 
+session_id_t this_session_t::id() const {
+    return id_;
+}
+
+void this_session_t::set_id(session_id_t value) {
+    id_ = value;
+}
+
     
 } /* rpc */ 

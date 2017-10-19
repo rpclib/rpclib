@@ -5,6 +5,7 @@
 
 #include "rpc/client.h"
 #include "rpc/server.h"
+#include "rpc/this_session.h"
 #include "rpc/rpc_error.h"
 #include "rpc/detail/make_unique.h"
 #include "testutils.h"
@@ -18,6 +19,7 @@ public:
             c("127.0.0.1", test_port) {
         s.bind("consume_big_param", [](std::string const& str){ (void)str; });
         s.bind("func", [](){ return 0; });
+        s.bind("get_sid", [](){ return rpc::this_session().id(); });
         s.async_run();
     }
 
@@ -42,6 +44,13 @@ TEST_F(server_session_test, connection_closed_properly) {
         auto response = client.call("func");
     }
     // no crash is enough
+}
+
+TEST_F(server_session_test, session_id_unique) {
+    rpc::client c2("localhost", rpc::constants::DEFAULT_PORT);
+    auto sid1 = c.call("get_sid").as<rpc::session_id_t>();
+    auto sid2 = c2.call("get_sid").as<rpc::session_id_t>();
+    EXPECT_NE(sid1, sid2);
 }
 
 TEST(server_session_test_bug153, bug_153_crash_on_client_timeout) {
