@@ -21,15 +21,11 @@ before_install:
 install:
   - sudo apt-get install -qq g++-5
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
-  - pip install --user conan
-  - pip install --user requests==2.5.3
-  - conan remote add conan-community https://api.bintray.com/conan/conan-community/conan
+  - wget https://cmake.org/files/v3.9/cmake-3.9.2-Linux-x86_64.sh
+  - sudo sh cmake-3.9.2-Linux-x86_64.sh -- --skip-license --prefix=/usr
 
 script:
   - mkdir build ; cd build
-  - cat ~/.conan/settings.yml
-  - conan install .. -r conan-community
-  - . ./activate.sh
   - cmake -DRPCLIB_ENABLE_COVERAGE=$COVERAGE -DRPCLIB_BUILD_TESTS=ON -DRPCLIB_CXX_STANDARD=$RPCLIB_CXX_STANDARD -DCMAKE_INSTALL_PREFIX=../install ..
   - cmake --build . --config $BUILD_TYPE
   - cmake --build . --target install
