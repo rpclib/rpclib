@@ -1,7 +1,12 @@
+#include <chrono>
+#include <memory>
+
 #include "gtest/gtest.h"
 
 #include "rpc/client.h"
 #include "rpc/server.h"
+#include "rpc/rpc_error.h"
+#include "rpc/detail/make_unique.h"
 #include "testutils.h"
 
 using namespace rpc::testutils;
@@ -36,5 +41,25 @@ TEST_F(server_session_test, connection_closed_properly) {
         rpc::client client("localhost", rpc::constants::DEFAULT_PORT);
         auto response = client.call("func");
     }
+    // no crash is enough
+}
+
+TEST(server_session_test_bug153, bug_153_crash_on_client_timeout) {
+    rpc::server s("127.0.0.1", rpc::constants::DEFAULT_PORT);
+    s.bind("bug_153", []() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        return 0;
+    });
+    s.async_run();
+
+    auto client = std::unique_ptr<rpc::client>(new rpc::client("localhost", rpc::constants::DEFAULT_PORT));
+    client->set_timeout(5);
+  
+    try {
+        client->call("bug_153");
+    } catch(rpc::timeout& ) {
+        client.reset();
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
     // no crash is enough
 }

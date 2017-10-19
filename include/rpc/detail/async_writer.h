@@ -49,8 +49,15 @@ public:
 
                     if (exit_) {
                         LOG_INFO("Closing socket");
-                        socket_.shutdown(
-                            RPCLIB_ASIO::ip::tcp::socket::shutdown_both);
+                        try {
+                            socket_.shutdown(
+                                RPCLIB_ASIO::ip::tcp::socket::shutdown_both);
+                        }
+                        catch (std::system_error &e) {
+                            (void)e;
+                            LOG_WARN("std::system_error during socket shutdown. "
+                                     "Code: {}. Message: {}", e.code(), e.what());
+                        }
                         socket_.close();
                     }
                 }));
