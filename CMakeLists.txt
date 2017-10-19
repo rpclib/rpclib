@@ -6,6 +6,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(policies)
 include(msvc_support)
 include(coverage)
+include(check_warning_flag)
 
 #
 # Options
@@ -120,8 +121,19 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   list(APPEND RPCLIB_BUILD_FLAGS
     -Wall -pedantic -Weverything -Wno-c++98-compat
     -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-    -Wno-undef -Wno-unused-lambda-capture -Wno-zero-as-null-pointer-constant
-    -pthread)
+    -Wno-undef -pthread)
+
+    set(UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
+    check_warning_flag("unused-lambda-capture" UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
+    if(${UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED})
+      list(APPEND RPCLIB_BUILD_FLAGS -Wno-no-unused-lambda-capture)
+    endif()
+
+    check_warning_flag("zero-as-null-pointer-constant" ZERO_AS_NULL_POINTER_CONSTANT_WARN_SUPPORTED)
+    set(ZERO_AS_NULL_POINTER_CONSTANT_WARN_SUPPORTED)
+    if(${ZERO_AS_NULL_POINTER_CONSTANT_WARN_SUPPORTED})
+      list(APPEND RPCLIB_BUILD_FLAGS -Wno-zero-as-null-pointer-constant)
+    endif()
 endif()
 
 if (RPCLIB_EXTRA_BUILD_FLAGS)
