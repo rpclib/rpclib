@@ -120,7 +120,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   list(APPEND RPCLIB_BUILD_FLAGS
     -Wall -pedantic -Weverything -Wno-c++98-compat
     -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-    -Wno-undef -pthread)
+    -Wno-undef -Wno-unused-lambda-capture -Wno-zero-as-null-pointer-constant
+    -pthread)
 endif()
 
 if (RPCLIB_EXTRA_BUILD_FLAGS)
