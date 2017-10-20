@@ -73,7 +73,7 @@ TEST_F(client_test, timeout_setting_works) {
     client.set_timeout(short_timeout);
 
     EXPECT_EQ(*client.get_timeout(), short_timeout);
-    EXPECT_THROW(client.call("sleep", short_timeout + 1), rpc::timeout);
+    EXPECT_THROW(client.call("sleep", short_timeout + 10), rpc::timeout);
 
     client.set_timeout(short_timeout * 2);
     EXPECT_EQ(*client.get_timeout(), short_timeout * 2);
