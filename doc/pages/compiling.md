@@ -30,6 +30,3 @@ There are some compilation options that affect the build output. These options c
 |`RPCLIB_BUILD_EXAMPLES` | ON | Builds the collection of example programs that demonstrate the features of `rpclib`.
 | `RPCLIB_ENABLE_LOGGING` | OFF |Enables the internal logging of `rpclib`. This slightly affects performance. Currently the logging is not very configurable (for example, everything goes to stdout), but there are plans to make it easier to integrate with your application. Use this feature for debugging purposes.
 |`RPCLIB_ENABLE_COVERAGE` | OFF | This enables passing the code coverage generation flag when building with g++. It is used on Travis to provide coverage monitoring in tandem with Coveralls.io.
-|`RPCLIB_FORCE_M64` | OFF | Force -m64 for g++ and clang++. Your build tools must support cross-compilation if this is not your native environment.
-|`RPCLIB_FORCE_M32` | OFF | Force -m32 for g++ and clang++. Your build tools must support cross-compilation if this is not your native environment.
-|`RPCLIB_EXTRA_BUILD_FLAGS` | "" | Use this to pass extra flags to rpclib for building, such as `-fPIC`. Please note that I don't normally test and build with such flags
