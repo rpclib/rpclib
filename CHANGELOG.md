@@ -1,5 +1,17 @@
 # Changelog
 
+### 2.2.0
+
+This release fixed a number of long-standing issues.
+
+  * Fixed macOS build (#142)
+  * Simplified and modularized CMake script (#94)
+  * Updated msgpack (#152)
+  * Fixed a bug where the server could crash if the client timed out (#153)
+  * Added `this_session()->id()` which is a unique, per-session id
+  * Fixed code coverage (moved away from coveralls.io)
+  * Added waffle.io badge
+
 ### 2.1.1
 
 This release fixes an embarrassing build breakage.
