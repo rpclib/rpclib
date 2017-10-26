@@ -35,8 +35,12 @@ private:
     RPCLIB_MSGPACK::object_handle ob_h_;
 };
 
+//! \brief This exception is thrown by the client when either the connection
+//! or a call takes more time than it is set in set_timeout.
+//! \note There isn't necessarily a timeout set, it is an optional value.
 class timeout : public std::runtime_error {
 public:
+    //! \brief Describes the exception.
     const char *what() const noexcept override;
 
 private:

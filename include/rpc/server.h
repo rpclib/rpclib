@@ -42,6 +42,8 @@ public:
     //! \brief Constructs a server that listens on the specified address on
     //! the specified port.
     //!
+    //! \param address The address to bind to. This only works if oee of your
+    //! network adapaters control the given address.
     //! \param port The port number to listen on.
     server(std::string const &address, uint16_t port);
 
