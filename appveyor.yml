@@ -14,7 +14,7 @@ configuration:
 environment:
   matrix:
     - CMAKE_PLATFORM: "Visual Studio 14 2015"
-    - CMAKE_PLATFORM: "Visual Studio 15 2017"
+    #- CMAKE_PLATFORM: "Visual Studio 15 2017"
 
 install: true
 
