@@ -4,13 +4,19 @@
 
 This release fixed a number of long-standing issues.
 
+*Fixes*:
+
   * Fixed macOS build (#142)
-  * Simplified and modularized CMake script (#94)
   * Updated msgpack (#152)
   * Fixed a bug where the server could crash if the client timed out (#153)
-  * Added `this_session()->id()` which is a unique, per-session id
   * Fixed code coverage (moved away from coveralls.io)
+
+*Additions*:
+
+  * Simplified and modularized CMake script (#94)
+  * Added `this_session()->id()` which is a unique, per-session id
   * Added waffle.io badge
+  * Added missing client::clear_timeout function
 
 ### 2.1.1
 

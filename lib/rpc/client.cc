@@ -128,6 +128,18 @@ struct client::impl {
         writer_->write(std::move(item));
     }
 
+    nonstd::optional<int64_t> get_timeout() {
+        return timeout_;
+    }
+
+    void set_timeout(int64_t value) {
+        timeout_ = value;
+    }
+
+    void clear_timeout() {
+        timeout_ = nonstd::nullopt;
+    }
+
     using call_t =
         std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
 
@@ -207,11 +219,15 @@ client::connection_state client::get_connection_state() const {
 }
 
 nonstd::optional<int64_t> client::get_timeout() const {
-    return pimpl->timeout_;
+    return pimpl->get_timeout();
 }
 
 void client::set_timeout(int64_t value) {
-    pimpl->timeout_ = value;
+    pimpl->set_timeout(value);
+}
+
+void client::clear_timeout() {
+    pimpl->clear_timeout();
 }
 
 void client::wait_all_responses() {

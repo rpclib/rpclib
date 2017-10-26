@@ -97,6 +97,15 @@ TEST_F(client_test, timeout_right_msg) {
     }
 }
 
+TEST_F(client_test, timeout_clear) {
+    rpc::client client("127.0.0.1", test_port);
+    EXPECT_FALSE(client.get_timeout());
+    client.set_timeout(50);
+    EXPECT_EQ(50, *client.get_timeout());
+    client.clear_timeout();
+    EXPECT_FALSE(client.get_timeout());
+}
+
 TEST(client_test2, timeout_while_connection) {
     rpc::client client("localhost", rpc::constants::DEFAULT_PORT);
     client.set_timeout(50);

@@ -108,8 +108,12 @@ public:
     nonstd::optional<int64_t> get_timeout() const;
 
     //! \brief Sets the timeout for synchronous calls. For more information,
-    //! see client::get_timeout().
+    //! see get_timeout().
     void set_timeout(int64_t value);
+
+    //! \brief Clears the timeout for synchronous calls. For more information,
+    //! see get_timeout().
+    void clear_timeout();
 
     //! \brief Enum representing the connection states of the client.
     enum class connection_state { initial, connected, disconnected, reset };
