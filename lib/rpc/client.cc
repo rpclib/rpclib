@@ -80,8 +80,7 @@ struct client::impl {
                             if (r.get_error()) {
                                 throw rpc_error("rpc::rpc_error during call",
                                                 std::get<0>(current_call),
-                                                RPCLIB_MSGPACK::clone(
-                                                    r.get_error()->get()));
+                                                r.get_error());
                             }
                             std::get<1>(current_call)
                                 .set_value(std::move(*r.get_result()));

@@ -23,16 +23,16 @@ public:
 
     //! \brief Returns the error object that the server
     //! provided.
-    virtual RPCLIB_MSGPACK::object_handle& get_error();
+    virtual RPCLIB_MSGPACK::object_handle &get_error();
 
 private:
     friend class client;
     rpc_error(std::string const &what_arg, std::string const &function_name,
-              RPCLIB_MSGPACK::object_handle o);
+              std::shared_ptr<RPCLIB_MSGPACK::object_handle> o);
 
 private:
     std::string func_name_;
-    RPCLIB_MSGPACK::object_handle ob_h_;
+    std::shared_ptr<RPCLIB_MSGPACK::object_handle> ob_h_;
 };
 
 //! \brief This exception is thrown by the client when either the connection
