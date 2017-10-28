@@ -9,6 +9,6 @@ static constexpr unsigned VERSION_MAJOR = 2;
 static constexpr unsigned VERSION_MINOR = 2;
 static constexpr unsigned VERSION_PATCH = 0;
 
-} /* rpc */
+}  // namespace rpc
 
 #endif /* end of include guard: VERSION_H_IN_LZK5UJ7E */

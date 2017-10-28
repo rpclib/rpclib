@@ -8,10 +8,10 @@
 namespace rpc {
 namespace detail {
 
-template<typename T, T I>
+template <typename T, T I>
 struct constant : std::integral_constant<T, I> {};
 
-}
-}
+}  // namespace detail
+}  // namespace rpc
 
 #endif /* end of include guard: CONSTANT_H_5CXUYJEW */

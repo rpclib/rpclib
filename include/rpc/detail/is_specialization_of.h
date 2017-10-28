@@ -14,7 +14,7 @@ struct is_specialization_of : false_ {};
 template <template <typename...> class Templ, typename... T>
 struct is_specialization_of<Templ, Templ<T...>> : true_ {};
 
-}
-} /* rpc  */
+}  // namespace detail
+}  // namespace rpc
 
 #endif /* end of include guard: IS_SPECIALIZATION_OF_H_OPZTARVG */

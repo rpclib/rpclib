@@ -13,16 +13,16 @@ class server_session;
 //! currently executing handler.
 class this_server_t {
 public:
-    //! \brief Gracefully stops the server.
-    void stop();
+  //! \brief Gracefully stops the server.
+  void stop();
 
-    //! \brief Cancels a requested stop operation.
-    void cancel_stop();
+  //! \brief Cancels a requested stop operation.
+  void cancel_stop();
 
-    friend class rpc::detail::server_session;
+  friend class rpc::detail::server_session;
 
 private:
-    bool stopping_;
+  bool stopping_;
 };
 
 //! \brief A thread-local object that can be used to control
@@ -32,6 +32,6 @@ private:
 //! running is potentially unsafe.
 this_server_t &this_server();
 
-} /* rpc */
+}  // namespace rpc
 
 #endif /* end of include guard: THIS_SERVER_H_X0CJLVVW */

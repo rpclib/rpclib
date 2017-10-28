@@ -8,10 +8,9 @@
 namespace rpc {
 namespace detail {
 
-template<typename B>
+template <typename B>
 using not_ = bool_<!B::value>;
-
 }
-}
+}  // namespace rpc
 
 #endif /* end of include guard: NOT_H_0MEGQWII */

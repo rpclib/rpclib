@@ -10,12 +10,12 @@
 namespace rpc {
 namespace detail {
 inline void name_thread(std::string const &name) {
-    (void)name;
+  (void)name;
 #ifdef RPCLIB_LINUX
-    pthread_setname_np(pthread_self(), name.c_str());
+  pthread_setname_np(pthread_self(), name.c_str());
 #endif
 }
-} /* detail */
-} /* rpc */
+}  // namespace detail
+}  // namespace rpc
 
 #endif /* end of include guard: DEV_UTILS_H_JQSWE2OS */

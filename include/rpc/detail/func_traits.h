@@ -22,14 +22,26 @@ struct nonzero_arg {};
 struct void_result {};
 struct nonvoid_result {};
 
-template <int N> struct arg_count_trait { typedef nonzero_arg type; };
+template <int N>
+struct arg_count_trait {
+  typedef nonzero_arg type;
+};
 
-template <> struct arg_count_trait<0> { typedef zero_arg type; };
+template <>
+struct arg_count_trait<0> {
+  typedef zero_arg type;
+};
 
-template <typename T> struct result_trait { typedef nonvoid_result type; };
+template <typename T>
+struct result_trait {
+  typedef nonvoid_result type;
+};
 
-template <> struct result_trait<void> { typedef void_result type; };
-}
+template <>
+struct result_trait<void> {
+  typedef void_result type;
+};
+}  // namespace tags
 
 //! \brief Provides a small function traits implementation that
 //! works with a reasonably large set of functors.
@@ -42,10 +54,11 @@ struct func_traits<R (C::*)(Args...)> : func_traits<R (*)(Args...)> {};
 template <typename C, typename R, typename... Args>
 struct func_traits<R (C::*)(Args...) const> : func_traits<R (*)(Args...)> {};
 
-template <typename R, typename... Args> struct func_traits<R (*)(Args...)> {
-    using result_type = R;
-    using arg_count = std::integral_constant<std::size_t, sizeof...(Args)>;
-    using args_type = std::tuple<typename std::decay<Args>::type...>;
+template <typename R, typename... Args>
+struct func_traits<R (*)(Args...)> {
+  using result_type = R;
+  using arg_count = std::integral_constant<std::size_t, sizeof...(Args)>;
+  using args_type = std::tuple<typename std::decay<Args>::type...>;
 };
 
 template <typename T>
@@ -58,12 +71,14 @@ template <typename C, typename R, typename... Args>
 struct func_kind_info<R (C::*)(Args...) const>
     : func_kind_info<R (*)(Args...)> {};
 
-template <typename R, typename... Args> struct func_kind_info<R (*)(Args...)> {
-    typedef typename tags::arg_count_trait<sizeof...(Args)>::type args_kind;
-    typedef typename tags::result_trait<R>::type result_kind;
+template <typename R, typename... Args>
+struct func_kind_info<R (*)(Args...)> {
+  typedef typename tags::arg_count_trait<sizeof...(Args)>::type args_kind;
+  typedef typename tags::result_trait<R>::type result_kind;
 };
 
-template <typename F> using is_zero_arg = is_zero<func_traits<F>::arg_count>;
+template <typename F>
+using is_zero_arg = is_zero<func_traits<F>::arg_count>;
 
 template <typename F>
 using is_single_arg =
@@ -71,7 +86,7 @@ using is_single_arg =
 
 template <typename F>
 using is_void_result = std::is_void<typename func_traits<F>::result_type>;
-}
-}
+}  // namespace detail
+}  // namespace rpc
 
 #endif /* end of include guard: FUNC_TRAITS_H_HWIWA6G0 */

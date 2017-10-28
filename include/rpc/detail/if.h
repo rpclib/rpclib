@@ -11,6 +11,6 @@ namespace detail {
 template <typename C, typename T, typename F>
 using if_ = invoke<std::conditional<C::value, T, F>>;
 }
-}
+}  // namespace rpc
 
 #endif /* end of include guard: IF_H_1OW9DR7G */

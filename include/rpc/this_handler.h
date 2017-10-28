@@ -16,7 +16,7 @@ namespace detail {
 class server_session;
 class handler_error {};
 class handler_spec_response {};
-}
+}  // namespace detail
 
 //! \brief Encapsulates information about the currently executing
 //! handler. This is the interface through which bound functions
@@ -27,45 +27,47 @@ class handler_spec_response {};
 //! and everything will "just work".
 class this_handler_t {
 public:
-    //! \brief Sets an arbitrary object to be sent back as an error
-    //! response to the client.
-    //! \param err_obj The error object. This can be anything that
-    //! is possible to encode with messagepack (even custom structures).
-    //! \tparam T The type of the error object.
-    template <typename T> void respond_error(T &&err_obj);
+  //! \brief Sets an arbitrary object to be sent back as an error
+  //! response to the client.
+  //! \param err_obj The error object. This can be anything that
+  //! is possible to encode with messagepack (even custom structures).
+  //! \tparam T The type of the error object.
+  template <typename T>
+  void respond_error(T &&err_obj);
 
-    //! \brief Sets an arbitrary object to be sent back as the response
-    //! to the call.
-    //! \param resp_obj The response object. This can be anything that
-    //! is possible to encode with messagepack (even custom structures).
-    //! \tparam T The type of the response object.
-    //! \note The normal return value of the function (if any) will be
-    //! ignored if a special response is set.
-    //! \note You can use clear_special_response() to clear the special
-    //! response and use the normal return value.
-    template <typename T> void respond(T &&resp_obj);
+  //! \brief Sets an arbitrary object to be sent back as the response
+  //! to the call.
+  //! \param resp_obj The response object. This can be anything that
+  //! is possible to encode with messagepack (even custom structures).
+  //! \tparam T The type of the response object.
+  //! \note The normal return value of the function (if any) will be
+  //! ignored if a special response is set.
+  //! \note You can use clear_special_response() to clear the special
+  //! response and use the normal return value.
+  template <typename T>
+  void respond(T &&resp_obj);
 
-    //! \brief Instructs the server to not send a response to the client
-    //! (ignoring any errors and return values).
-    //! \note It is unusual to not send a response to requests, and doing so
-    //! might cause problems in the client (depending on its implementation).
-    void disable_response();
+  //! \brief Instructs the server to not send a response to the client
+  //! (ignoring any errors and return values).
+  //! \note It is unusual to not send a response to requests, and doing so
+  //! might cause problems in the client (depending on its implementation).
+  void disable_response();
 
-    //! \brief Enables sending a response to the call. Sending the response
-    //! is by default enabled. Enabling the response multiple times have
-    //! no effect.
-    void enable_response();
+  //! \brief Enables sending a response to the call. Sending the response
+  //! is by default enabled. Enabling the response multiple times have
+  //! no effect.
+  void enable_response();
 
-    //! \brief Sets all state of the object to default.
-    void clear();
+  //! \brief Sets all state of the object to default.
+  void clear();
 
-    friend class rpc::detail::server_session;
+  friend class rpc::detail::server_session;
 
 private:
-    RPCLIB_MSGPACK::object_handle error_, resp_;
-    bool resp_enabled_ = true;
+  RPCLIB_MSGPACK::object_handle error_, resp_;
+  bool resp_enabled_ = true;
 };
-}
+}  // namespace rpc
 
 #include "this_handler.inl"
 
@@ -76,7 +78,6 @@ namespace rpc {
 //! \note Accessing this object outside of handlers while a server is
 //! running is potentially unsafe.
 this_handler_t &this_handler();
-}
+}  // namespace rpc
 
 #endif /* end of include guard: HANDLER_H_BZ8DT5WS */
-

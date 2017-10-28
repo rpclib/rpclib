@@ -7,9 +7,11 @@ namespace detail {
 
 client_error::client_error(code c, const std::string &msg)
     : what_(RPCLIB_FMT::format("client error C{0:04x}: {1}",
-                               static_cast<uint16_t>(c), msg)) {}
+                               static_cast<uint16_t>(c),
+                               msg)) {}
 
-const char *client_error::what() const noexcept { return what_.c_str(); }
+const char *client_error::what() const noexcept {
+  return what_.c_str();
 }
-}
-
+}  // namespace detail
+}  // namespace rpc
