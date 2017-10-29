@@ -35,7 +35,7 @@ struct client::impl {
         addr_(addr),
         port_(port),
         is_connected_(false),
-        state_(client::connection_state::initial),
+        state_(connection_state::initial),
         writer_(std::make_shared<detail::async_writer>(
             &io_,
             RPCLIB_ASIO::ip::tcp::socket(io_))),
@@ -52,7 +52,7 @@ struct client::impl {
             std::unique_lock<std::mutex> lock(mut_connection_finished_);
             LOG_INFO("Client connected to {}:{}", addr_, port_);
             is_connected_ = true;
-            state_ = client::connection_state::connected;
+            set_state(connection_state::connected);
             conn_finished_.notify_all();
             do_read();
           } else {
@@ -103,13 +103,13 @@ struct client::impl {
             do_read();
           } else if (ec == RPCLIB_ASIO::error::eof) {
             LOG_WARN("The server closed the connection.");
-            state_ = client::connection_state::disconnected;
+            set_state(connection_state::disconnected);
           } else if (ec == RPCLIB_ASIO::error::connection_reset) {
             // Yes, this should be connection_state::reset,
             // but on windows, disconnection results in reset. May be
             // asio bug, may be a windows socket pecularity. Should be
             // investigated later.
-            state_ = client::connection_state::disconnected;
+            set_state(connection_state::disconnected);
             LOG_WARN("The connection was reset.");
           } else {
             LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
@@ -117,7 +117,15 @@ struct client::impl {
         });
   }
 
-  client::connection_state get_connection_state() const { return state_; }
+  connection_state get_connection_state() const { return state_; }
+
+  void set_state(connection_state state) {
+    auto prev = state_.load();
+    state_ = state;
+    if (callback_) {
+      callback_->first(callback_->second, parent_, prev, state_);
+    }
+  }
 
   //! \brief Waits for the write queue and writes any buffers to the network
   //! connection. Should be executed throught strand_.
@@ -129,8 +137,14 @@ struct client::impl {
 
   void clear_timeout() { timeout_ = nonstd::nullopt; }
 
+  void set_state_handler(state_handler_t cb, void *func) {
+    callback_ = std::make_pair(cb, func);
+  }
+
   using call_t =
       std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
+
+  using callback_t = std::pair<rpc::detail::state_handler_t, void *>;
 
   client *parent_;
   RPCLIB_ASIO::io_service io_;
@@ -144,9 +158,10 @@ struct client::impl {
   std::condition_variable conn_finished_;
   std::mutex mut_connection_finished_;
   std::thread io_thread_;
-  std::atomic<client::connection_state> state_;
+  std::atomic<connection_state> state_;
   std::shared_ptr<detail::async_writer> writer_;
   nonstd::optional<int64_t> timeout_;
+  nonstd::optional<callback_t> callback_;
   RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
@@ -204,7 +219,7 @@ void client::post(RPCLIB_MSGPACK::sbuffer *buffer) {
   });
 }
 
-client::connection_state client::get_connection_state() const {
+connection_state client::get_connection_state() const {
   return pimpl->get_connection_state();
 }
 
@@ -230,6 +245,11 @@ RPCLIB_NORETURN void client::throw_timeout(std::string const &func_name) {
   throw rpc::timeout(
       RPCLIB_FMT::format("Timeout of {}ms while calling RPC function '{}'",
                          *get_timeout(), func_name));
+}
+
+void client::set_state_handler_(detail::state_handler_t cb,
+                                void *func) {
+  pimpl->set_state_handler(cb, func);
 }
 
 client::~client() {

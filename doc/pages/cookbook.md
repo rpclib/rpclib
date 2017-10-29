@@ -365,7 +365,7 @@ int main() {
 
 int main() {
     rpc::client c("127.0.0.1", 8080);
-    client::connection_state cs = c.get_connection_state();
+    connection_state cs = c.get_connection_state();
 
     return 0;
 }

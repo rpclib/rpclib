@@ -9,6 +9,7 @@
 #include <thread>
 #include "asio.hpp"
 #include "rpc/msgpack.hpp"
+#include "rpc/detail/log.h"
 
 namespace rpc {
 

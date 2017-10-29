@@ -12,6 +12,18 @@
 
 namespace rpc {
 
+class client;
+
+//! \brief Enum representing the connection states of the client.
+enum class connection_state { initial, connected, disconnected, reset };
+
+namespace detail {
+using state_handler_t = void (*)(void *,
+                                 rpc::client *,
+                                 connection_state,
+                                 connection_state);
+}  // namespace detail
+
 //! \brief Implements a client that connects to a msgpack-rpc server and is
 //! able to call functions synchronously or asynchronously. This is the main
 //! interfacing point for implementing client applications.
@@ -117,16 +129,24 @@ public:
   //! see get_timeout().
   void clear_timeout();
 
-  //! \brief Enum representing the connection states of the client.
-  enum class connection_state { initial, connected, disconnected, reset };
-
   //! \brief Returns the current connection state.
   connection_state get_connection_state() const;
 
   //! \brief Waits for the completion of all ongoing calls.
   void wait_all_responses();
 
+  template <typename Func>
+  void set_state_handler(Func func);
+
 private:
+  template <typename Func>
+  static void state_handler_cb(void *func,
+                        rpc::client *client,
+                        connection_state previous,
+                        connection_state current);
+
+  void set_state_handler_(detail::state_handler_t cb, void *func);
+
   //! \brief Type of a promise holding a future response.
   using rsp_promise = std::promise<RPCLIB_MSGPACK::object_handle>;
 
