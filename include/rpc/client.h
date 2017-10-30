@@ -46,6 +46,15 @@ public:
   //! \param port The port on the server to connect to.
   client(std::string const &addr, uint16_t port);
 
+  //! \brief Constructs a client with a connection state callback.
+  //! Without this constructor, it is possible that the handler
+  //! set via set_state_handler() never receives the initial->connected
+  //! state change because the connection is initiated during construction.
+  //! This constructor overload guarantees that the callback is set
+  //! before the connection is initiated.
+  template <typename Func>
+  client(std::string const &addr, uint16_t port, Func f);
+
   //! \cond DOXYGEN_SKIP
   client(client const &) = delete;
   //! \endcond
@@ -139,11 +148,18 @@ public:
   void set_state_handler(Func func);
 
 private:
+  client(std::string const &addr,
+         uint16_t port,
+         detail::state_handler_t cb,
+         void *func);
+
+  void common_init();
+
   template <typename Func>
   static void state_handler_cb(void *func,
-                        rpc::client *client,
-                        connection_state previous,
-                        connection_state current);
+                               rpc::client *client,
+                               connection_state previous,
+                               connection_state current);
 
   void set_state_handler_(detail::state_handler_t cb, void *func);
 

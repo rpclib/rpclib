@@ -165,8 +165,7 @@ struct client::impl {
   RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
-client::client(std::string const &addr, uint16_t port)
-    : pimpl(new client::impl(this, addr, port)) {
+void client::common_init() {
   tcp::resolver resolver(pimpl->io_);
   auto endpoint_it =
       resolver.resolve({pimpl->addr_, std::to_string(pimpl->port_)});
@@ -177,6 +176,21 @@ client::client(std::string const &addr, uint16_t port)
     pimpl->io_.run();
   });
   pimpl->io_thread_ = std::move(io_thread);
+}
+
+client::client(std::string const &addr, uint16_t port)
+    : pimpl(new client::impl(this, addr, port)) {
+  common_init();
+}
+
+client::client(std::string const &addr,
+               uint16_t port,
+               detail::state_handler_t cb,
+               void *func)
+
+    : pimpl(new client::impl(this, addr, port)) {
+  set_state_handler_(cb, func);
+  common_init();
 }
 
 void client::wait_conn() {
@@ -247,8 +261,7 @@ RPCLIB_NORETURN void client::throw_timeout(std::string const &func_name) {
                          *get_timeout(), func_name));
 }
 
-void client::set_state_handler_(detail::state_handler_t cb,
-                                void *func) {
+void client::set_state_handler_(detail::state_handler_t cb, void *func) {
   pimpl->set_state_handler(cb, func);
 }
 
