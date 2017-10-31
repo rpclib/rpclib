@@ -19,7 +19,7 @@ enum class connection_state { initial, connected, disconnected, reset };
 
 namespace detail {
 using state_handler_t = void (*)(void *,
-                                 rpc::client *,
+                                 rpc::client &,
                                  connection_state,
                                  connection_state);
 }  // namespace detail
@@ -157,7 +157,7 @@ private:
 
   template <typename Func>
   static void state_handler_cb(void *func,
-                               rpc::client *client,
+                               rpc::client &client,
                                connection_state previous,
                                connection_state current);
 

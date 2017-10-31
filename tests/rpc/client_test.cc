@@ -116,11 +116,11 @@ TEST(client_test2, timeout_while_connection) {
 
 TEST_F(client_test, cb_test) {
   rpc::client client("127.0.0.1", test_port,
-                     [](rpc::client *client, rpc::connection_state prev,
-                        rpc::connection_state current) {
-                       std::cout << "boo " << (int)prev << " " << (int)current
-                                 << "\n";
+                     [&](rpc::client &c, rpc::connection_state prev,
+                         rpc::connection_state current) {
+                       std::cout << (int)prev << " -> ";
+                       std::cout << (int)current << std::endl;
                      });
   client.call("close");
-  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }

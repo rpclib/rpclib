@@ -123,7 +123,7 @@ struct client::impl {
     auto prev = state_.load();
     state_ = state;
     if (callback_) {
-      callback_->first(callback_->second, parent_, prev, state_);
+      callback_->first(callback_->second, *parent_, prev, state_);
     }
   }
 
