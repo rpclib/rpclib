@@ -43,8 +43,10 @@ struct client::impl {
     pac_.reserve_buffer(default_buffer_size);
   }
 
-  void do_connect(tcp::resolver::iterator endpoint_iterator) {
+  void do_connect() {
     LOG_INFO("Initiating connection.");
+    tcp::resolver resolver(io_);
+    auto endpoint_iterator = resolver.resolve({addr_, std::to_string(port_)});
     RPCLIB_ASIO::async_connect(
         writer_->socket_, endpoint_iterator,
         [this](std::error_code ec, tcp::resolver::iterator) {
@@ -117,6 +119,13 @@ struct client::impl {
         });
   }
 
+  void reconnect() {
+    if (state_ == rpc::connection_state::connected) {
+      return;
+    }
+    do_connect();
+  }
+
   connection_state get_connection_state() const { return state_; }
 
   void set_state(connection_state state) {
@@ -166,10 +175,7 @@ struct client::impl {
 };
 
 void client::common_init() {
-  tcp::resolver resolver(pimpl->io_);
-  auto endpoint_it =
-      resolver.resolve({pimpl->addr_, std::to_string(pimpl->port_)});
-  pimpl->do_connect(endpoint_it);
+  pimpl->do_connect();
   std::thread io_thread([this]() {
     RPCLIB_CREATE_LOG_CHANNEL(client)
     name_thread("client");
@@ -263,6 +269,10 @@ RPCLIB_NORETURN void client::throw_timeout(std::string const &func_name) {
 
 void client::set_state_handler_(detail::state_handler_t cb, void *func) {
   pimpl->set_state_handler(cb, func);
+}
+
+void client::reconnect() {
+  pimpl->reconnect();
 }
 
 client::~client() {

@@ -136,3 +136,27 @@ TEST_F(client_test, cb_test) {
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
   EXPECT_EQ(call_count, 2);
 }
+
+TEST_F(client_test, reconnect_from_cb) {
+  // accessing a non-static local defined in the test body
+  // fails for some reason, probably a googletest peculiarity.
+  static size_t call_count = 0, reconn_count = 0;
+  call_count = 0, reconn_count = 0;
+  rpc::client client("127.0.0.1", test_port,
+                     [&](rpc::client &c, rpc::connection_state prev,
+                         rpc::connection_state current) {
+                       if (reconn_count < 3) {
+                         if (current == rpc::connection_state::disconnected) {
+                           c.reconnect();
+                           ++reconn_count;
+                         }
+                       }
+                     });
+  client.call("close");
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  client.call("close");
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  client.call("close");
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  EXPECT_EQ(reconn_count, 3);
+}

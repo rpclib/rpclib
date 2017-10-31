@@ -147,6 +147,8 @@ public:
   template <typename Func>
   void set_state_handler(Func func);
 
+  void reconnect();
+
 private:
   client(std::string const &addr,
          uint16_t port,
