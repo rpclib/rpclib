@@ -115,12 +115,24 @@ TEST(client_test2, timeout_while_connection) {
 }
 
 TEST_F(client_test, cb_test) {
+  // accessing a non-static local defined in the test body
+  // fails for some reason, probably a googletest peculiarity.
+  static size_t call_count = 0;
+  call_count = 0;
   rpc::client client("127.0.0.1", test_port,
                      [&](rpc::client &c, rpc::connection_state prev,
                          rpc::connection_state current) {
-                       std::cout << (int)prev << " -> ";
-                       std::cout << (int)current << std::endl;
+                       if (call_count == 0) {
+                         EXPECT_EQ(prev, rpc::connection_state::initial);
+                         EXPECT_EQ(current, rpc::connection_state::connected);
+                       } else if (call_count == 1) {
+                         EXPECT_EQ(prev, rpc::connection_state::connected);
+                         EXPECT_EQ(current,
+                                   rpc::connection_state::disconnected);
+                       }
+                       ++call_count;
                      });
   client.call("close");
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  EXPECT_EQ(call_count, 2);
 }
