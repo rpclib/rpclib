@@ -149,6 +149,8 @@ public:
 
   void reconnect();
 
+  // std::future<connection_state> async_reconnect();
+
 private:
   client(std::string const &addr,
          uint16_t port,
@@ -183,6 +185,9 @@ private:
   static constexpr double buffer_grow_factor = 1.8;
   RPCLIB_DECLARE_PIMPL()
 };
+
+bool is_connected(client const &c);
+
 }  // namespace rpc
 
 #include "rpc/client.inl"

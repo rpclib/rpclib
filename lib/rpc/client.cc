@@ -280,4 +280,8 @@ client::~client() {
   pimpl->io_thread_.join();
 }
 
+bool is_connected(client const &c) {
+  return c.get_connection_state() == rpc::connection_state::connected;
+}
+
 }  // namespace rpc
