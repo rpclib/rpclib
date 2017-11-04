@@ -150,6 +150,23 @@ struct client::impl {
     callback_ = std::make_pair(cb, func);
   }
 
+  void wait_conn() {
+    std::unique_lock<std::mutex> lock(mut_connection_finished_);
+    if (!is_connected_) {
+      if (auto timeout = timeout_) {
+        auto result =
+            conn_finished_.wait_for(lock, std::chrono::milliseconds(*timeout));
+        if (result == std::cv_status::timeout) {
+          throw rpc::timeout(
+              RPCLIB_FMT::format("Timeout of {}ms while connecting to {}:{}",
+                                 *get_timeout(), addr_, port_));
+        }
+      } else {
+        conn_finished_.wait(lock);
+      }
+    }
+  }
+
   using call_t =
       std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
 
@@ -164,8 +181,13 @@ struct client::impl {
   uint16_t port_;
   RPCLIB_MSGPACK::unpacker pac_;
   std::atomic_bool is_connected_;
+
+  /// The connection state after do_connect.
+  std::promise<rpc::connection_state> conn_state_prom_;
+
   std::condition_variable conn_finished_;
   std::mutex mut_connection_finished_;
+
   std::thread io_thread_;
   std::atomic<connection_state> state_;
   std::shared_ptr<detail::async_writer> writer_;
@@ -200,20 +222,7 @@ client::client(std::string const &addr,
 }
 
 void client::wait_conn() {
-  std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
-  if (!pimpl->is_connected_) {
-    if (auto timeout = pimpl->timeout_) {
-      auto result = pimpl->conn_finished_.wait_for(
-          lock, std::chrono::milliseconds(*timeout));
-      if (result == std::cv_status::timeout) {
-        throw rpc::timeout(
-            RPCLIB_FMT::format("Timeout of {}ms while connecting to {}:{}",
-                               *get_timeout(), pimpl->addr_, pimpl->port_));
-      }
-    } else {
-      pimpl->conn_finished_.wait(lock);
-    }
-  }
+  pimpl->wait_conn();
 }
 
 int client::get_next_call_idx() {
