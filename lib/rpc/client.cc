@@ -129,7 +129,7 @@ struct client::impl {
   connection_state get_connection_state() const { return state_; }
 
   void set_state(connection_state state) {
-    auto prev = state_.load();
+    connection_state prev = state_;
     state_ = state;
     if (callback_) {
       callback_->first(callback_->second, *parent_, prev, state_);
@@ -152,7 +152,9 @@ struct client::impl {
 
   void wait_conn() {
     std::unique_lock<std::mutex> lock(mut_connection_finished_);
-    if (!is_connected_) {
+    // TODO: there is a race condition here, run with TSAN!
+    connection_state state = state_;
+    if (state != connection_state::connected) {
       if (auto timeout = timeout_) {
         auto result =
             conn_finished_.wait_for(lock, std::chrono::milliseconds(*timeout));
