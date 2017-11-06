@@ -29,6 +29,9 @@ option(RPCLIB_ENABLE_COVERAGE
 option(RPCLIB_MSVC_STATIC_RUNTIME 
   "MSVC only: build with /MT instead of /MD" 
   OFF)
+option(RPCLIB_TSAN
+  "Enable ThreadSanitizer. Intended for rpclib development"
+  OFF)
 
 #
 # Other configuration values
@@ -128,7 +131,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
     check_warning_flag("unused-lambda-capture" UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
     if(${UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED})
-      list(APPEND RPCLIB_BUILD_FLAGS -Wno-no-unused-lambda-capture)
+      list(APPEND RPCLIB_BUILD_FLAGS -Wno-unused-lambda-capture)
     endif()
 
     check_warning_flag("zero-as-null-pointer-constant" ZERO_AS_NULL_POINTER_CONSTANT_WARN_SUPPORTED)
@@ -136,6 +139,11 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     if(${ZERO_AS_NULL_POINTER_CONSTANT_WARN_SUPPORTED})
       list(APPEND RPCLIB_BUILD_FLAGS -Wno-zero-as-null-pointer-constant)
     endif()
+endif()
+
+if (RPCLIB_TSAN)
+  list(APPEND RPCLIB_BUILD_FLAGS -fsanitize=thread)
+  list(APPEND RPCLIB_DEP_LIBRARIES tsan)
 endif()
 
 if (RPCLIB_EXTRA_BUILD_FLAGS)
