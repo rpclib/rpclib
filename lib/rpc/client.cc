@@ -132,7 +132,7 @@ struct client::impl {
     connection_state prev = state_;
     state_ = state;
     if (callback_) {
-      callback_->first(callback_->second, *parent_, prev, state_);
+      (*callback_)(*parent_, prev, state_);
     }
   }
 
@@ -146,8 +146,8 @@ struct client::impl {
 
   void clear_timeout() { timeout_ = nonstd::nullopt; }
 
-  void set_state_handler(state_handler_t cb, void *func) {
-    callback_ = std::make_pair(cb, func);
+  void set_state_handler(state_handler_t callback) {
+    callback_ = std::move(callback);
   }
 
   void wait_conn() {
@@ -172,8 +172,6 @@ struct client::impl {
   using call_t =
       std::pair<std::string, std::promise<RPCLIB_MSGPACK::object_handle>>;
 
-  using callback_t = std::pair<rpc::detail::state_handler_t, void *>;
-
   client *parent_;
   RPCLIB_ASIO::io_service io_;
   RPCLIB_ASIO::strand strand_;
@@ -194,9 +192,9 @@ struct client::impl {
   std::atomic<connection_state> state_;
   std::shared_ptr<detail::async_writer> writer_;
   nonstd::optional<int64_t> timeout_;
-  nonstd::optional<callback_t> callback_;
+  nonstd::optional<state_handler_t> callback_;
   RPCLIB_CREATE_LOG_CHANNEL(client)
-};
+};  // namespace rpc
 
 void client::common_init() {
   pimpl->do_connect();
@@ -213,13 +211,9 @@ client::client(std::string const &addr, uint16_t port)
   common_init();
 }
 
-client::client(std::string const &addr,
-               uint16_t port,
-               detail::state_handler_t cb,
-               void *func)
-
+client::client(std::string const &addr, uint16_t port, state_handler_t cb)
     : pimpl(new client::impl(this, addr, port)) {
-  set_state_handler_(cb, func);
+  set_state_handler(cb);
   common_init();
 }
 
@@ -278,8 +272,8 @@ RPCLIB_NORETURN void client::throw_timeout(std::string const &func_name) {
                          *get_timeout(), func_name));
 }
 
-void client::set_state_handler_(detail::state_handler_t cb, void *func) {
-  pimpl->set_state_handler(cb, func);
+void client::set_state_handler(state_handler_t callback) {
+  pimpl->set_state_handler(callback);
 }
 
 void client::reconnect() {

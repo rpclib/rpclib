@@ -65,22 +65,4 @@ void client::send(std::string const &func_name, Args... args) {
   post(buffer);
 }
 
-template <typename Func>
-void client::set_state_handler(Func func) {
-  set_state_handler_(&state_handler_cb<Func>, &func);
-}
-
-template <typename Func>
-void client::state_handler_cb(void *func,
-                              rpc::client &client,
-                              connection_state previous,
-                              connection_state current) {
-  auto &f = *static_cast<Func *>(func);
-  f(client, previous, current);
-}
-
-template <typename Func>
-client::client(std::string const &addr, uint16_t port, Func f)
-    : client::client(addr, port, &state_handler_cb<Func>, &f) {}
-
 }  // namespace rpc

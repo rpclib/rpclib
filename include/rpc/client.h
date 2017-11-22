@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <future>
 #include <memory>
 
@@ -17,21 +18,21 @@ class client;
 //! \brief Enum representing the connection states of the client.
 enum class connection_state { initial, connected, disconnected, reset };
 
-namespace detail {
-using state_handler_t = void (*)(void *,
-                                 rpc::client &,
-                                 connection_state,
-                                 connection_state);
-}  // namespace detail
+using state_handler_t =
+    std::function<void(rpc::client &, connection_state, connection_state)>;
 
-//! \brief Implements a client that connects to a msgpack-rpc server and is
-//! able to call functions synchronously or asynchronously. This is the main
-//! interfacing point for implementing client applications.
+//! \brief Implements a client that connects to a
+//! msgpack-rpc server and is able to call functions
+//! synchronously or asynchronously. This is the main
+//! interfacing point for implementing client
+//! applications.
 //!
-//! Use this class to connect to msgpack-rpc servers and call their exposed
-//! functions. This class supports calling functions synchronously and
-//! asynchronously. When the client object is created, it initiates connecting
-//! to the given server asynchronically and disconnects when it is destroyed.
+//! Use this class to connect to msgpack-rpc servers and
+//! call their exposed functions. This class supports
+//! calling functions synchronously and asynchronously.
+//! When the client object is created, it initiates
+//! connecting to the given server asynchronically and
+//! disconnects when it is destroyed.
 class client {
 public:
   //! \brief Constructs a client.
@@ -52,8 +53,7 @@ public:
   //! state change because the connection is initiated during construction.
   //! This constructor overload guarantees that the callback is set
   //! before the connection is initiated.
-  template <typename Func>
-  client(std::string const &addr, uint16_t port, Func f);
+  client(std::string const &addr, uint16_t port, state_handler_t f);
 
   //! \cond DOXYGEN_SKIP
   client(client const &) = delete;
@@ -144,28 +144,14 @@ public:
   //! \brief Waits for the completion of all ongoing calls.
   void wait_all_responses();
 
-  template <typename Func>
-  void set_state_handler(Func func);
+  void set_state_handler(state_handler_t callback);
 
   void reconnect();
 
   // std::future<connection_state> async_reconnect();
 
 private:
-  client(std::string const &addr,
-         uint16_t port,
-         detail::state_handler_t cb,
-         void *func);
-
   void common_init();
-
-  template <typename Func>
-  static void state_handler_cb(void *func,
-                               rpc::client &client,
-                               connection_state previous,
-                               connection_state current);
-
-  void set_state_handler_(detail::state_handler_t cb, void *func);
 
   //! \brief Type of a promise holding a future response.
   using rsp_promise = std::promise<RPCLIB_MSGPACK::object_handle>;
