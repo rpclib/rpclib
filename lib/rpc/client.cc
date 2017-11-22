@@ -43,24 +43,29 @@ struct client::impl {
     pac_.reserve_buffer(default_buffer_size);
   }
 
-  void do_connect() {
+  std::future<connection_state> do_connect() {
     LOG_INFO("Initiating connection.");
     tcp::resolver resolver(io_);
     auto endpoint_iterator = resolver.resolve({addr_, std::to_string(port_)});
+    auto conn_promise = std::make_shared<std::promise<connection_state>>();
+    auto ft = conn_promise->get_future();
     RPCLIB_ASIO::async_connect(
         writer_->socket_, endpoint_iterator,
-        [this](std::error_code ec, tcp::resolver::iterator) {
+        [this, conn_promise](std::error_code ec, tcp::resolver::iterator) {
           if (!ec) {
             std::unique_lock<std::mutex> lock(mut_connection_finished_);
             LOG_INFO("Client connected to {}:{}", addr_, port_);
             is_connected_ = true;
             set_state(connection_state::connected);
+            conn_promise->set_value(connection_state::connected);
             conn_finished_.notify_all();
             do_read();
           } else {
             LOG_ERROR("Error during connection: {}", ec);
+            conn_promise->set_value(connection_state::disconnected);
           }
         });
+    return ft;
   }
 
   void do_read() {
@@ -119,12 +124,9 @@ struct client::impl {
         });
   }
 
-  void reconnect() {
-    if (state_ == rpc::connection_state::connected) {
-      return;
-    }
-    do_connect();
-  }
+  std::future<connection_state> async_reconnect() { return do_connect(); }
+
+  connection_state reconnect() { return async_reconnect().get(); }
 
   connection_state get_connection_state() const { return state_; }
 
@@ -276,8 +278,12 @@ void client::set_state_handler(state_handler_t callback) {
   pimpl->set_state_handler(callback);
 }
 
-void client::reconnect() {
-  pimpl->reconnect();
+std::future<connection_state> client::async_reconnect() {
+  return pimpl->async_reconnect();
+}
+
+connection_state client::reconnect() {
+  return pimpl->reconnect();
 }
 
 client::~client() {

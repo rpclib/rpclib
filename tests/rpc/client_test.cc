@@ -137,14 +137,14 @@ TEST_F(client_test, cb_test) {
   EXPECT_EQ(call_count, 2);
 }
 
-TEST_F(client_test, reconnect_from_cb) {
+TEST_F(client_test, async_reconnect_from_cb) {
   size_t call_count = 0, reconn_count = 0;
   rpc::client client("127.0.0.1", test_port,
                      [&](rpc::client &c, rpc::connection_state prev,
                          rpc::connection_state current) {
                        if (reconn_count < 3) {
                          if (current == rpc::connection_state::disconnected) {
-                           c.reconnect();
+                           c.async_reconnect();
                            ++reconn_count;
                          }
                        }

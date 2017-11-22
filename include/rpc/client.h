@@ -146,9 +146,9 @@ public:
 
   void set_state_handler(state_handler_t callback);
 
-  void reconnect();
+  std::future<connection_state> async_reconnect();
 
-  // std::future<connection_state> async_reconnect();
+  connection_state reconnect();
 
 private:
   void common_init();
