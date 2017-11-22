@@ -138,10 +138,7 @@ TEST_F(client_test, cb_test) {
 }
 
 TEST_F(client_test, reconnect_from_cb) {
-  // accessing a non-static local defined in the test body
-  // fails for some reason, probably a googletest peculiarity.
-  static size_t call_count = 0, reconn_count = 0;
-  call_count = 0, reconn_count = 0;
+  size_t call_count = 0, reconn_count = 0;
   rpc::client client("127.0.0.1", test_port,
                      [&](rpc::client &c, rpc::connection_state prev,
                          rpc::connection_state current) {
