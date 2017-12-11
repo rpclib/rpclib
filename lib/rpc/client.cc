@@ -62,6 +62,7 @@ struct client::impl {
             do_read();
           } else {
             LOG_ERROR("Error during connection: {}", ec);
+            set_state(connection_state::disconnected);
             conn_promise->set_value(connection_state::disconnected);
           }
         });
