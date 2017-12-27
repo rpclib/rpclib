@@ -121,7 +121,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   list(APPEND RPCLIB_BUILD_FLAGS
     -Wall -pedantic -Weverything -Wno-c++98-compat
     -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-    -Wno-undef -pthread)
+    -Wno-undef)
 
     set(UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
     check_warning_flag("unused-lambda-capture" UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
@@ -197,6 +197,7 @@ endif()
 # Example programs
 #
 if(RPCLIB_BUILD_EXAMPLES)
+  find_package(Threads)
   set(RPCLIB_ROOT_DIR "${PROJECT_SOURCE_DIR}")
   set(RPCLIB_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
   set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/localbuild")

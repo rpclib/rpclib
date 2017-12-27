@@ -60,7 +60,7 @@ void server_session::do_read() {
                     // any worker thread can take this call
                     auto z = std::shared_ptr<RPCLIB_MSGPACK::zone>(
                         result.zone().release());
-                    io_->post([this, msg, z]() {
+                    io_->post([this, self, msg, z]() {
                         this_handler().clear();
                         this_session().clear();
                         this_session().set_id(reinterpret_cast<session_id_t>(this));
@@ -96,7 +96,7 @@ void server_session::do_read() {
                                 [=]() { write(resp.get_data()); });
 #else
                             write_strand_.post(
-                                [this, resp, z]() { write(resp.get_data()); });
+                                [this, self, resp, z]() { write(resp.get_data()); });
 #endif
                         }
 
