@@ -179,7 +179,7 @@ if(RPCLIB_ENABLE_LOGGING)
 endif()
 
 if(RPCLIB_BUILD_FLAGS)
-  target_compile_options(${PROJECT_NAME} PRIVATE ${RPCLIB_BUILD_FLAGS})
+  target_compile_options(${PROJECT_NAME} PUBLIC ${RPCLIB_BUILD_FLAGS})
 endif()
 
 if(RPCLIB_COMPILE_DEFINITIONS)

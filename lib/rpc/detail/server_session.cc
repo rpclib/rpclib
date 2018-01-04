@@ -137,7 +137,7 @@ void server_session::on_read(uv_stream_t *stream,
       // doesn't compile otherwise.
       write_strand_.post([=]() { write(resp.get_data()); });
 #else
-      auto req = new uv_write_t;
+      auto req = new uv_write_t{};
       // TODO: store resp in req->data
       req->data = new write_request{resp};
       uv_buf_t write_buf;
