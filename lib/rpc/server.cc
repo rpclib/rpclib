@@ -58,7 +58,8 @@ struct server::impl : uv_adaptor<server::impl> {
     LOG_INFO("Accepting new connection.");
     check_uv("on_new_connection", status);
 
-    auto client_socket = std::unique_ptr<uv_tcp_t>(new uv_tcp_t{});
+    auto client_socket = detail::make_unique<uv_tcp_t>();
+    std::memset(client_socket.get(), 0, sizeof(uv_tcp_t));
     check_uv("uv_tcp_init for client socket",
              uv_tcp_init(loop_.get(), client_socket.get()));
 
