@@ -32,6 +32,8 @@ server_session::server_session(server *srv,
       output_buf_(),
       suppress_exceptions_(suppress_exceptions),
       exit_(false) {
+  LOG_TRACE("this = {}", (void *)this);
+  LOG_TRACE("parent = {}", (void *)parent_);
   client_socket_->data = this;
   pac_.reserve_buffer(default_buffer_size);  // TODO: make this configurable
                                              // [sztomi 2016-01-13]
@@ -54,7 +56,8 @@ void server_session::close() {
 
 void server_session::on_close(uv_handle_t *handle) {
   LOG_TRACE("on_close");
-  LOG_TRACE("parent = {}", (intptr_t)parent_);
+  LOG_TRACE("this = {}", (void *)this);
+  LOG_TRACE("parent = {}", (void *)parent_);
   parent_->close_session(*this);
 }
 

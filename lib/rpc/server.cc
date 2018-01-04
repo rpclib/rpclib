@@ -66,6 +66,8 @@ struct server::impl : uv_adaptor<server::impl> {
     check_uv("uv_accept for client connection",
              uv_accept(reinterpret_cast<uv_stream_t *>(&socket_),
                        reinterpret_cast<uv_stream_t *>(client_socket.get())));
+
+    LOG_TRACE("server = {}", (void *)parent_);
     sessions_.push_back(detail::make_unique<server_session>(
         parent_, loop_.get(), std::move(client_socket), parent_->disp_,
         suppress_exceptions_));
@@ -73,13 +75,10 @@ struct server::impl : uv_adaptor<server::impl> {
 
   void run() { uv_run(loop_.get(), UV_RUN_DEFAULT); }
 
-  void stop() {
-    loop_.stop();
-    // throw std::runtime_error("implement stop");
-  }
+  void stop() { loop_.stop(); }
 
   void close_session(server_session const &session) {
-    LOG_INFO("blip");
+    LOG_TRACE("I am {}", (void *)this);
     for (auto it = begin(sessions_); it != end(sessions_); ++it) {
       if (it->get() == &session) {
         LOG_DEBUG("found session to remove");
@@ -121,6 +120,7 @@ server::server(std::string const &address, uint16_t port)
 }
 
 server::~server() {
+  throw std::runtime_error("baahj");
   if (pimpl) {
   }
 }
