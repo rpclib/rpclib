@@ -6,6 +6,8 @@
 #include "rpc/this_server.h"
 #include "rpc/this_session.h"
 
+#include "backward.hpp"
+
 #include "rpc/detail/log.h"
 #include "rpc/detail/uv_tools.h"
 
@@ -50,6 +52,14 @@ void server_session::start() {
 
 void server_session::close() {
   LOG_INFO("Closing session.");
+  using namespace backward;
+  StackTrace st;
+  st.load_here(32);
+  Printer p;
+  p.object = true;
+  p.color_mode = ColorMode::always;
+  p.address = true;
+  p.print(st, stderr);
   exit_ = true;
   uv_close(reinterpret_cast<uv_handle_t *>(client_socket_.get()), &fw_on_close);
 }
