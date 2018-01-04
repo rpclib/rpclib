@@ -8,26 +8,32 @@ include(msvc_support)
 include(coverage)
 include(check_warning_flag)
 
+include_directories(SYSTEM "/usr/local/Cellar/libuv/1.18.0/include")
+link_directories("/usr/local/Cellar/libuv/1.18.0/lib")
+
 #
 # Options
 #
-option(RPCLIB_BUILD_TESTS 
-  "Build unit RPCLIB_BUILD_TESTS." 
+option(RPCLIB_BUILD_TESTS
+  "Build unit RPCLIB_BUILD_TESTS."
   OFF)
-option(RPCLIB_GENERATE_COMPDB 
-  "Generate compilation database. Useful for YCM." 
+option(RPCLIB_GENERATE_COMPDB
+  "Generate compilation database. Useful for YCM."
   OFF)
-option(RPCLIB_BUILD_EXAMPLES 
-  "Build examples." 
+option(RPCLIB_BUILD_EXAMPLES
+  "Build examples."
   OFF)
-option(RPCLIB_ENABLE_LOGGING 
+option(RPCLIB_ENABLE_LOGGING
   "ALlow logging in the library for debug purposes."
   OFF)
-option(RPCLIB_ENABLE_COVERAGE 
-  "Generate coverage information" 
+option(RPCLIB_ENABLE_COVERAGE
+  "Generate coverage information"
   OFF)
-option(RPCLIB_MSVC_STATIC_RUNTIME 
-  "MSVC only: build with /MT instead of /MD" 
+option(RPCLIB_MSVC_STATIC_RUNTIME
+  "MSVC only: build with /MT instead of /MD"
+  OFF)
+option(RPCLIB_ASAN
+  "Enable AddressSanitizer. Intended for rpclib development"
   OFF)
 option(RPCLIB_TSAN
   "Enable ThreadSanitizer. Intended for rpclib development"
@@ -36,14 +42,14 @@ option(RPCLIB_TSAN
 #
 # Other configuration values
 #
-set(RPCLIB_DEFAULT_PORT 8080 
+set(RPCLIB_DEFAULT_PORT 8080
   CACHE STRING "Default port used for running tests and examples")
-set(RPCLIB_DEFAULT_BUFFER_SIZE "1024 << 10" 
+set(RPCLIB_DEFAULT_BUFFER_SIZE "1024 << 10"
   CACHE STRING "Default buffer size")
-set(RPCLIB_CXX_STANDARD 11 CACHE STRING 
+set(RPCLIB_CXX_STANDARD 11 CACHE STRING
   "C++ version used to build rpclib (Currently: Only 11 and 14 supported)")
 
-if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND 
+if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND
    NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
   message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
 endif()
@@ -99,6 +105,7 @@ add_library(${PROJECT_NAME}
   lib/rpc/detail/server_session.cc
   lib/rpc/detail/response.cc
   lib/rpc/detail/client_error.cc
+  lib/rpc/detail/uv_tools.cc
   lib/rpc/nonstd/optional.cc
   ${DEP_SOURCES}
   ${DEP_HEADERS}
@@ -146,11 +153,16 @@ if (RPCLIB_TSAN)
   list(APPEND RPCLIB_DEP_LIBRARIES tsan)
 endif()
 
+if (RPCLIB_ASAN)
+  list(APPEND RPCLIB_BUILD_FLAGS -fsanitize=address)
+  #list(APPEND RPCLIB_DEP_LIBRARIES asan)
+endif()
+
 if (RPCLIB_EXTRA_BUILD_FLAGS)
   list(APPEND RPCLIB_BUILD_FLAGS ${RPCLIB_EXTRA_BUILD_FLAGS})
 endif()
 
-target_compile_definitions(${PROJECT_NAME} 
+target_compile_definitions(${PROJECT_NAME}
   PRIVATE
     "${RPCLIB_COMPILE_DEFINITIONS}"
     "${RPCLIB_ARCH_DEF}"

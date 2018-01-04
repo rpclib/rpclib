@@ -112,7 +112,7 @@ public:
 
 private:
   //! \brief Closes a specific session.
-  void close_session(std::shared_ptr<detail::server_session> const &s);
+  void close_session(detail::server_session const &session);
 
 private:
   RPCLIB_DECLARE_PIMPL()

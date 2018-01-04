@@ -104,8 +104,10 @@ private:
     using RPCLIB_FMT::arg;
     std::lock_guard<std::mutex> lock(mut_print_);
     RPCLIB_FMT::print("{time:16}  {severity:6}  {channel:12}    {msg:40}\n",
-                      arg("severity", severity), arg("channel", channel),
-                      arg("time", now()), arg("msg", msg));
+                      RPCLIB_FMT::arg("severity", severity),
+                      RPCLIB_FMT::arg("channel", channel),
+                      RPCLIB_FMT::arg("time", now()),
+                      RPCLIB_FMT::arg("msg", msg));
   }
 
 private:
@@ -114,22 +116,8 @@ private:
 }  // namespace detail
 }  // namespace rpc
 
-#ifdef _MSC_VER
 #define RPCLIB_CREATE_LOG_CHANNEL(Name) \
   static constexpr const char *rpc_channel_name = #Name;
-#elif defined(__GNUC__)
-#define RPCLIB_CREATE_LOG_CHANNEL(Name)                                        \
-  _Pragma("GCC diagnostic push") _Pragma(                                      \
-      "GCC diagnostic ignored "                                                \
-      "\"-Wunused-variable\"") static constexpr const char *rpc_channel_name = \
-      #Name;                                                                   \
-  _Pragma("GCC diagnostic pop")
-#elif defined(__clang__)
-_Pragma("clang diagnostic push") _Pragma(
-    "clang diagnostic ignored \"-Wunused-variable\"") static constexpr const
-    char *rpc_channel_name = #Name;
-_Pragma("clang diagnostic pop")
-#endif
 
 RPCLIB_CREATE_LOG_CHANNEL(global)
 

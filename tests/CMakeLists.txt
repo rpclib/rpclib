@@ -19,11 +19,12 @@ find_package(Threads REQUIRED)
 
 add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
 
-target_include_directories(${TEST_PROJECT_NAME} 
+target_include_directories(${TEST_PROJECT_NAME}
   SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/tests"
   PRIVATE "${RPCLIB_DEPENDENCIES}/include")
 
-target_link_libraries(${TEST_PROJECT_NAME} ${PROJECT_NAME} Threads::Threads)
+
+target_link_libraries(${TEST_PROJECT_NAME} ${PROJECT_NAME} Threads::Threads uv)
 
 # Set less strict warning for tests, since google test is not quite
 # warning-clean
