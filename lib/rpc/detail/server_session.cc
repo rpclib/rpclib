@@ -138,6 +138,7 @@ void server_session::on_read(uv_stream_t *stream,
       write_strand_.post([=]() { write(resp.get_data()); });
 #else
       auto req = new uv_write_t{};
+      std::memset(req, 0, sizeof(uv_write_t));
       // TODO: store resp in req->data
       req->data = new write_request{resp};
       uv_buf_t write_buf;
