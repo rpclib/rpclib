@@ -65,9 +65,9 @@ struct server::impl : uv_adaptor<server::impl> {
     check_uv("uv_accept for client connection",
              uv_accept(reinterpret_cast<uv_stream_t *>(&socket_),
                        reinterpret_cast<uv_stream_t *>(client_socket.get())));
-    sessions_.push_back(std::unique_ptr<server_session>(
-        new server_session(parent_, loop_.get(), std::move(client_socket),
-                           parent_->disp_, suppress_exceptions_)));
+    sessions_.push_back(detail::make_unique<server_session>(
+        parent_, loop_.get(), std::move(client_socket), parent_->disp_,
+        suppress_exceptions_));
   }
 
   void run() { uv_run(loop_.get(), UV_RUN_DEFAULT); }
