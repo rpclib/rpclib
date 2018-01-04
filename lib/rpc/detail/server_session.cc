@@ -29,7 +29,9 @@ server_session::server_session(server *srv,
       client_socket_(std::move(client_socket)),
       disp_(disp),
       pac_(),
-      suppress_exceptions_(suppress_exceptions) {
+      output_buf_(),
+      suppress_exceptions_(suppress_exceptions),
+      exit_(false) {
   client_socket_->data = this;
   pac_.reserve_buffer(default_buffer_size);  // TODO: make this configurable
                                              // [sztomi 2016-01-13]
