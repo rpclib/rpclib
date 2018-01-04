@@ -85,6 +85,7 @@ struct server::impl : uv_adaptor<server::impl> {
         LOG_DEBUG("found session to remove");
         sessions_.erase(it);
         LOG_DEBUG("Removed session.");
+        break;
       }
     }
   }
