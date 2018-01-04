@@ -28,20 +28,6 @@ public:
   ~uv_loop() {
     LOG_INFO("Shutting down event loop.");
     stop();
-    uv_walk(&loop_,
-            [](uv_handle_t *handle, void *arg) {
-              if (!uv_is_closing(handle)) {
-                uv_close(handle, nullptr);
-              }
-            },
-            nullptr);
-    uv_run(&loop_, UV_RUN_DEFAULT);
-    while (loop_.active_handles)
-      ;
-    uv_loop_close(&loop_);
-    for (auto h : handles_) {
-      delete h;
-    }
   }
 
   //! \brief Allocates a handle. The handle memory is freed by uv_loop upon
@@ -71,6 +57,21 @@ public:
   void stop() {
     LOG_INFO("Stopping event loop");
     uv_stop(&loop_);
+    uv_walk(&loop_,
+            [](uv_handle_t *handle, void *arg) {
+              if (!uv_is_closing(handle)) {
+                uv_close(handle, nullptr);
+              }
+            },
+            nullptr);
+    uv_run(&loop_, UV_RUN_DEFAULT);
+    while (loop_.active_handles)
+      LOG_INFO("blurgh");
+    uv_stop(&loop_);
+    uv_loop_close(&loop_);
+    // for (auto h : handles_) {
+    //   delete h;
+    // }
   }
 
   uv_loop_t *get() const { return &loop_; }

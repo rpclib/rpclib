@@ -81,9 +81,8 @@ struct server::impl : uv_adaptor<server::impl> {
     LOG_TRACE("I am {}", (void *)this);
     for (auto it = begin(sessions_); it != end(sessions_); ++it) {
       if (it->get() == &session) {
-        LOG_DEBUG("found session to remove");
         sessions_.erase(it);
-        LOG_DEBUG("Removed session.");
+        LOG_INFO("Removed session.");
         break;
       }
     }
@@ -120,8 +119,8 @@ server::server(std::string const &address, uint16_t port)
 }
 
 server::~server() {
-  throw std::runtime_error("baahj");
   if (pimpl) {
+    pimpl->stop();
   }
 }
 
@@ -144,9 +143,9 @@ void server::run() {
 void server::async_run(std::size_t worker_threads) {
   pimpl->loop_workers_.create_threads(worker_threads, [this]() {
     name_thread("server");
-    LOG_INFO("Starting");
+    LOG_INFO("Starting.");
     pimpl->run();
-    LOG_INFO("Exiting");
+    LOG_INFO("Exiting.");
   });
 }
 
