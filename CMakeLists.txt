@@ -38,6 +38,9 @@ option(RPCLIB_ASAN
 option(RPCLIB_TSAN
   "Enable ThreadSanitizer. Intended for rpclib development"
   OFF)
+option(RPCLIB_MSAN
+  "Enable MemorySanitizer. Intended for rpclib development"
+  OFF)
 
 #
 # Other configuration values
@@ -155,6 +158,11 @@ endif()
 
 if (RPCLIB_ASAN)
   list(APPEND RPCLIB_BUILD_FLAGS -fsanitize=address)
+  #list(APPEND RPCLIB_DEP_LIBRARIES asan)
+endif()
+
+if (RPCLIB_MSAN)
+  list(APPEND RPCLIB_BUILD_FLAGS -fsanitize=memory)
   #list(APPEND RPCLIB_DEP_LIBRARIES asan)
 endif()
 
