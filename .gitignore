@@ -14,3 +14,5 @@ report
 utils/release
 doc/all.xml
 reference.md
+
+cmake-build-*/

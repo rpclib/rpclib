@@ -6,8 +6,6 @@
 #include "rpc/this_server.h"
 #include "rpc/this_session.h"
 
-#include "backward.hpp"
-
 #include "rpc/detail/log.h"
 #include "rpc/detail/uv_tools.h"
 
@@ -43,7 +41,8 @@ server_session::server_session(server *srv,
 }
 
 server_session::~server_session() {
-  LOG_INFO("Destroying session.");
+  LOG_DEBUG("Destroying session.");
+  close();
 }
 
 void server_session::start() {
@@ -51,28 +50,20 @@ void server_session::start() {
 }
 
 void server_session::close() {
+  if (exit_) {
+    return;
+  }
   LOG_INFO("Closing session.");
-  using namespace backward;
-  StackTrace st;
-  st.load_here(32);
-  Printer p;
-  p.object = true;
-  p.color_mode = ColorMode::always;
-  p.address = true;
-  p.print(st, stderr);
   exit_ = true;
   uv_close(reinterpret_cast<uv_handle_t *>(client_socket_.get()), &fw_on_close);
 }
 
 void server_session::on_close(uv_handle_t *handle) {
   LOG_TRACE("on_close");
-  LOG_TRACE("this = {}", (void *)this);
-  LOG_TRACE("parent = {}", (void *)parent_);
   parent_->close_session(*this);
 }
 
 void server_session::start_read() {
-  constexpr std::size_t max_read_bytes = default_buffer_size;
   uv_read_start(reinterpret_cast<uv_stream_t *>(client_socket_.get()),
                 &fw_alloc_buffer, &fw_on_read);
   if (exit_) {

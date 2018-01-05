@@ -41,38 +41,26 @@ public:
     return handle;
   }
 
-  void start() {
-    std::lock_guard<std::mutex> lock(mut_is_running_);
-    if (!is_running_) {
-      std::thread t([this]() {
-        uv_run(&loop_, UV_RUN_DEFAULT);
-        is_running_ = false;
-        LOG_INFO("Loop stopped");
-      });
-      is_running_ = true;
-      t.detach();
-    }
-  }
-
   void stop() {
     LOG_INFO("Stopping event loop");
-    // uv_stop(&loop_);
-    uv_walk(&loop_,
-            [](uv_handle_t *handle, void *arg) {
-              if (!uv_is_closing(handle)) {
-                // LOG_INFO("uv_walk closing");
-                // uv_close(handle, nullptr);
-              }
-            },
-            nullptr);
-    uv_run(&loop_, UV_RUN_DEFAULT);
-    while (loop_.active_handles)
-      ;
     uv_stop(&loop_);
-    // uv_loop_close(&loop_);
+    // uv_walk(&loop_,
+    //         [](uv_handle_t *handle, void *arg) {
+    //           if (!uv_is_closing(handle)) {
+    //             LOG_INFO("uv_walk closing");
+    //             uv_close(handle, nullptr);
+    //           }
+    //         },
+    //         nullptr);
+    // uv_run(&loop_, UV_RUN_NOWAIT);
+    // while (loop_.active_handles)
+    //   ;
+    // uv_stop(&loop_);
+    uv_loop_close(&loop_);
     // for (auto h : handles_) {
     //   delete h;
     // }
+    LOG_INFO("Event loop stopped.");
   }
 
   uv_loop_t *get() const { return &loop_; }

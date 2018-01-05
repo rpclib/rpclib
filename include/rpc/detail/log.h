@@ -50,10 +50,9 @@ public:
              std::size_t line,
              const char *msg,
              Args... args) {
-    (void)func;
     basic_log("DEBUG", channel,
-              RPCLIB_FMT::format("{} ({}:{})", RPCLIB_FMT::format(msg, args...),
-                                 file, line));
+              RPCLIB_FMT::format("{}: {} ({}:{})", func,
+                                 RPCLIB_FMT::format(msg, args...), file, line));
   }
 
   template <typename... Args>
