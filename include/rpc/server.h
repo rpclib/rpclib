@@ -104,6 +104,10 @@ public:
     //! \note This should not be called from worker threads.
     void stop();
 
+    //! \brief Returns port
+    //! \note The port
+    unsigned short port() const;
+
     //! \brief Closes all sessions gracefully.
     void close_sessions();
 
