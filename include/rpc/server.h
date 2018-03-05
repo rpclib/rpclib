@@ -79,6 +79,11 @@ public:
     //! \param worker_threads The number of worker threads to start.
     void async_run(std::size_t worker_threads = 1);
 
+    //! \brief Returns the port number this server is listening on.
+    //! \note This is especially useful if server is started with an arbitrary
+    //! port number (using port 0 in constructors).
+    uint16_t get_port() const;
+
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //!
     //! This function template accepts a wide range of callables. The arguments

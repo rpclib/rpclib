@@ -124,6 +124,10 @@ void server::async_run(std::size_t worker_threads) {
     });
 }
 
+uint16_t server::get_port() const {
+    return pimpl->acceptor_.local_endpoint().port();
+}
+
 void server::stop() { pimpl->stop(); }
 
 void server::close_sessions() { pimpl->close_sessions(); }
