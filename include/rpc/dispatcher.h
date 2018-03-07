@@ -27,6 +27,9 @@ namespace detail {
 //! names, and callable using a msgpack-rpc call pack.
 class dispatcher {
 public:
+    //! \brief Sets the behavior when using non-unique name for functors.
+    void override_functors(bool override);
+
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
     //! \param func The functor to bind.
@@ -98,7 +101,7 @@ private:
     static void enforce_arg_count(std::string const &func, std::size_t found,
                                   std::size_t expected);
 
-    void enforce_unique_name(std::string const &func);
+    void check_unique_name(std::string const &func);
 
     //! \brief Dispatches a call (which will have a response).
     detail::response dispatch_call(RPCLIB_MSGPACK::object const &msg,
@@ -115,6 +118,7 @@ private:
 private:
     std::unordered_map<std::string, adaptor_type> funcs_;
     RPCLIB_CREATE_LOG_CHANNEL(dispatcher)
+    bool override_functors_ = false;
 };
 }
 }

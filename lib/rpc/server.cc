@@ -113,6 +113,10 @@ void server::suppress_exceptions(bool suppress) {
     pimpl->suppress_exceptions_ = suppress;
 }
 
+void server::override_functors(bool override) {
+    disp_->override_functors(override);
+}
+
 void server::run() { pimpl->io_.run(); }
 
 void server::async_run(std::size_t worker_threads) {

@@ -3,7 +3,7 @@ namespace rpc {
 namespace detail {
 
 template <typename F> void dispatcher::bind(std::string const &name, F func) {
-    enforce_unique_name(name);
+    check_unique_name(name);
     bind(name, func, typename detail::func_kind_info<F>::result_kind(),
          typename detail::func_kind_info<F>::args_kind());
 }
@@ -12,7 +12,7 @@ template <typename F>
 void dispatcher::bind(std::string const &name, F func,
                       detail::tags::void_result const &,
                       detail::tags::zero_arg const &) {
-    enforce_unique_name(name);
+    check_unique_name(name);
     funcs_.insert(
         std::make_pair(name, [func, name](RPCLIB_MSGPACK::object const &args) {
             enforce_arg_count(name, 0, args.via.array.size);
@@ -28,7 +28,7 @@ void dispatcher::bind(std::string const &name, F func,
     using detail::func_traits;
     using args_type = typename func_traits<F>::args_type;
 
-    enforce_unique_name(name);
+    check_unique_name(name);
     funcs_.insert(
         std::make_pair(name, [func, name](RPCLIB_MSGPACK::object const &args) {
             constexpr int args_count = std::tuple_size<args_type>::value;
@@ -46,7 +46,7 @@ void dispatcher::bind(std::string const &name, F func,
                       detail::tags::zero_arg const &) {
     using detail::func_traits;
 
-    enforce_unique_name(name);
+    check_unique_name(name);
     funcs_.insert(std::make_pair(name, [func,
                                         name](RPCLIB_MSGPACK::object const &args) {
         enforce_arg_count(name, 0, args.via.array.size);
@@ -63,7 +63,7 @@ void dispatcher::bind(std::string const &name, F func,
     using detail::func_traits;
     using args_type = typename func_traits<F>::args_type;
 
-    enforce_unique_name(name);
+    check_unique_name(name);
     funcs_.insert(std::make_pair(name, [func,
                                         name](RPCLIB_MSGPACK::object const &args) {
         constexpr int args_count = std::tuple_size<args_type>::value;

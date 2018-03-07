@@ -105,6 +105,12 @@ public:
     //! \note Setting this flag only affects subsequent connections.
     void suppress_exceptions(bool suppress);
 
+    //! \brief Sets the behavior when using non-unique functor names in `bind`.
+    //! By default, bind will throw. If overriding is on, old functor will be
+    //! removed and replaced with new one.
+    //! \note Setting this flag only affects subsequent functor bindings.
+    void override_functors(bool override);
+
     //! \brief Stops the server.
     //! \note This should not be called from worker threads.
     void stop();
