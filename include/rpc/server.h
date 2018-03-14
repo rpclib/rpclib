@@ -79,6 +79,11 @@ public:
     //! \param worker_threads The number of worker threads to start.
     void async_run(std::size_t worker_threads = 1);
 
+    //! \brief Returns the port number this server is listening on.
+    //! \note This is especially useful if server is started with an arbitrary
+    //! port number (using port 0 in constructors).
+    uint16_t get_port() const;
+
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //!
     //! This function template accepts a wide range of callables. The arguments
@@ -99,6 +104,12 @@ public:
     //! the client as an error response.
     //! \note Setting this flag only affects subsequent connections.
     void suppress_exceptions(bool suppress);
+
+    //! \brief Sets the behavior when using non-unique functor names in `bind`.
+    //! By default, bind will throw. If overriding is on, old functor will be
+    //! removed and replaced with new one.
+    //! \note Setting this flag only affects subsequent functor bindings.
+    void override_functors(bool override);
 
     //! \brief Stops the server.
     //! \note This should not be called from worker threads.

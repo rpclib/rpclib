@@ -177,3 +177,18 @@ TEST(server_misc, server_is_moveable) {
     vec.push_back(std::move(s));
     EXPECT_THROW(vec[0].bind("foo", [](){}), std::logic_error);
 }
+
+TEST(server_misc, override_functor) {
+    bool foo1Called = false;
+    bool foo2Called = false;
+    rpc::server s(test_port);
+    s.bind("foo", [&foo1Called]() { foo1Called = true; });
+    EXPECT_THROW(s.bind("foo", [&foo2Called]() { foo2Called = true; }), std::logic_error);
+    s.override_functors(true);
+    EXPECT_NO_THROW(s.bind("foo", [&foo2Called]() { foo2Called = true; }));
+    s.async_run();
+    rpc::client c("127.0.0.1", test_port);
+    c.call("foo");
+    EXPECT_FALSE(foo1Called);
+    EXPECT_TRUE(foo2Called);
+}

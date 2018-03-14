@@ -8,6 +8,10 @@ namespace detail {
 
 using detail::response;
 
+void dispatcher::override_functors(bool override) {
+    override_functors_ = override;
+}
+
 void dispatcher::dispatch(RPCLIB_MSGPACK::sbuffer const &msg) {
     auto unpacked = RPCLIB_MSGPACK::unpack(msg.data(), msg.size());
     dispatch(unpacked.get());
@@ -130,9 +134,10 @@ void dispatcher::enforce_arg_count(std::string const &func, std::size_t found,
     }
 }
 
-void dispatcher::enforce_unique_name(std::string const &func) {
+void dispatcher::check_unique_name(std::string const &func) {
     auto pos = funcs_.find(func);
     if (pos != end(funcs_)) {
+        override_functors_ ? funcs_.erase(pos) :
         throw std::logic_error(
             RPCLIB_FMT::format("Function name already bound: '{}'. "
                                "Please use unique function names", func));
