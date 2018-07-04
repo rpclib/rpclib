@@ -192,8 +192,7 @@ void client::wait_conn() {
 }
 
 int client::get_next_call_idx() {
-    ++(pimpl->call_idx_);
-    return pimpl->call_idx_;
+    return ++(pimpl->call_idx_);
 }
 
 void client::post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
