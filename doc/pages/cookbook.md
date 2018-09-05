@@ -281,7 +281,7 @@ int main() {
     rpc::server srv(8080); // listen on TCP port 8080
     std::unordered_map<rpc::session_id_t, std::string> data;
 
-    srv.bind("store_me_maybe", [](std::string const& value) {
+    srv.bind("store_me_maybe", [&](std::string const& value) {
         auto id = rpc::this_session().id();
         data[id] = value;
     });
