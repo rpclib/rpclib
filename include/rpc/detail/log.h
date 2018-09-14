@@ -21,6 +21,11 @@
 #include <Windows.h>
 #endif
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
+#endif
+
 namespace rpc {
 namespace detail {
 class logger {
@@ -106,6 +111,10 @@ private:
 };
 } /* detail */
 } /* rpc */
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 #ifdef _MSC_VER
 #define RPCLIB_CREATE_LOG_CHANNEL(Name)                                        \
