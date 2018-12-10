@@ -139,9 +139,6 @@ void server_session::do_read() {
                 LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
             }
         }));
-    if (exit_) {
-        socket_.close();
-    }
 }
 
 } /* detail */
