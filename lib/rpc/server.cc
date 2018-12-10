@@ -19,6 +19,7 @@ using namespace rpc::detail;
 using RPCLIB_ASIO::ip::tcp;
 using namespace RPCLIB_ASIO;
 
+
 namespace rpc {
 
 struct server::impl {
@@ -45,6 +46,7 @@ struct server::impl {
                     parent_, &io_, std::move(socket_), parent_->disp_,
                     suppress_exceptions_);
                 s->start();
+                std::unique_lock<std::mutex> lock(sessions_mutex_);
                 sessions_.push_back(s);
             } else {
                 LOG_ERROR("Error while accepting connection: {}", ec);
@@ -55,10 +57,15 @@ struct server::impl {
     }
 
     void close_sessions() {
-        for (auto &session : sessions_) {
+        std::unique_lock<std::mutex> lock(sessions_mutex_);
+        auto sessions_copy = sessions_;
+        sessions_.clear();
+        lock.unlock();
+
+        // release shared pointers outside of the mutex
+        for (auto &session : sessions_copy) {
             session->close();
         }
-        sessions_.clear();
     }
 
     void stop() {
@@ -74,6 +81,7 @@ struct server::impl {
     std::vector<std::shared_ptr<server_session>> sessions_;
     std::atomic_bool suppress_exceptions_;
     RPCLIB_CREATE_LOG_CHANNEL(server)
+    std::mutex sessions_mutex_;
 };
 
 RPCLIB_CREATE_LOG_CHANNEL(server)
@@ -129,10 +137,15 @@ void server::stop() { pimpl->stop(); }
 void server::close_sessions() { pimpl->close_sessions(); }
 
 void server::close_session(std::shared_ptr<detail::server_session> const &s) {
+  std::unique_lock<std::mutex> lock(pimpl->sessions_mutex_);
   auto it = std::find(begin(pimpl->sessions_), end(pimpl->sessions_), s);
+  std::shared_ptr<server_session> session;
   if (it != end(pimpl->sessions_)) {
+    session = *it;
     pimpl->sessions_.erase(it);
   }
+  lock.unlock();
+  // session shared pointer is released outside of the mutex
 }
 
 } /* rpc */
