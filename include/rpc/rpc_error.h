@@ -49,6 +49,13 @@ private:
     std::string formatted;
 };
 
+//! \brief This exception is throw by the client when the connection or call
+//! causes a system error
+class system_error : public std::system_error {
+public:
+    using std::system_error::system_error;
+};
+
 } /* rpc */
 
 

@@ -37,12 +37,14 @@ struct client::impl {
           state_(client::connection_state::initial),
           writer_(std::make_shared<detail::async_writer>(
               &io_, RPCLIB_ASIO::ip::tcp::socket(io_))),
-          timeout_(nonstd::nullopt) {
+          timeout_(nonstd::nullopt),
+          connection_ec_(nonstd::nullopt) {
         pac_.reserve_buffer(default_buffer_size);
     }
 
     void do_connect(tcp::resolver::iterator endpoint_iterator) {
         LOG_INFO("Initiating connection.");
+        connection_ec_ = nonstd::nullopt;
         RPCLIB_ASIO::async_connect(
             writer_->socket_, endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
@@ -54,7 +56,11 @@ struct client::impl {
                     conn_finished_.notify_all();
                     do_read();
                 } else {
+                    std::unique_lock<std::mutex> lock(mut_connection_finished_);
                     LOG_ERROR("Error during connection: {}", ec);
+                    state_ = client::connection_state::disconnected;
+                    connection_ec_ = ec;
+                    conn_finished_.notify_all();
                 }
             });
     }
@@ -157,6 +163,7 @@ struct client::impl {
     std::atomic<client::connection_state> state_;
     std::shared_ptr<detail::async_writer> writer_;
     nonstd::optional<int64_t> timeout_;
+    nonstd::optional<std::error_code> connection_ec_;
     RPCLIB_CREATE_LOG_CHANNEL(client)
 };
 
@@ -176,7 +183,11 @@ client::client(std::string const &addr, uint16_t port)
 
 void client::wait_conn() {
     std::unique_lock<std::mutex> lock(pimpl->mut_connection_finished_);
-    if (!pimpl->is_connected_) {
+    while (!pimpl->is_connected_) {
+        if (auto ec = pimpl->connection_ec_) {
+            throw rpc::system_error(ec.value());
+        }
+
         if (auto timeout = pimpl->timeout_) {
             auto result = pimpl->conn_finished_.wait_for(
                 lock, std::chrono::milliseconds(*timeout));
