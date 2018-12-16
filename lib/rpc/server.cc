@@ -26,17 +26,28 @@ struct server::impl {
     impl(server *parent, std::string const &address, uint16_t port)
         : parent_(parent),
           io_(),
-          acceptor_(io_,
-                    tcp::endpoint(ip::address::from_string(address), port)),
+          acceptor_(io_),
           socket_(io_),
-          suppress_exceptions_(false) {}
+          suppress_exceptions_(false) {
+            auto ep = tcp::endpoint(ip::address::from_string(address), port);
+            acceptor_.open(ep.protocol());
+            acceptor_.set_option(tcp::acceptor::reuse_address(true));
+            acceptor_.bind(ep);
+            acceptor_.listen();
+          }
 
     impl(server *parent, uint16_t port)
         : parent_(parent),
           io_(),
-          acceptor_(io_, tcp::endpoint(tcp::v4(), port)),
+          acceptor_(io_),
           socket_(io_),
-          suppress_exceptions_(false) {}
+          suppress_exceptions_(false) {
+            auto ep = tcp::endpoint(tcp::v4(), port);
+            acceptor_.open(ep.protocol());
+            acceptor_.set_option(tcp::acceptor::reuse_address(true));
+            acceptor_.bind(ep);
+            acceptor_.listen();            
+          }
 
     void start_accept() {
         acceptor_.async_accept(socket_, [this](std::error_code ec) {
@@ -71,6 +82,10 @@ struct server::impl {
     void stop() {
         io_.stop();
         loop_workers_.join_all();
+    }
+
+    unsigned short port() const {
+        return acceptor_.local_endpoint().port();        
     }
 
     server *parent_;
@@ -133,6 +148,8 @@ void server::async_run(std::size_t worker_threads) {
 }
 
 void server::stop() { pimpl->stop(); }
+
+unsigned short server::port() const { return pimpl->port(); }
 
 void server::close_sessions() { pimpl->close_sessions(); }
 
