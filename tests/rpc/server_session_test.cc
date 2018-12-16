@@ -1,5 +1,6 @@
 #include <chrono>
 #include <memory>
+#include <future>
 
 #include "gtest/gtest.h"
 
@@ -68,7 +69,7 @@ TEST(server_session_test_bug153, bug_153_crash_on_client_timeout) {
 
     auto client = std::unique_ptr<rpc::client>(new rpc::client("localhost", rpc::constants::DEFAULT_PORT));
     client->set_timeout(5);
-  
+
     try {
         client->call("bug_153");
     } catch(rpc::timeout& ) {
@@ -76,4 +77,34 @@ TEST(server_session_test_bug153, bug_153_crash_on_client_timeout) {
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     // no crash is enough
+}
+
+
+TEST(server_session_test_bug175, bug_175_multhread_crash) {
+    const int nr_threads = 4;
+    const int nr_calls_per_thread = 100;
+
+    rpc::server s("127.0.0.1", rpc::constants::DEFAULT_PORT);
+    s.bind("bug_175", [&](int idx, int i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        return 0;
+    });
+    s.async_run(nr_threads);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    auto spam_call = [&](int idx, int nr_calls) {
+        for (int i=0; i<nr_calls; ++i) {
+            auto client = std::unique_ptr<rpc::client>(new rpc::client("localhost", rpc::constants::DEFAULT_PORT));
+            client->call("bug_175", idx, i);
+        }
+    };
+
+    std::vector<std::future<void>> futures;
+    for (int i=0; i<nr_threads; ++i)
+        futures.push_back(std::async(std::launch::async, spam_call, i, nr_calls_per_thread));
+
+    for (auto& future: futures)
+        future.get();
+
+    s.stop();
 }

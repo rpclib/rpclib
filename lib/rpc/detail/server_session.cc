@@ -34,9 +34,11 @@ void server_session::start() { do_read(); }
 void server_session::close() {
     LOG_INFO("Closing session.");
     exit_ = true;
-    write_strand_.post([this]() {
+    auto self(shared_from_base<server_session>());
+
+    write_strand_.post([this, self]() {
         socket_.close();
-        parent_->close_session(shared_from_base<server_session>());
+        parent_->close_session(self);
     });
 }
 
@@ -137,9 +139,6 @@ void server_session::do_read() {
                 LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
             }
         }));
-    if (exit_) {
-        socket_.close();
-    }
 }
 
 } /* detail */
