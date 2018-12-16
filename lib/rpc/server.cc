@@ -125,10 +125,12 @@ server::~server() {
 }
 
 server& server::operator=(server &&other) {
-    pimpl = std::move(other.pimpl);
-    other.pimpl = nullptr;
-    disp_ = std::move(other.disp_);
-    other.disp_ = nullptr;
+    if (this != &other) {
+        pimpl = std::move(other.pimpl);
+        other.pimpl = nullptr;
+        disp_ = std::move(other.disp_);
+        other.disp_ = nullptr;
+    }
     return *this;
 }
 
