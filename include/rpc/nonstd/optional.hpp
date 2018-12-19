@@ -564,7 +564,7 @@ class bad_optional_access : public std::logic_error
 public:
   explicit bad_optional_access()
   : logic_error( "bad optional access" ) {}
-  ~bad_optional_access();
+  const char* what() const noexcept;
 };
 
 /// optional
