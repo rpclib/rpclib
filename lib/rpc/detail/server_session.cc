@@ -108,7 +108,7 @@ void server_session::do_read() {
                             write_strand().post([this]() { close(); });
                         }
 
-                        if (this_server().stopping_) {
+                        if (this_server().stopping()) {
                             LOG_WARN("Server exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
