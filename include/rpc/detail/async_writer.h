@@ -84,9 +84,6 @@ protected:
     RPCLIB_ASIO::ip::tcp::socket socket_;
     RPCLIB_ASIO::strand write_strand_;
     std::atomic_bool exit_{false};
-    bool exited_ = false;
-    std::mutex m_exit_;
-    std::condition_variable cv_exit_;
 
 private:
     std::deque<RPCLIB_MSGPACK::sbuffer> write_queue_;
