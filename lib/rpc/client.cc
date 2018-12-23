@@ -46,7 +46,7 @@ struct client::impl {
         LOG_INFO("Initiating connection.");
         connection_ec_ = nonstd::nullopt;
         RPCLIB_ASIO::async_connect(
-            writer_->socket_, endpoint_iterator,
+            writer_->socket(), endpoint_iterator,
             [this](std::error_code ec, tcp::resolver::iterator) {
                 if (!ec) {
                     std::unique_lock<std::mutex> lock(mut_connection_finished_);
@@ -68,7 +68,7 @@ struct client::impl {
     void do_read() {
         LOG_TRACE("do_read");
         constexpr std::size_t max_read_bytes = default_buffer_size;
-        writer_->socket_.async_read_some(
+        writer_->socket().async_read_some(
             RPCLIB_ASIO::buffer(pac_.buffer(), max_read_bytes),
             // I don't think max_read_bytes needs to be captured explicitly
             // (since it's constexpr), but MSVC insists.

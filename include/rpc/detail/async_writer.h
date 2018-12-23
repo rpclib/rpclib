@@ -81,16 +81,14 @@ public:
         do_write();
     }
 
-    friend class rpc::client;
+    RPCLIB_ASIO::ip::tcp::socket& socket() {
+        return socket_;
+    }
 
 protected:
     template <typename Derived>
     std::shared_ptr<Derived> shared_from_base() {
         return std::static_pointer_cast<Derived>(shared_from_this());
-    }
-
-    RPCLIB_ASIO::ip::tcp::socket& socket() {
-        return socket_;
     }
 
     RPCLIB_ASIO::strand& write_strand() {
