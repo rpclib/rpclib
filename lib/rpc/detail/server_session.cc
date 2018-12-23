@@ -33,7 +33,7 @@ void server_session::start() { do_read(); }
 
 void server_session::close() {
     LOG_INFO("Closing session.");
-    exit_ = true;
+    async_writer::close();
     auto self(shared_from_base<server_session>());
 
     write_strand_.post([this, self]() {
@@ -51,11 +51,11 @@ void server_session::do_read() {
         // (since it's constexpr), but MSVC insists.
         read_strand_.wrap([this, self, max_read_bytes](std::error_code ec,
                                                        std::size_t length) {
-            if (exit_) { return; }
+            if (is_closed()) { return; }
             if (!ec) {
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
-                while (pac_.next(result) && !exit_) {
+                while (pac_.next(result) && !is_closed()) {
                     auto msg = result.get();
                     output_buf_.clear();
 
@@ -106,7 +106,7 @@ void server_session::do_read() {
                             LOG_WARN("Session exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
-                            write_strand_.post([this]() { exit_ = true; });
+                            write_strand_.post([this]() { close(); });
                         }
 
                         if (this_server().stopping_) {
@@ -119,7 +119,7 @@ void server_session::do_read() {
                     });
                 }
 
-                if (!exit_) {
+                if (!is_closed()) {
                     // resizing strategy: if the remaining buffer size is
                     // less than the maximum bytes requested from asio,
                     // then request max_read_bytes. This prompts the unpacker

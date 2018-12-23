@@ -23,6 +23,14 @@ public:
                  RPCLIB_ASIO::ip::tcp::socket socket)
         : socket_(std::move(socket)), write_strand_(*io), exit_(false) {}
 
+    void close() {
+        exit_ = true;
+    }
+
+    bool is_closed() const {
+        return exit_.load();
+    }
+
     void do_write() {
         if (exit_) {
             return;
@@ -83,9 +91,9 @@ protected:
 protected:
     RPCLIB_ASIO::ip::tcp::socket socket_;
     RPCLIB_ASIO::strand write_strand_;
-    std::atomic_bool exit_{false};
 
 private:
+    std::atomic_bool exit_{false};
     std::deque<RPCLIB_MSGPACK::sbuffer> write_queue_;
     RPCLIB_CREATE_LOG_CHANNEL(async_writer)
 };
