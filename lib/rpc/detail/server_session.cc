@@ -34,10 +34,9 @@ void server_session::start() { do_read(); }
 void server_session::close() {
     LOG_INFO("Closing session.");
     async_writer::close();
-    auto self(shared_from_base<server_session>());
 
-    write_strand_.post([this, self]() {
-        socket_.close();
+    auto self(shared_from_base<server_session>());
+    write_strand().post([this, self]() {
         parent_->close_session(self);
     });
 }
@@ -45,7 +44,7 @@ void server_session::close() {
 void server_session::do_read() {
     auto self(shared_from_base<server_session>());
     constexpr std::size_t max_read_bytes = default_buffer_size;
-    socket_.async_read_some(
+    socket().async_read_some(
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         // I don't think max_read_bytes needs to be captured explicitly
         // (since it's constexpr), but MSVC insists.
@@ -94,10 +93,10 @@ void server_session::do_read() {
                         if (!resp.is_empty()) {
 #ifdef _MSC_VER
                             // doesn't compile otherwise.
-                            write_strand_.post(
+                            write_strand().post(
                                 [=]() { write(resp.get_data()); });
 #else
-                            write_strand_.post(
+                            write_strand().post(
                                 [this, self, resp, z]() { write(resp.get_data()); });
 #endif
                         }
@@ -106,14 +105,14 @@ void server_session::do_read() {
                             LOG_WARN("Session exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
-                            write_strand_.post([this]() { close(); });
+                            write_strand().post([this]() { close(); });
                         }
 
                         if (this_server().stopping_) {
                             LOG_WARN("Server exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
-                            write_strand_.post(
+                            write_strand().post(
                                 [this]() { parent_->close_sessions(); });
                         }
                     });
