@@ -111,9 +111,6 @@ public:
     //! \brief Closes all sessions gracefully.
     void close_sessions();
 
-    friend class detail::server_session;
-
-private:
     //! \brief Closes a specific session.
     void close_session(std::shared_ptr<detail::server_session> const& s);
 
