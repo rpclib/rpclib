@@ -122,7 +122,7 @@ struct client::impl {
     client::connection_state get_connection_state() const { return state_; }
 
     //! \brief Waits for the write queue and writes any buffers to the network
-    //! connection. Should be executed throught strand_.
+    //! connection. Should be executed through strand_.
     void write(RPCLIB_MSGPACK::sbuffer item) {
         writer_->write(std::move(item));
     }
