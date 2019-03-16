@@ -88,7 +88,7 @@ public:
     //!
     //! \param func_name The name of the notification to call.
     //! \param args The arguments to pass to the function.
-    //! \tparam Args THe types of the arguments.
+    //! \tparam Args The types of the arguments.
     //!
     //! \note This function returns immediately (possibly before the
     //! notification is written to the socket).
