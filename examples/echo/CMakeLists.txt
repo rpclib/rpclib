@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(echo)
 
 find_package(rpclib REQUIRED)
+find_package(Threads REQUIRED)
 
 include_directories(${RPCLIB_INCLUDE_DIR})
 
