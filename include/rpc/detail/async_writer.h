@@ -34,7 +34,7 @@ public:
                 RPCLIB_ASIO::ip::tcp::socket::shutdown_both, e);
             if (e) {
                 LOG_WARN("std::system_error during socket shutdown. "
-                            "Code: {}. Message: {}", e.code(), e.what());
+                            "Code: {}. Message: {}", e.value(), e.message());
             }
             socket_.close();
         });
