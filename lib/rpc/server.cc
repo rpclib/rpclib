@@ -9,6 +9,7 @@
 #include "asio.hpp"
 #include "format.h"
 
+#include "rpc/this_server.h"
 #include "rpc/detail/dev_utils.h"
 #include "rpc/detail/log.h"
 #include "rpc/detail/log.h"
@@ -49,7 +50,8 @@ struct server::impl {
             } else {
                 LOG_ERROR("Error while accepting connection: {}", ec);
             }
-            start_accept();
+            if (!this_server().stopping())
+                start_accept();
             // TODO: allow graceful exit [sztomi 2016-01-13]
         });
     }
@@ -59,6 +61,9 @@ struct server::impl {
             session->close();
         }
         sessions_.clear();
+
+        if (this_server().stopping())
+            acceptor_.cancel();
     }
 
     void stop() {
