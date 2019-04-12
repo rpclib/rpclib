@@ -14,7 +14,8 @@ if(${SFML_FOUND})
                 mandelbrot_server
                 PROPERTIES
                 CXX_STANDARD 14
-                COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
+                COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}"
+                LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
         target_compile_definitions(mandelbrot_server PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
 
         add_executable(mandelbrot_client mandelbrot_client.cc)
@@ -23,6 +24,7 @@ if(${SFML_FOUND})
                 mandelbrot_client
                 PROPERTIES
                 CXX_STANDARD 14
-                COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
+                COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${RPCLIB_EXTRA_FLAGS}"
+                LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${RPCLIB_EXTRA_FLAGS}")
         target_compile_definitions(mandelbrot_client PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
 endif(${SFML_FOUND})
