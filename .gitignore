@@ -2,6 +2,7 @@
 build/
 .idea/
 .vscode/
+.ccls-cache/
 
 doc/site/
 doc/doxygen/

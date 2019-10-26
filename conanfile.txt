@@ -1,5 +1,6 @@
 [requires]
-cmake_installer/1.0@conan/stable
+catch2/2.9.2
 
 [generators]
-virtualenv
+cmake_find_package
+cmake_paths
