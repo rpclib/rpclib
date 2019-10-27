@@ -1,4 +1,5 @@
 [requires]
+boost/1.71.0
 catch2/2.9.2
 
 [generators]

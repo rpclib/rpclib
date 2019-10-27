@@ -31,7 +31,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      conan install ..
+      ../scripts/install-deps.py
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
@@ -61,7 +61,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      conan install ..
+      py ../scripts/install-deps.py
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
@@ -91,7 +91,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      conan install ..
+      py ../scripts/install-deps.py
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
