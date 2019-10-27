@@ -1,0 +1,104 @@
+trigger:
+- rpclib3
+
+jobs:
+- job:
+  displayName: 'Linux'
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  strategy:
+    matrix:
+      Clang-9:
+        CC: clang-9
+        CXX: clang++-9
+
+  steps:
+  - task: 'UsePythonVersion@0'
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+  - script: |
+      curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o ninja-linux.zip
+      unzip ninja-linux.zip
+      sudo cp -v ninja /usr/local/bin/
+      pip3 install conan
+      wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+      sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
+      sudo apt-get update
+      sudo apt-get install -y clang-9
+    displayName: 'Install Build Deps'
+  - script: |
+      mkdir build && cd build
+      conan install ..
+      cmake .. -G Ninja
+    displayName: 'Configure'
+  - script: |
+      cd build
+      ninja
+    displayName: 'Build'
+  - script: |
+      cd build
+      test/rpc-tests
+    displayName: 'Run unit tests'
+
+
+- job:
+  displayName: 'Windows'
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  - task: 'UsePythonVersion@0'
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+  - script: |
+      choco install ninja
+      pip3 install conan
+    displayName: 'Install Build Deps'
+  - script: |
+      mkdir build && cd build
+      conan install ..
+      cmake .. -G Ninja
+    displayName: 'Configure'
+  - script: |
+      cd build
+      ninja
+    displayName: 'Build'
+  - script: |
+      cd build
+      test/rpc-tests.exe
+    displayName: 'Run unit tests'
+
+
+- job: macOS
+  pool:
+    vmImage: macos-10.13
+  steps:
+  - task: 'UsePythonVersion@0'
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+  - script: |
+      set -eu
+      curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-mac.zip -o ninja-mac.zip
+      unzip ninja-mac.zip
+      sudo cp -v ninja /usr/local/bin/
+      pip install conan
+    displayName: 'Install Build Deps'
+  - script: |
+      mkdir build && cd build
+      conan install ..
+      cmake .. -G Ninja
+    displayName: 'Configure'
+  - script: |
+      cd build
+      ninja
+    displayName: 'Build'
+  - script: |
+      cd build
+      test/rpc-tests
+    displayName: 'Run unit tests'
