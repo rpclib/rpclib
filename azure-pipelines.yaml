@@ -23,7 +23,7 @@ jobs:
       curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o ninja-linux.zip
       unzip ninja-linux.zip
       sudo cp -v ninja /usr/local/bin/
-      pip3 install conan
+      pip3 install conan==1.20.0
       wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
       sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main"
       sudo apt-get update
@@ -31,7 +31,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      ../scripts/install-deps.py
+      conan install ..
       cmake -G Ninja -DRPCLIB_ENABLE_COVERAGE=ON ..
     displayName: 'Configure'
   - script: |
@@ -62,11 +62,11 @@ jobs:
       architecture: 'x64'
   - script: |
       choco install ninja
-      pip3 install conan
+      pip3 install conan==1.20.0
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      py ../scripts/install-deps.py
+      conan install ..
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
@@ -92,11 +92,11 @@ jobs:
       curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-mac.zip -o ninja-mac.zip
       unzip ninja-mac.zip
       sudo cp -v ninja /usr/local/bin/
-      pip install conan
+      pip install conan==1.20.0
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      ../scripts/install-deps.py
+      conan install ..
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
