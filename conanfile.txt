@@ -1,6 +1,8 @@
 [requires]
 boost/1.71.0
-catch2/2.9.2
+rapidjson/1.1.0
+fmt/6.0.0
+gtest/1.8.1
 
 [generators]
 cmake_find_package

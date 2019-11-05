@@ -32,7 +32,7 @@ jobs:
   - script: |
       mkdir build && cd build
       ../scripts/install-deps.py
-      cmake .. -G Ninja
+      cmake -G Ninja -DRPCLIB_ENABLE_COVERAGE=ON ..
     displayName: 'Configure'
   - script: |
       cd build
@@ -42,6 +42,11 @@ jobs:
       cd build
       test/rpc-tests
     displayName: 'Run unit tests'
+  - script: |
+      cd build
+      lcov --capture --directory . --output-file coverage.info
+      bash <(curl -s https://codecov.io/bash)
+    displayName: 'Collect coverage data'
 
 
 - job:

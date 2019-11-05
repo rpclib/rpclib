@@ -1,0 +1,2 @@
+
+#cmakedefine RPCLIB_HAVE_RAPIDJSON
