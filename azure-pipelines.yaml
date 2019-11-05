@@ -11,8 +11,8 @@ jobs:
   strategy:
     matrix:
       Clang-9:
-        CC: clang-9
-        CXX: clang++-9
+        CC: gcc-9
+        CXX: g++-9
 
   steps:
   - task: 'UsePythonVersion@0'
@@ -96,7 +96,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
-      py ../scripts/install-deps.py
+      ../scripts/install-deps.py
       cmake .. -G Ninja
     displayName: 'Configure'
   - script: |
