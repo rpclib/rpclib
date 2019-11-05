@@ -1,11 +1,11 @@
-#include(CmakeParseArguments)
 
+# conan is optional
 if(EXISTS ${CMAKE_BINARY_DIR}/conan_paths.cmake)
   include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 endif()
 
 
-find_package(boost REQUIRED system)
+find_package(Boost REQUIRED system)
 find_package(fmt REQUIRED)
 find_package(rapidjson QUIET)
 find_package(gtest QUIET)
