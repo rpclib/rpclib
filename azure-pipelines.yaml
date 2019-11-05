@@ -31,6 +31,7 @@ jobs:
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
+      conan --version
       conan install ..
       cmake -G Ninja -DRPCLIB_ENABLE_COVERAGE=ON ..
     displayName: 'Configure'
