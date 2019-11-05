@@ -1,5 +1,5 @@
 BasedOnStyle: LLVM
-IndentWidth: 4
+IndentWidth: 2
 Standard: Cpp11
 UseTab: Never
 ColumnLimit: 80
