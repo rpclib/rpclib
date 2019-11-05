@@ -23,7 +23,7 @@ jobs:
       curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o ninja-linux.zip
       unzip ninja-linux.zip
       sudo cp -v ninja /usr/local/bin/
-      pip3 install conan==1.20.0
+      pip3 install conan==1.20.1
       wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
       sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main"
       sudo apt-get update
@@ -62,7 +62,7 @@ jobs:
       architecture: 'x64'
   - script: |
       choco install ninja
-      pip3 install conan==1.20.0
+      pip3 install conan==1.20.1
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
@@ -92,7 +92,7 @@ jobs:
       curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-mac.zip -o ninja-mac.zip
       unzip ninja-mac.zip
       sudo cp -v ninja /usr/local/bin/
-      pip install conan==1.20.0
+      pip install conan==1.20.1
     displayName: 'Install Build Deps'
   - script: |
       mkdir build && cd build
