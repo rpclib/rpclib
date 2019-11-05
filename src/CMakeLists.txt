@@ -13,7 +13,7 @@ target_include_directories(rpc
 )
 
 target_link_libraries(rpc PUBLIC
-  boost::boost
+  Boost::Boost
   $<TARGET_NAME_IF_EXISTS:rapidjson::rapidjson>)
 
 
