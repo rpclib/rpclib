@@ -119,9 +119,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   # clang is the compiler used for developing mainly, so
   # this is where I set the highest warning level
   list(APPEND RPCLIB_BUILD_FLAGS
-    -Wall -pedantic -Weverything -Wno-c++98-compat
-    -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-prototypes
-    -Wno-undef -pthread)
+    -Wall -pedantic -Weverything
+    -pthread)
 
     set(UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)
     check_warning_flag("unused-lambda-capture" UNUSED_LAMBDA_CAPTURE_WARN_SUPPORTED)

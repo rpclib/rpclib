@@ -147,31 +147,31 @@
 
 // C++ feature usage:
 
-#if optional_HAVE_CONSTEXPR_11
+#ifdef optional_HAVE_CONSTEXPR_11
 # define optional_constexpr  constexpr
 #else
 # define optional_constexpr  /*constexpr*/
 #endif
 
-#if optional_HAVE_CONSTEXPR_14
+#ifdef optional_HAVE_CONSTEXPR_14
 # define optional_constexpr14  constexpr
 #else
 # define optional_constexpr14  /*constexpr*/
 #endif
 
-#if optional_HAVE_NOEXCEPT
+#ifdef optional_HAVE_NOEXCEPT
 # define optional_noexcept  noexcept
 #else
 # define optional_noexcept  /*noexcept*/
 #endif
 
-#if optional_HAVE_NULLPTR
+#ifdef optional_HAVE_NULLPTR
 # define optional_nullptr  nullptr
 #else
 # define optional_nullptr  NULL
 #endif
 
-#if optional_HAVE_REF_QUALIFIER
+#ifdef optional_HAVE_REF_QUALIFIER
 # define optional_ref_qual  &
 # define optional_refref_qual  &&
 #else
@@ -181,11 +181,11 @@
 
 // additional includes:
 
-#if optional_HAVE_INITIALIZER_LIST
+#ifdef optional_HAVE_INITIALIZER_LIST
 # include <initializer_list>
 #endif
 
-#if optional_HAVE_TYPE_TRAITS
+#ifdef optional_HAVE_TYPE_TRAITS
 # include <type_traits>
 #elif optional_HAVE_TR1_TYPE_TRAITS
 # include <tr1/type_traits>
@@ -195,7 +195,7 @@
 // in_place: code duplicated in any-lite, optional-lite, variant-lite:
 //
 
-#if ! nonstd_lite_HAVE_IN_PLACE_TYPES
+#ifndef nonstd_lite_HAVE_IN_PLACE_TYPES
 
 namespace nonstd {
 
@@ -249,7 +249,7 @@ namespace detail {
 
 // C++11 emulation:
 
-#if variant_HAVE_CONDITIONAL
+#ifdef variant_HAVE_CONDITIONAL
 
 using std::conditional;
 
@@ -644,7 +644,7 @@ public:
         return *this;
     }
 
-    optional & operator=( optional const & rhs ) 
+    optional & operator=( optional const & rhs )
 #if optional_CPP11_OR_GREATER
         noexcept( std::is_nothrow_move_assignable<T>::value && std::is_nothrow_move_constructible<T>::value )
 #endif
@@ -707,25 +707,25 @@ public:
 
     optional_constexpr value_type const * operator ->() const
     {
-        return assert( has_value() ), 
+        return assert( has_value() ),
             contained.value_ptr();
     }
 
     optional_constexpr14 value_type * operator ->()
     {
-        return assert( has_value() ), 
+        return assert( has_value() ),
             contained.value_ptr();
     }
 
     optional_constexpr value_type const & operator *() const optional_ref_qual
     {
-        return assert( has_value() ), 
+        return assert( has_value() ),
             contained.value();
     }
 
     optional_constexpr14 value_type & operator *() optional_ref_qual
     {
-        return assert( has_value() ), 
+        return assert( has_value() ),
             contained.value();
     }
 
