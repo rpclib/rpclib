@@ -4,6 +4,7 @@
 #define RPC_ERROR_H_NEOOSTKY
 
 #include <exception>
+#include <system_error>
 
 #include "rpc/msgpack.hpp"
 
