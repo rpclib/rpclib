@@ -1,13 +1,6 @@
 **[rpclib is looking for maintainers](https://github.com/rpclib/rpclib/issues/273)**
 
-
-# rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/Tytan/rpclib.svg?branch=master)](https://travis-ci.org/Tytan/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/hlpej63bpxks141j?svg=true)](https://ci.appveyor.com/project/Tytan/rpclib) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/rpclib/Lobby)
-
-# Fork
-
-The original repository is at [rpclib/rpclib](https://github.com/rpclib/rpclib). Due to the lack of maintenance, I picked up the project. Currently the goal is mainly to merge pull requests submitted to the main repository.
-
-# rpclib
+# rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/rpclib/rpclib.svg?branch=master)](https://travis-ci.org/rpclib/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://img.shields.io/codecov/c/github/rpclib/rpclib/dev.svg)](https://img.shields.io/codecov/c/github/rpclib/rpclib/dev.svg) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/rpclib/Lobby)
 
 `rpclib` is a RPC library for C++, providing both a client and server implementation. It is built using modern C++14, and as such, requires a recent compiler. Main highlights:
 
