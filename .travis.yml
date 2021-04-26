@@ -1,6 +1,6 @@
 language: c++
-os: linux 
-dist: trusty
+os: linux
+dist: focal
 sudo: required
 
 matrix:
@@ -15,14 +15,10 @@ matrix:
       env: RPCLIB_CXX_STANDARD=14 BUILD_TYPE=Release COVERAGE="OFF"
 
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq g++-5
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
-  - wget https://cmake.org/files/v3.9/cmake-3.9.2-Linux-x86_64.sh
-  - sudo sh cmake-3.9.2-Linux-x86_64.sh -- --skip-license --prefix=/usr
+  - sudo apt-get install -qq g++ cmake
 
 script:
   - mkdir build ; cd build
