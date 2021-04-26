@@ -1,3 +1,5 @@
+**[rpclib is looking for maintainers](https://github.com/rpclib/rpclib/issues/273)**
+
 
 # rpclib ![MIT](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.org/rpclib/rpclib.svg?branch=master)](https://travis-ci.org/rpclib/rpclib) [![Build status](https://ci.appveyor.com/api/projects/status/9lft2tlamcox8epq?svg=true)](https://ci.appveyor.com/project/sztomi/callme) [![Coverage Status](https://img.shields.io/codecov/c/github/rpclib/rpclib/dev.svg)](https://img.shields.io/codecov/c/github/rpclib/rpclib/dev.svg) ![Coverity](https://scan.coverity.com/projects/7259/badge.svg?flat=1) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/rpclib/Lobby)
 
