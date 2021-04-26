@@ -1,5 +1,14 @@
 # Changelog
 
+### 2.2.1
+
+This release fixed a crash on Windows.
+
+*Fixes*:
+
+  * Fixed client crashing when `suppress_exceptions` was on
+  and the server threw an exception.
+
 ### 2.2.0
 
 This release fixed a number of long-standing issues.

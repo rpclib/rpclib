@@ -6,7 +6,7 @@ find_package(rpclib REQUIRED)
 include_directories(${RPCLIB_INCLUDE_DIR})
 
 add_executable(calculator_server calculator_server.cc)
-target_link_libraries(calculator_server ${RPCLIB_LIBS})
+target_link_libraries(calculator_server ${RPCLIB_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 set_target_properties(
         calculator_server
         PROPERTIES
@@ -15,7 +15,7 @@ set_target_properties(
 target_compile_definitions(calculator_server PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
 
 add_executable(calculator_client calculator_client.cc)
-target_link_libraries(calculator_client ${RPCLIB_LIBS})
+target_link_libraries(calculator_client ${RPCLIB_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 set_target_properties(
         calculator_client
         PROPERTIES
