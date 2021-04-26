@@ -106,9 +106,29 @@ TEST_F(client_test, timeout_clear) {
     EXPECT_FALSE(client.get_timeout());
 }
 
+// Only enable this test on linux
+// It seems like the connection error is not detected on windows
+TEST_F(client_test, bad_ip) {
+    rpc::client client("127.0.0.2", test_port);
+    client.set_timeout(1000);
+#ifdef __linux__
+    EXPECT_THROW(client.call("dummy_void_zeroarg"), rpc::system_error);
+    // We expect a connection refused, not a timeout
+#else
+    EXPECT_ANY_THROW(client.call("dummy_void_zeroarg"));
+    // throw is enough for windows
+#endif
+}
+
 TEST(client_test2, timeout_while_connection) {
     rpc::client client("localhost", rpc::constants::DEFAULT_PORT);
     client.set_timeout(50);
+#ifdef __linux__
     // this client never connects, so this tests the timout in wait_conn()
-    EXPECT_THROW(client.call("whatev"), rpc::timeout);
+    // We expect a connection refused, not a timeout
+    EXPECT_THROW(client.call("whatev"), rpc::system_error);
+#else
+    EXPECT_ANY_THROW(client.call("dummy_void_zeroarg"));
+    // throw is enough for windows
+#endif
 }

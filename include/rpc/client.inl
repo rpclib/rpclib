@@ -47,7 +47,7 @@ client::async_call(std::string const &func_name, Args... args) {
 //! \param args The arguments to pass to the function.
 //! \note This function returns when the notification is written to the
 //! socket.
-//! \tparam Args THe types of the arguments.
+//! \tparam Args The types of the arguments.
 template <typename... Args>
 void client::send(std::string const &func_name, Args... args) {
     RPCLIB_CREATE_LOG_CHANNEL(client)

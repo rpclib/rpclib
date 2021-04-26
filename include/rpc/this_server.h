@@ -19,7 +19,8 @@ public:
     //! \brief Cancels a requested stop operation.
     void cancel_stop();
 
-    friend class rpc::detail::server_session;
+    //! Check if a stop is requested
+    bool stopping() const { return stopping_; }
 
 private:
     bool stopping_;

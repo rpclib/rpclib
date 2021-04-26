@@ -83,11 +83,19 @@ private:
         std::stringstream ss;
         timespec now_t = {};
         clock_gettime(CLOCK_REALTIME, &now_t);
+#if __GNUC__ >= 5
         ss << std::put_time(
                   std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)),
                   "%F %T")
-           << RPCLIB_FMT::format(
+#else
+        char mltime[128];
+        strftime(mltime, sizeof(mltime), "%c %Z",
+                std::localtime(reinterpret_cast<time_t *>(&now_t.tv_sec)));
+        ss << mltime
+#endif
+            << RPCLIB_FMT::format(
                   ".{:03}", round(static_cast<double>(now_t.tv_nsec) / 1.0e6));
+
         return ss.str();
     }
 #endif
