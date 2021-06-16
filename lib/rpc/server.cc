@@ -32,7 +32,9 @@ struct server::impl {
           suppress_exceptions_(false) {
             auto ep = tcp::endpoint(ip::address::from_string(address), port);
             acceptor_.open(ep.protocol());
+#ifndef _WIN32
             acceptor_.set_option(tcp::acceptor::reuse_address(true));
+#endif // !_WIN32
             acceptor_.bind(ep);
             acceptor_.listen();
           }
@@ -45,7 +47,9 @@ struct server::impl {
           suppress_exceptions_(false) {
             auto ep = tcp::endpoint(tcp::v4(), port);
             acceptor_.open(ep.protocol());
+#ifndef _WIN32
             acceptor_.set_option(tcp::acceptor::reuse_address(true));
+#endif // !_WIN32
             acceptor_.bind(ep);
             acceptor_.listen();            
           }
