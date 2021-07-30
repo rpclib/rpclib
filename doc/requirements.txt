@@ -1,4 +1,22 @@
 lxml>=3.6.4
 Mako>=1.0.4
-mkdocs
+mkdocs>=1.0.0
 pygments
+xsltproc
+docker
+
+
+# Manage Docker as non-root user
+https://docs.docker.com/engine/install/linux-postinstall/
+
+$ sudo groupadd docker
+$ sudo usermod -aG docker $USER
+
+# log out and in to reevaluate user groups or
+$ newgrp docker
+
+# Verify that you can run docker commands without sudo.
+$ docker run hello-world
+
+# If mkdocs serve is used, this is required as well
+mkdocs-material

@@ -1,7 +1,7 @@
 docs_dir: pages
 site_name: rpclib
 
-pages:
+nav:
   - 'Home': 'index.md'
   - 'Guides':
     - 'Getting started': 'gettingstarted.md'
@@ -23,6 +23,7 @@ markdown_extensions:
   - toc:
       permalink: False
       baselevel: 2
+      toc_depth: 5
   - admonition
   - attr_list
   - codehilite
