@@ -14,6 +14,6 @@
 #
 # /* MSGPACK_PP_INCLUDE_SELF */
 #
-# define MSGPACK_PP_INCLUDE_SELF() <msgpack/preprocessor/iteration/detail/self.hpp>
+# define MSGPACK_PP_INCLUDE_SELF() <clmdep_msgpack/preprocessor/iteration/detail/self.hpp>
 #
 # endif

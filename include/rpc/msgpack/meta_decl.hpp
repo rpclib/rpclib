@@ -13,5 +13,6 @@
 
 #include "rpc/msgpack/v1/meta_decl.hpp"
 #include "rpc/msgpack/v2/meta_decl.hpp"
+#include "rpc/msgpack/v3/meta_decl.hpp"
 
 #endif // MSGPACK_META_DECL_HPP

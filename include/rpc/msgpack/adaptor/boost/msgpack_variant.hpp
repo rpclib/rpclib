@@ -13,6 +13,6 @@
 #include "rpc/msgpack/adaptor/boost/msgpack_variant_decl.hpp"
 
 #include "rpc/msgpack/v1/adaptor/boost/msgpack_variant.hpp"
-//#include "rpc/msgpack/v2/adaptor/boost/msgpack_variant.hpp"
+//#include "rpc/clmdep_msgpack/v2/adaptor/boost/msgpack_variant.hpp"
 
 #endif // MSGPACK_TYPE_BOOST_MSGPACK_VARIANT_HPP

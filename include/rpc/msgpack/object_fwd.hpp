@@ -15,5 +15,6 @@
 
 #include "rpc/msgpack/v1/object_fwd.hpp"
 #include "rpc/msgpack/v2/object_fwd.hpp"
+#include "rpc/msgpack/v3/object_fwd.hpp"
 
 #endif // MSGPACK_OBJECT_FWD_HPP

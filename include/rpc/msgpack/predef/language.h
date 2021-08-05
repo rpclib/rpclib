@@ -13,5 +13,6 @@ http://www.boost.org/LICENSE_1_0.txt)
 #include <rpc/msgpack/predef/language/stdc.h>
 #include <rpc/msgpack/predef/language/stdcpp.h>
 #include <rpc/msgpack/predef/language/objc.h>
+#include <rpc/msgpack/predef/language/cuda.h>
 
 #endif

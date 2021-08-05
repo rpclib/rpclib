@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/parse_return.hpp"
 #include "rpc/msgpack/v2/parse_return.hpp"
+#include "rpc/msgpack/v3/parse_return.hpp"
 
 #endif // MSGPACK_PARSE_RETURN_HPP

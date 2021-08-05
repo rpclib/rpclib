@@ -12,7 +12,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #include <rpc/msgpack/predef/make.h>
 
 /*`
-[heading `MSGPACK_ARCH_PARISK`]
+[heading `MSGPACK_ARCH_PARISC`]
 
 [@http://en.wikipedia.org/wiki/PA-RISC_family HP/PA RISC] architecture.
 

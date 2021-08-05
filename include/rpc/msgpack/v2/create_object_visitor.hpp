@@ -12,6 +12,7 @@
 
 #include "rpc/msgpack/unpack_decl.hpp"
 #include "rpc/msgpack/unpack_exception.hpp"
+#include "rpc/msgpack/v2/create_object_visitor_decl.hpp"
 #include "rpc/msgpack/v2/null_visitor.hpp"
 
 namespace clmdep_msgpack {
@@ -84,7 +85,7 @@ public:
         clmdep_msgpack::object* obj = m_stack.back();
         if(v >= 0) {
             obj->type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            obj->via.u64 = v;
+            obj->via.u64 = static_cast<uint64_t>(v);
         }
         else {
             obj->type = clmdep_msgpack::type::NEGATIVE_INTEGER;
@@ -162,10 +163,13 @@ public:
             obj->via.array.ptr = MSGPACK_NULLPTR;
         }
         else {
-            size_t size = num_elements*sizeof(clmdep_msgpack::object);
-            if (size / sizeof(clmdep_msgpack::object) != num_elements) {
+
+#if SIZE_MAX == UINT_MAX
+            if (num_elements > SIZE_MAX/sizeof(clmdep_msgpack::object))
                 throw clmdep_msgpack::array_size_overflow("array size overflow");
-            }
+#endif // SIZE_MAX == UINT_MAX
+
+            size_t size = num_elements*sizeof(clmdep_msgpack::object);
             obj->via.array.ptr =
                 static_cast<clmdep_msgpack::object*>(m_zone->allocate_align(size, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object)));
         }
@@ -193,10 +197,12 @@ public:
             obj->via.map.ptr = MSGPACK_NULLPTR;
         }
         else {
-            size_t size = num_kv_pairs*sizeof(clmdep_msgpack::object_kv);
-            if (size / sizeof(clmdep_msgpack::object_kv) != num_kv_pairs) {
+
+#if SIZE_MAX == UINT_MAX
+            if (num_kv_pairs > SIZE_MAX/sizeof(clmdep_msgpack::object_kv))
                 throw clmdep_msgpack::map_size_overflow("map size overflow");
-            }
+#endif // SIZE_MAX == UINT_MAX
+            size_t size = num_kv_pairs*sizeof(clmdep_msgpack::object_kv);
             obj->via.map.ptr =
                 static_cast<clmdep_msgpack::object_kv*>(m_zone->allocate_align(size, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         }

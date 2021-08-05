@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/pack_decl.hpp"
 #include "rpc/msgpack/v2/pack_decl.hpp"
+#include "rpc/msgpack/v3/pack_decl.hpp"
 
 #endif // MSGPACK_PACK_DECL_HPP

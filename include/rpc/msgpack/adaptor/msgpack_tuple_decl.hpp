@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/adaptor/msgpack_tuple_decl.hpp"
 #include "rpc/msgpack/v2/adaptor/msgpack_tuple_decl.hpp"
+#include "rpc/msgpack/v3/adaptor/msgpack_tuple_decl.hpp"
 
 #endif // MSGPACK_MSGPACK_TUPLE_DECL_HPP

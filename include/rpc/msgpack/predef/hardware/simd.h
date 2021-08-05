@@ -39,29 +39,29 @@ http://www.boost.org/LICENSE_1_0.txt)
      [[`MSGPACK_HW_SIMD_PPC_AVAILABLE`] [__predef_detection__]]
      ]
 
- [include ../include/msgpack/predef/hardware/simd/x86.h]
- [include ../include/msgpack/predef/hardware/simd/x86_amd.h]
- [include ../include/msgpack/predef/hardware/simd/arm.h]
- [include ../include/msgpack/predef/hardware/simd/ppc.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/x86.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/x86_amd.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/arm.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/ppc.h]
 
  [endsect]
 
  [/ --------------------------- ]
 
  [section `MSGPACK_HW_SIMD_X86_*_VERSION`]
- [include ../include/msgpack/predef/hardware/simd/x86/versions.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/x86/versions.h]
  [endsect]
 
  [section `MSGPACK_HW_SIMD_X86_AMD_*_VERSION`]
- [include ../include/msgpack/predef/hardware/simd/x86_amd/versions.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/x86_amd/versions.h]
  [endsect]
 
  [section `MSGPACK_HW_SIMD_ARM_*_VERSION`]
- [include ../include/msgpack/predef/hardware/simd/arm/versions.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/arm/versions.h]
  [endsect]
 
  [section `MSGPACK_HW_SIMD_PPC_*_VERSION`]
- [include ../include/msgpack/predef/hardware/simd/ppc/versions.h]
+ [include ../include/clmdep_msgpack/predef/hardware/simd/ppc/versions.h]
  [endsect]
 
  */

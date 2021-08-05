@@ -11,11 +11,18 @@ http://www.boost.org/LICENSE_1_0.txt)
 #define MSGPACK_PREDEF_PLATFORM_H
 #endif
 
+#include <rpc/msgpack/predef/platform/cloudabi.h>
 #include <rpc/msgpack/predef/platform/mingw.h>
+#include <rpc/msgpack/predef/platform/mingw32.h>
+#include <rpc/msgpack/predef/platform/mingw64.h>
+#include <rpc/msgpack/predef/platform/windows_uwp.h>
 #include <rpc/msgpack/predef/platform/windows_desktop.h>
-#include <rpc/msgpack/predef/platform/windows_store.h>
 #include <rpc/msgpack/predef/platform/windows_phone.h>
-#include <rpc/msgpack/predef/platform/windows_runtime.h>
+#include <rpc/msgpack/predef/platform/windows_server.h>
+#include <rpc/msgpack/predef/platform/windows_store.h>
+#include <rpc/msgpack/predef/platform/windows_system.h>
+#include <rpc/msgpack/predef/platform/windows_runtime.h> // deprecated
+#include <rpc/msgpack/predef/platform/ios.h>
 /*#include <rpc/msgpack/predef/platform/.h>*/
 
 #endif

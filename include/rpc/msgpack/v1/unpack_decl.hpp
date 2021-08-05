@@ -62,8 +62,8 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 /// The type of reference or copy judging function.
 /**
- * @param type msgpack data type.
- * @param size msgpack data size.
+ * @param type clmdep_msgpack data type.
+ * @param size clmdep_msgpack data size.
  * @param user_data The user_data that is set by clmdep_msgpack::unpack functions.
  *
  * @return If the data should be referenced, then return true, otherwise (should be copied) false.
@@ -344,7 +344,7 @@ void unpack(
 
 /// Unpack clmdep_msgpack::object from a buffer.
 /**
- * @param z The clmdep_msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param z The clmdep_msgpack::zone that is used as a memory of unpacked clmdep_msgpack objects.
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
  * @param off The offset position of the buffer. It is read and overwritten.
@@ -363,7 +363,7 @@ clmdep_msgpack::object unpack(
 
 /// Unpack clmdep_msgpack::object from a buffer.
 /**
- * @param z The clmdep_msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param z The clmdep_msgpack::zone that is used as a memory of unpacked clmdep_msgpack objects.
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
  * @param off The offset position of the buffer. It is read and overwritten.
@@ -381,7 +381,7 @@ clmdep_msgpack::object unpack(
 
 /// Unpack clmdep_msgpack::object from a buffer.
 /**
- * @param z The clmdep_msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param z The clmdep_msgpack::zone that is used as a memory of unpacked clmdep_msgpack objects.
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
  * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
@@ -399,7 +399,7 @@ clmdep_msgpack::object unpack(
 
 /// Unpack clmdep_msgpack::object from a buffer.
 /**
- * @param z The clmdep_msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param z The clmdep_msgpack::zone that is used as a memory of unpacked clmdep_msgpack objects.
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
  * @param f A judging function that clmdep_msgpack::object refer to the buffer.

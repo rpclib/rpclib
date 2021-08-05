@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/adaptor/raw_decl.hpp"
 #include "rpc/msgpack/v2/adaptor/raw_decl.hpp"
+#include "rpc/msgpack/v3/adaptor/raw_decl.hpp"
 
 #endif // MSGPACK_TYPE_RAW_DECL_HPP

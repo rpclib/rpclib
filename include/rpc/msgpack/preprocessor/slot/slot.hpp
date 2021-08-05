@@ -19,11 +19,11 @@
 #
 # define MSGPACK_PP_ASSIGN_SLOT(i) MSGPACK_PP_CAT(MSGPACK_PP_ASSIGN_SLOT_, i)
 #
-# define MSGPACK_PP_ASSIGN_SLOT_1 <msgpack/preprocessor/slot/detail/slot1.hpp>
-# define MSGPACK_PP_ASSIGN_SLOT_2 <msgpack/preprocessor/slot/detail/slot2.hpp>
-# define MSGPACK_PP_ASSIGN_SLOT_3 <msgpack/preprocessor/slot/detail/slot3.hpp>
-# define MSGPACK_PP_ASSIGN_SLOT_4 <msgpack/preprocessor/slot/detail/slot4.hpp>
-# define MSGPACK_PP_ASSIGN_SLOT_5 <msgpack/preprocessor/slot/detail/slot5.hpp>
+# define MSGPACK_PP_ASSIGN_SLOT_1 <clmdep_msgpack/preprocessor/slot/detail/slot1.hpp>
+# define MSGPACK_PP_ASSIGN_SLOT_2 <clmdep_msgpack/preprocessor/slot/detail/slot2.hpp>
+# define MSGPACK_PP_ASSIGN_SLOT_3 <clmdep_msgpack/preprocessor/slot/detail/slot3.hpp>
+# define MSGPACK_PP_ASSIGN_SLOT_4 <clmdep_msgpack/preprocessor/slot/detail/slot4.hpp>
+# define MSGPACK_PP_ASSIGN_SLOT_5 <clmdep_msgpack/preprocessor/slot/detail/slot5.hpp>
 #
 # /* MSGPACK_PP_SLOT */
 #
