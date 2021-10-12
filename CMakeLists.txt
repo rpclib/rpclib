@@ -167,6 +167,9 @@ if(RPCLIB_COMPILE_DEFINITIONS)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${RPCLIB_DEP_LIBRARIES})
+if (WIN32)
+  target_link_libraries(${PROJECT_NAME} wsock32 ws2_32)
+endif()
 target_include_directories(
   ${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
