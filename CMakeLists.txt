@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(rpc VERSION 2.3.0)
+project(xpx.rpc VERSION 2.3.0)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(policies)
 include(msvc_support)
 include(coverage)
 include(check_warning_flag)
+
+add_definitions(-w)
 
 #
 # Options
