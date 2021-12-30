@@ -32,17 +32,17 @@ public:
     //! \param addr The address of the server to connect to. This might be an
     //! IP address or a host name, too.
     //! \param port The port on the server to connect to.
-    client(std::string const &addr, uint16_t port);
+    EXPORT client(std::string const &addr, uint16_t port);
 
     //! \cond DOXYGEN_SKIP
-    client(client const &) = delete;
+    EXPORT client(client const &) = delete;
     //! \endcond
 
     //! \brief Destructor.
     //!
     //! During destruction, the connection to the server is gracefully closed.
     //! This means that any outstanding reads and writes are completed first.
-    ~client();
+    EXPORT ~client();
 
     //! \brief Calls a function with the given name and arguments (if any).
     //!
@@ -58,7 +58,7 @@ public:
     //!
     //! \throws rpc::rpc_error if the server responds with an error.
     template <typename... Args>
-    RPCLIB_MSGPACK::object_handle call(std::string const &func_name, Args... args);
+    EXPORT RPCLIB_MSGPACK::object_handle call(std::string const &func_name, Args... args);
 
     //! \brief Calls a function asynchronously with the given name and
     //! arguments.
@@ -77,8 +77,7 @@ public:
     //! \returns A std::future, possibly holding a future result
     //! (which is a RPCLIB_MSGPACK::object).
     template <typename... Args>
-    std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name,
-                                                   Args... args);
+    EXPORT  std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name, Args... args);
 
     //! \brief Sends a notification with the given name and arguments (if any).
     //!
@@ -93,7 +92,7 @@ public:
     //! \note This function returns immediately (possibly before the
     //! notification is written to the socket).
     template <typename... Args>
-    void send(std::string const &func_name, Args... args);
+    EXPORT void send(std::string const &func_name, Args... args);
 
     //! \brief Returns the timeout setting of this client in milliseconds.
     //!
@@ -105,24 +104,24 @@ public:
     //! the preferred timeout mechanism remains using std::future.
     //!
     //! The default value for timeout is 5000ms (5 seconds).
-    nonstd::optional<int64_t> get_timeout() const;
+    EXPORT nonstd::optional<int64_t> get_timeout() const;
 
     //! \brief Sets the timeout for synchronous calls. For more information,
     //! see get_timeout().
-    void set_timeout(int64_t value);
+    EXPORT void set_timeout(int64_t value);
 
     //! \brief Clears the timeout for synchronous calls. For more information,
     //! see get_timeout().
-    void clear_timeout();
+    EXPORT void clear_timeout();
 
     //! \brief Enum representing the connection states of the client.
     enum class connection_state { initial, connected, disconnected, reset };
 
     //! \brief Returns the current connection state.
-    connection_state get_connection_state() const;
+    EXPORT connection_state get_connection_state() const;
 
     //! \brief Waits for the completion of all ongoing calls.
-    void wait_all_responses();
+    EXPORT void wait_all_responses();
 
 private:
     //! \brief Type of a promise holding a future response.
@@ -130,13 +129,13 @@ private:
 
     enum class request_type { call = 0, notification = 2 };
 
-    void wait_conn();
-    void post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
+    EXPORT void wait_conn();
+    EXPORT void post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
               std::string const& func_name,
               std::shared_ptr<rsp_promise> p);
-    void post(RPCLIB_MSGPACK::sbuffer *buffer);
-    int get_next_call_idx();
-    RPCLIB_NORETURN void throw_timeout(std::string const& func_name);
+    EXPORT void post(RPCLIB_MSGPACK::sbuffer *buffer);
+    EXPORT int get_next_call_idx();
+    RPCLIB_NORETURN EXPORT void throw_timeout(std::string const& func_name);
 
 private:
     static constexpr double buffer_grow_factor = 1.8;

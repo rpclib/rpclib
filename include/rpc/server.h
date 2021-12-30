@@ -31,13 +31,13 @@ public:
     //! specified port.
     //!
     //! \param port The port number to listen on.
-    explicit server(uint16_t port);
+    EXPORT explicit server(uint16_t port);
 
     //! \brief Move constructor. This is implemented by calling the
     //! move assignment operator.
     //!
     //! \param other The other instance to move from.
-    server(server&& other) noexcept;
+    EXPORT server(server&& other) noexcept;
 
     //! \brief Constructs a server that listens on the specified address on
     //! the specified port.
@@ -45,18 +45,18 @@ public:
     //! \param address The address to bind to. This only works if oee of your
     //! network adapaters control the given address.
     //! \param port The port number to listen on.
-    server(std::string const &address, uint16_t port);
+    EXPORT server(std::string const &address, uint16_t port);
 
     //! \brief Destructor.
     //!
     //! When the server is destroyed, all ongoin sessions are closed gracefully.
-    ~server();
+    EXPORT ~server();
 
     //! \brief Move assignment operator.
     //!
     //! \param other The other instance to move from.
     //! \return The result of the assignment.
-    server& operator=(server&& other);
+    EXPORT server& operator=(server&& other);
 
     //! \brief Starts the server loop. This is a blocking call.
     //!
@@ -66,7 +66,7 @@ public:
     //! of this call. This means that the handlers are executed on the thread
     //! that calls `run`. Reads and writes are initiated by this function
     //! internally as well.
-    void run();
+    EXPORT void run();
 
     //! \brief Starts the server loop on one or more threads. This is a
     //! non-blocking call.
@@ -77,7 +77,7 @@ public:
     //! of the threads.
     //!
     //! \param worker_threads The number of worker threads to start.
-    void async_run(std::size_t worker_threads = 1);
+    EXPORT void async_run(std::size_t worker_threads = 1);
 
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //!
@@ -89,7 +89,7 @@ public:
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    template <typename F> void bind(std::string const &name, F func) {
+    template <typename F> EXPORT void bind(std::string const &name, F func) {
         disp_->bind(name, func);
     }
 
@@ -98,21 +98,21 @@ public:
     //! the server will try to gather textual data and return it to
     //! the client as an error response.
     //! \note Setting this flag only affects subsequent connections.
-    void suppress_exceptions(bool suppress);
+    EXPORT void suppress_exceptions(bool suppress);
 
     //! \brief Stops the server.
     //! \note This should not be called from worker threads.
-    void stop();
+    EXPORT void stop();
 
     //! \brief Returns port
     //! \note The port
-    unsigned short port() const;
+    EXPORT unsigned short port() const;
 
     //! \brief Closes all sessions gracefully.
-    void close_sessions();
+    EXPORT void close_sessions();
 
     //! \brief Closes a specific session.
-    void close_session(std::shared_ptr<detail::server_session> const& s);
+    EXPORT void close_session(std::shared_ptr<detail::server_session> const& s);
 
 private:
 	RPCLIB_DECLARE_PIMPL()
