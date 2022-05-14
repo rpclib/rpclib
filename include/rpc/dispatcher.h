@@ -60,6 +60,19 @@ public:
               detail::tags::nonvoid_result const &,
               detail::tags::nonzero_arg const &);
 
+    //! \brief removes a functor with given name from callable functors.
+	void remove(std::string const &name) {
+		funcs_.erase(name);
+	}
+	
+	//! \brief returns a list name of all functors binded
+	std::vector<std::string> names() {
+		std::vector<std::string> names;
+		for(auto it = funcs_.begin(); it != funcs_.end(); ++it)
+			names.push_back(it->first);
+		return names;
+	}
+	
     //! @}
 
     //! \brief Processes a message that contains a call according to
