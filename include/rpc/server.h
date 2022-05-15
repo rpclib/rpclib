@@ -99,7 +99,7 @@ public:
     //!
     //! \param name The name of the functor.
     void unbind(std::string const &name) {
-        disp_->remove(name);
+        disp_->unbind(name);
     }
 	
 	//! \brief Returns all binded names
@@ -107,7 +107,7 @@ public:
     //! This function returns a list of all names which functors are binded to
     //!
     //! \param name The name of the functor.
-    std::vector<std::string> names() {
+    std::vector<std::string> names() const {
         return disp_->names();
     }
 	

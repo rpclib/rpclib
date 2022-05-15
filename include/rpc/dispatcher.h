@@ -60,13 +60,13 @@ public:
               detail::tags::nonvoid_result const &,
               detail::tags::nonzero_arg const &);
 
-    //! \brief removes a functor with given name from callable functors.
-	void remove(std::string const &name) {
+    //! \brief Unbind a functor with a given name from callable functors.
+	void unbind(std::string const &name) {
 		funcs_.erase(name);
 	}
 	
-	//! \brief returns a list name of all functors binded
-	std::vector<std::string> names() {
+	//! \brief returns a list of all names which functors are binded to
+	std::vector<std::string> names() const {
 		std::vector<std::string> names;
 		for(auto it = funcs_.begin(); it != funcs_.end(); ++it)
 			names.push_back(it->first);
