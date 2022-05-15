@@ -93,6 +93,24 @@ public:
         disp_->bind(name, func);
     }
 
+    //! \brief Unbinds a functor binded to a name.
+    //!
+    //! This function removes already binded function from RPC Ccallable functions
+    //!
+    //! \param name The name of the functor.
+    void unbind(std::string const &name) {
+        disp_->unbind(name);
+    }
+	
+	//! \brief Returns all binded names
+    //!
+    //! This function returns a list of all names which functors are binded to
+    //!
+    //! \param name The name of the functor.
+    std::vector<std::string> names() const {
+        return disp_->names();
+    }
+	
     //! \brief Sets the exception behavior in handlers. By default,
     //! handlers throwing will crash the server. If suppressing is on,
     //! the server will try to gather textual data and return it to
