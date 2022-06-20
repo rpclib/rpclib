@@ -25,19 +25,23 @@ class server_session;
 //! to allow binding functions before that. Use the `run` or `async_run`
 //! functions to start listening on the port.
 //! This class is not copyable, but moveable.
+#if __MINGW32__
 class server {
+#else
+class EXPORT server {
+#endif
 public:
     //! \brief Constructs a server that listens on the localhost on the
     //! specified port.
     //!
     //! \param port The port number to listen on.
-    EXPORT explicit server(uint16_t port);
+    explicit server(uint16_t port);
 
     //! \brief Move constructor. This is implemented by calling the
     //! move assignment operator.
     //!
     //! \param other The other instance to move from.
-    EXPORT server(server&& other) noexcept;
+    server(server&& other) noexcept;
 
     //! \brief Constructs a server that listens on the specified address on
     //! the specified port.
@@ -45,18 +49,18 @@ public:
     //! \param address The address to bind to. This only works if oee of your
     //! network adapaters control the given address.
     //! \param port The port number to listen on.
-    EXPORT server(std::string const &address, uint16_t port);
+    server(std::string const &address, uint16_t port);
 
     //! \brief Destructor.
     //!
     //! When the server is destroyed, all ongoin sessions are closed gracefully.
-    EXPORT ~server();
+    ~server();
 
     //! \brief Move assignment operator.
     //!
     //! \param other The other instance to move from.
     //! \return The result of the assignment.
-    EXPORT server& operator=(server&& other);
+    server& operator=(server&& other);
 
     //! \brief Starts the server loop. This is a blocking call.
     //!
@@ -66,7 +70,7 @@ public:
     //! of this call. This means that the handlers are executed on the thread
     //! that calls `run`. Reads and writes are initiated by this function
     //! internally as well.
-    EXPORT void run();
+    void run();
 
     //! \brief Starts the server loop on one or more threads. This is a
     //! non-blocking call.
@@ -77,7 +81,7 @@ public:
     //! of the threads.
     //!
     //! \param worker_threads The number of worker threads to start.
-    EXPORT void async_run(std::size_t worker_threads = 1);
+    void async_run(std::size_t worker_threads = 1);
 
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //!
@@ -89,7 +93,7 @@ public:
     //! \param name The name of the functor.
     //! \param func The functor to bind.
     //! \tparam F The type of the functor.
-    template <typename F> EXPORT void bind(std::string const &name, F func) {
+    template <typename F> void bind(std::string const &name, F func) {
         disp_->bind(name, func);
     }
 
@@ -98,21 +102,21 @@ public:
     //! the server will try to gather textual data and return it to
     //! the client as an error response.
     //! \note Setting this flag only affects subsequent connections.
-    EXPORT void suppress_exceptions(bool suppress);
+    void suppress_exceptions(bool suppress);
 
     //! \brief Stops the server.
     //! \note This should not be called from worker threads.
-    EXPORT void stop();
+    void stop();
 
     //! \brief Returns port
     //! \note The port
-    EXPORT unsigned short port() const;
+    unsigned short port() const;
 
     //! \brief Closes all sessions gracefully.
-    EXPORT void close_sessions();
+    void close_sessions();
 
     //! \brief Closes a specific session.
-    EXPORT void close_session(std::shared_ptr<detail::server_session> const& s);
+    void close_session(std::shared_ptr<detail::server_session> const& s);
 
 private:
 	RPCLIB_DECLARE_PIMPL()
