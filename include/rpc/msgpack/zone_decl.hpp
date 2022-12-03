@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/zone_decl.hpp"
 #include "rpc/msgpack/v2/zone_decl.hpp"
+#include "rpc/msgpack/v3/zone_decl.hpp"
 
 #endif // MSGPACK_ZONE_DECL_HPP

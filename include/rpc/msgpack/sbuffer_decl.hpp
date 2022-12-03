@@ -12,6 +12,7 @@
 
 #include "rpc/msgpack/v1/sbuffer_decl.hpp"
 #include "rpc/msgpack/v2/sbuffer_decl.hpp"
+#include "rpc/msgpack/v3/sbuffer_decl.hpp"
 
 
 #endif // MSGPACK_SBUFFER_DECL_HPP

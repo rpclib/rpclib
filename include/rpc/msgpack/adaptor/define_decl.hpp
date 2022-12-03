@@ -12,7 +12,7 @@
 
 // BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
 // http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
-// However, supporting compiler detection is not complete. msgpack-c requires
+// However, supporting compiler detection is not complete. clmdep_msgpack-c requires
 // variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
 #if !defined(MSGPACK_PP_VARIADICS)
 #define MSGPACK_PP_VARIADICS
@@ -27,18 +27,18 @@
 
 #define MSGPACK_DEFINE_ARRAY(...) \
     template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
+    void msgpack_pack(Packer& msgpack_pk) const \
     { \
-        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(pk); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(msgpack_pk); \
     } \
-    void msgpack_unpack(clmdep_msgpack::object const& o) \
+    void msgpack_unpack(clmdep_msgpack::object const& msgpack_o) \
     { \
-        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(o); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(msgpack_o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, clmdep_msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, clmdep_msgpack::zone& msgpack_z) const \
     { \
-        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(o, z); \
+        clmdep_msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(msgpack_o, msgpack_z); \
     }
 
 #define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
@@ -62,24 +62,24 @@
 
 #define MSGPACK_DEFINE_MAP(...) \
     template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
+    void msgpack_pack(Packer& msgpack_pk) const \
     { \
         clmdep_msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_pack(pk); \
+            .msgpack_pack(msgpack_pk); \
     } \
-    void msgpack_unpack(clmdep_msgpack::object const& o) \
+    void msgpack_unpack(clmdep_msgpack::object const& msgpack_o) \
     { \
         clmdep_msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_unpack(o); \
+            .msgpack_unpack(msgpack_o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, clmdep_msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, clmdep_msgpack::zone& msgpack_z) const \
     { \
         clmdep_msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_object(o, z); \
+            .msgpack_object(msgpack_o, msgpack_z); \
     }
 
 #define MSGPACK_BASE_MAP(base) \
@@ -94,32 +94,32 @@
   namespace adaptor { \
     template<> \
     struct convert<enum_name> { \
-      clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, enum_name& v) const { \
+      clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& msgpack_o, enum_name& msgpack_v) const { \
         clmdep_msgpack::underlying_type<enum_name>::type tmp; \
-        clmdep_msgpack::operator>>(o, tmp);                   \
-        v = static_cast<enum_name>(tmp);   \
-        return o; \
+        clmdep_msgpack::operator>>(msgpack_o, tmp);                   \
+        msgpack_v = static_cast<enum_name>(tmp);   \
+        return msgpack_o; \
       } \
     }; \
     template<> \
     struct object<enum_name> { \
-      void operator()(clmdep_msgpack::object& o, const enum_name& v) const { \
-        clmdep_msgpack::underlying_type<enum_name>::type tmp = static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(v); \
-        clmdep_msgpack::operator<<(o, tmp);                                    \
+      void operator()(clmdep_msgpack::object& msgpack_o, const enum_name& msgpack_v) const { \
+        clmdep_msgpack::underlying_type<enum_name>::type tmp = static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(msgpack_v); \
+        clmdep_msgpack::operator<<(msgpack_o, tmp);                                    \
       } \
     }; \
     template<> \
     struct object_with_zone<enum_name> { \
-      void operator()(clmdep_msgpack::object::with_zone& o, const enum_name& v) const {  \
-        clmdep_msgpack::underlying_type<enum_name>::type tmp = static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(v); \
-        clmdep_msgpack::operator<<(o, tmp);                                    \
+      void operator()(clmdep_msgpack::object::with_zone& msgpack_o, const enum_name& msgpack_v) const {  \
+        clmdep_msgpack::underlying_type<enum_name>::type tmp = static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(msgpack_v); \
+        clmdep_msgpack::operator<<(msgpack_o, tmp);                                    \
       } \
     }; \
     template <> \
     struct pack<enum_name> { \
       template <typename Stream> \
-      clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const enum_name& v) const { \
-          return clmdep_msgpack::operator<<(o, static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(v)); \
+      clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& msgpack_o, const enum_name& msgpack_v) const { \
+          return clmdep_msgpack::operator<<(msgpack_o, static_cast<clmdep_msgpack::underlying_type<enum_name>::type>(msgpack_v)); \
       } \
     }; \
   } \
@@ -139,5 +139,6 @@
 
 #include "rpc/msgpack/v1/adaptor/define_decl.hpp"
 #include "rpc/msgpack/v2/adaptor/define_decl.hpp"
+#include "rpc/msgpack/v3/adaptor/define_decl.hpp"
 
 #endif // MSGPACK_DEFINE_DECL_HPP

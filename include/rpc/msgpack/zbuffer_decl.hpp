@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/zbuffer_decl.hpp"
 #include "rpc/msgpack/v2/zbuffer_decl.hpp"
+#include "rpc/msgpack/v3/zbuffer_decl.hpp"
 
 #endif // MSGPACK_ZBUFFER_DECL_HPP

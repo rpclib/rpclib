@@ -18,7 +18,7 @@
 #
 # /* MSGPACK_PP_LOCAL_ITERATE */
 #
-# define MSGPACK_PP_LOCAL_ITERATE() <msgpack/preprocessor/iteration/detail/local.hpp>
+# define MSGPACK_PP_LOCAL_ITERATE() <clmdep_msgpack/preprocessor/iteration/detail/local.hpp>
 #
 # define MSGPACK_PP_LOCAL_C(n) (MSGPACK_PP_LOCAL_S) <= n && (MSGPACK_PP_LOCAL_F) >= n
 # define MSGPACK_PP_LOCAL_R(n) (MSGPACK_PP_LOCAL_F) <= n && (MSGPACK_PP_LOCAL_S) >= n

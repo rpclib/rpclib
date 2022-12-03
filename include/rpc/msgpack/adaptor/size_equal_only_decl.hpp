@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/adaptor/size_equal_only_decl.hpp"
 #include "rpc/msgpack/v2/adaptor/size_equal_only_decl.hpp"
+#include "rpc/msgpack/v3/adaptor/size_equal_only_decl.hpp"
 
 #endif // MSGPACK_TYPE_SIZE_EQUAL_ONLY_DECL_HPP

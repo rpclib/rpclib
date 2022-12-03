@@ -12,5 +12,6 @@
 
 #include "rpc/msgpack/v1/adaptor/array_ref_decl.hpp"
 #include "rpc/msgpack/v2/adaptor/array_ref_decl.hpp"
+#include "rpc/msgpack/v3/adaptor/array_ref_decl.hpp"
 
 #endif // MSGPACK_TYPE_ARRAY_REF_DECL_HPP

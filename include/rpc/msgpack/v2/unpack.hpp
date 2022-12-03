@@ -10,9 +10,11 @@
 #ifndef MSGPACK_V2_UNPACK_HPP
 #define MSGPACK_V2_UNPACK_HPP
 
+#if MSGPACK_DEFAULT_API_VERSION >= 2
+
 #include "rpc/msgpack/unpack_decl.hpp"
-#include "rpc/msgpack/v2/create_object_visitor.hpp"
-#include "rpc/msgpack/v2/parse.hpp"
+#include "rpc/msgpack/parse.hpp"
+#include "rpc/msgpack/create_object_visitor.hpp"
 
 namespace clmdep_msgpack {
 
@@ -229,7 +231,7 @@ inline void unpack(
 inline void unpack(
     clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
-    clmdep_msgpack::v2::unpack_reference_func f, void* user_data,
+    unpack_reference_func f, void* user_data,
             unpack_limit const& limit)
 {
     bool referenced;
@@ -341,5 +343,6 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 }  // namespace clmdep_msgpack
 
+#endif // MSGPACK_DEFAULT_API_VERSION >= 2
 
 #endif // MSGPACK_V2_UNPACK_HPP

@@ -64,30 +64,32 @@ inline T convert_integer(clmdep_msgpack::object const& o)
 }
 
 template <>
-struct object_char_sign<true> {
+struct object_sign<true> {
     template <typename T>
-    static typename clmdep_msgpack::enable_if<clmdep_msgpack::is_same<T, char>::value>::type
-    make(clmdep_msgpack::object& o, T v) {
+    static void make(clmdep_msgpack::object& o, T v) {
         if (v < 0) {
             o.type = clmdep_msgpack::type::NEGATIVE_INTEGER;
             o.via.i64 = v;
         }
         else {
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
 
 template <>
-struct object_char_sign<false> {
-    static void make(clmdep_msgpack::object& o, char v) {
-        o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v;
+struct object_sign<false> {
+    template <typename T>
+    static void make(clmdep_msgpack::object& o, T v) {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
     }
 };
 
-inline void object_char(clmdep_msgpack::object& o, char v) {
-    return object_char_sign<is_signed<char>::value>::make(o, v);
+template <typename T>
+inline void object_char(clmdep_msgpack::object& o, T v) {
+    return object_sign<is_signed<T>::value>::make(o, v);
 }
 
 }  // namespace detail
@@ -99,6 +101,12 @@ template <>
 struct convert<char> {
     clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, char& v) const
     { v = type::detail::convert_integer<char>(o); return o; }
+};
+
+template <>
+struct convert<wchar_t> {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, wchar_t& v) const
+    { v = type::detail::convert_integer<wchar_t>(o); return o; }
 };
 
 template <>
@@ -168,6 +176,13 @@ struct pack<char> {
     template <typename Stream>
     clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, char v) const
     { o.pack_char(v); return o; }
+};
+
+template <>
+struct pack<wchar_t> {
+    template <typename Stream>
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, wchar_t v) const
+    { o.pack_wchar(v); return o; }
 };
 
 template <>
@@ -249,6 +264,12 @@ struct object<char> {
 };
 
 template <>
+struct object<wchar_t> {
+    void operator()(clmdep_msgpack::object& o, wchar_t v) const
+    { type::detail::object_char(o, v); }
+};
+
+template <>
 struct object<signed char> {
     void operator()(clmdep_msgpack::object& o, signed char v) const {
         if (v < 0) {
@@ -257,7 +278,7 @@ struct object<signed char> {
         }
         else {
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -271,7 +292,7 @@ struct object<signed short> {
         }
         else {
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -285,7 +306,7 @@ struct object<signed int> {
         }
         else {
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -299,7 +320,7 @@ struct object<signed long> {
         }
         else {
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -313,106 +334,134 @@ struct object<signed long long> {
         }
         else{
             o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
 
 template <>
 struct object<unsigned char> {
-    void operator()(clmdep_msgpack::object& o, unsigned char v) const
-    { o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(clmdep_msgpack::object& o, unsigned char v) const {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned short> {
-    void operator()(clmdep_msgpack::object& o, unsigned short v) const
-    { o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(clmdep_msgpack::object& o, unsigned short v) const {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned int> {
-    void operator()(clmdep_msgpack::object& o, unsigned int v) const
-    { o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(clmdep_msgpack::object& o, unsigned int v) const {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned long> {
-    void operator()(clmdep_msgpack::object& o, unsigned long v) const
-    { o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(clmdep_msgpack::object& o, unsigned long v) const {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned long long> {
-    void operator()(clmdep_msgpack::object& o, unsigned long long v) const
-    { o.type = clmdep_msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(clmdep_msgpack::object& o, unsigned long long v) const {
+        o.type = clmdep_msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 
 template <>
 struct object_with_zone<char> {
-    void operator()(clmdep_msgpack::object::with_zone& o, char v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, char v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
+};
+
+template <>
+struct object_with_zone<wchar_t> {
+    void operator()(clmdep_msgpack::object::with_zone& o, wchar_t v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed char> {
-    void operator()(clmdep_msgpack::object::with_zone& o, signed char v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, signed char v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed short> {
-    void operator()(clmdep_msgpack::object::with_zone& o, signed short v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, signed short v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed int> {
-    void operator()(clmdep_msgpack::object::with_zone& o, signed int v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, signed int v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed long> {
-    void operator()(clmdep_msgpack::object::with_zone& o, signed long v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, signed long v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed long long> {
-    void operator()(clmdep_msgpack::object::with_zone& o, const signed long long& v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, const signed long long& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned char> {
-    void operator()(clmdep_msgpack::object::with_zone& o, unsigned char v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, unsigned char v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned short> {
-    void operator()(clmdep_msgpack::object::with_zone& o, unsigned short v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, unsigned short v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned int> {
-    void operator()(clmdep_msgpack::object::with_zone& o, unsigned int v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, unsigned int v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned long> {
-    void operator()(clmdep_msgpack::object::with_zone& o, unsigned long v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, unsigned long v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned long long> {
-    void operator()(clmdep_msgpack::object::with_zone& o, const unsigned long long& v) const
-    { static_cast<clmdep_msgpack::object&>(o) << v; }
+    void operator()(clmdep_msgpack::object::with_zone& o, const unsigned long long& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
+    }
 };
 
 } // namespace adaptor

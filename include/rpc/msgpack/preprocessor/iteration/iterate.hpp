@@ -73,10 +73,10 @@
 #
 # define MSGPACK_PP_ITERATE() MSGPACK_PP_CAT(MSGPACK_PP_ITERATE_, MSGPACK_PP_INC(MSGPACK_PP_ITERATION_DEPTH()))
 #
-# define MSGPACK_PP_ITERATE_1 <msgpack/preprocessor/iteration/detail/iter/forward1.hpp>
-# define MSGPACK_PP_ITERATE_2 <msgpack/preprocessor/iteration/detail/iter/forward2.hpp>
-# define MSGPACK_PP_ITERATE_3 <msgpack/preprocessor/iteration/detail/iter/forward3.hpp>
-# define MSGPACK_PP_ITERATE_4 <msgpack/preprocessor/iteration/detail/iter/forward4.hpp>
-# define MSGPACK_PP_ITERATE_5 <msgpack/preprocessor/iteration/detail/iter/forward5.hpp>
+# define MSGPACK_PP_ITERATE_1 <clmdep_msgpack/preprocessor/iteration/detail/iter/forward1.hpp>
+# define MSGPACK_PP_ITERATE_2 <clmdep_msgpack/preprocessor/iteration/detail/iter/forward2.hpp>
+# define MSGPACK_PP_ITERATE_3 <clmdep_msgpack/preprocessor/iteration/detail/iter/forward3.hpp>
+# define MSGPACK_PP_ITERATE_4 <clmdep_msgpack/preprocessor/iteration/detail/iter/forward4.hpp>
+# define MSGPACK_PP_ITERATE_5 <clmdep_msgpack/preprocessor/iteration/detail/iter/forward5.hpp>
 #
 # endif
