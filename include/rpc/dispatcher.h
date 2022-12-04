@@ -25,7 +25,11 @@ namespace detail {
 
 //! \brief This class maintains a registry of functors associated with their
 //! names, and callable using a msgpack-rpc call pack.
+#if __MINGW32__
 class dispatcher {
+#else
+class EXPORT dispatcher {
+#endif
 public:
     //! \brief Binds a functor to a name so it becomes callable via RPC.
     //! \param name The name of the functor.
@@ -109,7 +113,7 @@ private:
     //! \brief Checks the argument count and throws an exception if
     //! it is not the expected amount.
     static void enforce_arg_count(std::string const &func, std::size_t found,
-                                  std::size_t expected);
+                                             std::size_t expected);
 
     void enforce_unique_name(std::string const &func);
 

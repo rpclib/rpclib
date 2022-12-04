@@ -25,7 +25,11 @@ class server_session;
 //! to allow binding functions before that. Use the `run` or `async_run`
 //! functions to start listening on the port.
 //! This class is not copyable, but moveable.
+#if __MINGW32__
 class server {
+#else
+class EXPORT server {
+#endif
 public:
     //! \brief Constructs a server that listens on the localhost on the
     //! specified port.

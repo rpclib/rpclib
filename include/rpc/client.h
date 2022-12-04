@@ -20,7 +20,11 @@ namespace rpc {
 //! functions. This class supports calling functions synchronously and
 //! asynchronously. When the client object is created, it initiates connecting
 //! to the given server asynchronically and disconnects when it is destroyed.
+#if __MINGW32__
 class client {
+#else
+class EXPORT client {
+#endif
 public:
     //! \brief Constructs a client.
     //!
@@ -77,8 +81,7 @@ public:
     //! \returns A std::future, possibly holding a future result
     //! (which is a RPCLIB_MSGPACK::object).
     template <typename... Args>
-    std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name,
-                                                   Args... args);
+    std::future<RPCLIB_MSGPACK::object_handle> async_call(std::string const &func_name, Args... args);
 
     //! \brief Sends a notification with the given name and arguments (if any).
     //!

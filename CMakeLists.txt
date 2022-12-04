@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(rpc VERSION 2.3.0)
+project(xpx.rpc VERSION 2.3.0)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -7,6 +7,10 @@ include(policies)
 include(msvc_support)
 include(coverage)
 include(check_warning_flag)
+
+if(WIN32)
+  add_definitions(-D _WIN32_WINNT=0x0601)
+endif()
 
 #
 # Options
@@ -59,6 +63,8 @@ set(CMAKE_CXX_STANDARD ${RPCLIB_CXX_STANDARD})
 #
 if (WIN32)
   set(RPCLIB_OS_DEF "RPCLIB_WIN32")
+elseif (WIN64)
+  set(RPCLIB_OS_DEF "RPCLIB_WIN64")
 elseif (LINUX)
   set(RPCLIB_OS_DEF "RPCLIB_LINUX")
 elseif (APPLE)
@@ -90,7 +96,7 @@ set(DEP_SOURCES
   ${RPCLIB_DEPENDENCIES}/src/format.cc
   ${RPCLIB_DEPENDENCIES}/src/posix.cc)
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   lib/rpc/dispatcher.cc
   lib/rpc/server.cc
   lib/rpc/client.cc
@@ -261,4 +267,3 @@ if(NOT MSVC)  # Don't install pkg-config files when building with MSVC
   configure_file(rpclib.pc.in "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" @ONLY)
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/rpclib.pc" DESTINATION "${libdir}/pkgconfig")
 endif()
-

@@ -652,8 +652,9 @@ inline object::object(const msgpack_object& o)
 
 inline void operator<< (clmdep_msgpack::object& o, const msgpack_object& v)
 {
+    auto buff = static_cast<clmdep_msgpack::object>(v);
     // FIXME beter way?
-    std::memcpy(&o, &v, sizeof(v));
+    std::memcpy(&o, &buff, sizeof(v));
 }
 
 inline object::operator msgpack_object() const

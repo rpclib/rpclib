@@ -8,6 +8,16 @@
 
 #include "rpc/compatibility.h"
 
+#if defined(WIN32) || defined(WIN64)
+#ifdef DLL_EXPORTS
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT __declspec(dllimport)
+#endif
+#else
+#define EXPORT __attribute__ ((visibility ("default")))
+#endif
+
 namespace rpc
 {
 
