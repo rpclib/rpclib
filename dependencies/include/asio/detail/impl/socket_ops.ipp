@@ -1382,6 +1382,8 @@ socket_type socket(int af, int type, int protocol,
   if (s == invalid_socket)
     return s;
 
+  SetHandleInformation((HANDLE)s, HANDLE_FLAG_INHERIT, 0);
+
   if (af == ASIO_OS_DEF(AF_INET6))
   {
     // Try to enable the POSIX default behaviour of having IPV6_V6ONLY set to
