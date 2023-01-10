@@ -14,6 +14,8 @@
 #include "rpc/msgpack/cpp_config.hpp"
 #include "rpc/msgpack/zone_decl.hpp"
 
+#undef new
+
 #include <cstdlib>
 #include <memory>
 #include <vector>
