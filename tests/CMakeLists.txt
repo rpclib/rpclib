@@ -2,7 +2,8 @@ include(coverage)
 
 set(TEST_PROJECT_NAME ${CMAKE_PROJECT_NAME}_test)
 set(TEST_SOURCES
-  ${RPCLIB_DEPENDENCIES}/src/gmock-gtest-all.cc
+  ${RPCLIB_DEPENDENCIES}/googletest/googletest/src/gtest-all.cc
+  ${RPCLIB_DEPENDENCIES}/googletest/googlemock/src/gmock-all.cc
   testmain.cc
   testutils.h
   rpc/dispatcher_test.cc
@@ -21,7 +22,12 @@ add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
 
 target_include_directories(${TEST_PROJECT_NAME} 
   SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/tests"
-  PRIVATE "${RPCLIB_DEPENDENCIES}/include")
+  PRIVATE "${RPCLIB_DEPENDENCIES}/include"
+   "${RPCLIB_DEPENDENCIES}/googletest/googletest/include"
+   "${RPCLIB_DEPENDENCIES}/googletest/googlemock/include"
+   "${RPCLIB_DEPENDENCIES}/googletest/googletest"
+   "${RPCLIB_DEPENDENCIES}/googletest/googlemock"
+   )
 
 target_link_libraries(${TEST_PROJECT_NAME} ${PROJECT_NAME} Threads::Threads)
 
