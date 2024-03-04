@@ -2,7 +2,7 @@
 // detail/win_iocp_handle_service.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -20,24 +20,26 @@
 
 #if defined(ASIO_HAS_IOCP)
 
+#include "asio/associated_cancellation_slot.hpp"
 #include "asio/error.hpp"
-#include "asio/io_service.hpp"
-#include "asio/detail/addressof.hpp"
+#include "asio/execution_context.hpp"
 #include "asio/detail/buffer_sequence_adapter.hpp"
 #include "asio/detail/cstdint.hpp"
 #include "asio/detail/handler_alloc_helpers.hpp"
+#include "asio/detail/memory.hpp"
 #include "asio/detail/mutex.hpp"
 #include "asio/detail/operation.hpp"
 #include "asio/detail/win_iocp_handle_read_op.hpp"
 #include "asio/detail/win_iocp_handle_write_op.hpp"
-#include "asio/detail/win_iocp_io_service.hpp"
+#include "asio/detail/win_iocp_io_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
 namespace clmdep_asio {
 namespace detail {
 
-class win_iocp_handle_service
+class win_iocp_handle_service :
+  public execution_context_service_base<win_iocp_handle_service>
 {
 public:
   // The native type of a stream handle.
@@ -74,10 +76,10 @@ public:
     implementation_type* prev_;
   };
 
-  ASIO_DECL win_iocp_handle_service(clmdep_asio::io_service& io_service);
+  ASIO_DECL win_iocp_handle_service(execution_context& context);
 
   // Destroy all user-defined handler objects owned by the service.
-  ASIO_DECL void shutdown_service();
+  ASIO_DECL void shutdown();
 
   // Construct a new handle implementation.
   ASIO_DECL void construct(implementation_type& impl);
@@ -106,6 +108,10 @@ public:
 
   // Destroy a handle implementation.
   ASIO_DECL clmdep_asio::error_code close(implementation_type& impl,
+      clmdep_asio::error_code& ec);
+
+  // Release ownership of a handle.
+  ASIO_DECL native_handle_type release(implementation_type& impl,
       clmdep_asio::error_code& ec);
 
   // Get the native handle representation.
@@ -141,43 +147,61 @@ public:
 
   // Start an asynchronous write. The data being written must be valid for the
   // lifetime of the asynchronous operation.
-  template <typename ConstBufferSequence, typename Handler>
+  template <typename ConstBufferSequence, typename Handler, typename IoExecutor>
   void async_write_some(implementation_type& impl,
-      const ConstBufferSequence& buffers, Handler& handler)
+      const ConstBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    // Allocate and construct an operation to wrap the handler.
-    typedef win_iocp_handle_write_op<ConstBufferSequence, Handler> op;
-    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(buffers, handler);
+    associated_cancellation_slot_t<Handler> slot
+      = clmdep_asio::get_associated_cancellation_slot(handler);
 
-    ASIO_HANDLER_CREATION((p.p, "handle", &impl, "async_write_some"));
+    // Allocate and construct an operation to wrap the handler.
+    typedef win_iocp_handle_write_op<
+        ConstBufferSequence, Handler, IoExecutor> op;
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      op::ptr::allocate(handler), 0 };
+    operation* o = p.p = new (p.v) op(buffers, handler, io_ex);
+
+    ASIO_HANDLER_CREATION((iocp_service_.context(), *p.p, "handle", &impl,
+          reinterpret_cast<uintmax_t>(impl.handle_), "async_write_some"));
+
+    // Optionally register for per-operation cancellation.
+    if (slot.is_connected())
+      o = &slot.template emplace<iocp_op_cancellation>(impl.handle_, o);
 
     start_write_op(impl, 0,
         buffer_sequence_adapter<clmdep_asio::const_buffer,
-          ConstBufferSequence>::first(buffers), p.p);
+          ConstBufferSequence>::first(buffers), o);
     p.v = p.p = 0;
   }
 
   // Start an asynchronous write at a specified offset. The data being written
   // must be valid for the lifetime of the asynchronous operation.
-  template <typename ConstBufferSequence, typename Handler>
-  void async_write_some_at(implementation_type& impl, uint64_t offset,
-      const ConstBufferSequence& buffers, Handler& handler)
+  template <typename ConstBufferSequence, typename Handler, typename IoExecutor>
+  void async_write_some_at(implementation_type& impl,
+      uint64_t offset, const ConstBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    // Allocate and construct an operation to wrap the handler.
-    typedef win_iocp_handle_write_op<ConstBufferSequence, Handler> op;
-    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(buffers, handler);
+    associated_cancellation_slot_t<Handler> slot
+      = clmdep_asio::get_associated_cancellation_slot(handler);
 
-    ASIO_HANDLER_CREATION((p.p, "handle", &impl, "async_write_some_at"));
+    // Allocate and construct an operation to wrap the handler.
+    typedef win_iocp_handle_write_op<
+        ConstBufferSequence, Handler, IoExecutor> op;
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      op::ptr::allocate(handler), 0 };
+    operation* o = p.p = new (p.v) op(buffers, handler, io_ex);
+
+    ASIO_HANDLER_CREATION((iocp_service_.context(), *p.p, "handle", &impl,
+          reinterpret_cast<uintmax_t>(impl.handle_), "async_write_some_at"));
+
+    // Optionally register for per-operation cancellation.
+    if (slot.is_connected())
+      o = &slot.template emplace<iocp_op_cancellation>(impl.handle_, o);
 
     start_write_op(impl, offset,
         buffer_sequence_adapter<clmdep_asio::const_buffer,
-          ConstBufferSequence>::first(buffers), p.p);
+          ConstBufferSequence>::first(buffers), o);
     p.v = p.p = 0;
   }
 
@@ -203,44 +227,64 @@ public:
 
   // Start an asynchronous read. The buffer for the data being received must be
   // valid for the lifetime of the asynchronous operation.
-  template <typename MutableBufferSequence, typename Handler>
+  template <typename MutableBufferSequence,
+      typename Handler, typename IoExecutor>
   void async_read_some(implementation_type& impl,
-      const MutableBufferSequence& buffers, Handler& handler)
+      const MutableBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    // Allocate and construct an operation to wrap the handler.
-    typedef win_iocp_handle_read_op<MutableBufferSequence, Handler> op;
-    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(buffers, handler);
+    associated_cancellation_slot_t<Handler> slot
+      = clmdep_asio::get_associated_cancellation_slot(handler);
 
-    ASIO_HANDLER_CREATION((p.p, "handle", &impl, "async_read_some"));
+    // Allocate and construct an operation to wrap the handler.
+    typedef win_iocp_handle_read_op<
+        MutableBufferSequence, Handler, IoExecutor> op;
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      op::ptr::allocate(handler), 0 };
+    operation* o = p.p = new (p.v) op(buffers, handler, io_ex);
+
+    ASIO_HANDLER_CREATION((iocp_service_.context(), *p.p, "handle", &impl,
+          reinterpret_cast<uintmax_t>(impl.handle_), "async_read_some"));
+
+    // Optionally register for per-operation cancellation.
+    if (slot.is_connected())
+      o = &slot.template emplace<iocp_op_cancellation>(impl.handle_, o);
 
     start_read_op(impl, 0,
         buffer_sequence_adapter<clmdep_asio::mutable_buffer,
-          MutableBufferSequence>::first(buffers), p.p);
+          MutableBufferSequence>::first(buffers), o);
     p.v = p.p = 0;
   }
 
   // Start an asynchronous read at a specified offset. The buffer for the data
   // being received must be valid for the lifetime of the asynchronous
   // operation.
-  template <typename MutableBufferSequence, typename Handler>
-  void async_read_some_at(implementation_type& impl, uint64_t offset,
-      const MutableBufferSequence& buffers, Handler& handler)
+  template <typename MutableBufferSequence,
+      typename Handler, typename IoExecutor>
+  void async_read_some_at(implementation_type& impl,
+      uint64_t offset, const MutableBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    // Allocate and construct an operation to wrap the handler.
-    typedef win_iocp_handle_read_op<MutableBufferSequence, Handler> op;
-    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(buffers, handler);
+    associated_cancellation_slot_t<Handler> slot
+      = clmdep_asio::get_associated_cancellation_slot(handler);
 
-    ASIO_HANDLER_CREATION((p.p, "handle", &impl, "async_read_some_at"));
+    // Allocate and construct an operation to wrap the handler.
+    typedef win_iocp_handle_read_op<
+        MutableBufferSequence, Handler, IoExecutor> op;
+    typename op::ptr p = { clmdep_asio::detail::addressof(handler),
+      op::ptr::allocate(handler), 0 };
+    operation* o = p.p = new (p.v) op(buffers, handler, io_ex);
+
+    ASIO_HANDLER_CREATION((iocp_service_.context(), *p.p, "handle", &impl,
+          reinterpret_cast<uintmax_t>(impl.handle_), "async_read_some_at"));
+
+    // Optionally register for per-operation cancellation.
+    if (slot.is_connected())
+      o = &slot.template emplace<iocp_op_cancellation>(impl.handle_, o);
 
     start_read_op(impl, offset,
         buffer_sequence_adapter<clmdep_asio::mutable_buffer,
-          MutableBufferSequence>::first(buffers), p.p);
+          MutableBufferSequence>::first(buffers), o);
     p.v = p.p = 0;
   }
 
@@ -250,22 +294,24 @@ private:
       const null_buffers& buffers, clmdep_asio::error_code& ec);
   size_t write_some_at(implementation_type& impl, uint64_t offset,
       const null_buffers& buffers, clmdep_asio::error_code& ec);
-  template <typename Handler>
+  template <typename Handler, typename IoExecutor>
   void async_write_some(implementation_type& impl,
-      const null_buffers& buffers, Handler& handler);
-  template <typename Handler>
+      const null_buffers& buffers, Handler& handler,
+      const IoExecutor& io_ex);
+  template <typename Handler, typename IoExecutor>
   void async_write_some_at(implementation_type& impl, uint64_t offset,
-      const null_buffers& buffers, Handler& handler);
+      const null_buffers& buffers, Handler& handler, const IoExecutor& io_ex);
   size_t read_some(implementation_type& impl,
       const null_buffers& buffers, clmdep_asio::error_code& ec);
   size_t read_some_at(implementation_type& impl, uint64_t offset,
       const null_buffers& buffers, clmdep_asio::error_code& ec);
-  template <typename Handler>
+  template <typename Handler, typename IoExecutor>
   void async_read_some(implementation_type& impl,
-      const null_buffers& buffers, Handler& handler);
-  template <typename Handler>
+      const null_buffers& buffers, Handler& handler,
+      const IoExecutor& io_ex);
+  template <typename Handler, typename IoExecutor>
   void async_read_some_at(implementation_type& impl, uint64_t offset,
-      const null_buffers& buffers, Handler& handler);
+      const null_buffers& buffers, Handler& handler, const IoExecutor& io_ex);
 
   // Helper class for waiting for synchronous operations to complete.
   class overlapped_wrapper;
@@ -297,9 +343,72 @@ private:
   // destroyed.
   ASIO_DECL void close_for_destruction(implementation_type& impl);
 
+  // The type of a NtSetInformationFile function pointer.
+  typedef LONG (NTAPI *nt_set_info_fn)(HANDLE, ULONG_PTR*, void*, ULONG, ULONG);
+
+  // Helper function to get the NtSetInformationFile function pointer. If no
+  // NtSetInformationFile pointer has been obtained yet, one is obtained using
+  // GetProcAddress and the pointer is cached. Returns a null pointer if
+  // NtSetInformationFile is not available.
+  ASIO_DECL nt_set_info_fn get_nt_set_info();
+
+  // Helper function to emulate InterlockedCompareExchangePointer functionality
+  // for:
+  // - very old Platform SDKs; and
+  // - platform SDKs where MSVC's /Wp64 option causes spurious warnings.
+  ASIO_DECL void* interlocked_compare_exchange_pointer(
+      void** dest, void* exch, void* cmp);
+
+  // Helper function to emulate InterlockedExchangePointer functionality for:
+  // - very old Platform SDKs; and
+  // - platform SDKs where MSVC's /Wp64 option causes spurious warnings.
+  ASIO_DECL void* interlocked_exchange_pointer(void** dest, void* val);
+
+  // Helper class used to implement per operation cancellation.
+  class iocp_op_cancellation : public operation
+  {
+  public:
+    iocp_op_cancellation(HANDLE h, operation* target)
+      : operation(&iocp_op_cancellation::do_complete),
+        handle_(h),
+        target_(target)
+    {
+    }
+
+    static void do_complete(void* owner, operation* base,
+        const clmdep_asio::error_code& result_ec,
+        std::size_t bytes_transferred)
+    {
+      iocp_op_cancellation* o = static_cast<iocp_op_cancellation*>(base);
+      o->target_->complete(owner, result_ec, bytes_transferred);
+    }
+
+    void operator()(cancellation_type_t type)
+    {
+#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
+      if (!!(type &
+            (cancellation_type::terminal
+              | cancellation_type::partial
+              | cancellation_type::total)))
+      {
+        ::CancelIoEx(handle_, this);
+      }
+#else // defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
+      (void)type;
+#endif // defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
+    }
+
+  private:
+    HANDLE handle_;
+    operation* target_;
+  };
+
   // The IOCP service used for running asynchronous operations and dispatching
   // handlers.
-  win_iocp_io_service& iocp_service_;
+  win_iocp_io_context& iocp_service_;
+
+  // Pointer to NtSetInformationFile implementation.
+  void* nt_set_info_;
 
   // Mutex to protect access to the linked list of implementations.
   mutex mutex_;
@@ -309,7 +418,7 @@ private:
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

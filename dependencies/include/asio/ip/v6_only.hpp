@@ -2,7 +2,7 @@
 // ip/v6_only.hpp
 // ~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -26,12 +26,12 @@ namespace ip {
 /// Socket option for determining whether an IPv6 socket supports IPv6
 /// communication only.
 /**
- * Implements the IPPROTO_IPV6/IP_V6ONLY socket option.
+ * Implements the IPPROTO_IPV6/IPV6_V6ONLY socket option.
  *
  * @par Examples
  * Setting the option:
  * @code
- * clmdep_asio::ip::tcp::socket socket(io_service); 
+ * clmdep_asio::ip::tcp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::v6_only option(true);
  * socket.set_option(option);
@@ -40,7 +40,7 @@ namespace ip {
  * @par
  * Getting the current option value:
  * @code
- * clmdep_asio::ip::tcp::socket socket(io_service); 
+ * clmdep_asio::ip::tcp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::v6_only option;
  * socket.get_option(option);
@@ -62,7 +62,7 @@ typedef clmdep_asio::detail::socket_option::boolean<
 #endif
 
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

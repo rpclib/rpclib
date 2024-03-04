@@ -2,7 +2,7 @@
 // detail/win_iocp_overlapped_ptr.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,12 +19,13 @@
 
 #if defined(ASIO_HAS_IOCP)
 
-#include "asio/io_service.hpp"
-#include "asio/detail/addressof.hpp"
+#include "asio/io_context.hpp"
+#include "asio/query.hpp"
 #include "asio/detail/handler_alloc_helpers.hpp"
+#include "asio/detail/memory.hpp"
 #include "asio/detail/noncopyable.hpp"
 #include "asio/detail/win_iocp_overlapped_op.hpp"
-#include "asio/detail/win_iocp_io_service.hpp"
+#include "asio/detail/win_iocp_io_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -44,13 +45,13 @@ public:
   }
 
   // Construct an win_iocp_overlapped_ptr to contain the specified handler.
-  template <typename Handler>
-  explicit win_iocp_overlapped_ptr(
-      clmdep_asio::io_service& io_service, ASIO_MOVE_ARG(Handler) handler)
+  template <typename Executor, typename Handler>
+  explicit win_iocp_overlapped_ptr(const Executor& ex,
+      Handler&& handler)
     : ptr_(0),
       iocp_service_(0)
   {
-    this->reset(io_service, ASIO_MOVE_CAST(Handler)(handler));
+    this->reset(ex, static_cast<Handler&&>(handler));
   }
 
   // Destructor automatically frees the OVERLAPPED object unless released.
@@ -73,23 +74,24 @@ public:
 
   // Reset to contain the specified handler, freeing any current OVERLAPPED
   // object.
-  template <typename Handler>
-  void reset(clmdep_asio::io_service& io_service, Handler handler)
+  template <typename Executor, typename Handler>
+  void reset(const Executor& ex, Handler handler)
   {
-    typedef win_iocp_overlapped_op<Handler> op;
+    win_iocp_io_context* iocp_service = this->get_iocp_service(ex);
+
+    typedef win_iocp_overlapped_op<Handler, Executor> op;
     typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(handler);
+      op::ptr::allocate(handler), 0 };
+    p.p = new (p.v) op(handler, ex);
 
-    ASIO_HANDLER_CREATION((p.p, "io_service",
-          &io_service.impl_, "overlapped"));
+    ASIO_HANDLER_CREATION((ex.context(), *p.p,
+          "iocp_service", iocp_service, 0, "overlapped"));
 
-    io_service.impl_.work_started();
+    iocp_service->work_started();
     reset();
     ptr_ = p.p;
     p.v = p.p = 0;
-    iocp_service_ = &io_service.impl_;
+    iocp_service_ = iocp_service;
   }
 
   // Get the contained OVERLAPPED object.
@@ -130,12 +132,37 @@ public:
   }
 
 private:
+  template <typename Executor>
+  static win_iocp_io_context* get_iocp_service(const Executor& ex,
+      enable_if_t<
+        can_query<const Executor&, execution::context_t>::value
+      >* = 0)
+  {
+    return &use_service<win_iocp_io_context>(
+        clmdep_asio::query(ex, execution::context));
+  }
+
+  template <typename Executor>
+  static win_iocp_io_context* get_iocp_service(const Executor& ex,
+      enable_if_t<
+        !can_query<const Executor&, execution::context_t>::value
+      >* = 0)
+  {
+    return &use_service<win_iocp_io_context>(ex.context());
+  }
+
+  static win_iocp_io_context* get_iocp_service(
+      const io_context::executor_type& ex)
+  {
+    return &clmdep_asio::query(ex, execution::context).impl_;
+  }
+
   win_iocp_operation* ptr_;
-  win_iocp_io_service* iocp_service_;
+  win_iocp_io_context* iocp_service_;
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

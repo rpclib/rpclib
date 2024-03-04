@@ -2,7 +2,7 @@
 // ssl/detail/stream_core.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,15 +17,13 @@
 
 #include "asio/detail/config.hpp"
 
-#if !defined(ASIO_ENABLE_OLD_SSL)
-# if defined(ASIO_HAS_BOOST_DATE_TIME)
-#  include "asio/deadline_timer.hpp"
-# else // defined(ASIO_HAS_BOOST_DATE_TIME)
-#  include "asio/steady_timer.hpp"
-# endif // defined(ASIO_HAS_BOOST_DATE_TIME)
-# include "asio/ssl/detail/engine.hpp"
-# include "asio/buffer.hpp"
-#endif // !defined(ASIO_ENABLE_OLD_SSL)
+#if defined(ASIO_HAS_BOOST_DATE_TIME)
+# include "asio/deadline_timer.hpp"
+#else // defined(ASIO_HAS_BOOST_DATE_TIME)
+# include "asio/steady_timer.hpp"
+#endif // defined(ASIO_HAS_BOOST_DATE_TIME)
+#include "asio/ssl/detail/engine.hpp"
+#include "asio/buffer.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -33,18 +31,17 @@ namespace clmdep_asio {
 namespace ssl {
 namespace detail {
 
-#if !defined(ASIO_ENABLE_OLD_SSL)
-
 struct stream_core
 {
   // According to the OpenSSL documentation, this is the buffer size that is
   // sufficient to hold the largest possible TLS record.
   enum { max_tls_record_size = 17 * 1024 };
 
-  stream_core(SSL_CTX* context, clmdep_asio::io_service& io_service)
+  template <typename Executor>
+  stream_core(SSL_CTX* context, const Executor& ex)
     : engine_(context),
-      pending_read_(io_service),
-      pending_write_(io_service),
+      pending_read_(ex),
+      pending_write_(ex),
       output_buffer_space_(max_tls_record_size),
       output_buffer_(clmdep_asio::buffer(output_buffer_space_)),
       input_buffer_space_(max_tls_record_size),
@@ -54,8 +51,90 @@ struct stream_core
     pending_write_.expires_at(neg_infin());
   }
 
+  template <typename Executor>
+  stream_core(SSL* ssl_impl, const Executor& ex)
+    : engine_(ssl_impl),
+      pending_read_(ex),
+      pending_write_(ex),
+      output_buffer_space_(max_tls_record_size),
+      output_buffer_(clmdep_asio::buffer(output_buffer_space_)),
+      input_buffer_space_(max_tls_record_size),
+      input_buffer_(clmdep_asio::buffer(input_buffer_space_))
+  {
+    pending_read_.expires_at(neg_infin());
+    pending_write_.expires_at(neg_infin());
+  }
+
+  stream_core(stream_core&& other)
+    : engine_(static_cast<engine&&>(other.engine_)),
+#if defined(ASIO_HAS_BOOST_DATE_TIME)
+      pending_read_(
+         static_cast<clmdep_asio::deadline_timer&&>(
+           other.pending_read_)),
+      pending_write_(
+         static_cast<clmdep_asio::deadline_timer&&>(
+           other.pending_write_)),
+#else // defined(ASIO_HAS_BOOST_DATE_TIME)
+      pending_read_(
+         static_cast<clmdep_asio::steady_timer&&>(
+           other.pending_read_)),
+      pending_write_(
+         static_cast<clmdep_asio::steady_timer&&>(
+           other.pending_write_)),
+#endif // defined(ASIO_HAS_BOOST_DATE_TIME)
+      output_buffer_space_(
+          static_cast<std::vector<unsigned char>&&>(
+            other.output_buffer_space_)),
+      output_buffer_(other.output_buffer_),
+      input_buffer_space_(
+          static_cast<std::vector<unsigned char>&&>(
+            other.input_buffer_space_)),
+      input_buffer_(other.input_buffer_),
+      input_(other.input_)
+  {
+    other.output_buffer_ = clmdep_asio::mutable_buffer(0, 0);
+    other.input_buffer_ = clmdep_asio::mutable_buffer(0, 0);
+    other.input_ = clmdep_asio::const_buffer(0, 0);
+  }
+
   ~stream_core()
   {
+  }
+
+  stream_core& operator=(stream_core&& other)
+  {
+    if (this != &other)
+    {
+      engine_ = static_cast<engine&&>(other.engine_);
+#if defined(ASIO_HAS_BOOST_DATE_TIME)
+      pending_read_ =
+        static_cast<clmdep_asio::deadline_timer&&>(
+          other.pending_read_);
+      pending_write_ =
+        static_cast<clmdep_asio::deadline_timer&&>(
+          other.pending_write_);
+#else // defined(ASIO_HAS_BOOST_DATE_TIME)
+      pending_read_ =
+        static_cast<clmdep_asio::steady_timer&&>(
+          other.pending_read_);
+      pending_write_ =
+        static_cast<clmdep_asio::steady_timer&&>(
+          other.pending_write_);
+#endif // defined(ASIO_HAS_BOOST_DATE_TIME)
+      output_buffer_space_ =
+        static_cast<std::vector<unsigned char>&&>(
+          other.output_buffer_space_);
+      output_buffer_ = other.output_buffer_;
+      input_buffer_space_ =
+        static_cast<std::vector<unsigned char>&&>(
+          other.input_buffer_space_);
+      input_buffer_ = other.input_buffer_;
+      input_ = other.input_;
+      other.output_buffer_ = clmdep_asio::mutable_buffer(0, 0);
+      other.input_buffer_ = clmdep_asio::mutable_buffer(0, 0);
+      other.input_ = clmdep_asio::const_buffer(0, 0);
+    }
+    return *this;
   }
 
   // The SSL engine.
@@ -79,6 +158,13 @@ struct stream_core
   {
     return boost::posix_time::pos_infin;
   }
+
+  // Helper function to get a timer's expiry time.
+  static clmdep_asio::deadline_timer::time_type expiry(
+      const clmdep_asio::deadline_timer& timer)
+  {
+    return timer.expires_at();
+  }
 #else // defined(ASIO_HAS_BOOST_DATE_TIME)
   // Timer used for storing queued read operations.
   clmdep_asio::steady_timer pending_read_;
@@ -97,29 +183,34 @@ struct stream_core
   {
     return (clmdep_asio::steady_timer::time_point::max)();
   }
+
+  // Helper function to get a timer's expiry time.
+  static clmdep_asio::steady_timer::time_point expiry(
+      const clmdep_asio::steady_timer& timer)
+  {
+    return timer.expiry();
+  }
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 
   // Buffer space used to prepare output intended for the transport.
   std::vector<unsigned char> output_buffer_space_;
 
   // A buffer that may be used to prepare output intended for the transport.
-  const clmdep_asio::mutable_buffers_1 output_buffer_;
+  clmdep_asio::mutable_buffer output_buffer_;
 
   // Buffer space used to read input intended for the engine.
   std::vector<unsigned char> input_buffer_space_;
 
   // A buffer that may be used to read input intended for the engine.
-  const clmdep_asio::mutable_buffers_1 input_buffer_;
+  clmdep_asio::mutable_buffer input_buffer_;
 
   // The buffer pointing to the engine's unconsumed input.
   clmdep_asio::const_buffer input_;
 };
 
-#endif // !defined(ASIO_ENABLE_OLD_SSL)
-
 } // namespace detail
 } // namespace ssl
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

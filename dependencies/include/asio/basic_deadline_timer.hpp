@@ -2,7 +2,7 @@
 // basic_deadline_timer.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,11 +21,15 @@
   || defined(GENERATING_DOCUMENTATION)
 
 #include <cstddef>
-#include "asio/basic_io_object.hpp"
-#include "asio/deadline_timer_service.hpp"
+#include "asio/any_io_executor.hpp"
+#include "asio/detail/deadline_timer_service.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
+#include "asio/detail/io_object_impl.hpp"
+#include "asio/detail/non_const_lvalue.hpp"
 #include "asio/detail/throw_error.hpp"
 #include "asio/error.hpp"
+#include "asio/execution_context.hpp"
+#include "asio/time_traits.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -50,7 +54,7 @@ namespace clmdep_asio {
  * Performing a blocking wait:
  * @code
  * // Construct a timer without setting an expiry time.
- * clmdep_asio::deadline_timer timer(io_service);
+ * clmdep_asio::deadline_timer timer(my_context);
  *
  * // Set an expiry time relative to now.
  * timer.expires_from_now(boost::posix_time::seconds(5));
@@ -73,7 +77,7 @@ namespace clmdep_asio {
  * ...
  *
  * // Construct a timer with an absolute expiry time.
- * clmdep_asio::deadline_timer timer(io_service,
+ * clmdep_asio::deadline_timer timer(my_context,
  *     boost::posix_time::time_from_string("2005-12-07 23:59:59.000"));
  *
  * // Start an asynchronous wait.
@@ -121,11 +125,24 @@ namespace clmdep_asio {
  */
 template <typename Time,
     typename TimeTraits = clmdep_asio::time_traits<Time>,
-    typename TimerService = deadline_timer_service<Time, TimeTraits> >
+    typename Executor = any_io_executor>
 class basic_deadline_timer
-  : public basic_io_object<TimerService>
 {
+private:
+  class initiate_async_wait;
+
 public:
+  /// The type of the executor associated with the object.
+  typedef Executor executor_type;
+
+  /// Rebinds the timer type to another executor.
+  template <typename Executor1>
+  struct rebind_executor
+  {
+    /// The timer type when rebound to the specified executor.
+    typedef basic_deadline_timer<Time, TimeTraits, Executor1> other;
+  };
+
   /// The time traits type.
   typedef TimeTraits traits_type;
 
@@ -141,11 +158,30 @@ public:
    * expires_at() or expires_from_now() functions must be called to set an
    * expiry time before the timer can be waited on.
    *
-   * @param io_service The io_service object that the timer will use to dispatch
-   * handlers for any asynchronous operations performed on the timer.
+   * @param ex The I/O executor that the timer will use, by default, to
+   * dispatch handlers for any asynchronous operations performed on the timer.
    */
-  explicit basic_deadline_timer(clmdep_asio::io_service& io_service)
-    : basic_io_object<TimerService>(io_service)
+  explicit basic_deadline_timer(const executor_type& ex)
+    : impl_(0, ex)
+  {
+  }
+
+  /// Constructor.
+  /**
+   * This constructor creates a timer without setting an expiry time. The
+   * expires_at() or expires_from_now() functions must be called to set an
+   * expiry time before the timer can be waited on.
+   *
+   * @param context An execution context which provides the I/O executor that
+   * the timer will use, by default, to dispatch handlers for any asynchronous
+   * operations performed on the timer.
+   */
+  template <typename ExecutionContext>
+  explicit basic_deadline_timer(ExecutionContext& context,
+      constraint_t<
+        is_convertible<ExecutionContext&, execution_context&>::value
+      > = 0)
+    : impl_(0, 0, context)
   {
   }
 
@@ -153,18 +189,40 @@ public:
   /**
    * This constructor creates a timer and sets the expiry time.
    *
-   * @param io_service The io_service object that the timer will use to dispatch
-   * handlers for any asynchronous operations performed on the timer.
+   * @param ex The I/O executor that the timer will use, by default, to
+   * dispatch handlers for any asynchronous operations performed on the timer.
    *
    * @param expiry_time The expiry time to be used for the timer, expressed
    * as an absolute time.
    */
-  basic_deadline_timer(clmdep_asio::io_service& io_service,
-      const time_type& expiry_time)
-    : basic_io_object<TimerService>(io_service)
+  basic_deadline_timer(const executor_type& ex, const time_type& expiry_time)
+    : impl_(0, ex)
   {
     clmdep_asio::error_code ec;
-    this->service.expires_at(this->implementation, expiry_time, ec);
+    impl_.get_service().expires_at(impl_.get_implementation(), expiry_time, ec);
+    clmdep_asio::detail::throw_error(ec, "expires_at");
+  }
+
+  /// Constructor to set a particular expiry time as an absolute time.
+  /**
+   * This constructor creates a timer and sets the expiry time.
+   *
+   * @param context An execution context which provides the I/O executor that
+   * the timer will use, by default, to dispatch handlers for any asynchronous
+   * operations performed on the timer.
+   *
+   * @param expiry_time The expiry time to be used for the timer, expressed
+   * as an absolute time.
+   */
+  template <typename ExecutionContext>
+  basic_deadline_timer(ExecutionContext& context, const time_type& expiry_time,
+      constraint_t<
+        is_convertible<ExecutionContext&, execution_context&>::value
+      > = 0)
+    : impl_(0, 0, context)
+  {
+    clmdep_asio::error_code ec;
+    impl_.get_service().expires_at(impl_.get_implementation(), expiry_time, ec);
     clmdep_asio::detail::throw_error(ec, "expires_at");
   }
 
@@ -172,19 +230,94 @@ public:
   /**
    * This constructor creates a timer and sets the expiry time.
    *
-   * @param io_service The io_service object that the timer will use to dispatch
-   * handlers for any asynchronous operations performed on the timer.
+   * @param ex The I/O executor that the timer will use, by default, to
+   * dispatch handlers for any asynchronous operations performed on the timer.
    *
    * @param expiry_time The expiry time to be used for the timer, relative to
    * now.
    */
-  basic_deadline_timer(clmdep_asio::io_service& io_service,
+  basic_deadline_timer(const executor_type& ex,
       const duration_type& expiry_time)
-    : basic_io_object<TimerService>(io_service)
+    : impl_(0, ex)
   {
     clmdep_asio::error_code ec;
-    this->service.expires_from_now(this->implementation, expiry_time, ec);
+    impl_.get_service().expires_from_now(
+        impl_.get_implementation(), expiry_time, ec);
     clmdep_asio::detail::throw_error(ec, "expires_from_now");
+  }
+
+  /// Constructor to set a particular expiry time relative to now.
+  /**
+   * This constructor creates a timer and sets the expiry time.
+   *
+   * @param context An execution context which provides the I/O executor that
+   * the timer will use, by default, to dispatch handlers for any asynchronous
+   * operations performed on the timer.
+   *
+   * @param expiry_time The expiry time to be used for the timer, relative to
+   * now.
+   */
+  template <typename ExecutionContext>
+  basic_deadline_timer(ExecutionContext& context,
+      const duration_type& expiry_time,
+      constraint_t<
+        is_convertible<ExecutionContext&, execution_context&>::value
+      > = 0)
+    : impl_(0, 0, context)
+  {
+    clmdep_asio::error_code ec;
+    impl_.get_service().expires_from_now(
+        impl_.get_implementation(), expiry_time, ec);
+    clmdep_asio::detail::throw_error(ec, "expires_from_now");
+  }
+
+  /// Move-construct a basic_deadline_timer from another.
+  /**
+   * This constructor moves a timer from one object to another.
+   *
+   * @param other The other basic_deadline_timer object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_deadline_timer(const executor_type&)
+   * constructor.
+   */
+  basic_deadline_timer(basic_deadline_timer&& other)
+    : impl_(std::move(other.impl_))
+  {
+  }
+
+  /// Move-assign a basic_deadline_timer from another.
+  /**
+   * This assignment operator moves a timer from one object to another. Cancels
+   * any outstanding asynchronous operations associated with the target object.
+   *
+   * @param other The other basic_deadline_timer object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_deadline_timer(const executor_type&)
+   * constructor.
+   */
+  basic_deadline_timer& operator=(basic_deadline_timer&& other)
+  {
+    impl_ = std::move(other.impl_);
+    return *this;
+  }
+
+  /// Destroys the timer.
+  /**
+   * This function destroys the timer, cancelling any outstanding asynchronous
+   * wait operations associated with the timer as if by calling @c cancel.
+   */
+  ~basic_deadline_timer()
+  {
+  }
+
+  /// Get the executor associated with the object.
+  const executor_type& get_executor() noexcept
+  {
+    return impl_.get_executor();
   }
 
   /// Cancel any asynchronous operations that are waiting on the timer.
@@ -212,7 +345,7 @@ public:
   std::size_t cancel()
   {
     clmdep_asio::error_code ec;
-    std::size_t s = this->service.cancel(this->implementation, ec);
+    std::size_t s = impl_.get_service().cancel(impl_.get_implementation(), ec);
     clmdep_asio::detail::throw_error(ec, "cancel");
     return s;
   }
@@ -241,7 +374,7 @@ public:
    */
   std::size_t cancel(clmdep_asio::error_code& ec)
   {
-    return this->service.cancel(this->implementation, ec);
+    return impl_.get_service().cancel(impl_.get_implementation(), ec);
   }
 
   /// Cancels one asynchronous operation that is waiting on the timer.
@@ -271,7 +404,8 @@ public:
   std::size_t cancel_one()
   {
     clmdep_asio::error_code ec;
-    std::size_t s = this->service.cancel_one(this->implementation, ec);
+    std::size_t s = impl_.get_service().cancel_one(
+        impl_.get_implementation(), ec);
     clmdep_asio::detail::throw_error(ec, "cancel_one");
     return s;
   }
@@ -302,7 +436,7 @@ public:
    */
   std::size_t cancel_one(clmdep_asio::error_code& ec)
   {
-    return this->service.cancel_one(this->implementation, ec);
+    return impl_.get_service().cancel_one(impl_.get_implementation(), ec);
   }
 
   /// Get the timer's expiry time as an absolute time.
@@ -312,7 +446,7 @@ public:
    */
   time_type expires_at() const
   {
-    return this->service.expires_at(this->implementation);
+    return impl_.get_service().expires_at(impl_.get_implementation());
   }
 
   /// Set the timer's expiry time as an absolute time.
@@ -340,8 +474,8 @@ public:
   std::size_t expires_at(const time_type& expiry_time)
   {
     clmdep_asio::error_code ec;
-    std::size_t s = this->service.expires_at(
-        this->implementation, expiry_time, ec);
+    std::size_t s = impl_.get_service().expires_at(
+        impl_.get_implementation(), expiry_time, ec);
     clmdep_asio::detail::throw_error(ec, "expires_at");
     return s;
   }
@@ -371,7 +505,8 @@ public:
   std::size_t expires_at(const time_type& expiry_time,
       clmdep_asio::error_code& ec)
   {
-    return this->service.expires_at(this->implementation, expiry_time, ec);
+    return impl_.get_service().expires_at(
+        impl_.get_implementation(), expiry_time, ec);
   }
 
   /// Get the timer's expiry time relative to now.
@@ -381,7 +516,7 @@ public:
    */
   duration_type expires_from_now() const
   {
-    return this->service.expires_from_now(this->implementation);
+    return impl_.get_service().expires_from_now(impl_.get_implementation());
   }
 
   /// Set the timer's expiry time relative to now.
@@ -409,8 +544,8 @@ public:
   std::size_t expires_from_now(const duration_type& expiry_time)
   {
     clmdep_asio::error_code ec;
-    std::size_t s = this->service.expires_from_now(
-        this->implementation, expiry_time, ec);
+    std::size_t s = impl_.get_service().expires_from_now(
+        impl_.get_implementation(), expiry_time, ec);
     clmdep_asio::detail::throw_error(ec, "expires_from_now");
     return s;
   }
@@ -440,8 +575,8 @@ public:
   std::size_t expires_from_now(const duration_type& expiry_time,
       clmdep_asio::error_code& ec)
   {
-    return this->service.expires_from_now(
-        this->implementation, expiry_time, ec);
+    return impl_.get_service().expires_from_now(
+        impl_.get_implementation(), expiry_time, ec);
   }
 
   /// Perform a blocking wait on the timer.
@@ -454,7 +589,7 @@ public:
   void wait()
   {
     clmdep_asio::error_code ec;
-    this->service.wait(this->implementation, ec);
+    impl_.get_service().wait(impl_.get_implementation(), ec);
     clmdep_asio::detail::throw_error(ec, "wait");
   }
 
@@ -467,48 +602,105 @@ public:
    */
   void wait(clmdep_asio::error_code& ec)
   {
-    this->service.wait(this->implementation, ec);
+    impl_.get_service().wait(impl_.get_implementation(), ec);
   }
 
   /// Start an asynchronous wait on the timer.
   /**
    * This function may be used to initiate an asynchronous wait against the
-   * timer. It always returns immediately.
+   * timer. It is an initiating function for an @ref asynchronous_operation,
+   * and always returns immediately.
    *
-   * For each call to async_wait(), the supplied handler will be called exactly
-   * once. The handler will be called when:
+   * For each call to async_wait(), the completion handler will be called
+   * exactly once. The completion handler will be called when:
    *
    * @li The timer has expired.
    *
    * @li The timer was cancelled, in which case the handler is passed the error
    * code clmdep_asio::error::operation_aborted.
    *
-   * @param handler The handler to be called when the timer expires. Copies
-   * will be made of the handler as required. The function signature of the
-   * handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the timer expires. Potential
+   * completion tokens include @ref use_future, @ref use_awaitable, @ref
+   * yield_context, or a function object with the correct completion signature.
+   * The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
-   * not, the handler will not be invoked from within this function. Invocation
-   * of the handler will be performed in a manner equivalent to using
-   * clmdep_asio::io_service::post().
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code) @endcode
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * @li @c cancellation_type::total
    */
-  template <typename WaitHandler>
-  ASIO_INITFN_RESULT_TYPE(WaitHandler,
-      void (clmdep_asio::error_code))
-  async_wait(ASIO_MOVE_ARG(WaitHandler) handler)
+  template <
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code))
+        WaitToken = default_completion_token_t<executor_type>>
+  auto async_wait(
+      WaitToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<WaitToken, void (clmdep_asio::error_code)>(
+        declval<initiate_async_wait>(), token))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a WaitHandler.
-    ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
-
-    return this->service.async_wait(this->implementation,
-        ASIO_MOVE_CAST(WaitHandler)(handler));
+    return async_initiate<WaitToken, void (clmdep_asio::error_code)>(
+        initiate_async_wait(this), token);
   }
+
+private:
+  // Disallow copying and assignment.
+  basic_deadline_timer(const basic_deadline_timer&) = delete;
+  basic_deadline_timer& operator=(
+      const basic_deadline_timer&) = delete;
+
+  class initiate_async_wait
+  {
+  public:
+    typedef Executor executor_type;
+
+    explicit initiate_async_wait(basic_deadline_timer* self)
+      : self_(self)
+    {
+    }
+
+    const executor_type& get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename WaitHandler>
+    void operator()(WaitHandler&& handler) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a WaitHandler.
+      ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
+
+      detail::non_const_lvalue<WaitHandler> handler2(handler);
+      self_->impl_.get_service().async_wait(
+          self_->impl_.get_implementation(),
+          handler2.value, self_->impl_.get_executor());
+    }
+
+  private:
+    basic_deadline_timer* self_;
+  };
+
+  detail::io_object_impl<
+    detail::deadline_timer_service<TimeTraits>, Executor> impl_;
 };
 
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

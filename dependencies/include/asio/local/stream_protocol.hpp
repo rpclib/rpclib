@@ -2,7 +2,7 @@
 // local/stream_protocol.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -47,19 +47,19 @@ class stream_protocol
 {
 public:
   /// Obtain an identifier for the type of the protocol.
-  int type() const
+  int type() const noexcept
   {
     return SOCK_STREAM;
   }
 
   /// Obtain an identifier for the protocol.
-  int protocol() const
+  int protocol() const noexcept
   {
     return 0;
   }
 
   /// Obtain an identifier for the protocol family.
-  int family() const
+  int family() const noexcept
   {
     return AF_UNIX;
   }
@@ -80,7 +80,7 @@ public:
 };
 
 } // namespace local
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

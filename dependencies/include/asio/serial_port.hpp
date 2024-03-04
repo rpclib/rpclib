@@ -2,7 +2,7 @@
 // serial_port.hpp
 // ~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -28,7 +28,7 @@ namespace clmdep_asio {
 /// Typedef for the typical usage of a serial port.
 typedef basic_serial_port<> serial_port;
 
-} // namespace clmdep_asio
+} // namespace asio
 
 #endif // defined(ASIO_HAS_SERIAL_PORT)
        //   || defined(GENERATING_DOCUMENTATION)

@@ -2,7 +2,7 @@
 // impl/serial_port_base.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -37,7 +37,7 @@
 
 namespace clmdep_asio {
 
-clmdep_asio::error_code serial_port_base::baud_rate::store(
+ASIO_SYNC_OP_VOID serial_port_base::baud_rate::store(
     ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec) const
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -111,9 +111,9 @@ clmdep_asio::error_code serial_port_base::baud_rate::store(
 # endif
   default:
     ec = clmdep_asio::error::invalid_argument;
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
-# if defined(_BSD_SOURCE)
+# if defined(_BSD_SOURCE) || defined(_DEFAULT_SOURCE)
   ::cfsetspeed(&storage, baud);
 # else
   ::cfsetispeed(&storage, baud);
@@ -121,10 +121,10 @@ clmdep_asio::error_code serial_port_base::baud_rate::store(
 # endif
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-clmdep_asio::error_code serial_port_base::baud_rate::load(
+ASIO_SYNC_OP_VOID serial_port_base::baud_rate::load(
     const ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec)
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -199,11 +199,11 @@ clmdep_asio::error_code serial_port_base::baud_rate::load(
   default:
     value_ = 0;
     ec = clmdep_asio::error::invalid_argument;
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
 serial_port_base::flow_control::flow_control(
@@ -217,7 +217,7 @@ serial_port_base::flow_control::flow_control(
   }
 }
 
-clmdep_asio::error_code serial_port_base::flow_control::store(
+ASIO_SYNC_OP_VOID serial_port_base::flow_control::store(
     ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec) const
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -249,7 +249,7 @@ clmdep_asio::error_code serial_port_base::flow_control::store(
   {
   case none:
     storage.c_iflag &= ~(IXOFF | IXON);
-# if defined(_BSD_SOURCE)
+# if defined(_BSD_SOURCE) || defined(_DEFAULT_SOURCE)
     storage.c_cflag &= ~CRTSCTS;
 # elif defined(__QNXNTO__)
     storage.c_cflag &= ~(IHFLOW | OHFLOW);
@@ -257,14 +257,14 @@ clmdep_asio::error_code serial_port_base::flow_control::store(
     break;
   case software:
     storage.c_iflag |= IXOFF | IXON;
-# if defined(_BSD_SOURCE)
+# if defined(_BSD_SOURCE) || defined(_DEFAULT_SOURCE)
     storage.c_cflag &= ~CRTSCTS;
 # elif defined(__QNXNTO__)
     storage.c_cflag &= ~(IHFLOW | OHFLOW);
 # endif
     break;
   case hardware:
-# if defined(_BSD_SOURCE)
+# if defined(_BSD_SOURCE) || defined(_DEFAULT_SOURCE)
     storage.c_iflag &= ~(IXOFF | IXON);
     storage.c_cflag |= CRTSCTS;
     break;
@@ -274,17 +274,17 @@ clmdep_asio::error_code serial_port_base::flow_control::store(
     break;
 # else
     ec = clmdep_asio::error::operation_not_supported;
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
 # endif
   default:
     break;
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-clmdep_asio::error_code serial_port_base::flow_control::load(
+ASIO_SYNC_OP_VOID serial_port_base::flow_control::load(
     const ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec)
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -305,7 +305,7 @@ clmdep_asio::error_code serial_port_base::flow_control::load(
   {
     value_ = software;
   }
-# if defined(_BSD_SOURCE)
+# if defined(_BSD_SOURCE) || defined(_DEFAULT_SOURCE)
   else if (storage.c_cflag & CRTSCTS)
   {
     value_ = hardware;
@@ -322,7 +322,7 @@ clmdep_asio::error_code serial_port_base::flow_control::load(
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
 serial_port_base::parity::parity(serial_port_base::parity::type t)
@@ -335,7 +335,7 @@ serial_port_base::parity::parity(serial_port_base::parity::type t)
   }
 }
 
-clmdep_asio::error_code serial_port_base::parity::store(
+ASIO_SYNC_OP_VOID serial_port_base::parity::store(
     ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec) const
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -379,10 +379,10 @@ clmdep_asio::error_code serial_port_base::parity::store(
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-clmdep_asio::error_code serial_port_base::parity::load(
+ASIO_SYNC_OP_VOID serial_port_base::parity::load(
     const ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec)
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -416,7 +416,7 @@ clmdep_asio::error_code serial_port_base::parity::load(
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
 serial_port_base::stop_bits::stop_bits(
@@ -430,7 +430,7 @@ serial_port_base::stop_bits::stop_bits(
   }
 }
 
-clmdep_asio::error_code serial_port_base::stop_bits::store(
+ASIO_SYNC_OP_VOID serial_port_base::stop_bits::store(
     ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec) const
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -459,14 +459,14 @@ clmdep_asio::error_code serial_port_base::stop_bits::store(
     break;
   default:
     ec = clmdep_asio::error::operation_not_supported;
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-clmdep_asio::error_code serial_port_base::stop_bits::load(
+ASIO_SYNC_OP_VOID serial_port_base::stop_bits::load(
     const ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec)
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -490,7 +490,7 @@ clmdep_asio::error_code serial_port_base::stop_bits::load(
   value_ = (storage.c_cflag & CSTOPB) ? two : one;
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
 serial_port_base::character_size::character_size(unsigned int t)
@@ -503,7 +503,7 @@ serial_port_base::character_size::character_size(unsigned int t)
   }
 }
 
-clmdep_asio::error_code serial_port_base::character_size::store(
+ASIO_SYNC_OP_VOID serial_port_base::character_size::store(
     ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec) const
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -520,10 +520,10 @@ clmdep_asio::error_code serial_port_base::character_size::store(
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-clmdep_asio::error_code serial_port_base::character_size::load(
+ASIO_SYNC_OP_VOID serial_port_base::character_size::load(
     const ASIO_OPTION_STORAGE& storage, clmdep_asio::error_code& ec)
 {
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -540,10 +540,10 @@ clmdep_asio::error_code serial_port_base::character_size::load(
   }
 #endif
   ec = clmdep_asio::error_code();
-  return ec;
+  ASIO_SYNC_OP_VOID_RETURN(ec);
 }
 
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

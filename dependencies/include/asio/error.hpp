@@ -2,7 +2,7 @@
 // error.hpp
 // ~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -223,6 +223,41 @@ enum misc_errors
   fd_set_failure
 };
 
+// boostify: non-boost code starts here
+#if !defined(ASIO_ERROR_LOCATION)
+# define ASIO_ERROR_LOCATION(e) (void)0
+#endif // !defined(ASIO_ERROR_LOCATION)
+
+// boostify: non-boost code ends here
+#if !defined(ASIO_ERROR_LOCATION) \
+  && !defined(ASIO_DISABLE_ERROR_LOCATION) \
+  && defined(ASIO_HAS_BOOST_CONFIG) \
+  && (BOOST_VERSION >= 107900)
+
+# define ASIO_ERROR_LOCATION(e) \
+  do { \
+    BOOST_STATIC_CONSTEXPR boost::source_location loc \
+      = BOOST_CURRENT_LOCATION; \
+    (e).assign((e), &loc); \
+  } while (false)
+
+#else // !defined(ASIO_ERROR_LOCATION)
+      //   && !defined(ASIO_DISABLE_ERROR_LOCATION)
+      //   && defined(ASIO_HAS_BOOST_CONFIG)
+      //   && (BOOST_VERSION >= 107900)
+
+# define ASIO_ERROR_LOCATION(e) (void)0
+
+#endif // !defined(ASIO_ERROR_LOCATION)
+       //   && !defined(ASIO_DISABLE_ERROR_LOCATION)
+       //   && defined(ASIO_HAS_BOOST_CONFIG)
+       //   && (BOOST_VERSION >= 107900)
+
+inline void clear(clmdep_asio::error_code& ec)
+{
+  ec.assign(0, ec.category());
+}
+
 inline const clmdep_asio::error_category& get_system_category()
 {
   return clmdep_asio::system_category();
@@ -253,19 +288,22 @@ inline const clmdep_asio::error_category& get_addrinfo_category()
 extern ASIO_DECL
 const clmdep_asio::error_category& get_misc_category();
 
-static const clmdep_asio::error_category& system_category
+static const clmdep_asio::error_category&
+  system_category ASIO_UNUSED_VARIABLE
   = clmdep_asio::error::get_system_category();
-static const clmdep_asio::error_category& netdb_category
+static const clmdep_asio::error_category&
+  netdb_category ASIO_UNUSED_VARIABLE
   = clmdep_asio::error::get_netdb_category();
-static const clmdep_asio::error_category& addrinfo_category
+static const clmdep_asio::error_category&
+  addrinfo_category ASIO_UNUSED_VARIABLE
   = clmdep_asio::error::get_addrinfo_category();
-static const clmdep_asio::error_category& misc_category
+static const clmdep_asio::error_category&
+  misc_category ASIO_UNUSED_VARIABLE
   = clmdep_asio::error::get_misc_category();
 
 } // namespace error
-} // namespace clmdep_asio
+} // namespace asio
 
-#if defined(ASIO_HAS_STD_SYSTEM_ERROR)
 namespace std {
 
 template<> struct is_error_code_enum<clmdep_asio::error::basic_errors>
@@ -289,7 +327,6 @@ template<> struct is_error_code_enum<clmdep_asio::error::misc_errors>
 };
 
 } // namespace std
-#endif // defined(ASIO_HAS_STD_SYSTEM_ERROR)
 
 namespace clmdep_asio {
 namespace error {
@@ -319,7 +356,23 @@ inline clmdep_asio::error_code make_error_code(misc_errors e)
 }
 
 } // namespace error
-} // namespace clmdep_asio
+namespace stream_errc {
+  // Simulates the proposed stream_errc scoped enum.
+  using error::eof;
+  using error::not_found;
+} // namespace stream_errc
+namespace socket_errc {
+  // Simulates the proposed socket_errc scoped enum.
+  using error::already_open;
+  using error::not_found;
+} // namespace socket_errc
+namespace resolver_errc {
+  // Simulates the proposed resolver_errc scoped enum.
+  using error::host_not_found;
+  const error::netdb_errors try_again = error::host_not_found_try_again;
+  using error::service_not_found;
+} // namespace resolver_errc
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

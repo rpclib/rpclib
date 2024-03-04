@@ -2,7 +2,7 @@
 // detail/null_reactor.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,9 +17,13 @@
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_WINDOWS_RUNTIME)
+#if defined(ASIO_HAS_IOCP) \
+  || defined(ASIO_WINDOWS_RUNTIME) \
+  || defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
-#include "asio/io_service.hpp"
+#include "asio/detail/scheduler_operation.hpp"
+#include "asio/detail/scheduler_task.hpp"
+#include "asio/execution_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -27,12 +31,17 @@ namespace clmdep_asio {
 namespace detail {
 
 class null_reactor
-  : public clmdep_asio::detail::service_base<null_reactor>
+  : public execution_context_service_base<null_reactor>,
+    public scheduler_task
 {
 public:
+  struct per_descriptor_data
+  {
+  };
+
   // Constructor.
-  null_reactor(clmdep_asio::io_service& io_service)
-    : clmdep_asio::detail::service_base<null_reactor>(io_service)
+  null_reactor(clmdep_asio::execution_context& ctx)
+    : execution_context_service_base<null_reactor>(ctx)
   {
   }
 
@@ -41,13 +50,18 @@ public:
   {
   }
 
+  // Initialise the task.
+  void init_task()
+  {
+  }
+
   // Destroy all user-defined handler objects owned by the service.
-  void shutdown_service()
+  void shutdown()
   {
   }
 
   // No-op because should never be called.
-  void run(bool /*block*/, op_queue<operation>& /*ops*/)
+  void run(long /*usec*/, op_queue<scheduler_operation>& /*ops*/)
   {
   }
 
@@ -58,10 +72,12 @@ public:
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
-#endif // defined(ASIO_WINDOWS_RUNTIME)
+#endif // defined(ASIO_HAS_IOCP)
+       //   || defined(ASIO_WINDOWS_RUNTIME)
+       //   || defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #endif // ASIO_DETAIL_NULL_REACTOR_HPP

@@ -2,7 +2,7 @@
 // detail/handler_cont_helpers.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,15 +16,15 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include "asio/detail/addressof.hpp"
+#include "asio/detail/memory.hpp"
 #include "asio/handler_continuation_hook.hpp"
 
 #include "asio/detail/push_options.hpp"
 
-// Calls to clmdep_asio_handler_is_continuation must be made from a namespace that
+// Calls to asio_handler_is_continuation must be made from a namespace that
 // does not contain overloads of this function. This namespace is defined here
 // for that purpose.
-namespace clmdep_asio_handler_cont_helpers {
+namespace asio_handler_cont_helpers {
 
 template <typename Context>
 inline bool is_continuation(Context& context)
@@ -32,13 +32,13 @@ inline bool is_continuation(Context& context)
 #if !defined(ASIO_HAS_HANDLER_HOOKS)
   return false;
 #else
-  using clmdep_asio::clmdep_asio_handler_is_continuation;
-  return clmdep_asio_handler_is_continuation(
+  using clmdep_asio::asio_handler_is_continuation;
+  return asio_handler_is_continuation(
       clmdep_asio::detail::addressof(context));
 #endif
 }
 
-} // namespace clmdep_asio_handler_cont_helpers
+} // namespace asio_handler_cont_helpers
 
 #include "asio/detail/pop_options.hpp"
 

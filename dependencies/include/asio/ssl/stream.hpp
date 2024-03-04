@@ -2,7 +2,7 @@
 // ssl/stream.hpp
 // ~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,35 +17,26 @@
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_ENABLE_OLD_SSL)
-# include "asio/ssl/old/stream.hpp"
-#else // defined(ASIO_ENABLE_OLD_SSL)
-# include "asio/async_result.hpp"
-# include "asio/detail/buffer_sequence_adapter.hpp"
-# include "asio/detail/handler_type_requirements.hpp"
-# include "asio/detail/noncopyable.hpp"
-# include "asio/detail/type_traits.hpp"
-# include "asio/ssl/context.hpp"
-# include "asio/ssl/detail/buffered_handshake_op.hpp"
-# include "asio/ssl/detail/handshake_op.hpp"
-# include "asio/ssl/detail/io.hpp"
-# include "asio/ssl/detail/read_op.hpp"
-# include "asio/ssl/detail/shutdown_op.hpp"
-# include "asio/ssl/detail/stream_core.hpp"
-# include "asio/ssl/detail/write_op.hpp"
-# include "asio/ssl/stream_base.hpp"
-#endif // defined(ASIO_ENABLE_OLD_SSL)
+#include "asio/async_result.hpp"
+#include "asio/detail/buffer_sequence_adapter.hpp"
+#include "asio/detail/handler_type_requirements.hpp"
+#include "asio/detail/non_const_lvalue.hpp"
+#include "asio/detail/noncopyable.hpp"
+#include "asio/detail/type_traits.hpp"
+#include "asio/ssl/context.hpp"
+#include "asio/ssl/detail/buffered_handshake_op.hpp"
+#include "asio/ssl/detail/handshake_op.hpp"
+#include "asio/ssl/detail/io.hpp"
+#include "asio/ssl/detail/read_op.hpp"
+#include "asio/ssl/detail/shutdown_op.hpp"
+#include "asio/ssl/detail/stream_core.hpp"
+#include "asio/ssl/detail/write_op.hpp"
+#include "asio/ssl/stream_base.hpp"
 
 #include "asio/detail/push_options.hpp"
 
 namespace clmdep_asio {
 namespace ssl {
-
-#if defined(ASIO_ENABLE_OLD_SSL)
-
-using clmdep_asio::ssl::old::stream;
-
-#else // defined(ASIO_ENABLE_OLD_SSL)
 
 /// Provides stream-oriented functionality using SSL.
 /**
@@ -61,9 +52,9 @@ using clmdep_asio::ssl::old::stream;
  * @par Example
  * To use the SSL stream template with an ip::tcp::socket, you would write:
  * @code
- * clmdep_asio::io_service io_service;
+ * clmdep_asio::io_context my_context;
  * clmdep_asio::ssl::context ctx(clmdep_asio::ssl::context::sslv23);
- * clmdep_asio::ssl::stream<asio:ip::tcp::socket> sock(io_service, ctx);
+ * clmdep_asio::ssl::stream<asio:ip::tcp::socket> sock(my_context, ctx);
  * @endcode
  *
  * @par Concepts:
@@ -74,6 +65,13 @@ class stream :
   public stream_base,
   private noncopyable
 {
+private:
+  class initiate_async_handshake;
+  class initiate_async_buffered_handshake;
+  class initiate_async_shutdown;
+  class initiate_async_write_some;
+  class initiate_async_read_some;
+
 public:
   /// The native handle type of the SSL stream.
   typedef SSL* native_handle_type;
@@ -84,14 +82,14 @@ public:
     SSL* ssl;
   };
 
-  /// (Deprecated: Use native_handle_type.) The underlying implementation type.
-  typedef impl_struct* impl_type;
-
   /// The type of the next layer.
-  typedef typename remove_reference<Stream>::type next_layer_type;
+  typedef remove_reference_t<Stream> next_layer_type;
 
   /// The type of the lowest layer.
   typedef typename next_layer_type::lowest_layer_type lowest_layer_type;
+
+  /// The type of the executor associated with the object.
+  typedef typename lowest_layer_type::executor_type executor_type;
 
   /// Construct a stream.
   /**
@@ -103,29 +101,78 @@ public:
    * @param ctx The SSL context to be used for the stream.
    */
   template <typename Arg>
-  stream(Arg& arg, context& ctx)
-    : next_layer_(arg),
-      core_(ctx.native_handle(), next_layer_.lowest_layer().get_io_service())
+  stream(Arg&& arg, context& ctx)
+    : next_layer_(static_cast<Arg&&>(arg)),
+      core_(ctx.native_handle(), next_layer_.lowest_layer().get_executor())
   {
-    backwards_compatible_impl_.ssl = core_.engine_.native_handle();
+  }
+
+  /// Construct a stream from an existing native implementation.
+  /**
+   * This constructor creates a stream and initialises the underlying stream
+   * object. On success, ownership of the native implementation is transferred
+   * to the stream, and it will be cleaned up when the stream is destroyed.
+   *
+   * @param arg The argument to be passed to initialise the underlying stream.
+   *
+   * @param handle An existing native SSL implementation.
+   */
+  template <typename Arg>
+  stream(Arg&& arg, native_handle_type handle)
+    : next_layer_(static_cast<Arg&&>(arg)),
+      core_(handle, next_layer_.lowest_layer().get_executor())
+  {
+  }
+
+  /// Move-construct a stream from another.
+  /**
+   * @param other The other stream object from which the move will occur. Must
+   * have no outstanding asynchronous operations associated with it. Following
+   * the move, @c other has a valid but unspecified state where the only safe
+   * operation is destruction, or use as the target of a move assignment.
+   */
+  stream(stream&& other)
+    : next_layer_(static_cast<Stream&&>(other.next_layer_)),
+      core_(static_cast<detail::stream_core&&>(other.core_))
+  {
+  }
+
+  /// Move-assign a stream from another.
+  /**
+   * @param other The other stream object from which the move will occur. Must
+   * have no outstanding asynchronous operations associated with it. Following
+   * the move, @c other has a valid but unspecified state where the only safe
+   * operation is destruction, or use as the target of a move assignment.
+   */
+  stream& operator=(stream&& other)
+  {
+    if (this != &other)
+    {
+      next_layer_ = static_cast<Stream&&>(other.next_layer_);
+      core_ = static_cast<detail::stream_core&&>(other.core_);
+    }
+    return *this;
   }
 
   /// Destructor.
+  /**
+   * @note A @c stream object must not be destroyed while there are pending
+   * asynchronous operations associated with it.
+   */
   ~stream()
   {
   }
 
-  /// Get the io_service associated with the object.
+  /// Get the executor associated with the object.
   /**
-   * This function may be used to obtain the io_service object that the stream
+   * This function may be used to obtain the executor object that the stream
    * uses to dispatch handlers for asynchronous operations.
    *
-   * @return A reference to the io_service object that stream will use to
-   * dispatch handlers. Ownership is not transferred to the caller.
+   * @return A copy of the executor that stream will use to dispatch handlers.
    */
-  clmdep_asio::io_service& get_io_service()
+  executor_type get_executor() noexcept
   {
-    return next_layer_.lowest_layer().get_io_service();
+    return next_layer_.lowest_layer().get_executor();
   }
 
   /// Get the underlying implementation in the native type.
@@ -139,7 +186,7 @@ public:
    * suitable for passing to functions such as @c SSL_get_verify_result and
    * @c SSL_get_peer_certificate:
    * @code
-   * clmdep_asio::ssl::stream<asio:ip::tcp::socket> sock(io_service, ctx);
+   * clmdep_asio::ssl::stream<asio:ip::tcp::socket> sock(my_context, ctx);
    *
    * // ... establish connection and perform handshake ...
    *
@@ -155,18 +202,6 @@ public:
   native_handle_type native_handle()
   {
     return core_.engine_.native_handle();
-  }
-
-  /// (Deprecated: Use native_handle().) Get the underlying implementation in
-  /// the native type.
-  /**
-   * This function may be used to obtain the underlying implementation of the
-   * context. This is intended to allow access to stream functionality that is
-   * not otherwise provided.
-   */
-  impl_type impl()
-  {
-    return &backwards_compatible_impl_;
   }
 
   /// Get a reference to the next layer.
@@ -252,10 +287,11 @@ public:
    *
    * @note Calls @c SSL_set_verify.
    */
-  clmdep_asio::error_code set_verify_mode(
+  ASIO_SYNC_OP_VOID set_verify_mode(
       verify_mode v, clmdep_asio::error_code& ec)
   {
-    return core_.engine_.set_verify_mode(v, ec);
+    core_.engine_.set_verify_mode(v, ec);
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Set the peer verification depth.
@@ -289,10 +325,11 @@ public:
    *
    * @note Calls @c SSL_set_verify_depth.
    */
-  clmdep_asio::error_code set_verify_depth(
+  ASIO_SYNC_OP_VOID set_verify_depth(
       int depth, clmdep_asio::error_code& ec)
   {
-    return core_.engine_.set_verify_depth(depth, ec);
+    core_.engine_.set_verify_depth(depth, ec);
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Set the callback used to verify peer certificates.
@@ -340,11 +377,12 @@ public:
    * @note Calls @c SSL_set_verify.
    */
   template <typename VerifyCallback>
-  clmdep_asio::error_code set_verify_callback(VerifyCallback callback,
+  ASIO_SYNC_OP_VOID set_verify_callback(VerifyCallback callback,
       clmdep_asio::error_code& ec)
   {
-    return core_.engine_.set_verify_callback(
+    core_.engine_.set_verify_callback(
         new detail::verify_callback<VerifyCallback>(callback), ec);
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Perform SSL handshaking.
@@ -374,11 +412,11 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  clmdep_asio::error_code handshake(handshake_type type,
+  ASIO_SYNC_OP_VOID handshake(handshake_type type,
       clmdep_asio::error_code& ec)
   {
     detail::io(next_layer_, core_, detail::handshake_op(type), ec);
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Perform SSL handshaking.
@@ -414,53 +452,70 @@ public:
    * @param ec Set to indicate what error occurred, if any.
    */
   template <typename ConstBufferSequence>
-  clmdep_asio::error_code handshake(handshake_type type,
+  ASIO_SYNC_OP_VOID handshake(handshake_type type,
       const ConstBufferSequence& buffers, clmdep_asio::error_code& ec)
   {
     detail::io(next_layer_, core_,
         detail::buffered_handshake_op<ConstBufferSequence>(type, buffers), ec);
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Start an asynchronous SSL handshake.
   /**
    * This function is used to asynchronously perform an SSL handshake on the
-   * stream. This function call always returns immediately.
+   * stream. It is an initiating function for an @ref asynchronous_operation,
+   * and always returns immediately.
    *
    * @param type The type of handshaking to be performed, i.e. as a client or as
    * a server.
    *
-   * @param handler The handler to be called when the handshake operation
-   * completes. Copies will be made of the handler as required. The equivalent
-   * function signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the handshake completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code) @endcode
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * if they are also supported by the @c Stream type's @c async_read_some and
+   * @c async_write_some operations.
    */
-  template <typename HandshakeHandler>
-  ASIO_INITFN_RESULT_TYPE(HandshakeHandler,
-      void (clmdep_asio::error_code))
-  async_handshake(handshake_type type,
-      ASIO_MOVE_ARG(HandshakeHandler) handler)
+  template <
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code))
+        HandshakeToken = default_completion_token_t<executor_type>>
+  auto async_handshake(handshake_type type,
+      HandshakeToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<HandshakeToken,
+        void (clmdep_asio::error_code)>(
+          declval<initiate_async_handshake>(), token, type))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a HandshakeHandler.
-    ASIO_HANDSHAKE_HANDLER_CHECK(HandshakeHandler, handler) type_check;
-
-    clmdep_asio::detail::async_result_init<
-      HandshakeHandler, void (clmdep_asio::error_code)> init(
-        ASIO_MOVE_CAST(HandshakeHandler)(handler));
-
-    detail::async_io(next_layer_, core_,
-        detail::handshake_op(type), init.handler);
-
-    return init.result.get();
+    return async_initiate<HandshakeToken,
+      void (clmdep_asio::error_code)>(
+        initiate_async_handshake(this), token, type);
   }
 
   /// Start an asynchronous SSL handshake.
   /**
    * This function is used to asynchronously perform an SSL handshake on the
-   * stream. This function call always returns immediately.
+   * stream. It is an initiating function for an @ref asynchronous_operation,
+   * and always returns immediately.
    *
    * @param type The type of handshaking to be performed, i.e. as a client or as
    * a server.
@@ -468,36 +523,51 @@ public:
    * @param buffers The buffered data to be reused for the handshake. Although
    * the buffers object may be copied as necessary, ownership of the underlying
    * buffers is retained by the caller, which must guarantee that they remain
-   * valid until the handler is called.
+   * valid until the completion handler is called.
    *
-   * @param handler The handler to be called when the handshake operation
-   * completes. Copies will be made of the handler as required. The equivalent
-   * function signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the handshake completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error, // Result of operation.
    *   std::size_t bytes_transferred // Amount of buffers used in handshake.
    * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code, std::size_t) @endcode
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * if they are also supported by the @c Stream type's @c async_read_some and
+   * @c async_write_some operations.
    */
-  template <typename ConstBufferSequence, typename BufferedHandshakeHandler>
-  ASIO_INITFN_RESULT_TYPE(BufferedHandshakeHandler,
-      void (clmdep_asio::error_code, std::size_t))
-  async_handshake(handshake_type type, const ConstBufferSequence& buffers,
-      ASIO_MOVE_ARG(BufferedHandshakeHandler) handler)
+  template <typename ConstBufferSequence,
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code,
+        std::size_t)) BufferedHandshakeToken
+          = default_completion_token_t<executor_type>>
+  auto async_handshake(handshake_type type, const ConstBufferSequence& buffers,
+      BufferedHandshakeToken&& token
+        = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<BufferedHandshakeToken,
+        void (clmdep_asio::error_code, std::size_t)>(
+          declval<initiate_async_buffered_handshake>(), token, type, buffers))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a BufferedHandshakeHandler.
-    ASIO_BUFFERED_HANDSHAKE_HANDLER_CHECK(
-        BufferedHandshakeHandler, handler) type_check;
-
-    clmdep_asio::detail::async_result_init<BufferedHandshakeHandler,
-      void (clmdep_asio::error_code, std::size_t)> init(
-        ASIO_MOVE_CAST(BufferedHandshakeHandler)(handler));
-
-    detail::async_io(next_layer_, core_,
-        detail::buffered_handshake_op<ConstBufferSequence>(type, buffers),
-        init.handler);
-
-    return init.result.get();
+    return async_initiate<BufferedHandshakeToken,
+      void (clmdep_asio::error_code, std::size_t)>(
+        initiate_async_buffered_handshake(this), token, type, buffers);
   }
 
   /// Shut down SSL on the stream.
@@ -521,40 +591,59 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  clmdep_asio::error_code shutdown(clmdep_asio::error_code& ec)
+  ASIO_SYNC_OP_VOID shutdown(clmdep_asio::error_code& ec)
   {
     detail::io(next_layer_, core_, detail::shutdown_op(), ec);
-    return ec;
+    ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Asynchronously shut down SSL on the stream.
   /**
-   * This function is used to asynchronously shut down SSL on the stream. This
-   * function call always returns immediately.
+   * This function is used to asynchronously shut down SSL on the stream. It is
+   * an initiating function for an @ref asynchronous_operation, and always
+   * returns immediately.
    *
-   * @param handler The handler to be called when the handshake operation
-   * completes. Copies will be made of the handler as required. The equivalent
-   * function signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the shutdown completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error // Result of operation.
    * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code) @endcode
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * if they are also supported by the @c Stream type's @c async_read_some and
+   * @c async_write_some operations.
    */
-  template <typename ShutdownHandler>
-  ASIO_INITFN_RESULT_TYPE(ShutdownHandler,
-      void (clmdep_asio::error_code))
-  async_shutdown(ASIO_MOVE_ARG(ShutdownHandler) handler)
+  template <
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code))
+        ShutdownToken
+          = default_completion_token_t<executor_type>>
+  auto async_shutdown(
+      ShutdownToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<ShutdownToken,
+        void (clmdep_asio::error_code)>(
+          declval<initiate_async_shutdown>(), token))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a ShutdownHandler.
-    ASIO_SHUTDOWN_HANDLER_CHECK(ShutdownHandler, handler) type_check;
-
-    clmdep_asio::detail::async_result_init<
-      ShutdownHandler, void (clmdep_asio::error_code)> init(
-        ASIO_MOVE_CAST(ShutdownHandler)(handler));
-
-    detail::async_io(next_layer_, core_, detail::shutdown_op(), init.handler);
-
-    return init.result.get();
+    return async_initiate<ShutdownToken,
+      void (clmdep_asio::error_code)>(
+        initiate_async_shutdown(this), token);
   }
 
   /// Write some data to the stream.
@@ -609,43 +698,60 @@ public:
   /// Start an asynchronous write.
   /**
    * This function is used to asynchronously write one or more bytes of data to
-   * the stream. The function call always returns immediately.
+   * the stream. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
    *
    * @param buffers The data to be written to the stream. Although the buffers
    * object may be copied as necessary, ownership of the underlying buffers is
    * retained by the caller, which must guarantee that they remain valid until
-   * the handler is called.
+   * the completion handler is called.
    *
-   * @param handler The handler to be called when the write operation completes.
-   * Copies will be made of the handler as required. The equivalent function
-   * signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the write completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error, // Result of operation.
-   *   std::size_t bytes_transferred           // Number of bytes written.
+   *   std::size_t bytes_transferred // Number of bytes written.
    * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code, std::size_t) @endcode
    *
    * @note The async_write_some operation may not transmit all of the data to
    * the peer. Consider using the @ref async_write function if you need to
-   * ensure that all data is written before the blocking operation completes.
+   * ensure that all data is written before the asynchronous operation
+   * completes.
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * if they are also supported by the @c Stream type's @c async_read_some and
+   * @c async_write_some operations.
    */
-  template <typename ConstBufferSequence, typename WriteHandler>
-  ASIO_INITFN_RESULT_TYPE(WriteHandler,
-      void (clmdep_asio::error_code, std::size_t))
-  async_write_some(const ConstBufferSequence& buffers,
-      ASIO_MOVE_ARG(WriteHandler) handler)
+  template <typename ConstBufferSequence,
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code,
+        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
+  auto async_write_some(const ConstBufferSequence& buffers,
+      WriteToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<WriteToken,
+        void (clmdep_asio::error_code, std::size_t)>(
+          declval<initiate_async_write_some>(), token, buffers))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a WriteHandler.
-    ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
-
-    clmdep_asio::detail::async_result_init<
-      WriteHandler, void (clmdep_asio::error_code, std::size_t)> init(
-        ASIO_MOVE_CAST(WriteHandler)(handler));
-
-    detail::async_io(next_layer_, core_,
-        detail::write_op<ConstBufferSequence>(buffers), init.handler);
-
-    return init.result.get();
+    return async_initiate<WriteToken,
+      void (clmdep_asio::error_code, std::size_t)>(
+        initiate_async_write_some(this), token, buffers);
   }
 
   /// Read some data from the stream.
@@ -700,56 +806,232 @@ public:
   /// Start an asynchronous read.
   /**
    * This function is used to asynchronously read one or more bytes of data from
-   * the stream. The function call always returns immediately.
+   * the stream. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
    *
    * @param buffers The buffers into which the data will be read. Although the
    * buffers object may be copied as necessary, ownership of the underlying
    * buffers is retained by the caller, which must guarantee that they remain
-   * valid until the handler is called.
+   * valid until the completion handler is called.
    *
-   * @param handler The handler to be called when the read operation completes.
-   * Copies will be made of the handler as required. The equivalent function
-   * signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the read completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const clmdep_asio::error_code& error, // Result of operation.
-   *   std::size_t bytes_transferred           // Number of bytes read.
+   *   std::size_t bytes_transferred // Number of bytes read.
    * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using clmdep_asio::post().
+   *
+   * @par Completion Signature
+   * @code void(clmdep_asio::error_code, std::size_t) @endcode
    *
    * @note The async_read_some operation may not read all of the requested
    * number of bytes. Consider using the @ref async_read function if you need to
    * ensure that the requested amount of data is read before the asynchronous
    * operation completes.
+   *
+   * @par Per-Operation Cancellation
+   * This asynchronous operation supports cancellation for the following
+   * clmdep_asio::cancellation_type values:
+   *
+   * @li @c cancellation_type::terminal
+   *
+   * @li @c cancellation_type::partial
+   *
+   * if they are also supported by the @c Stream type's @c async_read_some and
+   * @c async_write_some operations.
    */
-  template <typename MutableBufferSequence, typename ReadHandler>
-  ASIO_INITFN_RESULT_TYPE(ReadHandler,
-      void (clmdep_asio::error_code, std::size_t))
-  async_read_some(const MutableBufferSequence& buffers,
-      ASIO_MOVE_ARG(ReadHandler) handler)
+  template <typename MutableBufferSequence,
+      ASIO_COMPLETION_TOKEN_FOR(void (clmdep_asio::error_code,
+        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
+  auto async_read_some(const MutableBufferSequence& buffers,
+      ReadToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      async_initiate<ReadToken,
+        void (clmdep_asio::error_code, std::size_t)>(
+          declval<initiate_async_read_some>(), token, buffers))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a ReadHandler.
-    ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
-
-    clmdep_asio::detail::async_result_init<
-      ReadHandler, void (clmdep_asio::error_code, std::size_t)> init(
-        ASIO_MOVE_CAST(ReadHandler)(handler));
-
-    detail::async_io(next_layer_, core_,
-        detail::read_op<MutableBufferSequence>(buffers), init.handler);
-
-    return init.result.get();
+    return async_initiate<ReadToken,
+      void (clmdep_asio::error_code, std::size_t)>(
+        initiate_async_read_some(this), token, buffers);
   }
 
 private:
+  class initiate_async_handshake
+  {
+  public:
+    typedef typename stream::executor_type executor_type;
+
+    explicit initiate_async_handshake(stream* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename HandshakeHandler>
+    void operator()(HandshakeHandler&& handler,
+        handshake_type type) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a HandshakeHandler.
+      ASIO_HANDSHAKE_HANDLER_CHECK(HandshakeHandler, handler) type_check;
+
+      clmdep_asio::detail::non_const_lvalue<HandshakeHandler> handler2(handler);
+      detail::async_io(self_->next_layer_, self_->core_,
+          detail::handshake_op(type), handler2.value);
+    }
+
+  private:
+    stream* self_;
+  };
+
+  class initiate_async_buffered_handshake
+  {
+  public:
+    typedef typename stream::executor_type executor_type;
+
+    explicit initiate_async_buffered_handshake(stream* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename BufferedHandshakeHandler, typename ConstBufferSequence>
+    void operator()(BufferedHandshakeHandler&& handler,
+        handshake_type type, const ConstBufferSequence& buffers) const
+    {
+      // If you get an error on the following line it means that your
+      // handler does not meet the documented type requirements for a
+      // BufferedHandshakeHandler.
+      ASIO_BUFFERED_HANDSHAKE_HANDLER_CHECK(
+          BufferedHandshakeHandler, handler) type_check;
+
+      clmdep_asio::detail::non_const_lvalue<
+          BufferedHandshakeHandler> handler2(handler);
+      detail::async_io(self_->next_layer_, self_->core_,
+          detail::buffered_handshake_op<ConstBufferSequence>(type, buffers),
+          handler2.value);
+    }
+
+  private:
+    stream* self_;
+  };
+
+  class initiate_async_shutdown
+  {
+  public:
+    typedef typename stream::executor_type executor_type;
+
+    explicit initiate_async_shutdown(stream* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename ShutdownHandler>
+    void operator()(ShutdownHandler&& handler) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a ShutdownHandler.
+      ASIO_HANDSHAKE_HANDLER_CHECK(ShutdownHandler, handler) type_check;
+
+      clmdep_asio::detail::non_const_lvalue<ShutdownHandler> handler2(handler);
+      detail::async_io(self_->next_layer_, self_->core_,
+          detail::shutdown_op(), handler2.value);
+    }
+
+  private:
+    stream* self_;
+  };
+
+  class initiate_async_write_some
+  {
+  public:
+    typedef typename stream::executor_type executor_type;
+
+    explicit initiate_async_write_some(stream* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename WriteHandler, typename ConstBufferSequence>
+    void operator()(WriteHandler&& handler,
+        const ConstBufferSequence& buffers) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a WriteHandler.
+      ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
+
+      clmdep_asio::detail::non_const_lvalue<WriteHandler> handler2(handler);
+      detail::async_io(self_->next_layer_, self_->core_,
+          detail::write_op<ConstBufferSequence>(buffers), handler2.value);
+    }
+
+  private:
+    stream* self_;
+  };
+
+  class initiate_async_read_some
+  {
+  public:
+    typedef typename stream::executor_type executor_type;
+
+    explicit initiate_async_read_some(stream* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename ReadHandler, typename MutableBufferSequence>
+    void operator()(ReadHandler&& handler,
+        const MutableBufferSequence& buffers) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a ReadHandler.
+      ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
+
+      clmdep_asio::detail::non_const_lvalue<ReadHandler> handler2(handler);
+      detail::async_io(self_->next_layer_, self_->core_,
+          detail::read_op<MutableBufferSequence>(buffers), handler2.value);
+    }
+
+  private:
+    stream* self_;
+  };
+
   Stream next_layer_;
   detail::stream_core core_;
-  impl_struct backwards_compatible_impl_;
 };
 
-#endif // defined(ASIO_ENABLE_OLD_SSL)
-
 } // namespace ssl
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

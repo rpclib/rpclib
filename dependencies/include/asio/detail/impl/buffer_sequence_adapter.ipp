@@ -2,7 +2,7 @@
 // detail/impl/buffer_sequence_adapter.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -39,16 +39,16 @@ class winrt_buffer_impl :
 public:
   explicit winrt_buffer_impl(const clmdep_asio::const_buffer& b)
   {
-    bytes_ = const_cast<byte*>(clmdep_asio::buffer_cast<const byte*>(b));
-    length_ = clmdep_asio::buffer_size(b);
-    capacity_ = clmdep_asio::buffer_size(b);
+    bytes_ = const_cast<byte*>(static_cast<const byte*>(b.data()));
+    length_ = b.size();
+    capacity_ = b.size();
   }
 
   explicit winrt_buffer_impl(const clmdep_asio::mutable_buffer& b)
   {
-    bytes_ = const_cast<byte*>(clmdep_asio::buffer_cast<const byte*>(b));
+    bytes_ = static_cast<byte*>(b.data());
     length_ = 0;
-    capacity_ = clmdep_asio::buffer_size(b);
+    capacity_ = b.size();
   }
 
   ~winrt_buffer_impl()
@@ -109,7 +109,7 @@ void buffer_sequence_adapter_base::init_native_buffer(
 }
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

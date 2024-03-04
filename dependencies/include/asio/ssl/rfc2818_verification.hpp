@@ -2,7 +2,7 @@
 // ssl/rfc2818_verification.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,21 +17,19 @@
 
 #include "asio/detail/config.hpp"
 
-#if !defined(ASIO_ENABLE_OLD_SSL)
-# include <string>
-# include "asio/ssl/detail/openssl_types.hpp"
-# include "asio/ssl/verify_context.hpp"
-#endif // !defined(ASIO_ENABLE_OLD_SSL)
+#if !defined(ASIO_NO_DEPRECATED)
+
+#include <string>
+#include "asio/ssl/detail/openssl_types.hpp"
+#include "asio/ssl/verify_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
 namespace clmdep_asio {
 namespace ssl {
 
-#if !defined(ASIO_ENABLE_OLD_SSL)
-
-/// Verifies a certificate against a hostname according to the rules described
-/// in RFC 2818.
+/// (Deprecated. Use ssl::host_name_verification.) Verifies a certificate
+/// against a hostname according to the rules described in RFC 2818.
 /**
  * @par Example
  * The following example shows how to synchronously open a secure connection to
@@ -46,9 +44,9 @@ namespace ssl {
  * ctx.set_default_verify_paths();
  *
  * // Open a socket and connect it to the remote host.
- * clmdep_asio::io_service io_service;
- * ssl_socket sock(io_service, ctx);
- * tcp::resolver resolver(io_service);
+ * clmdep_asio::io_context io_context;
+ * ssl_socket sock(io_context, ctx);
+ * tcp::resolver resolver(io_context);
  * tcp::resolver::query query("host.name", "https");
  * clmdep_asio::connect(sock.lowest_layer(), resolver.resolve(query));
  * sock.lowest_layer().set_option(tcp::no_delay(true));
@@ -86,15 +84,15 @@ private:
   std::string host_;
 };
 
-#endif // defined(ASIO_ENABLE_OLD_SSL)
-
 } // namespace ssl
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
 # include "asio/ssl/impl/rfc2818_verification.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
+
+#endif // !defined(ASIO_NO_DEPRECATED)
 
 #endif // ASIO_SSL_RFC2818_VERIFICATION_HPP

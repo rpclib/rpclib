@@ -2,7 +2,7 @@
 // detail/reactive_socket_service_base.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,7 +18,8 @@
 #include "asio/detail/config.hpp"
 
 #if !defined(ASIO_HAS_IOCP) \
-  && !defined(ASIO_WINDOWS_RUNTIME)
+  && !defined(ASIO_WINDOWS_RUNTIME) \
+  && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #include "asio/detail/reactive_socket_service_base.hpp"
 
@@ -28,13 +29,13 @@ namespace clmdep_asio {
 namespace detail {
 
 reactive_socket_service_base::reactive_socket_service_base(
-    clmdep_asio::io_service& io_service)
-  : reactor_(use_service<reactor>(io_service))
+    execution_context& context)
+  : reactor_(use_service<reactor>(context))
 {
   reactor_.init_task();
 }
 
-void reactive_socket_service_base::shutdown_service()
+void reactive_socket_service_base::base_shutdown()
 {
 }
 
@@ -43,11 +44,13 @@ void reactive_socket_service_base::construct(
 {
   impl.socket_ = invalid_socket;
   impl.state_ = 0;
+  impl.reactor_data_ = reactor::per_descriptor_data();
 }
 
 void reactive_socket_service_base::base_move_construct(
     reactive_socket_service_base::base_implementation_type& impl,
     reactive_socket_service_base::base_implementation_type& other_impl)
+  noexcept
 {
   impl.socket_ = other_impl.socket_;
   other_impl.socket_ = invalid_socket;
@@ -81,13 +84,16 @@ void reactive_socket_service_base::destroy(
 {
   if (impl.socket_ != invalid_socket)
   {
-    ASIO_HANDLER_OPERATION(("socket", &impl, "close"));
+    ASIO_HANDLER_OPERATION((reactor_.context(),
+          "socket", &impl, impl.socket_, "close"));
 
     reactor_.deregister_descriptor(impl.socket_, impl.reactor_data_,
         (impl.state_ & socket_ops::possible_dup) == 0);
 
     clmdep_asio::error_code ignored_ec;
     socket_ops::close(impl.socket_, impl.state_, true, ignored_ec);
+
+    reactor_.cleanup_descriptor_data(impl.reactor_data_);
   }
 }
 
@@ -97,13 +103,20 @@ clmdep_asio::error_code reactive_socket_service_base::close(
 {
   if (is_open(impl))
   {
-    ASIO_HANDLER_OPERATION(("socket", &impl, "close"));
+    ASIO_HANDLER_OPERATION((reactor_.context(),
+          "socket", &impl, impl.socket_, "close"));
 
     reactor_.deregister_descriptor(impl.socket_, impl.reactor_data_,
         (impl.state_ & socket_ops::possible_dup) == 0);
-  }
 
-  socket_ops::close(impl.socket_, impl.state_, false, ec);
+    socket_ops::close(impl.socket_, impl.state_, false, ec);
+
+    reactor_.cleanup_descriptor_data(impl.reactor_data_);
+  }
+  else
+  {
+    ec = clmdep_asio::error_code();
+  }
 
   // The descriptor is closed by the OS even if close() returns an error.
   //
@@ -118,6 +131,27 @@ clmdep_asio::error_code reactive_socket_service_base::close(
   return ec;
 }
 
+socket_type reactive_socket_service_base::release(
+    reactive_socket_service_base::base_implementation_type& impl,
+    clmdep_asio::error_code& ec)
+{
+  if (!is_open(impl))
+  {
+    ec = clmdep_asio::error::bad_descriptor;
+    return invalid_socket;
+  }
+
+  ASIO_HANDLER_OPERATION((reactor_.context(),
+        "socket", &impl, impl.socket_, "release"));
+
+  reactor_.deregister_descriptor(impl.socket_, impl.reactor_data_, false);
+  reactor_.cleanup_descriptor_data(impl.reactor_data_);
+  socket_type sock = impl.socket_;
+  construct(impl);
+  ec = clmdep_asio::error_code();
+  return sock;
+}
+
 clmdep_asio::error_code reactive_socket_service_base::cancel(
     reactive_socket_service_base::base_implementation_type& impl,
     clmdep_asio::error_code& ec)
@@ -128,7 +162,8 @@ clmdep_asio::error_code reactive_socket_service_base::cancel(
     return ec;
   }
 
-  ASIO_HANDLER_OPERATION(("socket", &impl, "cancel"));
+  ASIO_HANDLER_OPERATION((reactor_.context(),
+        "socket", &impl, impl.socket_, "cancel"));
 
   reactor_.cancel_ops(impl.socket_, impl.reactor_data_);
   ec = clmdep_asio::error_code();
@@ -198,10 +233,11 @@ clmdep_asio::error_code reactive_socket_service_base::do_assign(
   return ec;
 }
 
-void reactive_socket_service_base::start_op(
-    reactive_socket_service_base::base_implementation_type& impl,
-    int op_type, reactor_op* op, bool is_continuation,
-    bool is_non_blocking, bool noop)
+void reactive_socket_service_base::do_start_op(
+    reactive_socket_service_base::base_implementation_type& impl, int op_type,
+    reactor_op* op, bool is_continuation, bool is_non_blocking, bool noop,
+    void (*on_immediate)(operation* op, bool, const void*),
+    const void* immediate_arg)
 {
   if (!noop)
   {
@@ -209,32 +245,38 @@ void reactive_socket_service_base::start_op(
         || socket_ops::set_internal_non_blocking(
           impl.socket_, impl.state_, true, op->ec_))
     {
-      reactor_.start_op(op_type, impl.socket_,
-          impl.reactor_data_, op, is_continuation, is_non_blocking);
+      reactor_.start_op(op_type, impl.socket_, impl.reactor_data_, op,
+          is_continuation, is_non_blocking, on_immediate, immediate_arg);
       return;
     }
   }
 
-  reactor_.post_immediate_completion(op, is_continuation);
+  on_immediate(op, is_continuation, immediate_arg);
 }
 
-void reactive_socket_service_base::start_accept_op(
+void reactive_socket_service_base::do_start_accept_op(
     reactive_socket_service_base::base_implementation_type& impl,
-    reactor_op* op, bool is_continuation, bool peer_is_open)
+    reactor_op* op, bool is_continuation, bool peer_is_open,
+    void (*on_immediate)(operation* op, bool, const void*),
+    const void* immediate_arg)
 {
   if (!peer_is_open)
-    start_op(impl, reactor::read_op, op, true, is_continuation, false);
+  {
+    do_start_op(impl, reactor::read_op, op, is_continuation,
+        true, false, on_immediate, immediate_arg);
+  }
   else
   {
     op->ec_ = clmdep_asio::error::already_open;
-    reactor_.post_immediate_completion(op, is_continuation);
+    on_immediate(op, is_continuation, immediate_arg);
   }
 }
 
-void reactive_socket_service_base::start_connect_op(
+void reactive_socket_service_base::do_start_connect_op(
     reactive_socket_service_base::base_implementation_type& impl,
-    reactor_op* op, bool is_continuation,
-    const socket_addr_type* addr, size_t addrlen)
+    reactor_op* op, bool is_continuation, const void* addr, size_t addrlen,
+    void (*on_immediate)(operation* op, bool, const void*),
+    const void* immediate_arg)
 {
   if ((impl.state_ & socket_ops::non_blocking)
       || socket_ops::set_internal_non_blocking(
@@ -246,22 +288,23 @@ void reactive_socket_service_base::start_connect_op(
           || op->ec_ == clmdep_asio::error::would_block)
       {
         op->ec_ = clmdep_asio::error_code();
-        reactor_.start_op(reactor::connect_op, impl.socket_,
-            impl.reactor_data_, op, is_continuation, false);
+        reactor_.start_op(reactor::connect_op, impl.socket_, impl.reactor_data_,
+            op, is_continuation, false, on_immediate, immediate_arg);
         return;
       }
     }
   }
 
-  reactor_.post_immediate_completion(op, is_continuation);
+  on_immediate(op, is_continuation, immediate_arg);
 }
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
 #endif // !defined(ASIO_HAS_IOCP)
        //   && !defined(ASIO_WINDOWS_RUNTIME)
+       //   && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #endif // ASIO_DETAIL_IMPL_REACTIVE_SOCKET_SERVICE_BASE_IPP

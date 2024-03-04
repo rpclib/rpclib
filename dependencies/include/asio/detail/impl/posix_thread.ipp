@@ -2,7 +2,7 @@
 // detail/impl/posix_thread.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,10 +43,20 @@ void posix_thread::join()
   }
 }
 
+std::size_t posix_thread::hardware_concurrency()
+{
+#if defined(_SC_NPROCESSORS_ONLN)
+  long result = sysconf(_SC_NPROCESSORS_ONLN);
+  if (result > 0)
+    return result;
+#endif // defined(_SC_NPROCESSORS_ONLN)
+  return 0;
+}
+
 void posix_thread::start_thread(func_base* arg)
 {
   int error = ::pthread_create(&thread_, 0,
-        clmdep_asio_detail_posix_thread_function, arg);
+        asio_detail_posix_thread_function, arg);
   if (error != 0)
   {
     delete arg;
@@ -56,7 +66,7 @@ void posix_thread::start_thread(func_base* arg)
   }
 }
 
-void* clmdep_asio_detail_posix_thread_function(void* arg)
+void* asio_detail_posix_thread_function(void* arg)
 {
   posix_thread::auto_func_base_ptr func = {
       static_cast<posix_thread::func_base*>(arg) };
@@ -65,7 +75,7 @@ void* clmdep_asio_detail_posix_thread_function(void* arg)
 }
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

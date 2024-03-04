@@ -35,7 +35,7 @@ private:
 private:
     server* parent_;
     RPCLIB_ASIO::io_service *io_;
-    RPCLIB_ASIO::strand read_strand_;
+    RPCLIB_ASIO::strand<RPCLIB_ASIO::io_service::executor_type> read_strand_;
     std::shared_ptr<dispatcher> disp_;
     RPCLIB_MSGPACK::unpacker pac_;
     RPCLIB_MSGPACK::sbuffer output_buf_;

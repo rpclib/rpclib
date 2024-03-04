@@ -2,7 +2,7 @@
 // ssl/detail/engine.hpp
 // ~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,22 +17,18 @@
 
 #include "asio/detail/config.hpp"
 
-#if !defined(ASIO_ENABLE_OLD_SSL)
-# include "asio/buffer.hpp"
-# include "asio/detail/static_mutex.hpp"
-# include "asio/ssl/detail/openssl_types.hpp"
-# include "asio/ssl/detail/verify_callback.hpp"
-# include "asio/ssl/stream_base.hpp"
-# include "asio/ssl/verify_mode.hpp"
-#endif // !defined(ASIO_ENABLE_OLD_SSL)
+#include "asio/buffer.hpp"
+#include "asio/detail/static_mutex.hpp"
+#include "asio/ssl/detail/openssl_types.hpp"
+#include "asio/ssl/detail/verify_callback.hpp"
+#include "asio/ssl/stream_base.hpp"
+#include "asio/ssl/verify_mode.hpp"
 
 #include "asio/detail/push_options.hpp"
 
 namespace clmdep_asio {
 namespace ssl {
 namespace detail {
-
-#if !defined(ASIO_ENABLE_OLD_SSL)
 
 class engine
 {
@@ -62,8 +58,17 @@ public:
   // Construct a new engine for the specified context.
   ASIO_DECL explicit engine(SSL_CTX* context);
 
+  // Construct a new engine for an existing native SSL implementation.
+  ASIO_DECL explicit engine(SSL* ssl_impl);
+
+  // Move construct from another engine.
+  ASIO_DECL engine(engine&& other) noexcept;
+
   // Destructor.
   ASIO_DECL ~engine();
+
+  // Move assign from another engine.
+  ASIO_DECL engine& operator=(engine&& other) noexcept;
 
   // Get the underlying implementation in the native type.
   ASIO_DECL SSL* native_handle();
@@ -97,7 +102,7 @@ public:
       clmdep_asio::error_code& ec, std::size_t& bytes_transferred);
 
   // Get output data to be written to the transport.
-  ASIO_DECL clmdep_asio::mutable_buffers_1 get_output(
+  ASIO_DECL clmdep_asio::mutable_buffer get_output(
       const clmdep_asio::mutable_buffer& data);
 
   // Put input data that was read from the transport.
@@ -119,9 +124,11 @@ private:
   ASIO_DECL static int verify_callback_function(
       int preverified, X509_STORE_CTX* ctx);
 
+#if (OPENSSL_VERSION_NUMBER < 0x10000000L)
   // The SSL_accept function may not be thread safe. This mutex is used to
   // protect all calls to the SSL_accept function.
   ASIO_DECL static clmdep_asio::detail::static_mutex& accept_mutex();
+#endif // (OPENSSL_VERSION_NUMBER < 0x10000000L)
 
   // Perform one operation. Returns >= 0 on success or error, want_read if the
   // operation needs more input, or want_write if it needs to write some output
@@ -149,11 +156,9 @@ private:
   BIO* ext_bio_;
 };
 
-#endif // !defined(ASIO_ENABLE_OLD_SSL)
-
 } // namespace detail
 } // namespace ssl
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
