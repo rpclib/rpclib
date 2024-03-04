@@ -2,7 +2,7 @@
 // ip/detail/endpoint.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,42 +33,43 @@ class endpoint
 {
 public:
   // Default constructor.
-  ASIO_DECL endpoint();
+  ASIO_DECL endpoint() noexcept;
 
   // Construct an endpoint using a family and port number.
-  ASIO_DECL endpoint(int family, unsigned short port_num);
+  ASIO_DECL endpoint(int family,
+      unsigned short port_num) noexcept;
 
   // Construct an endpoint using an address and port number.
   ASIO_DECL endpoint(const clmdep_asio::ip::address& addr,
-      unsigned short port_num);
+      unsigned short port_num) noexcept;
 
   // Copy constructor.
-  endpoint(const endpoint& other)
+  endpoint(const endpoint& other) noexcept
     : data_(other.data_)
   {
   }
 
   // Assign from another endpoint.
-  endpoint& operator=(const endpoint& other)
+  endpoint& operator=(const endpoint& other) noexcept
   {
     data_ = other.data_;
     return *this;
   }
 
   // Get the underlying endpoint in the native type.
-  clmdep_asio::detail::socket_addr_type* data()
+  clmdep_asio::detail::socket_addr_type* data() noexcept
   {
     return &data_.base;
   }
 
   // Get the underlying endpoint in the native type.
-  const clmdep_asio::detail::socket_addr_type* data() const
+  const clmdep_asio::detail::socket_addr_type* data() const noexcept
   {
     return &data_.base;
   }
 
   // Get the underlying size of the endpoint in the native type.
-  std::size_t size() const
+  std::size_t size() const noexcept
   {
     if (is_v4())
       return sizeof(clmdep_asio::detail::sockaddr_in4_type);
@@ -80,40 +81,41 @@ public:
   ASIO_DECL void resize(std::size_t new_size);
 
   // Get the capacity of the endpoint in the native type.
-  std::size_t capacity() const
+  std::size_t capacity() const noexcept
   {
     return sizeof(data_);
   }
 
   // Get the port associated with the endpoint.
-  ASIO_DECL unsigned short port() const;
+  ASIO_DECL unsigned short port() const noexcept;
 
   // Set the port associated with the endpoint.
-  ASIO_DECL void port(unsigned short port_num);
+  ASIO_DECL void port(unsigned short port_num) noexcept;
 
   // Get the IP address associated with the endpoint.
-  ASIO_DECL clmdep_asio::ip::address address() const;
+  ASIO_DECL clmdep_asio::ip::address address() const noexcept;
 
   // Set the IP address associated with the endpoint.
-  ASIO_DECL void address(const clmdep_asio::ip::address& addr);
+  ASIO_DECL void address(
+      const clmdep_asio::ip::address& addr) noexcept;
 
   // Compare two endpoints for equality.
-  ASIO_DECL friend bool operator==(
-      const endpoint& e1, const endpoint& e2);
+  ASIO_DECL friend bool operator==(const endpoint& e1,
+      const endpoint& e2) noexcept;
 
   // Compare endpoints for ordering.
-  ASIO_DECL friend bool operator<(
-      const endpoint& e1, const endpoint& e2);
+  ASIO_DECL friend bool operator<(const endpoint& e1,
+      const endpoint& e2) noexcept;
 
   // Determine whether the endpoint is IPv4.
-  bool is_v4() const
+  bool is_v4() const noexcept
   {
     return data_.base.sa_family == ASIO_OS_DEF(AF_INET);
   }
 
 #if !defined(ASIO_NO_IOSTREAM)
   // Convert to a string.
-  ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
+  ASIO_DECL std::string to_string() const;
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 private:
@@ -128,7 +130,7 @@ private:
 
 } // namespace detail
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -2,7 +2,7 @@
 // ip/multicast.hpp
 // ~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,7 +32,7 @@ namespace multicast {
  * @par Examples
  * Setting the option to join a multicast group:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::address multicast_address =
  *   clmdep_asio::ip::address::from_string("225.0.0.1");
@@ -60,7 +60,7 @@ typedef clmdep_asio::ip::detail::socket_option::multicast_request<
  * @par Examples
  * Setting the option to leave a multicast group:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::address multicast_address =
  *   clmdep_asio::ip::address::from_string("225.0.0.1");
@@ -88,7 +88,7 @@ typedef clmdep_asio::ip::detail::socket_option::multicast_request<
  * @par Examples
  * Setting the option:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::address_v4 local_interface =
  *   clmdep_asio::ip::address_v4::from_string("1.2.3.4");
@@ -116,7 +116,7 @@ typedef clmdep_asio::ip::detail::socket_option::network_interface<
  * @par Examples
  * Setting the option:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::multicast::hops option(4);
  * socket.set_option(option);
@@ -125,7 +125,7 @@ typedef clmdep_asio::ip::detail::socket_option::network_interface<
  * @par
  * Getting the current option value:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::multicast::hops option;
  * socket.get_option(option);
@@ -153,7 +153,7 @@ typedef clmdep_asio::ip::detail::socket_option::multicast_hops<
  * @par Examples
  * Setting the option:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::multicast::enable_loopback option(true);
  * socket.set_option(option);
@@ -162,7 +162,7 @@ typedef clmdep_asio::ip::detail::socket_option::multicast_hops<
  * @par
  * Getting the current option value:
  * @code
- * clmdep_asio::ip::udp::socket socket(io_service); 
+ * clmdep_asio::ip::udp::socket socket(my_context);
  * ...
  * clmdep_asio::ip::multicast::enable_loopback option;
  * socket.get_option(option);
@@ -184,7 +184,7 @@ typedef clmdep_asio::ip::detail::socket_option::multicast_enable_loopback<
 
 } // namespace multicast
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

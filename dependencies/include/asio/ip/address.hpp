@@ -2,7 +2,7 @@
 // ip/address.hpp
 // ~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,10 +16,15 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
+#include <functional>
 #include <string>
+#include "asio/detail/throw_exception.hpp"
+#include "asio/detail/string_view.hpp"
+#include "asio/detail/type_traits.hpp"
 #include "asio/error_code.hpp"
 #include "asio/ip/address_v4.hpp"
 #include "asio/ip/address_v6.hpp"
+#include "asio/ip/bad_address_cast.hpp"
 
 #if !defined(ASIO_NO_IOSTREAM)
 # include <iosfwd>
@@ -43,46 +48,44 @@ class address
 {
 public:
   /// Default constructor.
-  ASIO_DECL address();
+  ASIO_DECL address() noexcept;
 
   /// Construct an address from an IPv4 address.
-  ASIO_DECL address(const clmdep_asio::ip::address_v4& ipv4_address);
+  ASIO_DECL address(
+      const clmdep_asio::ip::address_v4& ipv4_address) noexcept;
 
   /// Construct an address from an IPv6 address.
-  ASIO_DECL address(const clmdep_asio::ip::address_v6& ipv6_address);
+  ASIO_DECL address(
+      const clmdep_asio::ip::address_v6& ipv6_address) noexcept;
 
   /// Copy constructor.
-  ASIO_DECL address(const address& other);
+  ASIO_DECL address(const address& other) noexcept;
 
-#if defined(ASIO_HAS_MOVE)
   /// Move constructor.
-  ASIO_DECL address(address&& other);
-#endif // defined(ASIO_HAS_MOVE)
+  ASIO_DECL address(address&& other) noexcept;
 
   /// Assign from another address.
-  ASIO_DECL address& operator=(const address& other);
+  ASIO_DECL address& operator=(const address& other) noexcept;
 
-#if defined(ASIO_HAS_MOVE)
   /// Move-assign from another address.
-  ASIO_DECL address& operator=(address&& other);
-#endif // defined(ASIO_HAS_MOVE)
+  ASIO_DECL address& operator=(address&& other) noexcept;
 
   /// Assign from an IPv4 address.
   ASIO_DECL address& operator=(
-      const clmdep_asio::ip::address_v4& ipv4_address);
+      const clmdep_asio::ip::address_v4& ipv4_address) noexcept;
 
   /// Assign from an IPv6 address.
   ASIO_DECL address& operator=(
-      const clmdep_asio::ip::address_v6& ipv6_address);
+      const clmdep_asio::ip::address_v6& ipv6_address) noexcept;
 
   /// Get whether the address is an IP version 4 address.
-  bool is_v4() const
+  bool is_v4() const noexcept
   {
     return type_ == ipv4;
   }
 
   /// Get whether the address is an IP version 6 address.
-  bool is_v6() const
+  bool is_v6() const noexcept
   {
     return type_ == ipv6;
   }
@@ -93,65 +96,76 @@ public:
   /// Get the address as an IP version 6 address.
   ASIO_DECL clmdep_asio::ip::address_v6 to_v6() const;
 
-  /// Get the address as a string in dotted decimal format.
+  /// Get the address as a string.
   ASIO_DECL std::string to_string() const;
 
-  /// Get the address as a string in dotted decimal format.
+#if !defined(ASIO_NO_DEPRECATED)
+  /// (Deprecated: Use other overload.) Get the address as a string.
   ASIO_DECL std::string to_string(clmdep_asio::error_code& ec) const;
 
-  /// Create an address from an IPv4 address string in dotted decimal form,
-  /// or from an IPv6 address in hexadecimal notation.
-  ASIO_DECL static address from_string(const char* str);
+  /// (Deprecated: Use make_address().) Create an address from an IPv4 address
+  /// string in dotted decimal form, or from an IPv6 address in hexadecimal
+  /// notation.
+  static address from_string(const char* str);
 
-  /// Create an address from an IPv4 address string in dotted decimal form,
-  /// or from an IPv6 address in hexadecimal notation.
-  ASIO_DECL static address from_string(
-      const char* str, clmdep_asio::error_code& ec);
+  /// (Deprecated: Use make_address().) Create an address from an IPv4 address
+  /// string in dotted decimal form, or from an IPv6 address in hexadecimal
+  /// notation.
+  static address from_string(const char* str, clmdep_asio::error_code& ec);
 
-  /// Create an address from an IPv4 address string in dotted decimal form,
-  /// or from an IPv6 address in hexadecimal notation.
-  ASIO_DECL static address from_string(const std::string& str);
+  /// (Deprecated: Use make_address().) Create an address from an IPv4 address
+  /// string in dotted decimal form, or from an IPv6 address in hexadecimal
+  /// notation.
+  static address from_string(const std::string& str);
 
-  /// Create an address from an IPv4 address string in dotted decimal form,
-  /// or from an IPv6 address in hexadecimal notation.
-  ASIO_DECL static address from_string(
+  /// (Deprecated: Use make_address().) Create an address from an IPv4 address
+  /// string in dotted decimal form, or from an IPv6 address in hexadecimal
+  /// notation.
+  static address from_string(
       const std::string& str, clmdep_asio::error_code& ec);
+#endif // !defined(ASIO_NO_DEPRECATED)
 
   /// Determine whether the address is a loopback address.
-  ASIO_DECL bool is_loopback() const;
+  ASIO_DECL bool is_loopback() const noexcept;
 
   /// Determine whether the address is unspecified.
-  ASIO_DECL bool is_unspecified() const;
+  ASIO_DECL bool is_unspecified() const noexcept;
 
   /// Determine whether the address is a multicast address.
-  ASIO_DECL bool is_multicast() const;
+  ASIO_DECL bool is_multicast() const noexcept;
 
   /// Compare two addresses for equality.
-  ASIO_DECL friend bool operator==(const address& a1, const address& a2);
+  ASIO_DECL friend bool operator==(const address& a1,
+      const address& a2) noexcept;
 
   /// Compare two addresses for inequality.
-  friend bool operator!=(const address& a1, const address& a2)
+  friend bool operator!=(const address& a1,
+      const address& a2) noexcept
   {
     return !(a1 == a2);
   }
 
   /// Compare addresses for ordering.
-  ASIO_DECL friend bool operator<(const address& a1, const address& a2);
+  ASIO_DECL friend bool operator<(const address& a1,
+      const address& a2) noexcept;
 
   /// Compare addresses for ordering.
-  friend bool operator>(const address& a1, const address& a2)
+  friend bool operator>(const address& a1,
+      const address& a2) noexcept
   {
     return a2 < a1;
   }
 
   /// Compare addresses for ordering.
-  friend bool operator<=(const address& a1, const address& a2)
+  friend bool operator<=(const address& a1,
+      const address& a2) noexcept
   {
     return !(a2 < a1);
   }
 
   /// Compare addresses for ordering.
-  friend bool operator>=(const address& a1, const address& a2)
+  friend bool operator>=(const address& a1,
+      const address& a2) noexcept
   {
     return !(a1 < a2);
   }
@@ -166,6 +180,57 @@ private:
   // The underlying IPv6 address.
   clmdep_asio::ip::address_v6 ipv6_address_;
 };
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(const char* str);
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(const char* str,
+    clmdep_asio::error_code& ec) noexcept;
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(const std::string& str);
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(const std::string& str,
+    clmdep_asio::error_code& ec) noexcept;
+
+#if defined(ASIO_HAS_STRING_VIEW) \
+  || defined(GENERATING_DOCUMENTATION)
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(string_view str);
+
+/// Create an address from an IPv4 address string in dotted decimal form,
+/// or from an IPv6 address in hexadecimal notation.
+/**
+ * @relates address
+ */
+ASIO_DECL address make_address(string_view str,
+    clmdep_asio::error_code& ec) noexcept;
+
+#endif // defined(ASIO_HAS_STRING_VIEW)
+       //  || defined(GENERATING_DOCUMENTATION)
 
 #if !defined(ASIO_NO_IOSTREAM)
 
@@ -188,7 +253,23 @@ std::basic_ostream<Elem, Traits>& operator<<(
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
+
+namespace std {
+
+template <>
+struct hash<clmdep_asio::ip::address>
+{
+  std::size_t operator()(const clmdep_asio::ip::address& addr)
+    const noexcept
+  {
+    return addr.is_v4()
+      ? std::hash<clmdep_asio::ip::address_v4>()(addr.to_v4())
+      : std::hash<clmdep_asio::ip::address_v6>()(addr.to_v6());
+  }
+};
+
+} // namespace std
 
 #include "asio/detail/pop_options.hpp"
 

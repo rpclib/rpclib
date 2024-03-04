@@ -2,7 +2,7 @@
 // detail/timer_queue.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -46,7 +46,11 @@ public:
   class per_timer_data
   {
   public:
-    per_timer_data() : next_(0), prev_(0) {}
+    per_timer_data() :
+      heap_index_((std::numeric_limits<std::size_t>::max)()),
+      next_(0), prev_(0)
+    {
+    }
 
   private:
     friend class timer_queue;
@@ -146,7 +150,12 @@ public:
       while (!heap_.empty() && !Time_Traits::less_than(now, heap_[0].time_))
       {
         per_timer_data* timer = heap_[0].timer_;
-        ops.push(timer->op_queue_);
+        while (wait_op* op = timer->op_queue_.front())
+        {
+          timer->op_queue_.pop();
+          op->ec_ = clmdep_asio::error_code();
+          ops.push(op);
+        }
         remove_timer(*timer);
       }
     }
@@ -186,6 +195,53 @@ public:
         remove_timer(timer);
     }
     return num_cancelled;
+  }
+
+  // Cancel and dequeue a specific operation for the given timer.
+  void cancel_timer_by_key(per_timer_data* timer,
+      op_queue<operation>& ops, void* cancellation_key)
+  {
+    if (timer->prev_ != 0 || timer == timers_)
+    {
+      op_queue<wait_op> other_ops;
+      while (wait_op* op = timer->op_queue_.front())
+      {
+        timer->op_queue_.pop();
+        if (op->cancellation_key_ == cancellation_key)
+        {
+          op->ec_ = clmdep_asio::error::operation_aborted;
+          ops.push(op);
+        }
+        else
+          other_ops.push(op);
+      }
+      timer->op_queue_.push(other_ops);
+      if (timer->op_queue_.empty())
+        remove_timer(*timer);
+    }
+  }
+
+  // Move operations from one timer to another, empty timer.
+  void move_timer(per_timer_data& target, per_timer_data& source)
+  {
+    target.op_queue_.push(source.op_queue_);
+
+    target.heap_index_ = source.heap_index_;
+    source.heap_index_ = (std::numeric_limits<std::size_t>::max)();
+
+    if (target.heap_index_ < heap_.size())
+      heap_[target.heap_index_].timer_ = &target;
+
+    if (timers_ == &source)
+      timers_ = &target;
+    if (source.prev_)
+      source.prev_->next_ = &target;
+    if (source.next_)
+      source.next_->prev_= &target;
+    target.next_ = source.next_;
+    target.prev_ = source.prev_;
+    source.next_ = 0;
+    source.prev_ = 0;
   }
 
 private:
@@ -239,11 +295,13 @@ private:
     {
       if (index == heap_.size() - 1)
       {
+        timer.heap_index_ = (std::numeric_limits<std::size_t>::max)();
         heap_.pop_back();
       }
       else
       {
         swap_heap(index, heap_.size() - 1);
+        timer.heap_index_ = (std::numeric_limits<std::size_t>::max)();
         heap_.pop_back();
         if (index > 0 && Time_Traits::less_than(
               heap_[index].time_, heap_[(index - 1) / 2].time_))
@@ -324,7 +382,7 @@ private:
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

@@ -2,7 +2,7 @@
 // ip/udp.hpp
 // ~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -46,31 +46,31 @@ public:
   typedef basic_endpoint<udp> endpoint;
 
   /// Construct to represent the IPv4 UDP protocol.
-  static udp v4()
+  static udp v4() noexcept
   {
     return udp(ASIO_OS_DEF(AF_INET));
   }
 
   /// Construct to represent the IPv6 UDP protocol.
-  static udp v6()
+  static udp v6() noexcept
   {
     return udp(ASIO_OS_DEF(AF_INET6));
   }
 
   /// Obtain an identifier for the type of the protocol.
-  int type() const
+  int type() const noexcept
   {
     return ASIO_OS_DEF(SOCK_DGRAM);
   }
 
   /// Obtain an identifier for the protocol.
-  int protocol() const
+  int protocol() const noexcept
   {
     return ASIO_OS_DEF(IPPROTO_UDP);
   }
 
   /// Obtain an identifier for the protocol family.
-  int family() const
+  int family() const noexcept
   {
     return family_;
   }
@@ -95,7 +95,7 @@ public:
 
 private:
   // Construct with a specific family.
-  explicit udp(int protocol_family)
+  explicit udp(int protocol_family) noexcept
     : family_(protocol_family)
   {
   }
@@ -104,7 +104,7 @@ private:
 };
 
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

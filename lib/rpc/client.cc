@@ -30,7 +30,7 @@ struct client::impl {
     impl(client *parent, std::string const &addr, uint16_t port)
         : parent_(parent),
           io_(),
-          strand_(io_),
+          strand_(io_.get_executor()),
           call_idx_(0),
           addr_(addr),
           port_(port),
@@ -96,7 +96,7 @@ struct client::impl {
                                 .set_exception(std::current_exception());
                         }
                         strand_.post(
-                            [this, id]() { ongoing_calls_.erase(id); });
+                            [this, id]() { ongoing_calls_.erase(id); }, RPCLIB_ASIO::get_associated_allocator(io_));
                     }
 
                     // resizing strategy: if the remaining buffer size is
@@ -145,7 +145,7 @@ struct client::impl {
 
     client *parent_;
     RPCLIB_ASIO::io_service io_;
-    RPCLIB_ASIO::strand strand_;
+    RPCLIB_ASIO::strand<RPCLIB_ASIO::io_service::executor_type> strand_;
     std::atomic<int> call_idx_; /// The index of the last call made
     std::unordered_map<uint32_t, call_t> ongoing_calls_;
     std::string addr_;
@@ -206,14 +206,14 @@ void client::post(std::shared_ptr<RPCLIB_MSGPACK::sbuffer> buffer, int idx,
         pimpl->ongoing_calls_.insert(
             std::make_pair(idx, std::make_pair(func_name, std::move(*p))));
         pimpl->write(std::move(*buffer));
-    });
+    }, RPCLIB_ASIO::get_associated_allocator(pimpl->io_));
 }
 
 void client::post(RPCLIB_MSGPACK::sbuffer *buffer) {
     pimpl->strand_.post([=]() {
         pimpl->write(std::move(*buffer));
         delete buffer;
-    });
+    }, RPCLIB_ASIO::get_associated_allocator(pimpl->io_));
 }
 
 client::connection_state client::get_connection_state() const {

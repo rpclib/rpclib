@@ -2,7 +2,7 @@
 // detail/win_object_handle_service.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2011 Boris Schaeling (boris@highscore.de)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -20,18 +20,24 @@
 
 #if defined(ASIO_HAS_WINDOWS_OBJECT_HANDLE)
 
-#include "asio/detail/addressof.hpp"
-#include "asio/detail/handler_alloc_helpers.hpp"
+#include "asio/detail/memory.hpp"
 #include "asio/detail/wait_handler.hpp"
 #include "asio/error.hpp"
-#include "asio/io_service.hpp"
+#include "asio/execution_context.hpp"
+
+#if defined(ASIO_HAS_IOCP)
+# include "asio/detail/win_iocp_io_context.hpp"
+#else // defined(ASIO_HAS_IOCP)
+# include "asio/detail/scheduler.hpp"
+#endif // defined(ASIO_HAS_IOCP)
 
 #include "asio/detail/push_options.hpp"
 
 namespace clmdep_asio {
 namespace detail {
 
-class win_object_handle_service
+class win_object_handle_service :
+  public execution_context_service_base<win_object_handle_service>
 {
 public:
   // The native type of an object handle.
@@ -78,11 +84,10 @@ public:
   };
 
   // Constructor.
-  ASIO_DECL win_object_handle_service(
-      clmdep_asio::io_service& io_service);
+  ASIO_DECL win_object_handle_service(execution_context& context);
 
   // Destroy all user-defined handler objects owned by the service.
-  ASIO_DECL void shutdown_service();
+  ASIO_DECL void shutdown();
 
   // Construct a new handle implementation.
   ASIO_DECL void construct(implementation_type& impl);
@@ -128,17 +133,18 @@ public:
       clmdep_asio::error_code& ec);
 
   /// Start an asynchronous wait.
-  template <typename Handler>
-  void async_wait(implementation_type& impl, Handler& handler)
+  template <typename Handler, typename IoExecutor>
+  void async_wait(implementation_type& impl,
+      Handler& handler, const IoExecutor& io_ex)
   {
     // Allocate and construct an operation to wrap the handler.
-    typedef wait_handler<Handler> op;
+    typedef wait_handler<Handler, IoExecutor> op;
     typename op::ptr p = { clmdep_asio::detail::addressof(handler),
-      clmdep_asio_handler_alloc_helpers::allocate(
-        sizeof(op), handler), 0 };
-    p.p = new (p.v) op(handler);
+      op::ptr::allocate(handler), 0 };
+    p.p = new (p.v) op(handler, io_ex);
 
-    ASIO_HANDLER_CREATION((p.p, "object_handle", &impl, "async_wait"));
+    ASIO_HANDLER_CREATION((scheduler_.context(), *p.p, "object_handle",
+          &impl, reinterpret_cast<uintmax_t>(impl.wait_handle_), "async_wait"));
 
     start_wait_op(impl, p.p);
     p.v = p.p = 0;
@@ -156,8 +162,13 @@ private:
   static ASIO_DECL VOID CALLBACK wait_callback(
       PVOID param, BOOLEAN timeout);
 
-  // The io_service implementation used to post completions.
-  io_service_impl& io_service_;
+  // The scheduler used to post completions.
+#if defined(ASIO_HAS_IOCP)
+  typedef class win_iocp_io_context scheduler_impl;
+#else
+  typedef class scheduler scheduler_impl;
+#endif
+  scheduler_impl& scheduler_;
 
   // Mutex to protect access to internal state.
   mutex mutex_;
@@ -170,7 +181,7 @@ private:
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

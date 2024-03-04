@@ -2,7 +2,7 @@
 // ip/basic_endpoint.hpp
 // ~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,6 +16,8 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
+#include <functional>
+#include "asio/detail/cstdint.hpp"
 #include "asio/ip/address.hpp"
 #include "asio/ip/detail/endpoint.hpp"
 
@@ -27,6 +29,9 @@
 
 namespace clmdep_asio {
 namespace ip {
+
+/// Type used for storing port numbers.
+typedef uint_least16_t port_type;
 
 /// Describes an endpoint for a version-independent IP socket.
 /**
@@ -56,7 +61,7 @@ public:
 #endif
 
   /// Default constructor.
-  basic_endpoint()
+  basic_endpoint() noexcept
     : impl_()
   {
   }
@@ -78,7 +83,7 @@ public:
    * @endcode
    */
   basic_endpoint(const InternetProtocol& internet_protocol,
-      unsigned short port_num)
+      port_type port_num) noexcept
     : impl_(internet_protocol.family(), port_num)
   {
   }
@@ -86,43 +91,40 @@ public:
   /// Construct an endpoint using a port number and an IP address. This
   /// constructor may be used for accepting connections on a specific interface
   /// or for making a connection to a remote endpoint.
-  basic_endpoint(const clmdep_asio::ip::address& addr, unsigned short port_num)
+  basic_endpoint(const clmdep_asio::ip::address& addr,
+      port_type port_num) noexcept
     : impl_(addr, port_num)
   {
   }
 
   /// Copy constructor.
-  basic_endpoint(const basic_endpoint& other)
+  basic_endpoint(const basic_endpoint& other) noexcept
     : impl_(other.impl_)
   {
   }
 
-#if defined(ASIO_HAS_MOVE)
   /// Move constructor.
-  basic_endpoint(basic_endpoint&& other)
+  basic_endpoint(basic_endpoint&& other) noexcept
     : impl_(other.impl_)
   {
   }
-#endif // defined(ASIO_HAS_MOVE)
 
   /// Assign from another endpoint.
-  basic_endpoint& operator=(const basic_endpoint& other)
+  basic_endpoint& operator=(const basic_endpoint& other) noexcept
   {
     impl_ = other.impl_;
     return *this;
   }
 
-#if defined(ASIO_HAS_MOVE)
   /// Move-assign from another endpoint.
-  basic_endpoint& operator=(basic_endpoint&& other)
+  basic_endpoint& operator=(basic_endpoint&& other) noexcept
   {
     impl_ = other.impl_;
     return *this;
   }
-#endif // defined(ASIO_HAS_MOVE)
 
   /// The protocol associated with the endpoint.
-  protocol_type protocol() const
+  protocol_type protocol() const noexcept
   {
     if (impl_.is_v4())
       return InternetProtocol::v4();
@@ -130,19 +132,19 @@ public:
   }
 
   /// Get the underlying endpoint in the native type.
-  data_type* data()
+  data_type* data() noexcept
   {
     return impl_.data();
   }
 
   /// Get the underlying endpoint in the native type.
-  const data_type* data() const
+  const data_type* data() const noexcept
   {
     return impl_.data();
   }
 
   /// Get the underlying size of the endpoint in the native type.
-  std::size_t size() const
+  std::size_t size() const noexcept
   {
     return impl_.size();
   }
@@ -154,75 +156,75 @@ public:
   }
 
   /// Get the capacity of the endpoint in the native type.
-  std::size_t capacity() const
+  std::size_t capacity() const noexcept
   {
     return impl_.capacity();
   }
 
   /// Get the port associated with the endpoint. The port number is always in
   /// the host's byte order.
-  unsigned short port() const
+  port_type port() const noexcept
   {
     return impl_.port();
   }
 
   /// Set the port associated with the endpoint. The port number is always in
   /// the host's byte order.
-  void port(unsigned short port_num)
+  void port(port_type port_num) noexcept
   {
     impl_.port(port_num);
   }
 
   /// Get the IP address associated with the endpoint.
-  clmdep_asio::ip::address address() const
+  clmdep_asio::ip::address address() const noexcept
   {
     return impl_.address();
   }
 
   /// Set the IP address associated with the endpoint.
-  void address(const clmdep_asio::ip::address& addr)
+  void address(const clmdep_asio::ip::address& addr) noexcept
   {
     impl_.address(addr);
   }
 
   /// Compare two endpoints for equality.
   friend bool operator==(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return e1.impl_ == e2.impl_;
   }
 
   /// Compare two endpoints for inequality.
   friend bool operator!=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return !(e1 == e2);
   }
 
   /// Compare endpoints for ordering.
   friend bool operator<(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return e1.impl_ < e2.impl_;
   }
 
   /// Compare endpoints for ordering.
   friend bool operator>(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return e2.impl_ < e1.impl_;
   }
 
   /// Compare endpoints for ordering.
   friend bool operator<=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return !(e2 < e1);
   }
 
   /// Compare endpoints for ordering.
   friend bool operator>=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2)
+      const basic_endpoint<InternetProtocol>& e2) noexcept
   {
     return !(e1 < e2);
   }
@@ -254,7 +256,24 @@ std::basic_ostream<Elem, Traits>& operator<<(
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
+
+namespace std {
+
+template <typename InternetProtocol>
+struct hash<clmdep_asio::ip::basic_endpoint<InternetProtocol>>
+{
+  std::size_t operator()(
+      const clmdep_asio::ip::basic_endpoint<InternetProtocol>& ep)
+    const noexcept
+  {
+    std::size_t hash1 = std::hash<clmdep_asio::ip::address>()(ep.address());
+    std::size_t hash2 = std::hash<unsigned short>()(ep.port());
+    return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));
+  }
+};
+
+} // namespace std
 
 #include "asio/detail/pop_options.hpp"
 

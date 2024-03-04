@@ -2,7 +2,7 @@
 // high_resolution_timer.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,22 +16,11 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-
-#if defined(ASIO_HAS_STD_CHRONO) \
-  || defined(ASIO_HAS_BOOST_CHRONO) \
-  || defined(GENERATING_DOCUMENTATION)
-
-#if defined(ASIO_HAS_STD_CHRONO)
-# include <chrono>
-#elif defined(ASIO_HAS_BOOST_CHRONO)
-# include <boost/chrono/system_clocks.hpp>
-#endif
-
 #include "asio/basic_waitable_timer.hpp"
+#include "asio/detail/chrono.hpp"
 
 namespace clmdep_asio {
 
-#if defined(GENERATING_DOCUMENTATION)
 /// Typedef for a timer based on the high resolution clock.
 /**
  * This typedef uses the C++11 @c &lt;chrono&gt; standard library facility, if
@@ -44,20 +33,7 @@ namespace clmdep_asio {
 typedef basic_waitable_timer<
     chrono::high_resolution_clock>
   high_resolution_timer;
-#elif defined(ASIO_HAS_STD_CHRONO)
-typedef basic_waitable_timer<
-    std::chrono::high_resolution_clock>
-  high_resolution_timer;
-#elif defined(ASIO_HAS_BOOST_CHRONO)
-typedef basic_waitable_timer<
-    boost::chrono::high_resolution_clock>
-  high_resolution_timer;
-#endif
 
-} // namespace clmdep_asio
-
-#endif // defined(ASIO_HAS_STD_CHRONO) 
-       //   || defined(ASIO_HAS_BOOST_CHRONO)
-       //   || defined(GENERATING_DOCUMENTATION)
+} // namespace asio
 
 #endif // ASIO_HIGH_RESOLUTION_TIMER_HPP

@@ -2,7 +2,7 @@
 // detail/dev_poll_reactor.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,12 +28,13 @@
 #include "asio/detail/op_queue.hpp"
 #include "asio/detail/reactor_op.hpp"
 #include "asio/detail/reactor_op_queue.hpp"
+#include "asio/detail/scheduler_task.hpp"
 #include "asio/detail/select_interrupter.hpp"
 #include "asio/detail/socket_types.hpp"
 #include "asio/detail/timer_queue_base.hpp"
 #include "asio/detail/timer_queue_set.hpp"
 #include "asio/detail/wait_op.hpp"
-#include "asio/io_service.hpp"
+#include "asio/execution_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -41,7 +42,8 @@ namespace clmdep_asio {
 namespace detail {
 
 class dev_poll_reactor
-  : public clmdep_asio::detail::service_base<dev_poll_reactor>
+  : public execution_context_service_base<dev_poll_reactor>,
+    public scheduler_task
 {
 public:
   enum op_types { read_op = 0, write_op = 1,
@@ -53,17 +55,17 @@ public:
   };
 
   // Constructor.
-  ASIO_DECL dev_poll_reactor(clmdep_asio::io_service& io_service);
+  ASIO_DECL dev_poll_reactor(clmdep_asio::execution_context& ctx);
 
   // Destructor.
   ASIO_DECL ~dev_poll_reactor();
 
   // Destroy all user-defined handler objects owned by the service.
-  ASIO_DECL void shutdown_service();
+  ASIO_DECL void shutdown();
 
   // Recreate internal descriptors following a fork.
-  ASIO_DECL void fork_service(
-      clmdep_asio::io_service::fork_event fork_ev);
+  ASIO_DECL void notify_fork(
+      clmdep_asio::execution_context::fork_event fork_ev);
 
   // Initialise the task.
   ASIO_DECL void init_task();
@@ -84,31 +86,58 @@ public:
       per_descriptor_data& source_descriptor_data);
 
   // Post a reactor operation for immediate completion.
-  void post_immediate_completion(reactor_op* op, bool is_continuation)
-  {
-    io_service_.post_immediate_completion(op, is_continuation);
-  }
+  void post_immediate_completion(operation* op, bool is_continuation) const;
+
+  // Post a reactor operation for immediate completion.
+  ASIO_DECL static void call_post_immediate_completion(
+      operation* op, bool is_continuation, const void* self);
 
   // Start a new operation. The reactor operation will be performed when the
   // given descriptor is flagged as ready, or an error has occurred.
   ASIO_DECL void start_op(int op_type, socket_type descriptor,
       per_descriptor_data&, reactor_op* op,
-      bool is_continuation, bool allow_speculative);
+      bool is_continuation, bool allow_speculative,
+      void (*on_immediate)(operation*, bool, const void*),
+      const void* immediate_arg);
+
+  // Start a new operation. The reactor operation will be performed when the
+  // given descriptor is flagged as ready, or an error has occurred.
+  void start_op(int op_type, socket_type descriptor,
+      per_descriptor_data& descriptor_data, reactor_op* op,
+      bool is_continuation, bool allow_speculative)
+  {
+    start_op(op_type, descriptor, descriptor_data,
+        op, is_continuation, allow_speculative,
+        &dev_poll_reactor::call_post_immediate_completion, this);
+  }
 
   // Cancel all operations associated with the given descriptor. The
   // handlers associated with the descriptor will be invoked with the
   // operation_aborted error.
   ASIO_DECL void cancel_ops(socket_type descriptor, per_descriptor_data&);
 
+  // Cancel all operations associated with the given descriptor and key. The
+  // handlers associated with the descriptor will be invoked with the
+  // operation_aborted error.
+  ASIO_DECL void cancel_ops_by_key(socket_type descriptor,
+      per_descriptor_data& descriptor_data,
+      int op_type, void* cancellation_key);
+
   // Cancel any operations that are running against the descriptor and remove
-  // its registration from the reactor.
+  // its registration from the reactor. The reactor resources associated with
+  // the descriptor must be released by calling cleanup_descriptor_data.
   ASIO_DECL void deregister_descriptor(socket_type descriptor,
       per_descriptor_data&, bool closing);
 
-  // Cancel any operations that are running against the descriptor and remove
-  // its registration from the reactor.
+  // Remove the descriptor's registration from the reactor. The reactor
+  // resources associated with the descriptor must be released by calling
+  // cleanup_descriptor_data.
   ASIO_DECL void deregister_internal_descriptor(
       socket_type descriptor, per_descriptor_data&);
+
+  // Perform any post-deregistration cleanup tasks associated with the
+  // descriptor data.
+  ASIO_DECL void cleanup_descriptor_data(per_descriptor_data&);
 
   // Add a new timer queue to the reactor.
   template <typename Time_Traits>
@@ -132,8 +161,20 @@ public:
       typename timer_queue<Time_Traits>::per_timer_data& timer,
       std::size_t max_cancelled = (std::numeric_limits<std::size_t>::max)());
 
+  // Cancel the timer operations associated with the given key.
+  template <typename Time_Traits>
+  void cancel_timer_by_key(timer_queue<Time_Traits>& queue,
+      typename timer_queue<Time_Traits>::per_timer_data* timer,
+      void* cancellation_key);
+
+  // Move the timer operations associated with the given timer.
+  template <typename Time_Traits>
+  void move_timer(timer_queue<Time_Traits>& queue,
+      typename timer_queue<Time_Traits>::per_timer_data& target,
+      typename timer_queue<Time_Traits>::per_timer_data& source);
+
   // Run /dev/poll once until interrupted or events are ready to be dispatched.
-  ASIO_DECL void run(bool block, op_queue<operation>& ops);
+  ASIO_DECL void run(long usec, op_queue<operation>& ops);
 
   // Interrupt the select loop.
   ASIO_DECL void interrupt();
@@ -152,7 +193,7 @@ private:
   // Get the timeout value for the /dev/poll DP_POLL operation. The timeout
   // value is returned as a number of milliseconds. A return value of -1
   // indicates that the poll should block indefinitely.
-  ASIO_DECL int get_timeout();
+  ASIO_DECL int get_timeout(int msec);
 
   // Cancel all operations associated with the given descriptor. The do_cancel
   // function of the handler objects will be invoked. This function does not
@@ -163,8 +204,8 @@ private:
   // Add a pending event entry for the given descriptor.
   ASIO_DECL ::pollfd& add_pending_event_change(int descriptor);
 
-  // The io_service implementation used to post completions.
-  io_service_impl& io_service_;
+  // The scheduler implementation used to post completions.
+  scheduler& scheduler_;
 
   // Mutex to protect access to internal data.
   clmdep_asio::detail::mutex mutex_;
@@ -192,7 +233,7 @@ private:
 };
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

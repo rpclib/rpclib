@@ -21,7 +21,7 @@ class async_writer : public std::enable_shared_from_this<async_writer> {
 public:
     async_writer(RPCLIB_ASIO::io_service *io,
                  RPCLIB_ASIO::ip::tcp::socket socket)
-        : socket_(std::move(socket)), write_strand_(*io), exit_(false) {}
+        : socket_(std::move(socket)), write_strand_(io->get_executor()), exit_(false) {}
 
     void close() {
         exit_ = true;
@@ -37,7 +37,7 @@ public:
                             "Code: {}. Message: {}", e.value(), e.message());
             }
             socket_.close();
-        });
+        }, RPCLIB_ASIO::get_associated_allocator(write_strand_));
     }
 
     bool is_closed() const {
@@ -54,20 +54,19 @@ public:
         // since it will still be in the queue physically until then.
         RPCLIB_ASIO::async_write(
             socket_, RPCLIB_ASIO::buffer(item.data(), item.size()),
-            write_strand_.wrap(
-                [this, self](std::error_code ec, std::size_t transferred) {
-                    (void)transferred;
-                    if (!ec) {
-                        write_queue_.pop_front();
-                        if (write_queue_.size() > 0) {
-                            if (!exit_) {
-                                do_write();
-                            }
+            [this, self](std::error_code ec, std::size_t transferred) {
+                (void)transferred;
+                if (!ec) {
+                    write_queue_.pop_front();
+                    if (write_queue_.size() > 0) {
+                        if (!exit_) {
+                            do_write();
                         }
-                    } else {
-                        LOG_ERROR("Error while writing to socket: {}", ec);
                     }
-                }));
+                } else {
+                    LOG_ERROR("Error while writing to socket: {}", ec);
+                }
+            });
     }
 
     void write(RPCLIB_MSGPACK::sbuffer &&data) {
@@ -89,13 +88,13 @@ protected:
         return std::static_pointer_cast<Derived>(shared_from_this());
     }
 
-    RPCLIB_ASIO::strand& write_strand() {
+    RPCLIB_ASIO::strand<RPCLIB_ASIO::io_service::executor_type>& write_strand() {
         return write_strand_;
     }
 
 private:
     RPCLIB_ASIO::ip::tcp::socket socket_;
-    RPCLIB_ASIO::strand write_strand_;
+    RPCLIB_ASIO::strand<RPCLIB_ASIO::io_service::executor_type> write_strand_;
     std::atomic_bool exit_{false};
     std::deque<RPCLIB_MSGPACK::sbuffer> write_queue_;
     RPCLIB_CREATE_LOG_CHANNEL(async_writer)

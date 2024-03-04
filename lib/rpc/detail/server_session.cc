@@ -21,7 +21,7 @@ server_session::server_session(server *srv, RPCLIB_ASIO::io_service *io,
     : async_writer(io, std::move(socket)),
       parent_(srv),
       io_(io),
-      read_strand_(*io),
+      read_strand_(io_->get_executor()),
       disp_(disp),
       pac_(),
       suppress_exceptions_(suppress_exceptions) {
@@ -38,7 +38,7 @@ void server_session::close() {
     auto self(shared_from_base<server_session>());
     write_strand().post([this, self]() {
         parent_->close_session(self);
-    });
+    }, RPCLIB_ASIO::get_associated_allocator(io_));
 }
 
 void server_session::do_read() {
@@ -48,8 +48,7 @@ void server_session::do_read() {
         RPCLIB_ASIO::buffer(pac_.buffer(), default_buffer_size),
         // I don't think max_read_bytes needs to be captured explicitly
         // (since it's constexpr), but MSVC insists.
-        read_strand_.wrap([this, self, max_read_bytes](std::error_code ec,
-                                                       std::size_t length) {
+        [this, self, max_read_bytes](std::error_code ec, std::size_t length) {
             if (is_closed()) { return; }
             if (!ec) {
                 pac_.buffer_consumed(length);
@@ -94,7 +93,7 @@ void server_session::do_read() {
 #ifdef _MSC_VER
                             // doesn't compile otherwise.
                             write_strand().post(
-                                [=]() { write(resp.get_data()); });
+                                [=]() { write(resp.get_data()); }, RPCLIB_ASIO::get_associated_allocator(io_));
 #else
                             write_strand().post(
                                 [this, self, resp, z]() { write(resp.get_data()); });
@@ -105,7 +104,7 @@ void server_session::do_read() {
                             LOG_WARN("Session exit requested from a handler.");
                             // posting through the strand so this comes after
                             // the previous write
-                            write_strand().post([this]() { close(); });
+                            write_strand().post([this]() { close(); }, RPCLIB_ASIO::get_associated_allocator(io_));
                         }
 
                         if (this_server().stopping()) {
@@ -113,7 +112,7 @@ void server_session::do_read() {
                             // posting through the strand so this comes after
                             // the previous write
                             write_strand().post(
-                                [this]() { parent_->close_sessions(); });
+                                [this]() { parent_->close_sessions(); }, RPCLIB_ASIO::get_associated_allocator(io_));
                         }
                     });
                 }
@@ -137,7 +136,7 @@ void server_session::do_read() {
             } else {
                 LOG_ERROR("Unhandled error code: {} | '{}'", ec, ec.message());
             }
-        }));
+        });
 }
 
 } /* detail */

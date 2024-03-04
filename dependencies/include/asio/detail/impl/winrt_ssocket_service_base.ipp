@@ -2,7 +2,7 @@
 // detail/impl/winrt_ssocket_service_base.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,15 +30,15 @@ namespace clmdep_asio {
 namespace detail {
 
 winrt_ssocket_service_base::winrt_ssocket_service_base(
-    clmdep_asio::io_service& io_service)
-  : io_service_(use_service<io_service_impl>(io_service)),
-    async_manager_(use_service<winrt_async_manager>(io_service)),
+    execution_context& context)
+  : scheduler_(use_service<scheduler_impl>(context)),
+    async_manager_(use_service<winrt_async_manager>(context)),
     mutex_(),
     impl_list_(0)
 {
 }
 
-void winrt_ssocket_service_base::shutdown_service()
+void winrt_ssocket_service_base::base_shutdown()
 {
   // Close all implementations, causing all operations to complete.
   clmdep_asio::detail::mutex::scoped_lock lock(mutex_);
@@ -66,6 +66,7 @@ void winrt_ssocket_service_base::construct(
 void winrt_ssocket_service_base::base_move_construct(
     winrt_ssocket_service_base::base_implementation_type& impl,
     winrt_ssocket_service_base::base_implementation_type& other_impl)
+  noexcept
 {
   impl.socket_ = other_impl.socket_;
   other_impl.socket_ = nullptr;
@@ -138,14 +139,27 @@ clmdep_asio::error_code winrt_ssocket_service_base::close(
     winrt_ssocket_service_base::base_implementation_type& impl,
     clmdep_asio::error_code& ec)
 {
-  if (impl.socket_)
-  {
-    delete impl.socket_;
-    impl.socket_ = nullptr;
-  }
-
+  delete impl.socket_;
+  impl.socket_ = nullptr;
   ec = clmdep_asio::error_code();
   return ec;
+}
+
+winrt_ssocket_service_base::native_handle_type
+winrt_ssocket_service_base::release(
+    winrt_ssocket_service_base::base_implementation_type& impl,
+    clmdep_asio::error_code& ec)
+{
+  if (!is_open(impl))
+    return nullptr;
+
+  cancel(impl, ec);
+  if (ec)
+    return nullptr;
+
+  native_handle_type tmp = impl.socket_;
+  impl.socket_ = nullptr;
+  return tmp;
 }
 
 std::size_t winrt_ssocket_service_base::do_get_endpoint(
@@ -168,7 +182,7 @@ std::size_t winrt_ssocket_service_base::do_get_endpoint(
         : impl.socket_->Information->RemotePort);
     unsigned long scope = 0;
 
-    switch (reinterpret_cast<const socket_addr_type*>(addr)->sa_family)
+    switch (static_cast<const socket_addr_type*>(addr)->sa_family)
     {
     case ASIO_OS_DEF(AF_INET):
       if (addr_len < sizeof(sockaddr_in4_type))
@@ -337,7 +351,7 @@ clmdep_asio::error_code winrt_ssocket_service_base::do_connect(
 
   char addr_string[max_addr_v6_str_len];
   unsigned short port;
-  switch (reinterpret_cast<const socket_addr_type*>(addr)->sa_family)
+  switch (static_cast<const socket_addr_type*>(addr)->sa_family)
   {
   case ASIO_OS_DEF(AF_INET):
     socket_ops::inet_ntop(ASIO_OS_DEF(AF_INET),
@@ -381,13 +395,13 @@ void winrt_ssocket_service_base::start_connect_op(
   if (!is_open(impl))
   {
     op->ec_ = clmdep_asio::error::bad_descriptor;
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
   char addr_string[max_addr_v6_str_len];
   unsigned short port = 0;
-  switch (reinterpret_cast<const socket_addr_type*>(addr)->sa_family)
+  switch (static_cast<const socket_addr_type*>(addr)->sa_family)
   {
   case ASIO_OS_DEF(AF_INET):
     socket_ops::inet_ntop(ASIO_OS_DEF(AF_INET),
@@ -410,7 +424,7 @@ void winrt_ssocket_service_base::start_connect_op(
 
   if (op->ec_)
   {
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
@@ -425,7 +439,7 @@ void winrt_ssocket_service_base::start_connect_op(
   {
     op->ec_ = clmdep_asio::error_code(
         e->HResult, clmdep_asio::system_category());
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
   }
 }
 
@@ -449,7 +463,7 @@ std::size_t winrt_ssocket_service_base::do_send(
   try
   {
     buffer_sequence_adapter<clmdep_asio::const_buffer,
-      clmdep_asio::const_buffers_1> bufs(clmdep_asio::buffer(data));
+      clmdep_asio::const_buffer> bufs(clmdep_asio::buffer(data));
 
     if (bufs.all_empty())
     {
@@ -476,25 +490,25 @@ void winrt_ssocket_service_base::start_send_op(
   if (flags)
   {
     op->ec_ = clmdep_asio::error::operation_not_supported;
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
   if (!is_open(impl))
   {
     op->ec_ = clmdep_asio::error::bad_descriptor;
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
   try
   {
     buffer_sequence_adapter<clmdep_asio::const_buffer,
-        clmdep_asio::const_buffers_1> bufs(clmdep_asio::buffer(data));
+        clmdep_asio::const_buffer> bufs(clmdep_asio::buffer(data));
 
     if (bufs.all_empty())
     {
-      io_service_.post_immediate_completion(op, is_continuation);
+      scheduler_.post_immediate_completion(op, is_continuation);
       return;
     }
 
@@ -505,7 +519,7 @@ void winrt_ssocket_service_base::start_send_op(
   {
     op->ec_ = clmdep_asio::error_code(e->HResult,
         clmdep_asio::system_category());
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
   }
 }
 
@@ -529,7 +543,7 @@ std::size_t winrt_ssocket_service_base::do_receive(
   try
   {
     buffer_sequence_adapter<clmdep_asio::mutable_buffer,
-        clmdep_asio::mutable_buffers_1> bufs(clmdep_asio::buffer(data));
+        clmdep_asio::mutable_buffer> bufs(clmdep_asio::buffer(data));
 
     if (bufs.all_empty())
     {
@@ -567,25 +581,25 @@ void winrt_ssocket_service_base::start_receive_op(
   if (flags)
   {
     op->ec_ = clmdep_asio::error::operation_not_supported;
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
   if (!is_open(impl))
   {
     op->ec_ = clmdep_asio::error::bad_descriptor;
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
     return;
   }
 
   try
   {
     buffer_sequence_adapter<clmdep_asio::mutable_buffer,
-        clmdep_asio::mutable_buffers_1> bufs(clmdep_asio::buffer(data));
+        clmdep_asio::mutable_buffer> bufs(clmdep_asio::buffer(data));
 
     if (bufs.all_empty())
     {
-      io_service_.post_immediate_completion(op, is_continuation);
+      scheduler_.post_immediate_completion(op, is_continuation);
       return;
     }
 
@@ -598,12 +612,12 @@ void winrt_ssocket_service_base::start_receive_op(
   {
     op->ec_ = clmdep_asio::error_code(e->HResult,
         clmdep_asio::system_category());
-    io_service_.post_immediate_completion(op, is_continuation);
+    scheduler_.post_immediate_completion(op, is_continuation);
   }
 }
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

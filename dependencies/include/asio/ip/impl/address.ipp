@@ -2,7 +2,7 @@
 // ip/impl/address.ipp
 // ~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,6 +21,7 @@
 #include "asio/detail/throw_exception.hpp"
 #include "asio/error.hpp"
 #include "asio/ip/address.hpp"
+#include "asio/ip/bad_address_cast.hpp"
 #include "asio/system_error.hpp"
 
 #include "asio/detail/push_options.hpp"
@@ -28,44 +29,44 @@
 namespace clmdep_asio {
 namespace ip {
 
-address::address()
+address::address() noexcept
   : type_(ipv4),
     ipv4_address_(),
     ipv6_address_()
 {
 }
 
-address::address(const clmdep_asio::ip::address_v4& ipv4_address)
+address::address(
+    const clmdep_asio::ip::address_v4& ipv4_address) noexcept
   : type_(ipv4),
     ipv4_address_(ipv4_address),
     ipv6_address_()
 {
 }
 
-address::address(const clmdep_asio::ip::address_v6& ipv6_address)
+address::address(
+    const clmdep_asio::ip::address_v6& ipv6_address) noexcept
   : type_(ipv6),
     ipv4_address_(),
     ipv6_address_(ipv6_address)
 {
 }
 
-address::address(const address& other)
+address::address(const address& other) noexcept
   : type_(other.type_),
     ipv4_address_(other.ipv4_address_),
     ipv6_address_(other.ipv6_address_)
 {
 }
 
-#if defined(ASIO_HAS_MOVE)
-address::address(address&& other)
+address::address(address&& other) noexcept
   : type_(other.type_),
     ipv4_address_(other.ipv4_address_),
     ipv6_address_(other.ipv6_address_)
 {
 }
-#endif // defined(ASIO_HAS_MOVE)
 
-address& address::operator=(const address& other)
+address& address::operator=(const address& other) noexcept
 {
   type_ = other.type_;
   ipv4_address_ = other.ipv4_address_;
@@ -73,17 +74,16 @@ address& address::operator=(const address& other)
   return *this;
 }
 
-#if defined(ASIO_HAS_MOVE)
-address& address::operator=(address&& other)
+address& address::operator=(address&& other) noexcept
 {
   type_ = other.type_;
   ipv4_address_ = other.ipv4_address_;
   ipv6_address_ = other.ipv6_address_;
   return *this;
 }
-#endif // defined(ASIO_HAS_MOVE)
 
-address& address::operator=(const clmdep_asio::ip::address_v4& ipv4_address)
+address& address::operator=(
+    const clmdep_asio::ip::address_v4& ipv4_address) noexcept
 {
   type_ = ipv4;
   ipv4_address_ = ipv4_address;
@@ -91,7 +91,8 @@ address& address::operator=(const clmdep_asio::ip::address_v4& ipv4_address)
   return *this;
 }
 
-address& address::operator=(const clmdep_asio::ip::address_v6& ipv6_address)
+address& address::operator=(
+    const clmdep_asio::ip::address_v6& ipv6_address) noexcept
 {
   type_ = ipv6;
   ipv4_address_ = clmdep_asio::ip::address_v4();
@@ -99,11 +100,61 @@ address& address::operator=(const clmdep_asio::ip::address_v6& ipv6_address)
   return *this;
 }
 
+address make_address(const char* str)
+{
+  clmdep_asio::error_code ec;
+  address addr = make_address(str, ec);
+  clmdep_asio::detail::throw_error(ec);
+  return addr;
+}
+
+address make_address(const char* str,
+    clmdep_asio::error_code& ec) noexcept
+{
+  clmdep_asio::ip::address_v6 ipv6_address =
+    clmdep_asio::ip::make_address_v6(str, ec);
+  if (!ec)
+    return address(ipv6_address);
+
+  clmdep_asio::ip::address_v4 ipv4_address =
+    clmdep_asio::ip::make_address_v4(str, ec);
+  if (!ec)
+    return address(ipv4_address);
+
+  return address();
+}
+
+address make_address(const std::string& str)
+{
+  return make_address(str.c_str());
+}
+
+address make_address(const std::string& str,
+    clmdep_asio::error_code& ec) noexcept
+{
+  return make_address(str.c_str(), ec);
+}
+
+#if defined(ASIO_HAS_STRING_VIEW)
+
+address make_address(string_view str)
+{
+  return make_address(static_cast<std::string>(str));
+}
+
+address make_address(string_view str,
+    clmdep_asio::error_code& ec) noexcept
+{
+  return make_address(static_cast<std::string>(str), ec);
+}
+
+#endif // defined(ASIO_HAS_STRING_VIEW)
+
 clmdep_asio::ip::address_v4 address::to_v4() const
 {
   if (type_ != ipv4)
   {
-    std::bad_cast ex;
+    bad_address_cast ex;
     clmdep_asio::detail::throw_exception(ex);
   }
   return ipv4_address_;
@@ -113,7 +164,7 @@ clmdep_asio::ip::address_v6 address::to_v6() const
 {
   if (type_ != ipv6)
   {
-    std::bad_cast ex;
+    bad_address_cast ex;
     clmdep_asio::detail::throw_exception(ex);
   }
   return ipv6_address_;
@@ -126,79 +177,37 @@ std::string address::to_string() const
   return ipv4_address_.to_string();
 }
 
+#if !defined(ASIO_NO_DEPRECATED)
 std::string address::to_string(clmdep_asio::error_code& ec) const
 {
   if (type_ == ipv6)
     return ipv6_address_.to_string(ec);
   return ipv4_address_.to_string(ec);
 }
+#endif // !defined(ASIO_NO_DEPRECATED)
 
-address address::from_string(const char* str)
-{
-  clmdep_asio::error_code ec;
-  address addr = from_string(str, ec);
-  clmdep_asio::detail::throw_error(ec);
-  return addr;
-}
-
-address address::from_string(const char* str, clmdep_asio::error_code& ec)
-{
-  clmdep_asio::ip::address_v6 ipv6_address =
-    clmdep_asio::ip::address_v6::from_string(str, ec);
-  if (!ec)
-  {
-    address tmp;
-    tmp.type_ = ipv6;
-    tmp.ipv6_address_ = ipv6_address;
-    return tmp;
-  }
-
-  clmdep_asio::ip::address_v4 ipv4_address =
-    clmdep_asio::ip::address_v4::from_string(str, ec);
-  if (!ec)
-  {
-    address tmp;
-    tmp.type_ = ipv4;
-    tmp.ipv4_address_ = ipv4_address;
-    return tmp;
-  }
-
-  return address();
-}
-
-address address::from_string(const std::string& str)
-{
-  return from_string(str.c_str());
-}
-
-address address::from_string(const std::string& str,
-    clmdep_asio::error_code& ec)
-{
-  return from_string(str.c_str(), ec);
-}
-
-bool address::is_loopback() const
+bool address::is_loopback() const noexcept
 {
   return (type_ == ipv4)
     ? ipv4_address_.is_loopback()
     : ipv6_address_.is_loopback();
 }
 
-bool address::is_unspecified() const
+bool address::is_unspecified() const noexcept
 {
   return (type_ == ipv4)
     ? ipv4_address_.is_unspecified()
     : ipv6_address_.is_unspecified();
 }
 
-bool address::is_multicast() const
+bool address::is_multicast() const noexcept
 {
   return (type_ == ipv4)
     ? ipv4_address_.is_multicast()
     : ipv6_address_.is_multicast();
 }
 
-bool operator==(const address& a1, const address& a2)
+bool operator==(const address& a1, const address& a2) noexcept
 {
   if (a1.type_ != a2.type_)
     return false;
@@ -207,7 +216,7 @@ bool operator==(const address& a1, const address& a2)
   return a1.ipv4_address_ == a2.ipv4_address_;
 }
 
-bool operator<(const address& a1, const address& a2)
+bool operator<(const address& a1, const address& a2) noexcept
 {
   if (a1.type_ < a2.type_)
     return true;
@@ -219,7 +228,7 @@ bool operator<(const address& a1, const address& a2)
 }
 
 } // namespace ip
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

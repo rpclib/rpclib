@@ -2,7 +2,7 @@
 // detail/timer_queue_ptime.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,12 +15,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "asio/detail/config.hpp"
+
+#if defined(ASIO_HAS_BOOST_DATE_TIME)
+
 #include "asio/time_traits.hpp"
 #include "asio/detail/timer_queue.hpp"
 
 #include "asio/detail/push_options.hpp"
-
-#if defined(ASIO_HAS_BOOST_DATE_TIME)
 
 namespace clmdep_asio {
 namespace detail {
@@ -29,7 +31,7 @@ struct forwarding_posix_time_traits : time_traits<boost::posix_time::ptime> {};
 
 // Template specialisation for the commonly used instantation.
 template <>
-class timer_queue<time_traits<boost::posix_time::ptime> >
+class timer_queue<time_traits<boost::posix_time::ptime>>
   : public timer_queue_base
 {
 public:
@@ -75,19 +77,27 @@ public:
       per_timer_data& timer, op_queue<operation>& ops,
       std::size_t max_cancelled = (std::numeric_limits<std::size_t>::max)());
 
+  // Cancel and dequeue operations for the given timer and key.
+  ASIO_DECL void cancel_timer_by_key(per_timer_data* timer,
+      op_queue<operation>& ops, void* cancellation_key);
+
+  // Move operations from one timer to another, empty timer.
+  ASIO_DECL void move_timer(per_timer_data& target,
+      per_timer_data& source);
+
 private:
   timer_queue<forwarding_posix_time_traits> impl_;
 };
 
 } // namespace detail
-} // namespace clmdep_asio
-
-#endif // defined(ASIO_HAS_BOOST_DATE_TIME)
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
 # include "asio/detail/impl/timer_queue_ptime.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
+
+#endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 
 #endif // ASIO_DETAIL_TIMER_QUEUE_PTIME_HPP

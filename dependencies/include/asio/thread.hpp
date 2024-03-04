@@ -2,7 +2,7 @@
 // thread.hpp
 // ~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -36,12 +36,12 @@ namespace clmdep_asio {
  *
  * @par Example
  * A typical use of clmdep_asio::thread would be to launch a thread to run an
- * io_service's event processing loop:
+ * io_context's event processing loop:
  *
  * @par
- * @code clmdep_asio::io_service io_service;
+ * @code clmdep_asio::io_context io_context;
  * // ...
- * clmdep_asio::thread t(boost::bind(&clmdep_asio::io_service::run, &io_service));
+ * clmdep_asio::thread t(boost::bind(&clmdep_asio::io_context::run, &io_context));
  * // ...
  * t.join(); @endcode
  */
@@ -85,7 +85,7 @@ private:
   detail::thread impl_;
 };
 
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 

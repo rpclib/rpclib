@@ -2,7 +2,7 @@
 // detail/impl/reactive_descriptor_service.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,7 +19,8 @@
 
 #if !defined(ASIO_WINDOWS) \
   && !defined(ASIO_WINDOWS_RUNTIME) \
-  && !defined(__CYGWIN__)
+  && !defined(__CYGWIN__) \
+  && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #include "asio/error.hpp"
 #include "asio/detail/reactive_descriptor_service.hpp"
@@ -30,13 +31,14 @@ namespace clmdep_asio {
 namespace detail {
 
 reactive_descriptor_service::reactive_descriptor_service(
-    clmdep_asio::io_service& io_service)
-  : reactor_(clmdep_asio::use_service<reactor>(io_service))
+    execution_context& context)
+  : execution_context_service_base<reactive_descriptor_service>(context),
+    reactor_(clmdep_asio::use_service<reactor>(context))
 {
   reactor_.init_task();
 }
 
-void reactive_descriptor_service::shutdown_service()
+void reactive_descriptor_service::shutdown()
 {
 }
 
@@ -45,11 +47,13 @@ void reactive_descriptor_service::construct(
 {
   impl.descriptor_ = -1;
   impl.state_ = 0;
+  impl.reactor_data_ = reactor::per_descriptor_data();
 }
 
 void reactive_descriptor_service::move_construct(
     reactive_descriptor_service::implementation_type& impl,
     reactive_descriptor_service::implementation_type& other_impl)
+  noexcept
 {
   impl.descriptor_ = other_impl.descriptor_;
   other_impl.descriptor_ = -1;
@@ -83,14 +87,17 @@ void reactive_descriptor_service::destroy(
 {
   if (is_open(impl))
   {
-    ASIO_HANDLER_OPERATION(("descriptor", &impl, "close"));
+    ASIO_HANDLER_OPERATION((reactor_.context(),
+          "descriptor", &impl, impl.descriptor_, "close"));
 
     reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_,
         (impl.state_ & descriptor_ops::possible_dup) == 0);
-  }
 
-  clmdep_asio::error_code ignored_ec;
-  descriptor_ops::close(impl.descriptor_, impl.state_, ignored_ec);
+    clmdep_asio::error_code ignored_ec;
+    descriptor_ops::close(impl.descriptor_, impl.state_, ignored_ec);
+
+    reactor_.cleanup_descriptor_data(impl.reactor_data_);
+  }
 }
 
 clmdep_asio::error_code reactive_descriptor_service::assign(
@@ -100,6 +107,7 @@ clmdep_asio::error_code reactive_descriptor_service::assign(
   if (is_open(impl))
   {
     ec = clmdep_asio::error::already_open;
+    ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -108,6 +116,7 @@ clmdep_asio::error_code reactive_descriptor_service::assign(
   {
     ec = clmdep_asio::error_code(err,
         clmdep_asio::error::get_system_category());
+    ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -123,13 +132,20 @@ clmdep_asio::error_code reactive_descriptor_service::close(
 {
   if (is_open(impl))
   {
-    ASIO_HANDLER_OPERATION(("descriptor", &impl, "close"));
+    ASIO_HANDLER_OPERATION((reactor_.context(),
+          "descriptor", &impl, impl.descriptor_, "close"));
 
     reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_,
         (impl.state_ & descriptor_ops::possible_dup) == 0);
-  }
 
-  descriptor_ops::close(impl.descriptor_, impl.state_, ec);
+    descriptor_ops::close(impl.descriptor_, impl.state_, ec);
+
+    reactor_.cleanup_descriptor_data(impl.reactor_data_);
+  }
+  else
+  {
+    ec = clmdep_asio::error_code();
+  }
 
   // The descriptor is closed by the OS even if close() returns an error.
   //
@@ -139,6 +155,7 @@ clmdep_asio::error_code reactive_descriptor_service::close(
   // We'll just have to assume that other OSes follow the same behaviour.)
   construct(impl);
 
+  ASIO_ERROR_LOCATION(ec);
   return ec;
 }
 
@@ -150,9 +167,11 @@ reactive_descriptor_service::release(
 
   if (is_open(impl))
   {
-    ASIO_HANDLER_OPERATION(("descriptor", &impl, "release"));
+    ASIO_HANDLER_OPERATION((reactor_.context(),
+          "descriptor", &impl, impl.descriptor_, "release"));
 
     reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_, false);
+    reactor_.cleanup_descriptor_data(impl.reactor_data_);
     construct(impl);
   }
 
@@ -166,20 +185,22 @@ clmdep_asio::error_code reactive_descriptor_service::cancel(
   if (!is_open(impl))
   {
     ec = clmdep_asio::error::bad_descriptor;
+    ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
-  ASIO_HANDLER_OPERATION(("descriptor", &impl, "cancel"));
+  ASIO_HANDLER_OPERATION((reactor_.context(),
+        "descriptor", &impl, impl.descriptor_, "cancel"));
 
   reactor_.cancel_ops(impl.descriptor_, impl.reactor_data_);
   ec = clmdep_asio::error_code();
   return ec;
 }
 
-void reactive_descriptor_service::start_op(
-    reactive_descriptor_service::implementation_type& impl,
-    int op_type, reactor_op* op, bool is_continuation,
-    bool is_non_blocking, bool noop)
+void reactive_descriptor_service::do_start_op(implementation_type& impl,
+    int op_type, reactor_op* op, bool is_continuation, bool is_non_blocking,
+    bool noop, void (*on_immediate)(operation* op, bool, const void*),
+    const void* immediate_arg)
 {
   if (!noop)
   {
@@ -187,22 +208,23 @@ void reactive_descriptor_service::start_op(
         descriptor_ops::set_internal_non_blocking(
           impl.descriptor_, impl.state_, true, op->ec_))
     {
-      reactor_.start_op(op_type, impl.descriptor_,
-          impl.reactor_data_, op, is_continuation, is_non_blocking);
+      reactor_.start_op(op_type, impl.descriptor_, impl.reactor_data_, op,
+          is_continuation, is_non_blocking, on_immediate, immediate_arg);
       return;
     }
   }
 
-  reactor_.post_immediate_completion(op, is_continuation);
+  on_immediate(op, is_continuation, immediate_arg);
 }
 
 } // namespace detail
-} // namespace clmdep_asio
+} // namespace asio
 
 #include "asio/detail/pop_options.hpp"
 
 #endif // !defined(ASIO_WINDOWS)
        //   && !defined(ASIO_WINDOWS_RUNTIME)
        //   && !defined(__CYGWIN__)
+       //   && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #endif // ASIO_DETAIL_IMPL_REACTIVE_DESCRIPTOR_SERVICE_IPP
