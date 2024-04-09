@@ -21,7 +21,7 @@ option(RPCLIB_BUILD_EXAMPLES
   "Build examples." 
   OFF)
 option(RPCLIB_ENABLE_LOGGING 
-  "ALlow logging in the library for debug purposes."
+  "Allow logging in the library for debug purposes."
   OFF)
 option(RPCLIB_ENABLE_COVERAGE 
   "Generate coverage information" 
