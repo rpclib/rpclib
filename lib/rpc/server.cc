@@ -62,8 +62,8 @@ struct server::impl {
                     parent_, &io_, std::move(socket_), parent_->disp_,
                     suppress_exceptions_);
                 s->start();
-                std::unique_lock<std::mutex> lock(sessions_mutex_);
-                sessions_.push_back(s);
+                std::lock_guard<std::mutex> lock(sessions_mutex_);
+                sessions_.push_back(std::move(s));
             } else {
                 LOG_ERROR("Error while accepting connection: {}", ec);
             }
