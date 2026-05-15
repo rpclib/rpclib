@@ -53,7 +53,7 @@ typedef long long          intmax_t;
 # include <ostream>
 #endif
 
-#ifdef _SECURE_SCL
+#if defined(_SECURE_SCL) && defined(_MSC_VER) && _MSC_VER < 1951
 # define FMT_SECURE_SCL _SECURE_SCL
 #else
 # define FMT_SECURE_SCL 0
