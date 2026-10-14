@@ -54,7 +54,23 @@ void server_session::do_read() {
             if (!ec) {
                 pac_.buffer_consumed(length);
                 RPCLIB_MSGPACK::unpacked result;
-                while (pac_.next(result) && !is_closed()) {
+                // Malformed msgpack bytes from a (malicious or buggy) client make
+                // pac_.next() throw clmdep_msgpack::parse_error. Without a catch,
+                // the exception propagates through the asio handler and calls
+                // std::terminate(), crashing the whole process. Catch it, log it,
+                // and close the offending connection instead.
+                bool parse_ok = true;
+                while (parse_ok && !is_closed()) {
+                    try {
+                        parse_ok = pac_.next(result);
+                    } catch (const RPCLIB_MSGPACK::v1::unpack_error&) {
+                        LOG_ERROR("Malformed msgpack from client; closing session");
+                        self->close();
+                        return;
+                    }
+                    if (!parse_ok) {
+                        break;
+                    }
                     auto msg = result.get();
                     output_buf_.clear();
 
